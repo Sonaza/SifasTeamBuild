@@ -63,7 +63,7 @@ class KiraraIdol():
 		return dict(zip(keys, data))
 	
 	def get_passive_skill(self):
-		passive = self.data['passive_skills'][0]
+		passive = self.data['passive_skills'][1]
 		
 		target = {}
 		for key, value in passive['target'].items():
@@ -72,9 +72,7 @@ class KiraraIdol():
 		
 		levels = passive['levels']
 		
-		print(passive['name'], " / ", passive['programmatic_description'].strip(), " / ", passive['programmatic_target'])
-		print("  Target ", target)
-		print("  Levels ", self.zipeffect(levels[0]))
+		return passive, target, levels
 
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -209,18 +207,31 @@ client = KiraraClient()
 
 # data = client.get_idols_by_ordinal([1, 2, 345, 466, 491, 311])
 
-# data = client.get_idols_by_rarity(Rarity.UR)
-# for card in data:
-# 	print(card)
+effects = defaultdict(list)
+
+data = client.get_idols_by_rarity(Rarity.UR)
+for card in data:
+	passive, target, levels = card.get_passive_skill()
+	target_id = target['id']
+	effect_type = levels[0][1]
+	
+	eff_str = (target, levels, f"{passive['name']} / {passive['programmatic_description'].strip()} / {passive['programmatic_target']}")
+	effects[effect_type].append(eff_str)
+
+for effect_type, effects in effects.items():
+	print(effect_type)
+	for target, levels, eff_str in effects:
+		print("  ", eff_str)
+		
 
 # data = client.get_idols_by_ordinal([105, 193, 343, 412, 466])
-data = client.get_idols_by_ordinal([455, 42, 41, 343])
+# data = client.get_idols_by_ordinal([455, 42, 41, 343])
 
-for card in data:
-	print(card)
-	print()
-	card.get_passive_skill()
-	print("\n----------------------------------------------------------\n")
+# for card in data:
+# 	print(card)
+# 	print()
+# 	card.get_passive_skill()
+# 	print("\n----------------------------------------------------------\n")
 
 # print(data)
 # params = data.get_parameters(82, 5)
