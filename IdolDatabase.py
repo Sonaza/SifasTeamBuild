@@ -45,7 +45,7 @@ class Subunit(Enum):
 			Subunit.Lilywhite    : "lilywhite",
 			Subunit.Bibi         : "BiBi",
 			Subunit.Azalea       : "AZALEA",
-			Subunit.Cyaron       : "CYaRon",
+			Subunit.Cyaron       : "CYaRon!",
 			Subunit.Guiltykiss   : "Guilty Kiss",
 			Subunit.Quartz       : "QU4RTZ",
 			Subunit.Diverdiva    : "DiverDiva",

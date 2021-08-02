@@ -48,6 +48,35 @@ class KiraraIdol():
 			self.data["stats"][level - 1][2] + self.data["tt_offset"][limit_break][2] + self.data["idolized_offset"][2],
 			self.data["stats"][level - 1][3] + self.data["tt_offset"][limit_break][3] + self.data["idolized_offset"][3],
 		)
+	
+	def zipeffect(self, data):
+		keys = [
+			"target_parameter",
+			"effect_type",
+			"effect_value",
+			"scale_type",
+			"calc_type",
+			"timing",
+			"finish_type",
+			"finish_value",
+		]
+		return dict(zip(keys, data))
+	
+	def get_passive_skill(self):
+		passive = self.data['passive_skills'][0]
+		
+		target = {}
+		for key, value in passive['target'].items():
+			if value:
+				target[key] = value
+		
+		levels = passive['levels']
+		
+		print(passive['name'], " / ", passive['programmatic_description'].strip(), " / ", passive['programmatic_target'])
+		print("  Target ", target)
+		print("  Levels ", self.zipeffect(levels[0]))
+
+#-----------------------------------------------------------------------------------------------------------------------
 
 class KiraraClient():
 	Database = {}
@@ -69,15 +98,15 @@ class KiraraClient():
 		self.db = self.dbcon.cursor()
 				
 		db_schema = '''CREATE TABLE `idols` (
-		               `ordinal`    INTEGER UNIQUE,
-		               `id`         INTEGER UNIQUE,
-		               `member_id`  INTEGER,
-		               `attribute`  INTEGER,
-		               `type`       INTEGER,
-		               `rarity`     INTEGER,
-		               `json`       TEXT,
-		               PRIMARY KEY(`ordinal`, `id`)
-		            )'''
+					   `ordinal`    INTEGER UNIQUE,
+					   `id`         INTEGER UNIQUE,
+					   `member_id`  INTEGER,
+					   `attribute`  INTEGER,
+					   `type`       INTEGER,
+					   `rarity`     INTEGER,
+					   `json`       TEXT,
+					   PRIMARY KEY(`ordinal`, `id`)
+					)'''
 		
 		try:
 			self.db.execute(db_schema)
@@ -103,6 +132,17 @@ class KiraraClient():
 		for x in chunked(ordinals, 10):
 			print(x)
 			self.get_idols_by_ordinal(x)
+	
+	
+	def get_idols_by_rarity(self, rarity : Rarity):
+		query = "SELECT * FROM `idols` WHERE rarity = ?"
+		self.db.execute(query, [rarity.value])
+		return self.convert_to_idol_object(self.db.fetchall())
+		
+		
+	def convert_to_idol_object(self, data):
+		return [KiraraIdol(x) for x in data]
+		
 		
 	def get_idols_by_ordinal(self, ordinals):
 		assert isinstance(ordinals, int) or isinstance(ordinals, list)
@@ -136,35 +176,52 @@ class KiraraClient():
 			num_results = len(data['result'])
 			
 			query_data = []
+			
+			fields = ["ordinal", "id", "member_id", "attribute", "type", "rarity", "json"]
+			
 			for card in data['result']:
-				d = (
-					card['ordinal'],
-					card['id'],
-					card['member'],
-					card['attribute'],
-					card['role'],
-					card['rarity'],
-					json.dumps(card),
-				)
-				query_data.append(d)
+				serialized = dict(card)
+				serialized['json'] = json.dumps(card)
+				result.append(serialized)
+				
+				query_data.append(serialized)
 				
 			query_data = list(sorted(query_data, key=itemgetter(0)))
-			query = "INSERT INTO `idols` (`ordinal`, `id`, `member_id`, `attribute`, `type`, `rarity`, `json`) VALUES (?, ?, ?, ?, ?, ?, ?)"
+			
+			query_fields = ', '.join([f"`{name}`" for name in fields])
+			query_keys   = ', '.join([f":{name}"  for name in fields])
+			
+			query = "INSERT INTO `idols` ({}) VALUES ({})".format(query_fields, query_keys)
+			print(query)
+			
 			self.db.executemany(query, query_data)
 			self.dbcon.commit()
-			
-			result.extend(query_data)
 		
-		return [KiraraIdol(x) for x in result]
+		result = self.convert_to_idol_object(result)
+		# if len(result) == 1:
+		# 	return result[0]
 		
+		return result
+
 
 client = KiraraClient()
 # client.cache_all_idols()
 
 # data = client.get_idols_by_ordinal([1, 2, 345, 466, 491, 311])
 
-data = client.get_idols_by_ordinal(373)[0]
-print(data)
-params = data.get_parameters(82, 5)
-print(params)
+# data = client.get_idols_by_rarity(Rarity.UR)
+# for card in data:
+# 	print(card)
 
+# data = client.get_idols_by_ordinal([105, 193, 343, 412, 466])
+data = client.get_idols_by_ordinal([455, 42, 41, 343])
+
+for card in data:
+	print(card)
+	print()
+	card.get_passive_skill()
+	print("\n----------------------------------------------------------\n")
+
+# print(data)
+# params = data.get_parameters(82, 5)
+# print(params)
