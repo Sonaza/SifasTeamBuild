@@ -1,4 +1,4 @@
-# Sifas Team Build
+# :sparkles: Sifas Team Build :sparkles:
 
 Thingy doodad that can calculate card stats or something in SIFAS.
 
