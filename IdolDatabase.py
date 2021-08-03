@@ -62,7 +62,7 @@ class PassiveEffect(Enum):
 	Stamina   = 9
 	Appeal    = 10
 	Technique = 11
-
+	
 class IdolBase():
 	def __init__(self, member_id : int, full_name : str, school : School, year : Year, subunit : Subunit):
 		self.MemberId = member_id

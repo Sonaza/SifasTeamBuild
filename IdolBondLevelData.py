@@ -1,6 +1,29 @@
 import math
+from enum import Enum
 
-bond_parameter_bonus = dict([
+class BondParameter(Enum):
+	Appeal         = 1
+	Stamina        = 2
+	Technique      = 3
+	
+	CritRate       = 4
+	CritPower      = 5
+	
+	SpGain         = 6
+	SpVoltage      = 7
+	
+	VoPenalty      = 8
+	SpPenalty      = 9
+	GdPenalty      = 10
+	SkPenalty      = 11
+	
+	AttributeBonus = 12
+	
+	RLevel         = 13
+	SRLevel        = 14
+	URLevel        = 15
+	
+bond_level_parameter_bonus = dict([
 	(  1,  0.00),  (  2,  1.00),  (  3,  1.87),  (  4,  2.31),  (  5,  2.64),  
 	(  6,  2.90),  (  7,  3.13),  (  8,  3.33),  (  9,  3.51),  ( 10,  3.67),  
 	( 11,  3.82),  ( 12,  3.96),  ( 13,  4.09),  ( 14,  4.22),  ( 15,  4.33),  
@@ -37,3 +60,106 @@ bond_parameter_bonus = dict([
 	(166, 10.47),  (167, 10.49),  (168, 10.52),  (169, 10.54),  (170, 10.56),  
 	(171, 10.58),  (172, 10.60),  (173, 10.63),  
 ])
+
+bond_parameter_fields = [e for e in BondParameter]
+
+bond_board_completion = dict([
+	# Board  Appeal  Stamina  Technique  Crit Rate  Crit Power  Sp Gain  Sp Voltage  Vo Penalty  Sp Penalty  Gd Penalty  Sk Penalty  Attribute Bonus  R Level  SR Level  UR Level
+	( 1,     (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 3,     (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 5,     (0.0,   0.0,     1.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 7,     (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 10,    (0.0,   0.0,     0.0,       0.0,       0.0,        2.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 15,    (0.0,   0.0,     0.0,       1.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 20,    (0.0,   0.0,     0.0,       0.0,       20.0,       0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 25,    (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        5.0,             0,       0,        0,       ) ),
+	( 30,    (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 35,    (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             6,       4,        2,       ) ),
+	
+	( 40,    (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 50,    (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 60,    (0.0,   0.0,     1.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 70,    (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 80,    (0.0,   0.0,     0.0,       0.0,       0.0,        2.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 90,    (0.0,   0.0,     0.0,       1.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 100,   (0.0,   0.0,     0.0,       0.0,       20.0,       0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 120,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        5.0,             0,       0,        0,       ) ),
+	( 140,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 160,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             6,       4,        2,       ) ),
+	
+	( 180,   (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+	( 200,   (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,       0,        0,       ) ),
+])
+
+bond_board_tiles = dict([
+	( 1,   {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
+	( 3,   {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
+	( 5,   {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, } ),
+	( 7,   {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , } ),
+	( 10,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
+	( 15,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
+	( 20,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.URLevel        : 2,   } ),
+	( 25,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
+	( 30,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, } ),
+	( 35,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
+	
+	( 40,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
+	( 50,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
+	( 60,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, } ),
+	( 70,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , } ),
+	( 80,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.5, } ),
+	( 90,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.2, } ),
+	( 100, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.URLevel        : 2,   } ),
+	( 120, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
+	( 140, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, } ),
+	( 160, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
+	
+	( 180, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
+	( 200, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
+])
+
+class IdolBondBonusesValueError(Exception): pass
+class IdolBondBonuses():
+	@staticmethod
+	def add_parameters(a, b):
+		for k in a:
+			a[k] += b[k]
+		return a
+	
+	@staticmethod
+	def get_bond_parameters(bond_level, active_board_level, current_board_unlocks):
+		# result = dict.fromkeys(bond_parameter_fields, 0)
+		result = [0] * len(bond_parameter_fields)
+		
+		for level, params in bond_board_completion.items():
+			if level == active_board_level: break
+			result = [sum(x) for x in zip(result, params)]
+		
+		result = dict(zip(bond_parameter_fields, result))
+		
+		for level, params in bond_board_tiles.items():
+			if level == active_board_level: break
+			for key, value in params.items():
+				result[key] += value
+		
+		current_tiles = bond_board_tiles[active_board_level]
+		for key in current_board_unlocks:
+			if key not in current_tiles:
+				raise IdolBondBonusesValueError(f"Given tile '{key}' does not exist in current board (level {active_board_level})")
+			result[key] += current_tiles[key]
+		
+		if bond_level not in bond_level_parameter_bonus:
+			raise IdolBondBonusesValueError("Bond bonus percentage not found in the parameter bonus list (may be unimplemented).")
+		
+		bonus_percentage = bond_level_parameter_bonus[bond_level]
+		result[BondParameter.Appeal]    += bonus_percentage
+		result[BondParameter.Stamina]   += bonus_percentage
+		result[BondParameter.Technique] += bonus_percentage
+		
+		print()
+		for k, v in result.items():
+			print(f"   {k.name:<15}  : {v:>4.2f}")
+		print()
+
+# IdolBondBonuses.get_bond_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
+IdolBondBonuses.get_bond_parameters(103, 50, [  ])
