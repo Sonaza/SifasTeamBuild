@@ -24,13 +24,13 @@ class KiraraIdol():
 	
 	def __str__(self):
 		idol = Idols.ByMemberId[self.member_id]
-		return f"{self.get_name(True)} {Attribute(self.attribute).name} {Type(self.type).name} {idol}"
+		return f"{self.get_card_name(True)} {Attribute(self.attribute).name} {Type(self.type).name} {idol}"
 	
 	def __repr__(self):
 		idol = Idols.ByMemberId[self.member_id]
-		return f"{self.get_name(True)} {Attribute(self.attribute).name} {Type(self.type).name} {idol}"
+		return f"{self.get_card_name(True)} {Attribute(self.attribute).name} {Type(self.type).name} {idol}"
 	
-	def get_name(self, idolized : bool):
+	def get_card_name(self, idolized : bool):
 		if idolized:
 			return self.data['idolized_appearance']['name']
 		

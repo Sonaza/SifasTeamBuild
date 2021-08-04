@@ -13,11 +13,14 @@ name_length = 20
 class Idol(IdolBase):
 	def __init__(self, card_ordinal : int, idol : IdolBase, identifier, crit_power, buff_appeal, buff_technique):
 		# super().__init__(idol.FullName, idol.School, idol.Year, idol.Subunit)
+		
+		data = client.get_idols_by_ordinal(card_ordinal)[0]
+		
+		idol = Idols.by_member_id[data.member_id]
 		self.set(idol)
 		
 		self.identifier = identifier
 		
-		data = client.get_idols_by_ordinal(card_ordinal)[0]
 		base_params = data.get_parameters(80, 5)
 		
 		self.base_appeal    = base_params[0]
@@ -44,7 +47,7 @@ class Idol(IdolBase):
 		
 	def __str__(self):
 		global name_length
-		return f'    {self.identifier + " " + self.FirstName:<{name_length}}    Effective Appeal {self.effective_appeal:5.0f}    Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.crit_profile)]})' 
+		return f'    {self.identifier + " " + self.first_name:<{name_length}}    Effective Appeal {self.effective_appeal:5.0f}    Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.crit_profile)]})' 
 		
 	def __lt__(self, other):
 		return self.effective_appeal < other.effective_appeal

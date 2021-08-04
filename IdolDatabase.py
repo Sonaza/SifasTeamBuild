@@ -65,31 +65,31 @@ class PassiveEffect(Enum):
 	
 class IdolBase():
 	def __init__(self, member_id : int, full_name : str, school : School, year : Year, subunit : Subunit):
-		self.MemberId = member_id
+		self.member_id = member_id
 		
-		self.FullName = full_name
-		self.FirstName, self.LastName = full_name.split(' ', 1)
+		self.full_name = full_name
+		self.first_name, self.last_name = full_name.split(' ', 1)
 		
-		self.School  = school
-		self.Year    = year
-		self.Subunit = subunit
+		self.school  = school
+		self.year    = year
+		self.subunit = subunit
 	
 	def set(self, idol):
-		self.MemberId = idol.MemberId
+		self.member_id = idol.member_id
 		
-		self.FullName  = idol.FullName
-		self.FirstName = idol.FirstName
-		self.LastName  = idol.LastName
+		self.full_name  = idol.full_name
+		self.first_name = idol.first_name
+		self.last_name  = idol.last_name
 		
-		self.School  = idol.School 
-		self.Year    = idol.Year   
-		self.Subunit = idol.Subunit
+		self.school  = idol.school 
+		self.year    = idol.year   
+		self.subunit = idol.subunit
 	
 	def __str__(self):
-		return f"{self.FullName} ({self.School.name} / {self.Year.name} Year / {self.Subunit.get_stylized()})"
+		return f"{self.full_name} ({self.school.name} / {self.year.name} year / {self.subunit.get_stylized()})"
 	
 	def __repr__(self):
-		return f'IdolBase({self.MemberId}, "{self.FullName}", {self.School}, {self.Year}, {self.Subunit})'
+		return f'IdolBase({self.member_id}, "{self.full_name}", {self.school}, {self.year}, {self.subunit})'
 
 class Idols():
 	# ------------ Otonokizaka / µ's ------------
@@ -134,30 +134,30 @@ class Idols():
 	Kanata   = IdolBase(206, "Kanata Konoe",       School.Nijigasaki, Year.Third, Subunit.Quartz)
 	Karin    = IdolBase(204, "Karin Asaka",        School.Nijigasaki, Year.Third, Subunit.Diverdiva)
 
-	All         = []
-	ByFirstName = {}
-	ByMemberId  = {}
-	ByYear      = defaultdict(list)
-	BySchool    = defaultdict(list)
-	BySubunit   = defaultdict(list)
+	all_idols     = []
+	by_first_name = {}
+	by_member_id  = {}
+	by_year       = defaultdict(list)
+	by_school     = defaultdict(list)
+	by_subunit    = defaultdict(list)
 	
 	@staticmethod
 	def initialize():
 		members = [key for key in dir(Idols) if isinstance(getattr(Idols, key), IdolBase)]
 		for key in members:
 			idol = getattr(Idols, key)
-			Idols.All.append(idol)
+			Idols.all_idols.append(idol)
 			
-			Idols.ByFirstName[idol.FirstName] = idol
-			Idols.ByMemberId[idol.MemberId] = idol
+			Idols.by_first_name[idol.first_name] = idol
+			Idols.by_member_id[idol.member_id]   = idol
 			
-			Idols.ByYear[idol.Year].append(idol)
-			Idols.BySchool[idol.School].append(idol)
-			Idols.BySubunit[idol.Subunit].append(idol)
+			Idols.by_year[idol.year].append(idol)
+			Idols.by_school[idol.school].append(idol)
+			Idols.by_subunit[idol.subunit].append(idol)
 
 Idols.initialize()
 
-# for key, idols in Idols.BySchool.items():
+# for key, idols in Idols.By_School.items():
 # 	print(key)
 # 	for idol in idols:
 # 		print("  ", idol)
