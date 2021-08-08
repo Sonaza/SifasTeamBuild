@@ -1,7 +1,7 @@
 from IdolEnums import *
 
 class AccessoryBase():
-	def __init__(self, values, parameters):
+	def __init__(self, rarity, values, parameters):
 		if isinstance(values, tuple) and len(values) == 2:
 			self.scaling_per_lb = False
 			values = [values] * 6
@@ -9,6 +9,8 @@ class AccessoryBase():
 			self.scaling_per_lb = True
 		else:
 			raise Exception("Accessory values must be a tuple or a list of six tuples of (min, max).")
+		
+		self.rarity = rarity
 		
 		self.values = values
 		self.value_diffs = [b - a for a, b in self.values]
@@ -18,17 +20,14 @@ class AccessoryBase():
 	
 	def calculate_skill_value(self, skill_level, limit_break):
 		assert limit_break >= 0 and limit_break <= 5
-		assert skill_level >= 1 and skill_level <= (15 + limit_break)
+		assert skill_level >= 1 and skill_level <= (self.rarity.value // 2 + limit_break)
 		
-		if self.scaling_per_lb:
-			max_level = 15 + limit_break
-		else:
-			max_level = 20
+		max_level = self.rarity.value // 2 + (limit_break if self.scaling_per_lb else 5)
 		return (skill_level - 1) * (self.value_diffs[limit_break] / (max_level - 1)) + self.values[limit_break][0]
 	
-	def calculate_parameters(self, accessory_level, rarity_max_level):
-		assert accessory_level >= 1 and accessory_level <= rarity_max_level
-		return [round((accessory_level - 1) * (diffs / (rarity_max_level - 1)) + params[0]) for diffs, params in zip(self.parameter_diffs, self.parameters)]
+	def calculate_parameters(self, accessory_level):
+		assert accessory_level >= 1 and accessory_level <= self.rarity.value + 30
+		return [round((accessory_level - 1) * (diffs / (self.rarity.value + 30 - 1)) + params[0]) for diffs, params in zip(self.parameter_diffs, self.parameters)]
 
 class Accessory():
 	LevelIncrements = [0, 5, 10, 15, 20, 30]
@@ -36,8 +35,8 @@ class Accessory():
 	def __init__(self, name, attribute, rarity, accessory, limit_break, accessory_level, skill_level):
 		assert limit_break >= 0 and limit_break <= 5
 		
-		if skill_level == None: skill_level = (15 + limit_break)
-		assert skill_level >= 1 and skill_level <= (15 + limit_break)
+		if skill_level == None: skill_level = (rarity.value // 2 + limit_break)
+		assert skill_level >= 1 and skill_level <= (rarity.value // 2 + limit_break)
 		
 		max_level = rarity.value + Accessory.LevelIncrements[limit_break]
 		if accessory_level == None: accessory_level = max_level
@@ -75,17 +74,17 @@ class Accessory():
 		self.limit_break = limit_break
 	
 	def get_max_skill_level(self):
-		return 15 + self.limit_break
+		return self.rarity.value // 2 + self.limit_break
 	
 	def set_skill_level(self, skill_level):
-		assert skill_level >= 1 and skill_level <= (15 + self.limit_break)
+		assert skill_level >= 1 and skill_level <= (self.rarity.value // 2 + self.limit_break)
 		self.skill_level = skill_level
 	
 	def get_skill_value(self):
 		return self.accessory.calculate_skill_value(self.skill_level, self.limit_break)
 	
 	def get_parameters(self):
-		return self.accessory.calculate_parameters(self.accessory_level, self.get_max_accessory_level_by_rarity())
+		return self.accessory.calculate_parameters(self.accessory_level)
 	
 	
 class AccessoryFactory():
@@ -93,7 +92,7 @@ class AccessoryFactory():
 		self.name = name
 		self.accessories = {}
 		for rarity, values, parameters in zip(rarities, values_per_rarity, parameters_per_rarity):
-			self.accessories[rarity] = AccessoryBase(values, parameters)
+			self.accessories[rarity] = AccessoryBase(rarity, values, parameters)
 	
 	def __getitem__(self, key):
 		return self.get_rarity(key)
