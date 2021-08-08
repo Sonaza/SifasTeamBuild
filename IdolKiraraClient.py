@@ -1,9 +1,10 @@
 import requests
 import json
 import sqlite3 as sqlite
-from IdolDatabase import *
 from operator import itemgetter
 import time
+
+from IdolDatabase import *
 
 def chunked(seq, size):
 	for x in range(0, len(seq), size):
@@ -11,6 +12,9 @@ def chunked(seq, size):
 
 class KiraraClientException(Exception): pass
 class KiraraClientValueError(KiraraClientException): pass
+
+class KiraraClientNotFound(KiraraClientException): pass
+class KiraraClientPartialResult(KiraraClientException): pass
 
 class KiraraIdol():
 	def __init__(self, data):
@@ -23,12 +27,12 @@ class KiraraIdol():
 		self.data = json.loads(data['json'])
 	
 	def __str__(self):
-		idol = Idols.ByMemberId[self.member_id]
-		return f"{self.get_card_name(True)} {Attribute(self.attribute).name} {Type(self.type).name} {idol}"
+		idol = Idols.by_member_id[self.member_id]
+		return f"「 {self.get_card_name(True)} 」 {Attribute(self.attribute).name} {Type(self.type).name} {idol}"
 	
 	def __repr__(self):
-		idol = Idols.ByMemberId[self.member_id]
-		return f"{self.get_card_name(True)} {Attribute(self.attribute).name} {Type(self.type).name} {idol}"
+		idol = Idols.by_member_id[self.member_id]
+		return f"「 {self.get_card_name(True)} 」 {Attribute(self.attribute).name} {Type(self.type).name} {idol}"
 	
 	def get_card_name(self, idolized : bool):
 		if idolized:
@@ -114,7 +118,6 @@ class KiraraClient():
 	
 	def cache_all_idols(self):
 		url = KiraraClient.Endpoints['id_list']
-		print(url)
 		r = requests.get(url)
 		if r.status_code != 200:
 			raise KiraraClientException("Endpoint status not OK")
@@ -143,11 +146,11 @@ class KiraraClient():
 		
 		
 	def get_idols_by_ordinal(self, ordinals):
-		assert isinstance(ordinals, int) or isinstance(ordinals, list)
+		assert isinstance(ordinals, int) or isinstance(ordinals, list) or isinstance(ordinals, set)
 		
 		if isinstance(ordinals, int):
 			ordinals = set([ordinals])
-		elif isinstance(ordinals, list):
+		elif isinstance(ordinals, list) or isinstance(ordinals, set):
 			ordinals = set(ordinals)
 			
 		result = []
@@ -167,62 +170,79 @@ class KiraraClient():
 			url = KiraraClient.Endpoints['by_ordinal'].format(query_ordinals)
 			
 			r = requests.get(url)
+			print(r.status_code)
+			if r.status_code == 404:
+				raise KiraraClientNotFound(f"No result with given ordinals: {list(ordinals)}")
+			
 			if r.status_code != 200:
 				raise KiraraClientException("Endpoint status not OK")
 			
 			data = r.json()
+			
+			result_ordinals = set()
+			for card in data['result']:
+				result_ordinals.add(card['ordinal'])
+			
+			if not all(x in result_ordinals for x in ordinals):
+				partial_result = [x for x in ordinals if x in result_ordinals]
+				raise KiraraClientPartialResult(f"Partial result with given ordinals. Missing: {partial_result}")
+			
 			num_results = len(data['result'])
 			
 			query_data = []
 			
-			fields = ["ordinal", "id", "member_id", "attribute", "type", "rarity", "json"]
-			
 			for card in data['result']:
-				serialized = dict(card)
-				serialized['json'] = json.dumps(card)
-				result.append(serialized)
-				
+				serialized = {
+					'ordinal'   : card['ordinal'],
+					'id'        : card['id'],
+					'member_id' : card['member'],
+					'attribute' : card['attribute'],
+					'type'      : card['role'],
+					'rarity'    : card['rarity'],
+					'json'      : json.dumps(card),
+				}
 				query_data.append(serialized)
 				
-			query_data = list(sorted(query_data, key=itemgetter(0)))
+			query_data = list(sorted(query_data, key=itemgetter('ordinal')))
 			
+			fields = ["ordinal", "id", "member_id", "attribute", "type", "rarity", "json"]
 			query_fields = ', '.join([f"`{name}`" for name in fields])
 			query_keys   = ', '.join([f":{name}"  for name in fields])
-			
 			query = "INSERT INTO `idols` ({}) VALUES ({})".format(query_fields, query_keys)
-			print(query)
-			
 			self.db.executemany(query, query_data)
 			self.dbcon.commit()
+			
+			result.extend(query_data)
 		
-		result = self.convert_to_idol_object(result)
-		# if len(result) == 1:
-		# 	return result[0]
-		
-		return result
+		return self.convert_to_idol_object(result)
 
 
 client = KiraraClient()
 # client.cache_all_idols()
+# exit()
 
 # data = client.get_idols_by_ordinal([1, 2, 345, 466, 491, 311])
 
-effects = defaultdict(list)
+if __name__ == "__maina__":
+	effects = defaultdict(list)
 
-data = client.get_idols_by_rarity(Rarity.UR)
-for card in data:
-	passive, target, levels = card.get_passive_skill()
-	target_id = target['id']
-	effect_type = levels[0][1]
-	
-	eff_str = (target, levels, f"{passive['name']} / {passive['programmatic_description'].strip()} / {passive['programmatic_target']}")
-	effects[effect_type].append(eff_str)
-
-for effect_type, effects in effects.items():
-	print(effect_type)
-	for target, levels, eff_str in effects:
-		print("  ", eff_str)
+	data = client.get_idols_by_rarity(Rarity.UR)
+	for card in data:
+		passive, target, levels = card.get_passive_skill()
+		target_id = target['id']
+		effect_type = levels[0][1]
 		
+		eff_str = (target, levels, f"{passive['name']} / {passive['programmatic_description'].strip()} / {passive['programmatic_target']}")
+		effects[effect_type].append(eff_str)
+
+	for effect_type, effects in effects.items():
+		print(effect_type)
+		for target, levels, eff_str in effects:
+			print("  ", eff_str)
+		
+data = client.get_idols_by_ordinal(466)
+for card in data:
+	print(card)
 
 # data = client.get_idols_by_ordinal([105, 193, 343, 412, 466])
 # data = client.get_idols_by_ordinal([455, 42, 41, 343])
