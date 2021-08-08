@@ -26,9 +26,9 @@ class AccessoryBase():
 			max_level = 20
 		return (skill_level - 1) * (self.value_diffs[limit_break] / (max_level - 1)) + self.values[limit_break][0]
 	
-	def calculate_parameters(self, accessory_level):
-		assert accessory_level >= 1 and accessory_level <= 60
-		return [round((accessory_level - 1) * (diffs / 59) + params[0]) for diffs, params in zip(self.parameter_diffs, self.parameters)]
+	def calculate_parameters(self, accessory_level, rarity_max_level):
+		assert accessory_level >= 1 and accessory_level <= rarity_max_level
+		return [round((accessory_level - 1) * (diffs / (rarity_max_level - 1)) + params[0]) for diffs, params in zip(self.parameter_diffs, self.parameters)]
 
 class Accessory():
 	LevelIncrements = [0, 5, 10, 15, 20, 30]
@@ -63,6 +63,9 @@ class Accessory():
 	def get_max_accessory_level(self):
 		return self.rarity.value + Accessory.LevelIncrements[self.limit_break]
 		
+	def get_max_accessory_level_by_rarity(self):
+		return 30 + self.rarity.value
+		
 	def set_accessory_level(self, accessory_level):
 		assert accessory_level >= 1 and accessory_level <= self.get_max_accessory_level()
 		self.accessory_level = accessory_level
@@ -82,7 +85,7 @@ class Accessory():
 		return self.accessory.calculate_skill_value(self.skill_level, self.limit_break)
 	
 	def get_parameters(self):
-		return self.accessory.calculate_parameters(self.accessory_level)
+		return self.accessory.calculate_parameters(self.accessory_level, self.get_max_accessory_level_by_rarity())
 	
 	
 class AccessoryFactory():
@@ -129,6 +132,8 @@ class Accessories():
 	Bangle     = AccessoryFactory("Bangle",    [[(5.0, 10.0), (5.0, 12.0), (5.0, 14.0), (5.0, 16.0), (5.0, 18.0), (5.0, 20.0)]], DLPParameters, [Rarity.UR])
 	Belt       = AccessoryFactory("Belt",      [[(1.0, 1.5),  (1.0, 2.0),  (1.0, 2.5),  (1.0, 3.0),  (1.0, 4.0),  (1.0, 5.0)]],  DLPParameters, [Rarity.UR])
 
-print(Accessories.Brooch.get(Attribute.Smile, Rarity.UR, limit_break=5, level=60, skill=20))
-print(Accessories.Necklace.get(Attribute.Natural, Rarity.UR, limit_break=3, skill=15))
-print(Accessories.Choker.get(Attribute.Elegant, Rarity.UR, limit_break=1, skill=12))
+# print(Accessories.Brooch.get(Attribute.Smile, Rarity.UR, limit_break=5, level=60, skill=20))
+# print(Accessories.Necklace.get(Attribute.Natural, Rarity.UR, limit_break=3, skill=15))
+# print(Accessories.Choker.get(Attribute.Elegant, Rarity.UR, limit_break=1, skill=12))
+
+print(Accessories.Necklace.get(Attribute.Active, Rarity.SR, limit_break=2, skill=1))
