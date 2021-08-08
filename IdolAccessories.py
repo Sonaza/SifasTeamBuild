@@ -28,8 +28,7 @@ class AccessoryBase():
 	
 	def calculate_parameters(self, accessory_level):
 		assert accessory_level >= 1 and accessory_level <= 60
-		return [int((accessory_level - 1) * (diffs / 59) + params[0]) for diffs, params in zip(self.parameter_diffs, self.parameters)]
-
+		return [round((accessory_level - 1) * (diffs / 59) + params[0]) for diffs, params in zip(self.parameter_diffs, self.parameters)]
 
 class Accessory():
 	LevelIncrements = [0, 5, 10, 15, 20, 30]
