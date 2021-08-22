@@ -63,7 +63,12 @@ class IdolBondBonuses():
 		(156, 10.24),  (157, 10.27),  (158, 10.29),  (159, 10.31),  (160, 10.34),  
 		(161, 10.36),  (162, 10.38),  (163, 10.40),  (164, 10.43),  (165, 10.45),  
 		(166, 10.47),  (167, 10.49),  (168, 10.52),  (169, 10.54),  (170, 10.56),  
-		(171, 10.58),  (172, 10.60),  (173, 10.63),  
+		(171, 10.58),  (172, 10.60),  (173, 10.63),  (174, None),   (175, None),   # Todo: missing values
+		(176, None),   (177, None),   (178, None),   (179, None),   (180, None),
+		(181, None),   (182, None),   (183, None),   (184, None),   (185, None),
+		(186, None),   (187, None),   (188, None),   (189, None),   (190, None),
+		(191, None),   (192, None),   (193, None),   (194, None),   (195, None),
+		(196, None),   (197, None),   (198, None),   (199, None),   (200, None),
 	])
 
 	BOND_BOARD_COMPLETION_BONUS = dict([
@@ -149,10 +154,13 @@ class IdolBondBonuses():
 				raise IdolBondBonusesValueError(f"Given tile '{key}' does not exist in current board (level {active_board_level})")
 			result[key] += current_tiles[key]
 		
-		if bond_level not in IdolBondBonuses.BOND_LEVEL_PARAMETER_BONUS:
+		try:
+			bonus_percentage = IdolBondBonuses.BOND_LEVEL_PARAMETER_BONUS[bond_level]
+		except IndexError:
+			bonus_percentage = None
+			
+		if bonus_percentage == None:
 			raise IdolBondBonusesValueError("Bond bonus percentage not found in the parameter bonus list (may be unimplemented).")
-		
-		bonus_percentage = IdolBondBonuses.BOND_LEVEL_PARAMETER_BONUS[bond_level]
 		
 		result[BondParameter.Appeal]    += bonus_percentage
 		result[BondParameter.Stamina]   += bonus_percentage
@@ -168,6 +176,6 @@ class IdolBondBonuses():
 		print()
 
 # IdolBondBonuses.get_bond_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
-IdolBondBonuses.get_bond_parameters(103, 50, [ BondParameter.RLevel ])
+IdolBondBonuses.get_bond_parameters(117, 50, [ BondParameter.CritPower ])
 # IdolBondBonuses.get_bond_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])
 # IdolBondBonuses.get_bond_parameters(77, 30, [ BondParameter.CritRate ])

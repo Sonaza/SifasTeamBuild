@@ -17,18 +17,15 @@ class AccessoryBase():
 		
 		self.rarity = rarity
 		
-		self.values = values
-		self.value_diffs = [b - a for a, b in self.values]
-		
-		self.parameters = parameters
-		self.parameter_diffs = [b - a for a, b in self.parameters]
+		self.values, self.value_diffs = values, [vmax - vmin for vmin, vmax in values]
+		self.parameters, self.parameter_diffs = parameters, [vmax - vmin for vmin, vmax in parameters]
 	
 	def calculate_skill_value(self, skill_level, limit_break):
 		assert limit_break >= 0 and limit_break <= 5
 		assert skill_level >= 1 and skill_level <= (self.rarity.value // 2 + limit_break)
 		
-		max_level = self.rarity.value // 2 + (limit_break if self.scaling_per_lb else 5)
-		return (skill_level - 1) * (self.value_diffs[limit_break] / (max_level - 1)) + self.values[limit_break][0]
+		max_skill_level = self.rarity.value // 2 + (limit_break if self.scaling_per_lb else 5)
+		return (skill_level - 1) * (self.value_diffs[limit_break] / (max_skill_level - 1)) + self.values[limit_break][0]
 	
 	def calculate_parameters(self, accessory_level):
 		assert accessory_level >= 1 and accessory_level <= self.rarity.value + 30
@@ -141,8 +138,7 @@ class Accessories():
 
 # print(Accessories.Brooch.get(Attribute.Smile, Rarity.UR, limit_break=5, level=60, skill=20))
 # print(Accessories.Necklace.get(Attribute.Natural, Rarity.UR, limit_break=3, skill=15))
-# print(Accessories.Choker.get(Attribute.Elegant, Rarity.UR, limit_break=1, skill=12))
+print(Accessories.Choker.get(Attribute.Elegant, Rarity.UR, limit_break=1, skill=16))
 
 # print(Accessories.Necklace.get(Attribute.Active, Rarity.SR, limit_break=2, skill=1))
-
-print(Accessories.Pouch.get(Attribute.Active, Rarity.R, limit_break=0, level=1, skill=1))
+# print(Accessories.Pouch.get(Attribute.Active, Rarity.R, limit_break=0, level=1, skill=1))

@@ -14,14 +14,14 @@ class Idol(IdolBase):
 	def __init__(self, card_ordinal : int, idol : IdolBase, identifier, crit_power, buff_appeal, buff_technique):
 		# super().__init__(idol.FullName, idol.School, idol.Year, idol.Subunit)
 		
-		data = client.get_idols_by_ordinal(card_ordinal)[0]
+		self.data = client.get_idols_by_ordinal(card_ordinal)[0]
 		
-		idol = Idols.by_member_id[data.member_id]
+		idol = Idols.by_member_id[self.data.member_id]
 		self.set(idol)
 		
 		self.identifier = identifier
 		
-		base_params = data.get_parameters(80, 5)
+		base_params = self.data.get_parameters(80, 5)
 		
 		self.base_appeal    = base_params[0]
 		self.base_stamina   = base_params[1]
@@ -82,12 +82,16 @@ idols = [
 	Idol(478, Idols.You,       "Party",           crit_power,  5.2,          0.0),
 	Idol(477, Idols.Shioriko,  "Party",           crit_power,  8.4,          4.2),
 	Idol(496, Idols.Setsuna,   "Party",           crit_power,  10.2,         2.6),
+	Idol(514, Idols.Kotori,    "Party",           crit_power,  8.4,          4.2),
 	Idol(193, Idols.Nozomi,    "Magical Fever",   crit_power,  4.2,          0.0),
 	Idol(48,  Idols.Kanan,     "Initial",         crit_power,  4.2,          0.0),
 	Idol(442, Idols.Rin,       "Spring",          crit_power,  7.0,          0.0),
 	Idol(470, Idols.Ruby,      "Rain Blossom",    crit_power,  5.2,          0.0),
 ]
 for idol in sorted(idols, reverse = True):
+	if idol.data.type != Type.Sp:
+		continue
+		
 	print(idol)
 
 print()

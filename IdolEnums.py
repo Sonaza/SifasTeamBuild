@@ -58,7 +58,19 @@ class Year(Enum):
 	Second = 2
 	Third  = 3
 	
-class PassiveEffect(Enum):
+class SkillEffectParameter(Enum):
 	Stamina   = 9
 	Appeal    = 10
 	Technique = 11
+
+class SkillTarget(Enum):
+	All           = 1
+	Group         = 2
+	SameStrategy  = 3
+	SameAttribute = 4
+	SameYear      = 5
+	SameSchool    = 6
+	SameType      = 7
+	SameMember    = 8
+	SameSubunit   = 9
+	Self          = 10
