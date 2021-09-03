@@ -62,13 +62,13 @@ class Idols():
 	Shizuku  = IdolBase(203, "Shizuku Osaka",      School.Nijigasaki, Year.First, Subunit.Azuna)
 	Kasumi   = IdolBase(202, "Kasumi Nakasu",      School.Nijigasaki, Year.First, Subunit.Quartz)
 	Rina     = IdolBase(209, "Rina Tennouji",      School.Nijigasaki, Year.First, Subunit.Quartz)
-	Shioriko = IdolBase(210, "Shioriko Mifune",    School.Nijigasaki, Year.First, Subunit.Monstergirls)
-	Mia      = IdolBase(211, "Mia Taylor",         School.Nijigasaki, Year.First, Subunit.Monstergirls)
+	Shioriko = IdolBase(210, "Shioriko Mifune",    School.Nijigasaki, Year.First, Subunit.Rebirth)
+	Mia      = IdolBase(211, "Mia Taylor",         School.Nijigasaki, Year.First, Subunit.Rebirth)
 
 	Ayumu    = IdolBase(201, "Ayumu Uehara",       School.Nijigasaki, Year.Second, Subunit.Azuna)
 	Setsuna  = IdolBase(207, "Setsuna Yuki",       School.Nijigasaki, Year.Second, Subunit.Azuna)
 	Ai       = IdolBase(205, "Ai Miyashita",       School.Nijigasaki, Year.Second, Subunit.Diverdiva)
-	Lanzhu   = IdolBase(212, "Lanzhu Zhong",       School.Nijigasaki, Year.Second, Subunit.Monstergirls)
+	Lanzhu   = IdolBase(212, "Lanzhu Zhong",       School.Nijigasaki, Year.Second, Subunit.Rebirth)
 
 	Emma     = IdolBase(208, "Emma Verde",         School.Nijigasaki, Year.Third, Subunit.Quartz)
 	Kanata   = IdolBase(206, "Kanata Konoe",       School.Nijigasaki, Year.Third, Subunit.Quartz)

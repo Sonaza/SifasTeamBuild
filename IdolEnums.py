@@ -37,20 +37,20 @@ class Subunit(Enum):
 	Quartz       = 7
 	Diverdiva    = 8
 	Azuna        = 9
-	Monstergirls = 10
+	Rebirth      = 10
 	
 	def get_stylized(self):
 		return {
-			Subunit.Printemps    : "Printemps",
-			Subunit.Lilywhite    : "lilywhite",
-			Subunit.Bibi         : "BiBi",
-			Subunit.Azalea       : "AZALEA",
-			Subunit.Cyaron       : "CYaRon!",
-			Subunit.Guiltykiss   : "Guilty Kiss",
-			Subunit.Quartz       : "QU4RTZ",
-			Subunit.Diverdiva    : "DiverDiva",
-			Subunit.Azuna        : "AZUNA",
-			Subunit.Monstergirls : "Monster Girls",
+			Subunit.Printemps  : "Printemps",
+			Subunit.Lilywhite  : "lilywhite",
+			Subunit.Bibi       : "BiBi",
+			Subunit.Azalea     : "AZALEA",
+			Subunit.Cyaron     : "CYaRon!",
+			Subunit.Guiltykiss : "Guilty Kiss",
+			Subunit.Quartz     : "QU4RTZ",
+			Subunit.Diverdiva  : "DiverDiva",
+			Subunit.Azuna      : "AZUNA",
+			Subunit.Rebirth    : "R3BIRTH",
 		}[self]
 	
 class Year(Enum):
