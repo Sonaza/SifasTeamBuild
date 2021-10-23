@@ -63,7 +63,6 @@ class Idols():
 	Kasumi   = IdolBase(202, "Kasumi Nakasu",      School.Nijigasaki, Year.First, Subunit.Quartz)
 	Rina     = IdolBase(209, "Rina Tennouji",      School.Nijigasaki, Year.First, Subunit.Quartz)
 	Shioriko = IdolBase(210, "Shioriko Mifune",    School.Nijigasaki, Year.First, Subunit.Rebirth)
-	Mia      = IdolBase(211, "Mia Taylor",         School.Nijigasaki, Year.First, Subunit.Rebirth)
 
 	Ayumu    = IdolBase(201, "Ayumu Uehara",       School.Nijigasaki, Year.Second, Subunit.Azuna)
 	Setsuna  = IdolBase(207, "Setsuna Yuki",       School.Nijigasaki, Year.Second, Subunit.Azuna)
@@ -73,6 +72,7 @@ class Idols():
 	Emma     = IdolBase(208, "Emma Verde",         School.Nijigasaki, Year.Third, Subunit.Quartz)
 	Kanata   = IdolBase(206, "Kanata Konoe",       School.Nijigasaki, Year.Third, Subunit.Quartz)
 	Karin    = IdolBase(204, "Karin Asaka",        School.Nijigasaki, Year.Third, Subunit.Diverdiva)
+	Mia      = IdolBase(211, "Mia Taylor",         School.Nijigasaki, Year.Third, Subunit.Rebirth)
 
 	all_idols     = []
 	by_first_name = {}

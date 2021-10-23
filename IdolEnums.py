@@ -6,10 +6,11 @@ class Rarity(Enum):
 	UR = 30
 
 class Type(Enum):
-	Vo   = 1
-	Sp   = 2
-	Gd   = 3
-	Sk   = 4
+	Unset = 0
+	Vo    = 1
+	Sp    = 2
+	Gd    = 3
+	Sk    = 4
 
 class Attribute(Enum):
 	Unset     = 0

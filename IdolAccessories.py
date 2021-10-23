@@ -1,6 +1,22 @@
 from enum import Enum
 from IdolEnums import *
 
+class AccessoryType(Enum):
+	Brooch     = 1
+	Bracelet   = 2
+	Keychain   = 3
+	Hairpin    = 4
+	Wristband  = 5
+	Towel      = 6
+	Necklace   = 7
+	Earring    = 1
+	Ribbon     = 8
+	Pouch      = 9
+	
+	Choker     = 10
+	Bangle     = 11
+	Belt       = 12
+	
 class AccessoryEffectType(Enum):
 	Percentage = 1
 	Absolute   = 2
@@ -34,7 +50,7 @@ class AccessoryBase():
 class Accessory():
 	LevelIncrements = [0, 5, 10, 15, 20, 30]
 	
-	def __init__(self, name, attribute, rarity, accessory, limit_break, accessory_level, skill_level):
+	def __init__(self, accessory_type, attribute, rarity, accessory, limit_break, accessory_level, skill_level):
 		assert limit_break >= 0 and limit_break <= 5
 		
 		if skill_level == None: skill_level = (rarity.value // 2 + limit_break)
@@ -44,7 +60,7 @@ class Accessory():
 		if accessory_level == None: accessory_level = max_level
 		assert accessory_level >= 1 and accessory_level <= max_level
 		
-		self.name = name
+		self.type = accessory_type
 		self.attribute = attribute
 		
 		self.rarity = rarity
@@ -55,7 +71,7 @@ class Accessory():
 	
 	def __str__(self):
 		appeal, stamina, technique = self.get_parameters()
-		s  = f"{self.name} ({self.rarity.name} {self.attribute.name}) (Level {self.accessory_level}/{self.get_max_accessory_level()})\n"
+		s  = f"{self.type.name} ({self.rarity.name} {self.attribute.name}) (Level {self.accessory_level}/{self.get_max_accessory_level()})\n"
 		s += f"  Parameters      : Appeal {appeal} / Stamina {stamina} / Technique {technique}\n"
 		s += f"  Accessory Skill : {self.skill_level}/{self.get_max_skill_level()}\n"
 		s += f"  Skill Effect    : {self.get_skill_value():0.1f}%\n"
@@ -90,8 +106,8 @@ class Accessory():
 	
 	
 class AccessoryFactory():
-	def __init__(self, name, effect_type, values_per_rarity, parameters_per_rarity, rarities=list(Rarity)):
-		self.name = name
+	def __init__(self, accessory_type, effect_type, values_per_rarity, parameters_per_rarity, rarities=list(Rarity)):
+		self.type = accessory_type
 		self.effect_type = effect_type
 		
 		self.accessories = {}
@@ -105,7 +121,7 @@ class AccessoryFactory():
 		return self.accessories[rarity]
 
 	def get(self, attribute = Attribute.Unset, rarity = Rarity.UR, limit_break = 5, level = None, skill = None):
-		return Accessory(self.name, attribute, rarity, self.accessories[rarity], limit_break, level, skill)
+		return Accessory(self.type, attribute, rarity, self.accessories[rarity], limit_break, level, skill)
 		
 
 class Accessories():
@@ -116,29 +132,22 @@ class Accessories():
 		[ (312, 1040), (234, 780), (234, 780) ], # UR parameters
 	]
 	
-	Brooch     = AccessoryFactory("Brooch",    AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
-	Bracelet   = AccessoryFactory("Bracelet",  AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
+	Brooch     = AccessoryFactory(AccessoryType.Brooch,    AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
+	Bracelet   = AccessoryFactory(AccessoryType.Bracelet,  AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
 	
-	Keychain   = AccessoryFactory("Keychain",  AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
-	Hairpin    = AccessoryFactory("Hairpin",   AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
-	Wristband  = AccessoryFactory("Wristband", AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
-	Towel      = AccessoryFactory("Towel",     AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
+	Keychain   = AccessoryFactory(AccessoryType.Keychain,  AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
+	Hairpin    = AccessoryFactory(AccessoryType.Hairpin,   AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
+	Wristband  = AccessoryFactory(AccessoryType.Wristband, AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
+	Towel      = AccessoryFactory(AccessoryType.Towel,     AccessoryEffectType.Percentage, [(1.2, 2.5), (1.8, 3.6), (2.5, 5.0)], BaselineParameters)
 	
-	Necklace   = AccessoryFactory("Necklace",  AccessoryEffectType.Percentage, [(0.5, 1.0), (0.7, 1.5), (1.0, 2.0)], BaselineParameters)
-	Earring    = AccessoryFactory("Earring",   AccessoryEffectType.Percentage, [(0.5, 1.0), (0.7, 1.5), (1.0, 2.0)], BaselineParameters)
+	Necklace   = AccessoryFactory(AccessoryType.Necklace,  AccessoryEffectType.Percentage, [(0.5, 1.0), (0.7, 1.5), (1.0, 2.0)], BaselineParameters)
+	Earring    = AccessoryFactory(AccessoryType.Earring,   AccessoryEffectType.Percentage, [(0.5, 1.0), (0.7, 1.5), (1.0, 2.0)], BaselineParameters)
 	
-	Ribbon     = AccessoryFactory("Ribbon",    AccessoryEffectType.Absolute,   [(125, 250), (180, 360), (250, 500)], BaselineParameters)
-	Pouch      = AccessoryFactory("Pouch",     AccessoryEffectType.Absolute,   [(125, 250), (180, 360), (250, 500)], BaselineParameters)
+	Ribbon     = AccessoryFactory(AccessoryType.Ribbon,    AccessoryEffectType.Absolute,   [(125, 250), (180, 360), (250, 500)], BaselineParameters)
+	Pouch      = AccessoryFactory(AccessoryType.Pouch,     AccessoryEffectType.Absolute,   [(125, 250), (180, 360), (250, 500)], BaselineParameters)
 	
 	DLPParameters = [ [(233, 780), (196, 650), (352, 1170)]  ] # Only UR rarity exists for DLP accessories
 	
-	Choker     = AccessoryFactory("Choker",    AccessoryEffectType.Percentage, [[(1.0, 4.0),  (1.0, 5.0),  (1.0, 6.0),  (1.0, 7.0),  (1.0, 8.0),  (1.0, 10.0)]], DLPParameters, [Rarity.UR])
-	Bangle     = AccessoryFactory("Bangle",    AccessoryEffectType.Percentage, [[(5.0, 10.0), (5.0, 12.0), (5.0, 14.0), (5.0, 16.0), (5.0, 18.0), (5.0, 20.0)]], DLPParameters, [Rarity.UR])
-	Belt       = AccessoryFactory("Belt",      AccessoryEffectType.Percentage, [[(1.0, 1.5),  (1.0, 2.0),  (1.0, 2.5),  (1.0, 3.0),  (1.0, 4.0),  (1.0, 5.0)]],  DLPParameters, [Rarity.UR])
-
-# print(Accessories.Brooch.get(Attribute.Smile, Rarity.UR, limit_break=5, level=60, skill=20))
-# print(Accessories.Necklace.get(Attribute.Natural, Rarity.UR, limit_break=3, skill=15))
-print(Accessories.Choker.get(Attribute.Elegant, Rarity.UR, limit_break=1, skill=16))
-
-# print(Accessories.Necklace.get(Attribute.Active, Rarity.SR, limit_break=2, skill=1))
-# print(Accessories.Pouch.get(Attribute.Active, Rarity.R, limit_break=0, level=1, skill=1))
+	Choker     = AccessoryFactory(AccessoryType.Choker,    AccessoryEffectType.Percentage, [[(1.0, 4.0),  (1.0, 5.0),  (1.0, 6.0),  (1.0, 7.0),  (1.0, 8.0),  (1.0, 10.0)]], DLPParameters, [Rarity.UR])
+	Bangle     = AccessoryFactory(AccessoryType.Bangle,    AccessoryEffectType.Percentage, [[(5.0, 10.0), (5.0, 12.0), (5.0, 14.0), (5.0, 16.0), (5.0, 18.0), (5.0, 20.0)]], DLPParameters, [Rarity.UR])
+	Belt       = AccessoryFactory(AccessoryType.Belt,      AccessoryEffectType.Percentage, [[(1.0, 1.5),  (1.0, 2.0),  (1.0, 2.5),  (1.0, 3.0),  (1.0, 4.0),  (1.0, 5.0)]],  DLPParameters, [Rarity.UR])
