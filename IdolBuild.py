@@ -65,10 +65,11 @@ crit_power = 1.8 * (1 + number_of_bangles * 0.2)
 idols = [
 	#    Idol             Identifier              Crit Power   Appeal Buff%  Technique Buff%
 	Idol(181, Idols.Mari,      "Fes1",            crit_power,  7.0,          0.0),
+	Idol(181, Idols.Mari,      "Fes1 Proc",            crit_power,  12.35,       0.0),
+	
 	Idol(373, Idols.Eli,       "Fes2",            crit_power,  7.0,          0.0),
 	
 	Idol(319, Idols.Kanan,     "Fes1",            crit_power,  9.5,          3.5),
-	Idol(146, Idols.Setsuna,   "Fes1",            crit_power,  7.0,          0.0),
 	Idol(163, Idols.Emma,      "Fes1",            crit_power,  0.0,          4.2),
 	Idol(144, Idols.Kotori,    "Fes1",            crit_power,  0.0,          5.2),
 	Idol(320, Idols.Kasumi,    "Fes1",            crit_power,  5.2,          0.0),
@@ -77,9 +78,14 @@ idols = [
 	Idol(466, Idols.Nozomi,    "Fes2",            crit_power,  7.0,          0.0),
 	Idol(129, Idols.Karin,     "Fes1",            crit_power,  0.0,          7.0),
 	Idol(449, Idols.Riko,      "Fes2",            crit_power,  7.0,          0.0),
-	Idol(182, Idols.Kanata,    "Fes1",            crit_power,  4.2,          0.0),
 	Idol(393, Idols.You,       "Fes2",            crit_power,  9.5,          0.0),
 	
+	Idol(182, Idols.Kanata,    "Fes1",            crit_power,  4.2,          0.0),
+	Idol(583, Idols.Kanata,    "Fes2",            crit_power,  6.5,          0.0),
+	
+	Idol(146, Idols.Setsuna,   "Fes1",            crit_power,  7.0,          0.0),
+	Idol(584, Idols.Setsuna,   "Fes2",            crit_power,  6.5,          3.2),
+	Idol(496, Idols.Setsuna,   "Party",           crit_power,  10.2,         2.6),
 	
 	Idol(487, Idols.Rina,      "Fes2",            crit_power,  4.2,          0.0),
 	Idol(467, Idols.Hanamaru,  "Fes2",            crit_power,  7.0,          0.0),
@@ -87,7 +93,9 @@ idols = [
 	Idol(505, Idols.Maki,      "Fes2",            crit_power,  7.0,          0.0),
 	Idol(547, Idols.Dia,       "Fes2",            crit_power,  5.2,          2.6),
 	
+	Idol(492, Idols.Rin,       "Tanabata",        crit_power,  3.2,          0.0),
 	Idol(412, Idols.Rin,       "Fes2",            crit_power,  7.83,         0.0),
+	
 	Idol(522, Idols.Shizuku,   "Fes2",            crit_power,  15.0,         0.0),
 	
 	Idol(262, Idols.Chika,     "Fes1",            crit_power,  7.0,          0.0),
@@ -98,7 +106,6 @@ idols = [
 	Idol(458, Idols.Kanata,    "Party",           crit_power,  6.5,          0.0),
 	Idol(478, Idols.You,       "Party",           crit_power,  5.2,          0.0),
 	Idol(477, Idols.Shioriko,  "Party",           crit_power,  8.4,          4.2),
-	Idol(496, Idols.Setsuna,   "Party",           crit_power,  10.2,         2.6),
 	Idol(514, Idols.Kotori,    "Party",           crit_power,  8.4,          4.2),
 	
 	Idol(193, Idols.Nozomi,    "Magical Fever",   crit_power,  4.2,          0.0),
@@ -107,19 +114,25 @@ idols = [
 	Idol(470, Idols.Ruby,      "Rain Blossom",    crit_power,  5.2,          0.0),
 	Idol(424, Idols.Ruby,      "Cyber",           crit_power,  5.2,          0.0),
 	
+	Idol(164, Idols.Nico,      "Fes1",            crit_power,  0.0,          0.0),
 	Idol(392, Idols.Nico,      "Fes2",            crit_power,  5.2,          0.0),
+	
 	Idol(454, Idols.Rina,      "Kindergarten",    crit_power,  5.2,          0.0),
+	
+	Idol(566, Idols.Honoka,       "Fes2",    crit_power,  5.2,       0.0),
+	Idol(579, Idols.Mia,       "Thanksgiving",    crit_power,  15.025,       0.0),
+	# Idol(579, Idols.Mia,       "Thanksgiving",    crit_power,  7.0,       0.0),
 ]
 
 print("Card | Effective Appeal (incl. self buffs) | Crit Rate")
 print("-- | -- | --")
 
-for idol in sorted(idols, reverse = True):
-	idol.set_song_modifiers(Attribute.Active, modifiers=(1.2, 0.8))
+# for idol in sorted(idols, reverse = True):
+# 	idol.set_song_modifiers(Attribute.Natural, modifiers=(1.2, 0.8))
 
 for idol in sorted(idols, reverse = True):
-	if idol.data.type != Type.Sk:
-		continue
+	# if idol.data.type != Type.Sk:
+	# 	continue
 		
 	print(idol)
 

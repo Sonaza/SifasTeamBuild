@@ -151,3 +151,5 @@ class Accessories():
 	Choker     = AccessoryFactory(AccessoryType.Choker,    AccessoryEffectType.Percentage, [[(1.0, 4.0),  (1.0, 5.0),  (1.0, 6.0),  (1.0, 7.0),  (1.0, 8.0),  (1.0, 10.0)]], DLPParameters, [Rarity.UR])
 	Bangle     = AccessoryFactory(AccessoryType.Bangle,    AccessoryEffectType.Percentage, [[(5.0, 10.0), (5.0, 12.0), (5.0, 14.0), (5.0, 16.0), (5.0, 18.0), (5.0, 20.0)]], DLPParameters, [Rarity.UR])
 	Belt       = AccessoryFactory(AccessoryType.Belt,      AccessoryEffectType.Percentage, [[(1.0, 1.5),  (1.0, 2.0),  (1.0, 2.5),  (1.0, 3.0),  (1.0, 4.0),  (1.0, 5.0)]],  DLPParameters, [Rarity.UR])
+
+print(Accessories.Bracelet.get(skill=5))

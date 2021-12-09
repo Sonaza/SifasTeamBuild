@@ -142,6 +142,8 @@ class KiraraClient():
 			    `ordinal`           INTEGER UNIQUE,
 			    `id`                INTEGER UNIQUE,
 			    `member_id`         INTEGER,
+			    `group_id`          INTEGER,
+			    `subunit_id`        INTEGER,
 			    `attribute`         INTEGER,
 			    `type`              INTEGER,
 			    `rarity`            INTEGER,
@@ -177,16 +179,19 @@ class KiraraClient():
 			if card['ordinal'] not in existing_ordinals:
 				ordinals.append(card['ordinal'])
 		
-		for x in chunked(ordinals, 10):
+		for x in chunked(ordinals, 30):
 			print(x)
 			self.get_idols_by_ordinal(x)
 	
-	
-	def get_idols_by_rarity(self, rarity : Rarity):
-		query = "SELECT * FROM 'idols' WHERE rarity = ?"
+	def get_idols(self, rarity : Rarity):
+		query = "SELECT * FROM 'idols' WHERE rarity = ? ORDER BY ordinal"
 		self.db.execute(query, [rarity.value])
 		return self.convert_to_idol_object(self.db.fetchall())
-		
+	
+	def get_idols_by_group(self, group : Group, minimum_rarity : Rarity = Rarity.R):
+		query = "SELECT * FROM 'idols' WHERE group_id = ? AND rarity >= ? ORDER BY ordinal"
+		self.db.execute(query, [group.value, minimum_rarity.value])
+		return self.convert_to_idol_object(self.db.fetchall())
 		
 	def convert_to_idol_object(self, data):
 		return [KiraraIdol(x) for x in data]
@@ -307,10 +312,14 @@ class KiraraClient():
 				primary = skills[0][0]
 				secondary = skills[1][0]
 				
+				idol_info = Idols.by_member_id[card['member']]
+				
 				serialized = {
 					'ordinal'           : card['ordinal'],
 					'id'                : card['id'],
 					'member_id'         : card['member'],
+					'group_id'          : idol_info.group.value,
+					'subunit_id'        : idol_info.subunit.value,
 					'attribute'         : card['attribute'],
 					'type'              : card['role'],
 					'rarity'            : card['rarity'],
@@ -322,7 +331,7 @@ class KiraraClient():
 				
 			query_data = list(sorted(query_data, key=itemgetter('ordinal')))
 			
-			fields = ["ordinal", "id", "member_id", "attribute", "type", "rarity", "primary_passive", "secondary_passive", "json"]
+			fields = ["ordinal", "id", "member_id", "group_id", "subunit_id", "attribute", "type", "rarity", "primary_passive", "secondary_passive", "json"]
 			query_fields = ', '.join([f"`{name}`" for name in fields])
 			query_keys   = ', '.join([f":{name}"  for name in fields])
 			query = "INSERT INTO `idols` ({}) VALUES ({})".format(query_fields, query_keys)

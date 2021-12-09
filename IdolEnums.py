@@ -21,9 +21,9 @@ class Attribute(Enum):
 	Natural   = 5
 	Elegant   = 6
 
-class School(Enum):
-	Otonokizaka = 1
-	Uranohoshi  = 2
+class Group(Enum):
+	Muse        = 1
+	Aqours      = 2
 	Nijigasaki  = 3
 	
 class Subunit(Enum):
