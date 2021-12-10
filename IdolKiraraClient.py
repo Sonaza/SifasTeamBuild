@@ -179,18 +179,23 @@ class KiraraClient():
 			if card['ordinal'] not in existing_ordinals:
 				ordinals.append(card['ordinal'])
 		
-		for x in chunked(ordinals, 30):
+		for x in chunked(ordinals, 20):
 			print(x)
 			self.get_idols_by_ordinal(x)
+			time.sleep(0.5)
 	
 	def get_idols(self, rarity : Rarity):
 		query = "SELECT * FROM 'idols' WHERE rarity = ? ORDER BY ordinal"
 		self.db.execute(query, [rarity.value])
 		return self.convert_to_idol_object(self.db.fetchall())
 	
-	def get_idols_by_group(self, group : Group, minimum_rarity : Rarity = Rarity.R):
-		query = "SELECT * FROM 'idols' WHERE group_id = ? AND rarity >= ? ORDER BY ordinal"
-		self.db.execute(query, [group.value, minimum_rarity.value])
+	def get_idols_by_group(self, group : Group, rarity : Rarity = None):
+		if rarity == None:
+			query = "SELECT * FROM 'idols' WHERE group_id = ? ORDER BY ordinal"
+			self.db.execute(query, [group.value])
+		else:
+			query = "SELECT * FROM 'idols' WHERE group_id = ? AND rarity = ? ORDER BY ordinal"
+			self.db.execute(query, [group.value, rarity.value])
 		return self.convert_to_idol_object(self.db.fetchall())
 		
 	def convert_to_idol_object(self, data):

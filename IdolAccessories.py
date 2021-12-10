@@ -153,3 +153,4 @@ class Accessories():
 	Belt       = AccessoryFactory(AccessoryType.Belt,      AccessoryEffectType.Percentage, [[(1.0, 1.5),  (1.0, 2.0),  (1.0, 2.5),  (1.0, 3.0),  (1.0, 4.0),  (1.0, 5.0)]],  DLPParameters, [Rarity.UR])
 
 print(Accessories.Bracelet.get(skill=5))
+print(Accessories.Belt.get(Attribute.Cool, Rarity.UR, limit_break=2, skill=None))
