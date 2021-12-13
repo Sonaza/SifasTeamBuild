@@ -26,6 +26,49 @@ class Group(Enum):
 	Aqours      = 2
 	Nijigasaki  = 3
 	
+class Member(Enum):
+	# ------------ Otonokizaka / µ's ------------
+	Hanayo   = 8
+	Rin      = 5
+	Maki     = 6
+
+	Honoka   = 1
+	Kotori   = 3
+	Umi      = 4
+
+	Nozomi   = 7
+	Eli      = 2
+	Nico     = 9
+
+	# ------------ Uranohoshi / Aqours ------------
+	Hanamaru = 107
+	Yoshiko  = 106
+	Ruby     = 109
+
+	Chika    = 101
+	Riko     = 102
+	You      = 105
+
+	Kanan    = 103
+	Dia      = 104
+	Mari     = 108
+
+	# ------------ Nijigasaki ------------
+	Rina     = 209
+	Kasumi   = 202
+	Shizuku  = 203
+	Shioriko = 210
+
+	Ayumu    = 201
+	Setsuna  = 207
+	Ai       = 205
+	Lanzhu   = 212
+
+	Emma     = 208
+	Kanata   = 206
+	Karin    = 204
+	Mia      = 211
+	
 class Subunit(Enum):
 	Printemps    = 1
 	Lilywhite    = 2
@@ -58,6 +101,15 @@ class Year(Enum):
 	First  = 1
 	Second = 2
 	Third  = 3
+	
+class Source(Enum):
+	Unspecified = 1
+	Event       = 2
+	Gacha       = 3
+	GachaP2     = 4 # Unused in API
+	Spotlight   = 5
+	Festival    = 6
+	Party       = 7
 	
 class SkillEffectParameter(Enum):
 	Stamina   = 9

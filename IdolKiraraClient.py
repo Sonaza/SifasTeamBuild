@@ -19,13 +19,16 @@ class KiraraClientPartialResult(KiraraClientException): pass
 
 class KiraraIdol():
 	def __init__(self, data):
-		self.ordinal   = data['ordinal']
-		self.id        = data['id']
-		self.member_id = data['member_id']
-		self.type      = Type(data['type'])
-		self.attribute = Attribute(data['attribute'])
-		self.rarity    = Rarity(data['rarity'])
-		self.data = json.loads(data['json'])
+		self.ordinal    = data['ordinal']
+		self.id         = data['id']
+		self.member_id  = Member(data['member_id'])
+		self.group_id   = Group(data['group_id'])
+		self.subunit_id = Subunit(data['subunit_id'])
+		self.type       = Type(data['type'])
+		self.attribute  = Attribute(data['attribute'])
+		self.rarity     = Rarity(data['rarity'])
+		self.source     = Source(data['source'])
+		self.data       = json.loads(data['json'])
 		
 		self.modifiers = (Attribute.Unset, Type.Unset, 1, 1)
 	
@@ -147,6 +150,7 @@ class KiraraClient():
 			    `attribute`         INTEGER,
 			    `type`              INTEGER,
 			    `rarity`            INTEGER,
+			    `source`            INTEGER,
 			    `primary_passive`   INTEGER,
 			    `secondary_passive` INTEGER,   
 			    `json`              TEXT,
@@ -184,23 +188,54 @@ class KiraraClient():
 			self.get_idols_by_ordinal(x)
 			time.sleep(0.5)
 	
-	def get_idols(self, rarity : Rarity):
-		query = "SELECT * FROM 'idols' WHERE rarity = ? ORDER BY ordinal"
-		self.db.execute(query, [rarity.value])
+	######################################################################
+	
+	def get_all_idols(self):
+		query = "SELECT * FROM 'idols' ORDER BY ordinal"
+		self.db.execute(query)
 		return self.convert_to_idol_object(self.db.fetchall())
 	
-	def get_idols_by_group(self, group : Group, rarity : Rarity = None):
-		if rarity == None:
-			query = "SELECT * FROM 'idols' WHERE group_id = ? ORDER BY ordinal"
-			self.db.execute(query, [group.value])
+	def get_idols(self, member_id : Member = None,
+			type : Type = None, attribute : Attribute = None,
+			group : Group = None, subunit : Subunit = None,
+			source : Source = None,	rarity : Rarity = None,
+			min_rarity : Rarity = None, max_rarity : Rarity = None):
+	
+		fields = []
+		if member_id  != None: fields.append(("member_id = ?",  member_id.value))
+		if type       != None: fields.append(("type = ?",       type.value))
+		if attribute  != None: fields.append(("attribute = ?",  attribute.value))
+		if group      != None: fields.append(("group_id = ?",   group.value))
+		if subunit    != None: fields.append(("subunit_id = ?", subunit.value))
+		if source     != None: fields.append(("source = ?",     source.value))
+		if rarity     != None: fields.append(("rarity = ?",     rarity.value))
+		if min_rarity != None: fields.append(("rarity >= ?",    min_rarity.value))
+		if max_rarity != None: fields.append(("rarity <= ?",    max_rarity.value))
+		
+		if fields:
+			query = f"SELECT * FROM 'idols' WHERE {' AND '.join([x[0] for x in fields])} ORDER BY ordinal"
+			values = [x[1] for x in fields]
+			self.db.execute(query, values)
 		else:
-			query = "SELECT * FROM 'idols' WHERE group_id = ? AND rarity = ? ORDER BY ordinal"
-			self.db.execute(query, [group.value, rarity.value])
+			query = "SELECT * FROM 'idols' ORDER BY ordinal"
+			self.db.execute(query)
+			
 		return self.convert_to_idol_object(self.db.fetchall())
+		
+	def get_idols_by_rarity(self, rarity : Rarity):
+		return self.get_idols(rarity=rarity)
+	
+	def get_idols_by_group(self, group : Group, rarity : Rarity = None):
+		return self.get_idols(group=group, rarity=rarity)
+	
+	def get_idols_by_source(self, source : Source, rarity : Rarity = None):
+		return self.get_idols(source=source, rarity=rarity)
 		
 	def convert_to_idol_object(self, data):
 		return [KiraraIdol(x) for x in data]
-		
+	
+	######################################################################	
+	
 	def determine_skill_target(self, target_data, card_data):
 		try:
 			assert(len(target_data['fixed_attributes']) == 0)
@@ -328,6 +363,7 @@ class KiraraClient():
 					'attribute'         : card['attribute'],
 					'type'              : card['role'],
 					'rarity'            : card['rarity'],
+					'source'            : card['source'],
 					'primary_passive'   : primary,
 					'secondary_passive' : secondary,
 					'json'              : json.dumps(card),
@@ -336,7 +372,7 @@ class KiraraClient():
 				
 			query_data = list(sorted(query_data, key=itemgetter('ordinal')))
 			
-			fields = ["ordinal", "id", "member_id", "group_id", "subunit_id", "attribute", "type", "rarity", "primary_passive", "secondary_passive", "json"]
+			fields = ["ordinal", "id", "member_id", "group_id", "subunit_id", "attribute", "type", "rarity", "source", "primary_passive", "secondary_passive", "json"]
 			query_fields = ', '.join([f"`{name}`" for name in fields])
 			query_keys   = ', '.join([f":{name}"  for name in fields])
 			query = "INSERT INTO `idols` ({}) VALUES ({})".format(query_fields, query_keys)

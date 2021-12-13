@@ -152,5 +152,5 @@ class Accessories():
 	Bangle     = AccessoryFactory(AccessoryType.Bangle,    AccessoryEffectType.Percentage, [[(5.0, 10.0), (5.0, 12.0), (5.0, 14.0), (5.0, 16.0), (5.0, 18.0), (5.0, 20.0)]], DLPParameters, [Rarity.UR])
 	Belt       = AccessoryFactory(AccessoryType.Belt,      AccessoryEffectType.Percentage, [[(1.0, 1.5),  (1.0, 2.0),  (1.0, 2.5),  (1.0, 3.0),  (1.0, 4.0),  (1.0, 5.0)]],  DLPParameters, [Rarity.UR])
 
-print(Accessories.Bracelet.get(skill=5))
-print(Accessories.Belt.get(Attribute.Cool, Rarity.UR, limit_break=2, skill=None))
+print(Accessories.Bracelet.get(limit_break=5, skill=1))
+print(Accessories.Belt.get(Attribute.Cool, Rarity.UR, limit_break=0, skill=15))

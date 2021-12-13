@@ -33,46 +33,46 @@ class IdolBase():
 
 class Idols():
 	# ------------ Otonokizaka / µ's ------------
-	Hanayo   = IdolBase(8,   "Hanayo Koizumi",     Group.Muse, Year.First, Subunit.Printemps)
-	Rin      = IdolBase(5,   "Rin Hoshizora",      Group.Muse, Year.First, Subunit.Lilywhite)
-	Maki     = IdolBase(6,   "Maki Nishikino",     Group.Muse, Year.First, Subunit.Bibi)
+	Hanayo   = IdolBase(Member.Hanayo,   "Hanayo Koizumi",     Group.Muse, Year.First, Subunit.Printemps)
+	Rin      = IdolBase(Member.Rin,      "Rin Hoshizora",      Group.Muse, Year.First, Subunit.Lilywhite)
+	Maki     = IdolBase(Member.Maki,     "Maki Nishikino",     Group.Muse, Year.First, Subunit.Bibi)
 
-	Honoka   = IdolBase(1,   "Honoka Kousaka",     Group.Muse, Year.Second, Subunit.Printemps)
-	Kotori   = IdolBase(3,   "Kotori Minami",      Group.Muse, Year.Second, Subunit.Printemps)
-	Umi      = IdolBase(4,   "Umi Sonoda",         Group.Muse, Year.Second, Subunit.Lilywhite)
+	Honoka   = IdolBase(Member.Honoka,   "Honoka Kousaka",     Group.Muse, Year.Second, Subunit.Printemps)
+	Kotori   = IdolBase(Member.Kotori,   "Kotori Minami",      Group.Muse, Year.Second, Subunit.Printemps)
+	Umi      = IdolBase(Member.Umi,      "Umi Sonoda",         Group.Muse, Year.Second, Subunit.Lilywhite)
 
-	Nozomi   = IdolBase(7,   "Nozomi Toujou",      Group.Muse, Year.Third, Subunit.Lilywhite)
-	Eli      = IdolBase(2,   "Eli Ayase",          Group.Muse, Year.Third, Subunit.Bibi)
-	Nico     = IdolBase(9,   "Nico Yazawa",        Group.Muse, Year.Third, Subunit.Bibi)
+	Nozomi   = IdolBase(Member.Nozomi,   "Nozomi Toujou",      Group.Muse, Year.Third, Subunit.Lilywhite)
+	Eli      = IdolBase(Member.Eli,      "Eli Ayase",          Group.Muse, Year.Third, Subunit.Bibi)
+	Nico     = IdolBase(Member.Nico,     "Nico Yazawa",        Group.Muse, Year.Third, Subunit.Bibi)
 
 	# ------------ Uranohoshi / Aqours ------------
-	Hanamaru = IdolBase(107, "Hanamaru Kunikida",  Group.Aqours, Year.First, Subunit.Azalea)
-	Yoshiko  = IdolBase(106, "Yoshiko Tsushima",   Group.Aqours, Year.First, Subunit.Guiltykiss)
-	Ruby     = IdolBase(109, "Ruby Kurosawa",      Group.Aqours, Year.First, Subunit.Cyaron)
+	Hanamaru = IdolBase(Member.Hanamaru, "Hanamaru Kunikida",  Group.Aqours, Year.First, Subunit.Azalea)
+	Yoshiko  = IdolBase(Member.Yoshiko,  "Yoshiko Tsushima",   Group.Aqours, Year.First, Subunit.Guiltykiss)
+	Ruby     = IdolBase(Member.Ruby,     "Ruby Kurosawa",      Group.Aqours, Year.First, Subunit.Cyaron)
 
-	Chika    = IdolBase(101, "Chika Takami",       Group.Aqours, Year.Second, Subunit.Cyaron)
-	Riko     = IdolBase(102, "Riko Sakurauchi",    Group.Aqours, Year.Second, Subunit.Guiltykiss)
-	You      = IdolBase(105, "You Watanabe",       Group.Aqours, Year.Second, Subunit.Cyaron)
+	Chika    = IdolBase(Member.Chika,    "Chika Takami",       Group.Aqours, Year.Second, Subunit.Cyaron)
+	Riko     = IdolBase(Member.Riko,     "Riko Sakurauchi",    Group.Aqours, Year.Second, Subunit.Guiltykiss)
+	You      = IdolBase(Member.You,      "You Watanabe",       Group.Aqours, Year.Second, Subunit.Cyaron)
 
-	Kanan    = IdolBase(103, "Kanan Matsuura",     Group.Aqours, Year.Third, Subunit.Azalea)
-	Dia      = IdolBase(104, "Dia Kurosawa",       Group.Aqours, Year.Third, Subunit.Azalea)
-	Mari     = IdolBase(108, "Mari Ohara",         Group.Aqours, Year.Third, Subunit.Guiltykiss)
+	Kanan    = IdolBase(Member.Kanan,    "Kanan Matsuura",     Group.Aqours, Year.Third, Subunit.Azalea)
+	Dia      = IdolBase(Member.Dia,      "Dia Kurosawa",       Group.Aqours, Year.Third, Subunit.Azalea)
+	Mari     = IdolBase(Member.Mari,     "Mari Ohara",         Group.Aqours, Year.Third, Subunit.Guiltykiss)
 
 	# ------------ Nijigasaki ------------
-	Shizuku  = IdolBase(203, "Shizuku Osaka",      Group.Nijigasaki, Year.First, Subunit.Azuna)
-	Kasumi   = IdolBase(202, "Kasumi Nakasu",      Group.Nijigasaki, Year.First, Subunit.Quartz)
-	Rina     = IdolBase(209, "Rina Tennouji",      Group.Nijigasaki, Year.First, Subunit.Quartz)
-	Shioriko = IdolBase(210, "Shioriko Mifune",    Group.Nijigasaki, Year.First, Subunit.Rebirth)
+	Rina     = IdolBase(Member.Rina,     "Rina Tennouji",      Group.Nijigasaki, Year.First, Subunit.Quartz)
+	Kasumi   = IdolBase(Member.Kasumi,   "Kasumi Nakasu",      Group.Nijigasaki, Year.First, Subunit.Quartz)
+	Shizuku  = IdolBase(Member.Shizuku,  "Shizuku Osaka",      Group.Nijigasaki, Year.First, Subunit.Azuna)
+	Shioriko = IdolBase(Member.Shioriko, "Shioriko Mifune",    Group.Nijigasaki, Year.First, Subunit.Rebirth)
 
-	Ayumu    = IdolBase(201, "Ayumu Uehara",       Group.Nijigasaki, Year.Second, Subunit.Azuna)
-	Setsuna  = IdolBase(207, "Setsuna Yuki",       Group.Nijigasaki, Year.Second, Subunit.Azuna)
-	Ai       = IdolBase(205, "Ai Miyashita",       Group.Nijigasaki, Year.Second, Subunit.Diverdiva)
-	Lanzhu   = IdolBase(212, "Lanzhu Zhong",       Group.Nijigasaki, Year.Second, Subunit.Rebirth)
+	Ayumu    = IdolBase(Member.Ayumu,    "Ayumu Uehara",       Group.Nijigasaki, Year.Second, Subunit.Azuna)
+	Setsuna  = IdolBase(Member.Setsuna,  "Setsuna Yuki",       Group.Nijigasaki, Year.Second, Subunit.Azuna)
+	Ai       = IdolBase(Member.Ai,       "Ai Miyashita",       Group.Nijigasaki, Year.Second, Subunit.Diverdiva)
+	Lanzhu   = IdolBase(Member.Lanzhu,   "Lanzhu Zhong",       Group.Nijigasaki, Year.Second, Subunit.Rebirth)
 
-	Emma     = IdolBase(208, "Emma Verde",         Group.Nijigasaki, Year.Third, Subunit.Quartz)
-	Kanata   = IdolBase(206, "Kanata Konoe",       Group.Nijigasaki, Year.Third, Subunit.Quartz)
-	Karin    = IdolBase(204, "Karin Asaka",        Group.Nijigasaki, Year.Third, Subunit.Diverdiva)
-	Mia      = IdolBase(211, "Mia Taylor",         Group.Nijigasaki, Year.Third, Subunit.Rebirth)
+	Emma     = IdolBase(Member.Emma,     "Emma Verde",         Group.Nijigasaki, Year.Third, Subunit.Quartz)
+	Kanata   = IdolBase(Member.Kanata,   "Kanata Konoe",       Group.Nijigasaki, Year.Third, Subunit.Quartz)
+	Karin    = IdolBase(Member.Karin,    "Karin Asaka",        Group.Nijigasaki, Year.Third, Subunit.Diverdiva)
+	Mia      = IdolBase(Member.Mia,      "Mia Taylor",         Group.Nijigasaki, Year.Third, Subunit.Rebirth)
 
 	all_idols     = []
 	by_first_name = {}
@@ -80,6 +80,26 @@ class Idols():
 	by_year       = defaultdict(list)
 	by_group      = defaultdict(list)
 	by_subunit    = defaultdict(list)
+	
+	member_order = {
+		Group.Muse : [
+			Member.Hanayo, Member.Rin,    Member.Maki,
+			Member.Honoka, Member.Kotori, Member.Umi,
+			Member.Nozomi, Member.Eli,    Member.Nico,
+		],
+
+		Group.Aqours : [
+			Member.Hanamaru, Member.Yoshiko, Member.Ruby, 
+			Member.Chika,    Member.Riko,    Member.You, 
+			Member.Kanan,    Member.Dia,     Member.Mari, 
+		],
+
+		Group.Nijigasaki : [
+			Member.Rina,  Member.Kasumi,  Member.Shizuku, Member.Shioriko, 
+			Member.Ayumu, Member.Setsuna, Member.Ai,      Member.Lanzhu, 
+			Member.Emma,  Member.Kanata,  Member.Karin,   Member.Mia, 
+		],
+	}
 	
 	@staticmethod
 	def initialize():

@@ -1,0 +1,34 @@
+
+<div id="column-wrapper">
+	{% for group_tag, group_title, group_data in grouped_rotations %}
+		<div class="column">
+			{% for card_rotation in group_data: %}
+				<div class="rotation-group {{ group_tag }}">
+					<div class="rotation-title">
+						{{ ordinalize(loop.index) }} {{ group_title }} Rotation
+					</div>
+					<div class="rotation-grid">
+						{% if not card_rotation %}
+							<h1>No cards!</h1>
+						{% endif %}
+						{% for member_id, card in card_rotation %}
+							{% if is_valid_card(card) %}
+								<div class="grid-icon idol-{{ member_id.value }}" title="{{ Idols.by_member_id[member_id].full_name }}">
+									<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">
+										<span class="card-thumbnail group-{{ card.group_id.value }} card-{{ card.ordinal }}"></span>
+									</a>
+								</div>
+							{% else %}
+								{% if is_missing_card(card) %}
+									<div class="grid-icon idol-{{ member_id.value }} missing" title="{{ Idols.by_member_id[member_id].full_name }} has not yet received a card in this cycle"></div>
+								{% elif is_nonextant_card(card) %}
+									<div class="grid-icon idol-{{ member_id.value }} non-extant" title="{{ Idols.by_member_id[member_id].full_name }} did not receive a card in this cycle"><div>N/A</div></div>
+								{% endif %}
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endfor %}
+</div>

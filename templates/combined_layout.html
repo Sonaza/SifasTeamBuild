@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>SIFAS Card Release Rotations</title>
+	<link rel="stylesheet" href="fonts.css">
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="atlas.css">
+	<link rel="shortcut icon" href="favicon.ico">
+</head>
+<body>
+	<header id="header">
+		<div id="header-inner">
+			<h2>SIFAS Card Release Rotations</h2>
+		</div>
+		<nav>
+			<ul>
+				<li class="view-link" data-view="ur-rotations">UR Rotations</li>
+				<li class="view-link" data-view="festival-rotations">Festival Rotations</li>
+				<li class="view-link" data-view="party-rotations">Party Rotations</li>
+			</ul>
+		</nav>
+	</header>
+	<div id="main" class="using-normal-thumbnails">
+		<button id="switch-icons">Switch Icons</button>
+		<div id="views">
+			<div class="view active ur-rotations">
+				{{ include('ur_rotations.html') }}
+			</div>
+			<div class="view festival-rotations">
+				{{ include('festival_rotations.html') }}
+			</div>
+			<div class="view party-rotations">
+				{{ include('party_rotations.html') }}
+			</div>
+		</div>
+	</div>
+	<footer id="footer">
+		<div id="footer-top">
+			<div class="col-lg-6">
+				Created by Sonaza
+			</div>
+			<div class="col-lg-6">
+				For use with <a href="https://lovelive-as-global.com/" target="_blank" rel="noreferrer noopener">Love Live School Idol Festival All Stars</a>
+			</div>
+		</div>
+		<div id="footer-bottom">
+			<div class="col-lg-12">
+				This website is not affiliated with KLab Inc., SUNRISE Inc., Bushiroad Inc. or any other associated company. Art copyright &copy; KLab Inc.
+			</div>
+		</div>
+	</footer>
+	<script>
+		document.querySelector("#switch-icons").addEventListener('click', function()
+		{
+			let e = document.querySelector("#main");
+			e.classList.toggle("using-normal-thumbnails");
+			e.classList.toggle("using-idolized-thumbnails");
+		});
+		
+		Array.from(document.querySelectorAll("li.view-link")).forEach(link => {
+			link.addEventListener('click', function(e, f, g)
+			{
+				document.querySelector('.view.active').classList.remove('active');
+				let target_view = e.target.getAttribute('data-view');
+				document.querySelector('.view.' + target_view).classList.add('active');
+			}
+		)});
+	</script>
+</body>
+</html>
