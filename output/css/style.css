@@ -131,7 +131,7 @@ a:hover, a:active
 	left: 0;
 	right: 0;
 	
-	z-index: 999999;
+	z-index: 999999999;
 	
 	background: #502B9B;
 	text-shadow: 0 2px 0 #1C0747;
@@ -456,7 +456,7 @@ a:hover, a:active
 	filter: brightness(1);
 	float: left;
 	position: relative;
-	z-index: 99999;
+	z-index: 9999;
 	transform: scale(0.9) translate(-10px, -10px);
 	box-shadow: 0 0 10px #0005, 0 0 5px 5px #0005;
 }
@@ -492,6 +492,9 @@ a:hover, a:active
 	flex-flow: row nowrap;
 	font-size: 0;
 	padding: 0 0 10px 0;
+	top: 70px;
+	position: sticky;
+	z-index: 999999;
 }
 
 .array-group-page-selector li
@@ -512,9 +515,10 @@ a:hover, a:active
 	text-decoration: none;
 	
 	color: #481E9F;
-	background: #fff8;
+	background: #fffa;
 	
 	border-radius: 3px;
+	border: 1px solid #ccc;
 	border-bottom: 4px solid #481E9F;
 	
 	transition: all linear 70ms;

@@ -1,42 +1,60 @@
-{% for school, cards in card_stats['event'].items() %}
-	<h2>{{ school.name }}</h2>
-	<table class="stats-table">
-		<colgroup>
-			<col style="width:38px" />
-            <col style="width:34%" />
-            <col style="width:28%" />
-            <col style="width:42%" />
-        </colgroup>
-		<tr>
-			<th colspan="2">Member Name</th>
-			<th colspan="2">Newest Event UR</th>
-		</tr>
-		{% for member, card, time_since in cards %}
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_{{ member.value }}_border.png')"></td>
-				<td>{{ Idols.by_member_id[member].full_name }}</td>
-				{% if is_valid_card(card) %}
-					<td>
-						{% if time_since.days > 0 %}
-							{{ time_since.days }} days ago
+<ul class="array-group-page-selector">
+	<li><a href="#/stats/"          ng-class="pageActive('')">General</a></li>
+	<li><a href="#/stats/event"     ng-class="pageActive('event')">Event URs</a></li>
+	<li><a href="#/stats/festival"  ng-class="pageActive('festival')">Festival URs</a></li>
+	<li><a href="#/stats/party"     ng-class="pageActive('party')">Party URs</a></li>
+	<li><a href="#/stats/spotlight" ng-class="pageActive('spotlight')">Party + Spotlight</a></li>
+	<li><a href="#/stats/limited"   ng-class="pageActive('limited')">Festival + Party</a></li>
+	<li><a href="#/stats/gacha"     ng-class="pageActive('gacha')">Any Gacha UR</a></li>
+	<li><a href="#/stats/ur"        ng-class="pageActive('ur')">Any UR</a></li>
+</ul>
+
+{% for category_tag, category_data in card_stats.items() %}
+	<div class="stats-category {{ category_tag }}" ng-if="active_page == '{{ category_tag }}'">
+		<h1>{{ category_tag }}</h1>
+		{% for school, cards in category_data.items() %}
+			<h2>{{ school.name }}</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				{% for member, card, time_since in cards %}
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_{{ member.value }}_border.png')"></td>
+						<td>{{ Idols.by_member_id[member].full_name }}</td>
+						{% if is_valid_card(card) %}
+							<td>
+								{% if time_since.days > 0 %}
+									{{ time_since.days }} day{{ 's' if time_since.days != 1 else '' }} ago
+								{% elif time_since.days == 0: %}
+									Today
+								{% else %}
+									Will release in {{ -time_since.days }} days
+								{% endif %}
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">
+									{{ card.get_card_name(True) }}
+								</a>
+							</td>
 						{% else %}
-							Will release in {{ -time_since.days }} days
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
 						{% endif %}
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">
-							{{ card.get_card_name(True) }}
-						</a>
-					</td>
-				{% else %}
-					<td>
-						Never
-					</td>
-					<td>
-						&mdash;
-					</td>
-				{% endif %}
-			</tr>
+					</tr>
+				{% endfor %}
+			</table>
 		{% endfor %}
-	</table>
+	</div>
 {% endfor %}

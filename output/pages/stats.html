@@ -1,547 +1,3827 @@
+<ul class="array-group-page-selector">
+	<li><a href="#/stats/"          ng-class="pageActive('')">General</a></li>
+	<li><a href="#/stats/event"     ng-class="pageActive('event')">Event URs</a></li>
+	<li><a href="#/stats/festival"  ng-class="pageActive('festival')">Festival URs</a></li>
+	<li><a href="#/stats/party"     ng-class="pageActive('party')">Party URs</a></li>
+	<li><a href="#/stats/spotlight" ng-class="pageActive('spotlight')">Party + Spotlight</a></li>
+	<li><a href="#/stats/limited"   ng-class="pageActive('limited')">Festival + Party</a></li>
+	<li><a href="#/stats/gacha"     ng-class="pageActive('gacha')">Any Gacha UR</a></li>
+	<li><a href="#/stats/ur"        ng-class="pageActive('ur')">Any UR</a></li>
+</ul>
 
-	<h2>Muse</h2>
-	<table class="stats-table">
-		<colgroup>
-			<col style="width:38px" />
-            <col style="width:34%" />
-            <col style="width:28%" />
-            <col style="width:42%" />
-        </colgroup>
-		<tr>
-			<th colspan="2">Member Name</th>
-			<th colspan="2">Newest Event UR</th>
-		</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_7_border.png')"></td>
-				<td>Nozomi Toujou</td>
-				
-					<td>
-						
-							744 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/134" target="_blank">
-							Gemini Star Bright
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_1_border.png')"></td>
-				<td>Honoka Kousaka</td>
-				
-					<td>
-						
-							562 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/251" target="_blank">
-							Noble Princess
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_5_border.png')"></td>
-				<td>Rin Hoshizora</td>
-				
-					<td>
-						
-							438 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/326" target="_blank">
-							Harvest Moon Rabbit
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_9_border.png')"></td>
-				<td>Nico Yazawa</td>
-				
-					<td>
-						
-							256 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/437" target="_blank">
-							Cherry Blossom Fairy
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_2_border.png')"></td>
-				<td>Eli Ayase</td>
-				
-					<td>
-						
-							195 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/473" target="_blank">
-							Rain-Embossed Blossom
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_6_border.png')"></td>
-				<td>Maki Nishikino</td>
-				
-					<td>
-						
-							72 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/554" target="_blank">
-							Dress-Up Magic!
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_3_border.png')"></td>
-				<td>Kotori Minami</td>
-				
-					<td>
-						
-							42 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/572" target="_blank">
-							Youthful Carnival
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_8_border.png')"></td>
-				<td>Hanayo Koizumi</td>
-				
-					<td>
-						
-							12 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/590" target="_blank">
-							Luminous Night
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_4_border.png')"></td>
-				<td>Umi Sonoda</td>
-				
-					<td>
-						
-							Will release in 2 days
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/598" target="_blank">
-							Luxury Christmas
-						</a>
-					</td>
-				
-			</tr>
-		
-	</table>
 
-	<h2>Aqours</h2>
-	<table class="stats-table">
-		<colgroup>
-			<col style="width:38px" />
-            <col style="width:34%" />
-            <col style="width:28%" />
-            <col style="width:42%" />
-        </colgroup>
-		<tr>
-			<th colspan="2">Member Name</th>
-			<th colspan="2">Newest Event UR</th>
-		</tr>
+	<div class="stats-category event" ng-if="active_page == 'event'">
+		<h1>event</h1>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_102_border.png')"></td>
-				<td>Riko Sakurauchi</td>
+			<h2>Muse</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_7_border.png')"></td>
+						<td>Nozomi Toujou</td>
 						
-							682 days ago
+							<td>
+								
+									744 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/134" target="_blank">
+									Gemini Star Bright
+								</a>
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/169" target="_blank">
-							Flower Symphony
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_1_border.png')"></td>
+						<td>Honoka Kousaka</td>
+						
+							<td>
+								
+									562 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/251" target="_blank">
+									Noble Princess
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_5_border.png')"></td>
+						<td>Rin Hoshizora</td>
+						
+							<td>
+								
+									438 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/326" target="_blank">
+									Harvest Moon Rabbit
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_9_border.png')"></td>
+						<td>Nico Yazawa</td>
+						
+							<td>
+								
+									256 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/437" target="_blank">
+									Cherry Blossom Fairy
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_2_border.png')"></td>
+						<td>Eli Ayase</td>
+						
+							<td>
+								
+									195 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/473" target="_blank">
+									Rain-Embossed Blossom
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_6_border.png')"></td>
+						<td>Maki Nishikino</td>
+						
+							<td>
+								
+									72 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/554" target="_blank">
+									Dress-Up Magic!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_3_border.png')"></td>
+						<td>Kotori Minami</td>
+						
+							<td>
+								
+									42 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/572" target="_blank">
+									Youthful Carnival
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_8_border.png')"></td>
+						<td>Hanayo Koizumi</td>
+						
+							<td>
+								
+									12 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/590" target="_blank">
+									Luminous Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_4_border.png')"></td>
+						<td>Umi Sonoda</td>
+						
+							<td>
+								
+									Will release in 2 days
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/598" target="_blank">
+									Luxury Christmas
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_104_border.png')"></td>
-				<td>Dia Kurosawa</td>
+			<h2>Aqours</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_102_border.png')"></td>
+						<td>Riko Sakurauchi</td>
 						
-							406 days ago
+							<td>
+								
+									682 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/169" target="_blank">
+									Flower Symphony
+								</a>
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/344" target="_blank">
-							S. I. Collection
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_104_border.png')"></td>
+						<td>Dia Kurosawa</td>
+						
+							<td>
+								
+									406 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/344" target="_blank">
+									S. I. Collection
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_107_border.png')"></td>
+						<td>Hanamaru Kunikida</td>
+						
+							<td>
+								
+									363 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/370" target="_blank">
+									An Alluring Devil
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_103_border.png')"></td>
+						<td>Kanan Matsuura</td>
+						
+							<td>
+								
+									331 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/389" target="_blank">
+									Moo Moo Farm Days
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_101_border.png')"></td>
+						<td>Chika Takami</td>
+						
+							<td>
+								
+									241 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/445" target="_blank">
+									Signs of Spring
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_108_border.png')"></td>
+						<td>Mari Ohara</td>
+						
+							<td>
+								
+									180 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/483" target="_blank">
+									A Dress to Dream About
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_106_border.png')"></td>
+						<td>Yoshiko Tsushima</td>
+						
+							<td>
+								
+									149 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/501" target="_blank">
+									TWINKLE★STARRY☆NIGHT
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_105_border.png')"></td>
+						<td>You Watanabe</td>
+						
+							<td>
+								
+									119 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/519" target="_blank">
+									Summer on Stage!!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_109_border.png')"></td>
+						<td>Ruby Kurosawa</td>
+						
+							<td>
+								
+									27 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/580" target="_blank">
+									Autumn Thanksgiving!
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_107_border.png')"></td>
-				<td>Hanamaru Kunikida</td>
+			<h2>Nijigasaki</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_211_border.png')"></td>
+						<td>Mia Taylor</td>
 						
-							363 days ago
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/370" target="_blank">
-							An Alluring Devil
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_212_border.png')"></td>
+						<td>Lanzhu Zhong</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_208_border.png')"></td>
+						<td>Emma Verde</td>
+						
+							<td>
+								
+									545 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/259" target="_blank">
+									Raindrops
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_204_border.png')"></td>
+						<td>Karin Asaka</td>
+						
+							<td>
+								
+									423 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/334" target="_blank">
+									Magical Halloween
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_203_border.png')"></td>
+						<td>Shizuku Osaka</td>
+						
+							<td>
+								
+									315 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/399" target="_blank">
+									Sweet Chocolate
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_207_border.png')"></td>
+						<td>Setsuna Yuki</td>
+						
+							<td>
+								
+									302 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/408" target="_blank">
+									Steampunk Adventure
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_201_border.png')"></td>
+						<td>Ayumu Uehara</td>
+						
+							<td>
+								
+									271 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/427" target="_blank">
+									Cyber World
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_202_border.png')"></td>
+						<td>Kasumi Nakasu</td>
+						
+							<td>
+								
+									165 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/493" target="_blank">
+									Princess of the Night Sky
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_206_border.png')"></td>
+						<td>Kanata Konoe</td>
+						
+							<td>
+								
+									134 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/511" target="_blank">
+									Tropical Vacation
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_205_border.png')"></td>
+						<td>Ai Miyashita</td>
+						
+							<td>
+								
+									103 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/535" target="_blank">
+									Venus on a Moonlit Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_209_border.png')"></td>
+						<td>Rina Tennouji</td>
+						
+							<td>
+								
+									91 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/543" target="_blank">
+									Weather Wizard
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_210_border.png')"></td>
+						<td>Shioriko Mifune</td>
+						
+							<td>
+								
+									57 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/562" target="_blank">
+									Halloween Dress-Up
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_103_border.png')"></td>
-				<td>Kanan Matsuura</td>
-				
-					<td>
-						
-							331 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/389" target="_blank">
-							Moo Moo Farm Days
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_101_border.png')"></td>
-				<td>Chika Takami</td>
-				
-					<td>
-						
-							241 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/445" target="_blank">
-							Signs of Spring
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_108_border.png')"></td>
-				<td>Mari Ohara</td>
-				
-					<td>
-						
-							180 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/483" target="_blank">
-							A Dress to Dream About
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_106_border.png')"></td>
-				<td>Yoshiko Tsushima</td>
-				
-					<td>
-						
-							149 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/501" target="_blank">
-							TWINKLE★STARRY☆NIGHT
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_105_border.png')"></td>
-				<td>You Watanabe</td>
-				
-					<td>
-						
-							119 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/519" target="_blank">
-							Summer on Stage!!
-						</a>
-					</td>
-				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_109_border.png')"></td>
-				<td>Ruby Kurosawa</td>
-				
-					<td>
-						
-							27 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/580" target="_blank">
-							Autumn Thanksgiving!
-						</a>
-					</td>
-				
-			</tr>
-		
-	</table>
+	</div>
 
-	<h2>Nijigasaki</h2>
-	<table class="stats-table">
-		<colgroup>
-			<col style="width:38px" />
-            <col style="width:34%" />
-            <col style="width:28%" />
-            <col style="width:42%" />
-        </colgroup>
-		<tr>
-			<th colspan="2">Member Name</th>
-			<th colspan="2">Newest Event UR</th>
-		</tr>
+	<div class="stats-category festival" ng-if="active_page == 'festival'">
+		<h1>festival</h1>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_208_border.png')"></td>
-				<td>Emma Verde</td>
+			<h2>Muse</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_2_border.png')"></td>
+						<td>Eli Ayase</td>
 						
-							545 days ago
+							<td>
+								
+									358 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/373" target="_blank">
+									Sensational Diva
+								</a>
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/259" target="_blank">
-							Raindrops
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_9_border.png')"></td>
+						<td>Nico Yazawa</td>
+						
+							<td>
+								
+									323 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/392" target="_blank">
+									Little Venus
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_5_border.png')"></td>
+						<td>Rin Hoshizora</td>
+						
+							<td>
+								
+									294 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/412" target="_blank">
+									Rin's Studio
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_8_border.png')"></td>
+						<td>Hanayo Koizumi</td>
+						
+							<td>
+								
+									269 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/431" target="_blank">
+									Healing Innocence
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_7_border.png')"></td>
+						<td>Nozomi Toujou</td>
+						
+							<td>
+								
+									203 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/466" target="_blank">
+									Wisteria-Dyed Beauty
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_3_border.png')"></td>
+						<td>Kotori Minami</td>
+						
+							<td>
+								
+									173 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/486" target="_blank">
+									Welcome to Kotori's Costume Room
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_6_border.png')"></td>
+						<td>Maki Nishikino</td>
+						
+							<td>
+								
+									142 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/505" target="_blank">
+									A Captivating Librarian
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_4_border.png')"></td>
+						<td>Umi Sonoda</td>
+						
+							<td>
+								
+									85 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/546" target="_blank">
+									A Maiden's Innocence
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_1_border.png')"></td>
+						<td>Honoka Kousaka</td>
+						
+							<td>
+								
+									50 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/566" target="_blank">
+									I'll Show You Round the Mansion
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_204_border.png')"></td>
-				<td>Karin Asaka</td>
+			<h2>Aqours</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_108_border.png')"></td>
+						<td>Mari Ohara</td>
 						
-							423 days ago
+							<td>
+								
+									660 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/181" target="_blank">
+									Royal Princess
+								</a>
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/334" target="_blank">
-							Magical Halloween
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_103_border.png')"></td>
+						<td>Kanan Matsuura</td>
+						
+							<td>
+								
+									358 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/374" target="_blank">
+									Loyal Knight
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_105_border.png')"></td>
+						<td>You Watanabe</td>
+						
+							<td>
+								
+									323 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/393" target="_blank">
+									An Elegant Banquet
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_106_border.png')"></td>
+						<td>Yoshiko Tsushima</td>
+						
+							<td>
+								
+									294 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/411" target="_blank">
+									Angel of Eden
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_102_border.png')"></td>
+						<td>Riko Sakurauchi</td>
+						
+							<td>
+								
+									234 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/449" target="_blank">
+									A Lovely Nurse
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_107_border.png')"></td>
+						<td>Hanamaru Kunikida</td>
+						
+							<td>
+								
+									203 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/467" target="_blank">
+									Hanamaru in Wonderland
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_109_border.png')"></td>
+						<td>Ruby Kurosawa</td>
+						
+							<td>
+								
+									142 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/504" target="_blank">
+									Sweet Little Angel
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_101_border.png')"></td>
+						<td>Chika Takami</td>
+						
+							<td>
+								
+									111 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/523" target="_blank">
+									Pure Summer
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_104_border.png')"></td>
+						<td>Dia Kurosawa</td>
+						
+							<td>
+								
+									85 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/547" target="_blank">
+									Dia's Illusion
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_203_border.png')"></td>
-				<td>Shizuku Osaka</td>
+			<h2>Nijigasaki</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_211_border.png')"></td>
+						<td>Mia Taylor</td>
 						
-							315 days ago
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/399" target="_blank">
-							Sweet Chocolate
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_212_border.png')"></td>
+						<td>Lanzhu Zhong</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_201_border.png')"></td>
+						<td>Ayumu Uehara</td>
+						
+							<td>
+								
+									388 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/355" target="_blank">
+									Soulmate
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_202_border.png')"></td>
+						<td>Kasumi Nakasu</td>
+						
+							<td>
+								
+									358 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/375" target="_blank">
+									Kasumin Utopia
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_210_border.png')"></td>
+						<td>Shioriko Mifune</td>
+						
+							<td>
+								
+									294 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/413" target="_blank">
+									A Pure and Lovely Moment
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_205_border.png')"></td>
+						<td>Ai Miyashita</td>
+						
+							<td>
+								
+									269 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/430" target="_blank">
+									Romantic Rose
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_208_border.png')"></td>
+						<td>Emma Verde</td>
+						
+							<td>
+								
+									234 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/448" target="_blank">
+									A Relaxing Lullaby
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_209_border.png')"></td>
+						<td>Rina Tennouji</td>
+						
+							<td>
+								
+									173 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/487" target="_blank">
+									Checkmate
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_203_border.png')"></td>
+						<td>Shizuku Osaka</td>
+						
+							<td>
+								
+									111 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/522" target="_blank">
+									Fluffy-Wuffy Shizu-Bear
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_204_border.png')"></td>
+						<td>Karin Asaka</td>
+						
+							<td>
+								
+									50 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/565" target="_blank">
+									Holy Violet
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_206_border.png')"></td>
+						<td>Kanata Konoe</td>
+						
+							<td>
+								
+									20 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/583" target="_blank">
+									It's Showtime!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_207_border.png')"></td>
+						<td>Setsuna Yuki</td>
+						
+							<td>
+								
+									20 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/584" target="_blank">
+									Titania of the Summer Breezes
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_207_border.png')"></td>
-				<td>Setsuna Yuki</td>
-				
-					<td>
-						
-							302 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/408" target="_blank">
-							Steampunk Adventure
-						</a>
-					</td>
-				
-			</tr>
+	</div>
+
+	<div class="stats-category party" ng-if="active_page == 'party'">
+		<h1>party</h1>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_201_border.png')"></td>
-				<td>Ayumu Uehara</td>
+			<h2>Muse</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_9_border.png')"></td>
+						<td>Nico Yazawa</td>
 						
-							271 days ago
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/427" target="_blank">
-							Cyber World
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_7_border.png')"></td>
+						<td>Nozomi Toujou</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_5_border.png')"></td>
+						<td>Rin Hoshizora</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_8_border.png')"></td>
+						<td>Hanayo Koizumi</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_6_border.png')"></td>
+						<td>Maki Nishikino</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_4_border.png')"></td>
+						<td>Umi Sonoda</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_1_border.png')"></td>
+						<td>Honoka Kousaka</td>
+						
+							<td>
+								
+									249 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/440" target="_blank">
+									Captain Honoka
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_3_border.png')"></td>
+						<td>Kotori Minami</td>
+						
+							<td>
+								
+									127 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/514" target="_blank">
+									Tropical Squash
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_2_border.png')"></td>
+						<td>Eli Ayase</td>
+						
+							<td>
+								
+									5 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/593" target="_blank">
+									Snow Fantasy
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_202_border.png')"></td>
-				<td>Kasumi Nakasu</td>
+			<h2>Aqours</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_106_border.png')"></td>
+						<td>Yoshiko Tsushima</td>
 						
-							165 days ago
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/493" target="_blank">
-							Princess of the Night Sky
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_102_border.png')"></td>
+						<td>Riko Sakurauchi</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_108_border.png')"></td>
+						<td>Mari Ohara</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_101_border.png')"></td>
+						<td>Chika Takami</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_109_border.png')"></td>
+						<td>Ruby Kurosawa</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_104_border.png')"></td>
+						<td>Dia Kurosawa</td>
+						
+							<td>
+								
+									279 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/422" target="_blank">
+									Holy Diamond
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_105_border.png')"></td>
+						<td>You Watanabe</td>
+						
+							<td>
+								
+									188 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/478" target="_blank">
+									Cheerful Girl
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_103_border.png')"></td>
+						<td>Kanan Matsuura</td>
+						
+							<td>
+								
+									66 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/557" target="_blank">
+									Autumn Colors
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_107_border.png')"></td>
+						<td>Hanamaru Kunikida</td>
+						
+							<td>
+								
+									35 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/575" target="_blank">
+									A Hanamaru Tale
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_206_border.png')"></td>
-				<td>Kanata Konoe</td>
+			<h2>Nijigasaki</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_203_border.png')"></td>
+						<td>Shizuku Osaka</td>
 						
-							134 days ago
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/511" target="_blank">
-							Tropical Vacation
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_211_border.png')"></td>
+						<td>Mia Taylor</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_201_border.png')"></td>
+						<td>Ayumu Uehara</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_204_border.png')"></td>
+						<td>Karin Asaka</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_212_border.png')"></td>
+						<td>Lanzhu Zhong</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_202_border.png')"></td>
+						<td>Kasumi Nakasu</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_209_border.png')"></td>
+						<td>Rina Tennouji</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_205_border.png')"></td>
+						<td>Ai Miyashita</td>
+						
+							<td>
+								
+									308 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/402" target="_blank">
+									Ai-Doll
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_206_border.png')"></td>
+						<td>Kanata Konoe</td>
+						
+							<td>
+								
+									219 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/458" target="_blank">
+									Fluffy Good Night Time
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_210_border.png')"></td>
+						<td>Shioriko Mifune</td>
+						
+							<td>
+								
+									188 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/477" target="_blank">
+									Harmonic Song
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_207_border.png')"></td>
+						<td>Setsuna Yuki</td>
+						
+							<td>
+								
+									158 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/496" target="_blank">
+									A Jet-Black Magician
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_208_border.png')"></td>
+						<td>Emma Verde</td>
+						
+							<td>
+								
+									97 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/538" target="_blank">
+									Delivering Comfort - Emma Mail
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_205_border.png')"></td>
-				<td>Ai Miyashita</td>
-				
-					<td>
-						
-							103 days ago
-						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/535" target="_blank">
-							Venus on a Moonlit Night
-						</a>
-					</td>
-				
-			</tr>
+	</div>
+
+	<div class="stats-category spotlight" ng-if="active_page == 'spotlight'">
+		<h1>spotlight</h1>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_209_border.png')"></td>
-				<td>Rina Tennouji</td>
+			<h2>Muse</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_4_border.png')"></td>
+						<td>Umi Sonoda</td>
 						
-							91 days ago
+							<td>
+								
+									780 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/112" target="_blank">
+									Blue Amor
+								</a>
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/543" target="_blank">
-							Weather Wizard
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
-		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_210_border.png')"></td>
-				<td>Shioriko Mifune</td>
-				
-					<td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_5_border.png')"></td>
+						<td>Rin Hoshizora</td>
 						
-							57 days ago
+							<td>
+								
+									734 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/137" target="_blank">
+									After School Cat
+								</a>
+							</td>
 						
-					</td>
-					<td>
-						<a href="https://allstars.kirara.ca/card/562" target="_blank">
-							Halloween Dress-Up
-						</a>
-					</td>
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_8_border.png')"></td>
+						<td>Hanayo Koizumi</td>
+						
+							<td>
+								
+									704 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/155" target="_blank">
+									Happy Parade
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_6_border.png')"></td>
+						<td>Maki Nishikino</td>
+						
+							<td>
+								
+									522 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/272" target="_blank">
+									A Serenade for You
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_7_border.png')"></td>
+						<td>Nozomi Toujou</td>
+						
+							<td>
+								
+									462 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/311" target="_blank">
+									Colorful Candies
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_9_border.png')"></td>
+						<td>Nico Yazawa</td>
+						
+							<td>
+								
+									370 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/365" target="_blank">
+									Fluffy, White Snow
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_1_border.png')"></td>
+						<td>Honoka Kousaka</td>
+						
+							<td>
+								
+									249 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/440" target="_blank">
+									Captain Honoka
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_3_border.png')"></td>
+						<td>Kotori Minami</td>
+						
+							<td>
+								
+									127 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/514" target="_blank">
+									Tropical Squash
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_2_border.png')"></td>
+						<td>Eli Ayase</td>
+						
+							<td>
+								
+									5 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/593" target="_blank">
+									Snow Fantasy
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_212_border.png')"></td>
-				<td>Lanzhu Zhong</td>
+			<h2>Aqours</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
-						Never
-					</td>
-					<td>
-						&mdash;
-					</td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_106_border.png')"></td>
+						<td>Yoshiko Tsushima</td>
+						
+							<td>
+								
+									796 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/105" target="_blank">
+									Twilight Demon
+								</a>
+							</td>
+						
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_102_border.png')"></td>
+						<td>Riko Sakurauchi</td>
+						
+							<td>
+								
+									765 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/120" target="_blank">
+									Blossom Prelude
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_108_border.png')"></td>
+						<td>Mari Ohara</td>
+						
+							<td>
+								
+									583 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/236" target="_blank">
+									Colorful Splash
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_109_border.png')"></td>
+						<td>Ruby Kurosawa</td>
+						
+							<td>
+								
+									433 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/329" target="_blank">
+									Dream-Filled Ruby Land
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_101_border.png')"></td>
+						<td>Chika Takami</td>
+						
+							<td>
+								
+									400 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/347" target="_blank">
+									Afternoon Tea
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_104_border.png')"></td>
+						<td>Dia Kurosawa</td>
+						
+							<td>
+								
+									279 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/422" target="_blank">
+									Holy Diamond
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_105_border.png')"></td>
+						<td>You Watanabe</td>
+						
+							<td>
+								
+									188 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/478" target="_blank">
+									Cheerful Girl
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_103_border.png')"></td>
+						<td>Kanan Matsuura</td>
+						
+							<td>
+								
+									66 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/557" target="_blank">
+									Autumn Colors
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_107_border.png')"></td>
+						<td>Hanamaru Kunikida</td>
+						
+							<td>
+								
+									35 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/575" target="_blank">
+									A Hanamaru Tale
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-			<tr>
-				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_211_border.png')"></td>
-				<td>Mia Taylor</td>
+			<h2>Nijigasaki</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
 				
-					<td>
-						Never
-					</td>
-					<td>
-						&mdash;
-					</td>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_211_border.png')"></td>
+						<td>Mia Taylor</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
 				
-			</tr>
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_212_border.png')"></td>
+						<td>Lanzhu Zhong</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_209_border.png')"></td>
+						<td>Rina Tennouji</td>
+						
+							<td>
+								
+									674 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/173" target="_blank">
+									Emotive Signals
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_204_border.png')"></td>
+						<td>Karin Asaka</td>
+						
+							<td>
+								
+									643 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/191" target="_blank">
+									Celebrity in Blue
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_203_border.png')"></td>
+						<td>Shizuku Osaka</td>
+						
+							<td>
+								
+									613 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/218" target="_blank">
+									Rose Knight
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_202_border.png')"></td>
+						<td>Kasumi Nakasu</td>
+						
+							<td>
+								
+									552 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/254" target="_blank">
+									The Lady's Debut
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_201_border.png')"></td>
+						<td>Ayumu Uehara</td>
+						
+							<td>
+								
+									339 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/384" target="_blank">
+									Mystic Fairy
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_205_border.png')"></td>
+						<td>Ai Miyashita</td>
+						
+							<td>
+								
+									308 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/402" target="_blank">
+									Ai-Doll
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_206_border.png')"></td>
+						<td>Kanata Konoe</td>
+						
+							<td>
+								
+									219 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/458" target="_blank">
+									Fluffy Good Night Time
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_210_border.png')"></td>
+						<td>Shioriko Mifune</td>
+						
+							<td>
+								
+									188 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/477" target="_blank">
+									Harmonic Song
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_207_border.png')"></td>
+						<td>Setsuna Yuki</td>
+						
+							<td>
+								
+									158 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/496" target="_blank">
+									A Jet-Black Magician
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_208_border.png')"></td>
+						<td>Emma Verde</td>
+						
+							<td>
+								
+									97 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/538" target="_blank">
+									Delivering Comfort - Emma Mail
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
 		
-	</table>
+	</div>
+
+	<div class="stats-category limited" ng-if="active_page == 'limited'">
+		<h1>limited</h1>
+		
+			<h2>Muse</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_9_border.png')"></td>
+						<td>Nico Yazawa</td>
+						
+							<td>
+								
+									323 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/392" target="_blank">
+									Little Venus
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_5_border.png')"></td>
+						<td>Rin Hoshizora</td>
+						
+							<td>
+								
+									294 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/412" target="_blank">
+									Rin's Studio
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_8_border.png')"></td>
+						<td>Hanayo Koizumi</td>
+						
+							<td>
+								
+									269 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/431" target="_blank">
+									Healing Innocence
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_7_border.png')"></td>
+						<td>Nozomi Toujou</td>
+						
+							<td>
+								
+									203 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/466" target="_blank">
+									Wisteria-Dyed Beauty
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_6_border.png')"></td>
+						<td>Maki Nishikino</td>
+						
+							<td>
+								
+									142 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/505" target="_blank">
+									A Captivating Librarian
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_3_border.png')"></td>
+						<td>Kotori Minami</td>
+						
+							<td>
+								
+									127 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/514" target="_blank">
+									Tropical Squash
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_4_border.png')"></td>
+						<td>Umi Sonoda</td>
+						
+							<td>
+								
+									85 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/546" target="_blank">
+									A Maiden's Innocence
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_1_border.png')"></td>
+						<td>Honoka Kousaka</td>
+						
+							<td>
+								
+									50 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/566" target="_blank">
+									I'll Show You Round the Mansion
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_2_border.png')"></td>
+						<td>Eli Ayase</td>
+						
+							<td>
+								
+									5 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/593" target="_blank">
+									Snow Fantasy
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+			<h2>Aqours</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_108_border.png')"></td>
+						<td>Mari Ohara</td>
+						
+							<td>
+								
+									660 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/181" target="_blank">
+									Royal Princess
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_106_border.png')"></td>
+						<td>Yoshiko Tsushima</td>
+						
+							<td>
+								
+									294 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/411" target="_blank">
+									Angel of Eden
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_102_border.png')"></td>
+						<td>Riko Sakurauchi</td>
+						
+							<td>
+								
+									234 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/449" target="_blank">
+									A Lovely Nurse
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_105_border.png')"></td>
+						<td>You Watanabe</td>
+						
+							<td>
+								
+									188 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/478" target="_blank">
+									Cheerful Girl
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_109_border.png')"></td>
+						<td>Ruby Kurosawa</td>
+						
+							<td>
+								
+									142 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/504" target="_blank">
+									Sweet Little Angel
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_101_border.png')"></td>
+						<td>Chika Takami</td>
+						
+							<td>
+								
+									111 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/523" target="_blank">
+									Pure Summer
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_104_border.png')"></td>
+						<td>Dia Kurosawa</td>
+						
+							<td>
+								
+									85 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/547" target="_blank">
+									Dia's Illusion
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_103_border.png')"></td>
+						<td>Kanan Matsuura</td>
+						
+							<td>
+								
+									66 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/557" target="_blank">
+									Autumn Colors
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_107_border.png')"></td>
+						<td>Hanamaru Kunikida</td>
+						
+							<td>
+								
+									35 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/575" target="_blank">
+									A Hanamaru Tale
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+			<h2>Nijigasaki</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_211_border.png')"></td>
+						<td>Mia Taylor</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_212_border.png')"></td>
+						<td>Lanzhu Zhong</td>
+						
+							<td>
+								Never
+							</td>
+							<td>
+								&mdash;
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_201_border.png')"></td>
+						<td>Ayumu Uehara</td>
+						
+							<td>
+								
+									388 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/355" target="_blank">
+									Soulmate
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_202_border.png')"></td>
+						<td>Kasumi Nakasu</td>
+						
+							<td>
+								
+									358 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/375" target="_blank">
+									Kasumin Utopia
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_205_border.png')"></td>
+						<td>Ai Miyashita</td>
+						
+							<td>
+								
+									269 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/430" target="_blank">
+									Romantic Rose
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_210_border.png')"></td>
+						<td>Shioriko Mifune</td>
+						
+							<td>
+								
+									188 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/477" target="_blank">
+									Harmonic Song
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_209_border.png')"></td>
+						<td>Rina Tennouji</td>
+						
+							<td>
+								
+									173 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/487" target="_blank">
+									Checkmate
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_203_border.png')"></td>
+						<td>Shizuku Osaka</td>
+						
+							<td>
+								
+									111 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/522" target="_blank">
+									Fluffy-Wuffy Shizu-Bear
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_208_border.png')"></td>
+						<td>Emma Verde</td>
+						
+							<td>
+								
+									97 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/538" target="_blank">
+									Delivering Comfort - Emma Mail
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_204_border.png')"></td>
+						<td>Karin Asaka</td>
+						
+							<td>
+								
+									50 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/565" target="_blank">
+									Holy Violet
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_206_border.png')"></td>
+						<td>Kanata Konoe</td>
+						
+							<td>
+								
+									20 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/583" target="_blank">
+									It's Showtime!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_207_border.png')"></td>
+						<td>Setsuna Yuki</td>
+						
+							<td>
+								
+									20 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/584" target="_blank">
+									Titania of the Summer Breezes
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+	</div>
+
+	<div class="stats-category gacha" ng-if="active_page == 'gacha'">
+		<h1>gacha</h1>
+		
+			<h2>Muse</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_8_border.png')"></td>
+						<td>Hanayo Koizumi</td>
+						
+							<td>
+								
+									152 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/500" target="_blank">
+									TWINKLE★STARRY☆NIGHT
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_6_border.png')"></td>
+						<td>Maki Nishikino</td>
+						
+							<td>
+								
+									142 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/505" target="_blank">
+									A Captivating Librarian
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_3_border.png')"></td>
+						<td>Kotori Minami</td>
+						
+							<td>
+								
+									127 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/514" target="_blank">
+									Tropical Squash
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_9_border.png')"></td>
+						<td>Nico Yazawa</td>
+						
+							<td>
+								
+									94 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/540" target="_blank">
+									Weather Wizard
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_4_border.png')"></td>
+						<td>Umi Sonoda</td>
+						
+							<td>
+								
+									85 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/546" target="_blank">
+									A Maiden's Innocence
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_5_border.png')"></td>
+						<td>Rin Hoshizora</td>
+						
+							<td>
+								
+									60 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/559" target="_blank">
+									Halloween Dress-Up
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_1_border.png')"></td>
+						<td>Honoka Kousaka</td>
+						
+							<td>
+								
+									50 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/566" target="_blank">
+									I'll Show You Round the Mansion
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_7_border.png')"></td>
+						<td>Nozomi Toujou</td>
+						
+							<td>
+								
+									30 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/577" target="_blank">
+									Autumn Thanksgiving!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_2_border.png')"></td>
+						<td>Eli Ayase</td>
+						
+							<td>
+								
+									5 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/593" target="_blank">
+									Snow Fantasy
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+			<h2>Aqours</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_109_border.png')"></td>
+						<td>Ruby Kurosawa</td>
+						
+							<td>
+								
+									142 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/504" target="_blank">
+									Sweet Little Angel
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_108_border.png')"></td>
+						<td>Mari Ohara</td>
+						
+							<td>
+								
+									106 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/532" target="_blank">
+									Venus on a Moonlit Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_106_border.png')"></td>
+						<td>Yoshiko Tsushima</td>
+						
+							<td>
+								
+									75 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/551" target="_blank">
+									Dress-Up Magic!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_103_border.png')"></td>
+						<td>Kanan Matsuura</td>
+						
+							<td>
+								
+									66 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/557" target="_blank">
+									Autumn Colors
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_102_border.png')"></td>
+						<td>Riko Sakurauchi</td>
+						
+							<td>
+								
+									60 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/561" target="_blank">
+									Halloween Dress-Up
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_104_border.png')"></td>
+						<td>Dia Kurosawa</td>
+						
+							<td>
+								
+									45 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/571" target="_blank">
+									Youthful Carnival
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_107_border.png')"></td>
+						<td>Hanamaru Kunikida</td>
+						
+							<td>
+								
+									35 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/575" target="_blank">
+									A Hanamaru Tale
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_105_border.png')"></td>
+						<td>You Watanabe</td>
+						
+							<td>
+								
+									15 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/589" target="_blank">
+									Luminous Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_101_border.png')"></td>
+						<td>Chika Takami</td>
+						
+							<td>
+								
+									1 day ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/597" target="_blank">
+									Luxury Christmas
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+			<h2>Nijigasaki</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_210_border.png')"></td>
+						<td>Shioriko Mifune</td>
+						
+							<td>
+								
+									188 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/477" target="_blank">
+									Harmonic Song
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_205_border.png')"></td>
+						<td>Ai Miyashita</td>
+						
+							<td>
+								
+									183 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/480" target="_blank">
+									A Dress to Dream About
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_201_border.png')"></td>
+						<td>Ayumu Uehara</td>
+						
+							<td>
+								
+									122 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/518" target="_blank">
+									Summer on Stage!!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_208_border.png')"></td>
+						<td>Emma Verde</td>
+						
+							<td>
+								
+									97 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/538" target="_blank">
+									Delivering Comfort - Emma Mail
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_202_border.png')"></td>
+						<td>Kasumi Nakasu</td>
+						
+							<td>
+								
+									75 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/553" target="_blank">
+									Dress-Up Magic!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_204_border.png')"></td>
+						<td>Karin Asaka</td>
+						
+							<td>
+								
+									50 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/565" target="_blank">
+									Holy Violet
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_203_border.png')"></td>
+						<td>Shizuku Osaka</td>
+						
+							<td>
+								
+									45 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/569" target="_blank">
+									Youthful Carnival
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_211_border.png')"></td>
+						<td>Mia Taylor</td>
+						
+							<td>
+								
+									30 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/579" target="_blank">
+									Autumn Thanksgiving!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_206_border.png')"></td>
+						<td>Kanata Konoe</td>
+						
+							<td>
+								
+									20 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/583" target="_blank">
+									It's Showtime!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_207_border.png')"></td>
+						<td>Setsuna Yuki</td>
+						
+							<td>
+								
+									20 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/584" target="_blank">
+									Titania of the Summer Breezes
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_209_border.png')"></td>
+						<td>Rina Tennouji</td>
+						
+							<td>
+								
+									15 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/587" target="_blank">
+									Luminous Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_212_border.png')"></td>
+						<td>Lanzhu Zhong</td>
+						
+							<td>
+								
+									1 day ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/595" target="_blank">
+									Luxury Christmas
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+	</div>
+
+	<div class="stats-category ur" ng-if="active_page == 'ur'">
+		<h1>ur</h1>
+		
+			<h2>Muse</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_9_border.png')"></td>
+						<td>Nico Yazawa</td>
+						
+							<td>
+								
+									94 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/540" target="_blank">
+									Weather Wizard
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_6_border.png')"></td>
+						<td>Maki Nishikino</td>
+						
+							<td>
+								
+									72 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/554" target="_blank">
+									Dress-Up Magic!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_5_border.png')"></td>
+						<td>Rin Hoshizora</td>
+						
+							<td>
+								
+									60 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/559" target="_blank">
+									Halloween Dress-Up
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_1_border.png')"></td>
+						<td>Honoka Kousaka</td>
+						
+							<td>
+								
+									50 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/566" target="_blank">
+									I'll Show You Round the Mansion
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_3_border.png')"></td>
+						<td>Kotori Minami</td>
+						
+							<td>
+								
+									42 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/572" target="_blank">
+									Youthful Carnival
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_7_border.png')"></td>
+						<td>Nozomi Toujou</td>
+						
+							<td>
+								
+									30 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/577" target="_blank">
+									Autumn Thanksgiving!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_8_border.png')"></td>
+						<td>Hanayo Koizumi</td>
+						
+							<td>
+								
+									12 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/590" target="_blank">
+									Luminous Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_2_border.png')"></td>
+						<td>Eli Ayase</td>
+						
+							<td>
+								
+									5 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/593" target="_blank">
+									Snow Fantasy
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_4_border.png')"></td>
+						<td>Umi Sonoda</td>
+						
+							<td>
+								
+									Will release in 2 days
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/598" target="_blank">
+									Luxury Christmas
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+			<h2>Aqours</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_108_border.png')"></td>
+						<td>Mari Ohara</td>
+						
+							<td>
+								
+									106 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/532" target="_blank">
+									Venus on a Moonlit Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_106_border.png')"></td>
+						<td>Yoshiko Tsushima</td>
+						
+							<td>
+								
+									75 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/551" target="_blank">
+									Dress-Up Magic!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_103_border.png')"></td>
+						<td>Kanan Matsuura</td>
+						
+							<td>
+								
+									66 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/557" target="_blank">
+									Autumn Colors
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_102_border.png')"></td>
+						<td>Riko Sakurauchi</td>
+						
+							<td>
+								
+									60 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/561" target="_blank">
+									Halloween Dress-Up
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_104_border.png')"></td>
+						<td>Dia Kurosawa</td>
+						
+							<td>
+								
+									45 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/571" target="_blank">
+									Youthful Carnival
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_107_border.png')"></td>
+						<td>Hanamaru Kunikida</td>
+						
+							<td>
+								
+									35 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/575" target="_blank">
+									A Hanamaru Tale
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_109_border.png')"></td>
+						<td>Ruby Kurosawa</td>
+						
+							<td>
+								
+									27 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/580" target="_blank">
+									Autumn Thanksgiving!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_105_border.png')"></td>
+						<td>You Watanabe</td>
+						
+							<td>
+								
+									15 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/589" target="_blank">
+									Luminous Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_101_border.png')"></td>
+						<td>Chika Takami</td>
+						
+							<td>
+								
+									1 day ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/597" target="_blank">
+									Luxury Christmas
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+			<h2>Nijigasaki</h2>
+			<table class="stats-table">
+				<colgroup>
+					<col style="width:38px" />
+		            <col style="width:34%" />
+		            <col style="width:28%" />
+		            <col style="width:42%" />
+		        </colgroup>
+				<tr>
+					<th colspan="2">Member</th>
+					<th colspan="2">Most Recent Card</th>
+				</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_201_border.png')"></td>
+						<td>Ayumu Uehara</td>
+						
+							<td>
+								
+									122 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/518" target="_blank">
+									Summer on Stage!!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_205_border.png')"></td>
+						<td>Ai Miyashita</td>
+						
+							<td>
+								
+									103 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/535" target="_blank">
+									Venus on a Moonlit Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_208_border.png')"></td>
+						<td>Emma Verde</td>
+						
+							<td>
+								
+									97 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/538" target="_blank">
+									Delivering Comfort - Emma Mail
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_202_border.png')"></td>
+						<td>Kasumi Nakasu</td>
+						
+							<td>
+								
+									75 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/553" target="_blank">
+									Dress-Up Magic!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_210_border.png')"></td>
+						<td>Shioriko Mifune</td>
+						
+							<td>
+								
+									57 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/562" target="_blank">
+									Halloween Dress-Up
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_204_border.png')"></td>
+						<td>Karin Asaka</td>
+						
+							<td>
+								
+									50 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/565" target="_blank">
+									Holy Violet
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_203_border.png')"></td>
+						<td>Shizuku Osaka</td>
+						
+							<td>
+								
+									45 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/569" target="_blank">
+									Youthful Carnival
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_211_border.png')"></td>
+						<td>Mia Taylor</td>
+						
+							<td>
+								
+									30 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/579" target="_blank">
+									Autumn Thanksgiving!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_206_border.png')"></td>
+						<td>Kanata Konoe</td>
+						
+							<td>
+								
+									20 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/583" target="_blank">
+									It's Showtime!
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_207_border.png')"></td>
+						<td>Setsuna Yuki</td>
+						
+							<td>
+								
+									20 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/584" target="_blank">
+									Titania of the Summer Breezes
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_209_border.png')"></td>
+						<td>Rina Tennouji</td>
+						
+							<td>
+								
+									15 days ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/587" target="_blank">
+									Luminous Night
+								</a>
+							</td>
+						
+					</tr>
+				
+					<tr>
+						<td class="idol-icon" style="background-image:url('/img/icons/32/icon_212_border.png')"></td>
+						<td>Lanzhu Zhong</td>
+						
+							<td>
+								
+									1 day ago
+								
+							</td>
+							<td>
+								<a href="https://allstars.kirara.ca/card/595" target="_blank">
+									Luxury Christmas
+								</a>
+							</td>
+						
+					</tr>
+				
+			</table>
+		
+	</div>

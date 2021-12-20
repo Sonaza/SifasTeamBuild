@@ -67,7 +67,7 @@ let routes = [
 	{ title : 'Party Rotations',    basepath: '/party',        path: '/party',             template: 'party_rotations.html',        },
 	{ title : 'Event Rotations',    basepath: '/event',        path: '/event',             template: 'event_rotations.html',        },
 	{ title : 'SR Sets',            basepath: '/sr-sets',      path: '/sr-sets',           template: 'sr_sets.html',                },
-	{ title : 'Card Stats',         basepath: '/stats',        path: '/stats',             template: 'stats.html',                  },
+	{ title : 'Card Stats',         basepath: '/stats',        path: '/stats/:page?',      template: 'stats.html',                  },
 ];
 
 var app = angular.module('app', ['ngRoute'],

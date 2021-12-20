@@ -335,18 +335,25 @@ class CardRotations():
 			all_idols.remove(idol.member_id)
 		
 		for member_id in all_idols:
-			out.append((member_id, CardNonExtant(), 0))
+			out.insert(0, (member_id, CardNonExtant(), 0))
 			
 		return out
 	
 	def get_card_stats(self):
-		result = {
-			'event' : {
-				Group.Muse       : self._time_since_last(Group.Muse, self.client.get_newest_idols(group=Group.Muse,       rarity=Rarity.UR, source=Source.Event)),
-				Group.Aqours     : self._time_since_last(Group.Aqours, self.client.get_newest_idols(group=Group.Aqours,     rarity=Rarity.UR, source=Source.Event)),
-				Group.Nijigasaki : self._time_since_last(Group.Nijigasaki, self.client.get_newest_idols(group=Group.Nijigasaki, rarity=Rarity.UR, source=Source.Event)),
-			},
+		categories = {
+			'event'     : [Source.Event],
+			'festival'  : [Source.Festival],
+			'party'     : [Source.Party],
+			'spotlight' : [Source.Spotlight, Source.Party],
+			'limited'   : [Source.Festival, Source.Party],
+			'gacha'     : [Source.Unspecified, Source.Gacha, Source.Spotlight, Source.Festival, Source.Party],
+			'ur'        : None,
 		}
+		
+		result = defaultdict(dict)
+		for category, sources in categories.items():
+			for group in Group:
+				result[category][group] = self._time_since_last(group, self.client.get_newest_idols(group=group, rarity=Rarity.UR, source=sources))
 		
 		return result
 	
