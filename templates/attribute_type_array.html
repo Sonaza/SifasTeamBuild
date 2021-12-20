@@ -1,38 +1,38 @@
 
 <div class="array-wrapper">
-	{% for group_tag, group_title, num_pages, group_data in idol_arrays %}
+	{% for group, num_pages, group_data in idol_arrays %}
 		<ul class="array-group-page-selector">
 			{% for page_index in range(num_pages): %}
 				<li>
-					<a href="#/{{ group_tag }}/{{ page_index }}" ng-class="pageActive({{ page_index }})">
+					<a href="#/{{ GroupInfo[group].tag }}/{{ page_index }}" ng-class="pageActive({{ page_index }})">
 						Page {{ page_index + 1 }}
 					</a>
 				</li>
 			{% endfor %}
 		</ul>
 		{% for page_index in range(num_pages): %}
-			<div class="array-group {{ group_tag }}" ng-class="pageActive({{ page_index }})">
+			<div class="array-group {{ GroupInfo[group].tag }}" ng-class="pageActive({{ page_index }})">
 				{% for member_id, card_array in group_data %}
 					<div class="card-array idol-{{ member_id.value }}">
 						<div class="card-array-inner">
 							<div class="card-array-row">
-								<div class="card-array-header-cell">
-									<div class="grid-icon idol-icon idol-icon-48 idol-{{ member_id.value }}" title="{{ Idols.by_member_id[member_id].full_name }}"></div>
+								<div class="card-array-header-cell idol-bg-color">
+									<div class="grid-icon idol-icon-48-border" title="{{ Idols.by_member_id[member_id].full_name }}"></div>
 								</div>
 								{% for attribute in Attribute %}
-									<div class="card-array-header-cell">
-										<div class="grid-icon attribute-{{ attribute.value }}" title="{{ attribute.name }}-attribute"></div>
+									<div class="card-array-header-cell idol-bg-color">
+										<div class="grid-icon icon-48 attribute-{{ attribute.value }}" title="{{ attribute.name }}-attribute"></div>
 									</div>
 								{% endfor %}
 							</div>
 							{% for type in Type %}
 								<div class="card-array-row">
-									<div class="card-array-header-cell">
-										<div class="grid-icon type-{{ type.value }}" title="{{ type.name }}-type"></div>
+									<div class="card-array-header-cell idol-bg-color">
+										<div class="grid-icon icon-48 type-{{ type.value }}" title="{{ type.name }}-type"></div>
 									</div>
 									{% for attribute in Attribute %}
 										{% if card_array[type][attribute][page_index] %}
-											<div class="card-array-cell">
+											<div class="card-array-cell idol-bg-color-dark">
 												<div class="grid-icon">
 													<a href="https://allstars.kirara.ca/card/{{ card_array[type][attribute][page_index].ordinal }}" target="_blank">
 														<span class="card-thumbnail group-{{ card_array[type][attribute][page_index].group_id.value }}-{{ card_array[type][attribute][page_index].rarity.value }} card-{{ card_array[type][attribute][page_index].ordinal }}"></span>
@@ -40,7 +40,7 @@
 												</div>
 											</div>
 										{% else %}
-											<div class="card-array-cell">
+											<div class="card-array-cell idol-bg-color-dark">
 												<div class="grid-icon missing"></div>
 											</div>
 										{% endif %}

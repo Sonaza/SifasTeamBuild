@@ -44,7 +44,7 @@ class KiraraIdol():
 	
 	def get_card_name(self, idolized : bool):
 		if idolized:
-			return self.data['idolized_appearance']['name']
+			return self.data['idolized_appearance']['name'].strip()
 		
 		return self.data['normal_appearance']['name']
 	
@@ -247,8 +247,6 @@ class KiraraClient():
 		
 		if fields:
 			query = f"SELECT * FROM 'idols' WHERE {' AND '.join([x[0] for x in fields])} {group_by} ORDER BY {order_by} {order}"
-			print(query)
-			
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:

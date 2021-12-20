@@ -58,19 +58,31 @@ function load_params()
 
 const site_title = "SIFAS Card Rotations";
 
-let routes = [
-	{ title : 'UR Rotations',       basepath: '/ur-rotations', path: '/ur-rotations',      template: 'ur_rotations.html',           },
-	{ title : 'µ\'s Cards',         basepath: '/muse',         path: '/muse/:page?',       template: 'idol_arrays_muse.html',       },
-	{ title : 'Aqours Cards',       basepath: '/aqours',       path: '/aqours/:page?',     template: 'idol_arrays_aqours.html',     },
-	{ title : 'Nijigasaki Cards',   basepath: '/nijigasaki',   path: '/nijigasaki/:page?', template: 'idol_arrays_nijigasaki.html', },
-	{ title : 'Festival Rotations', basepath: '/festival',     path: '/festival',          template: 'festival_rotations.html',     },
-	{ title : 'Party Rotations',    basepath: '/party',        path: '/party',             template: 'party_rotations.html',        },
-	{ title : 'Event Rotations',    basepath: '/event',        path: '/event',             template: 'event_rotations.html',        },
-	{ title : 'SR Sets',            basepath: '/sr-sets',      path: '/sr-sets',           template: 'sr_sets.html',                },
-	{ title : 'Card Stats',         basepath: '/stats',        path: '/stats/:page?',      template: 'stats.html',                  },
+const routes = [
+	{ title : 'UR Rotations',       basepath: '/ur-rotations', path: '/ur-rotations',      controller: 'MainController',  template: 'ur_rotations.html',           },
+	{ title : 'µ\'s Cards',         basepath: '/muse',         path: '/muse/:page?',       controller: 'MainController',  template: 'idol_arrays_muse.html',       },
+	{ title : 'Aqours Cards',       basepath: '/aqours',       path: '/aqours/:page?',     controller: 'MainController',  template: 'idol_arrays_aqours.html',     },
+	{ title : 'Nijigasaki Cards',   basepath: '/nijigasaki',   path: '/nijigasaki/:page?', controller: 'MainController',  template: 'idol_arrays_nijigasaki.html', },
+	{ title : 'Festival Rotations', basepath: '/festival',     path: '/festival',          controller: 'MainController',  template: 'festival_rotations.html',     },
+	{ title : 'Party Rotations',    basepath: '/party',        path: '/party',             controller: 'MainController',  template: 'party_rotations.html',        },
+	{ title : 'Event Rotations',    basepath: '/event',        path: '/event',             controller: 'MainController',  template: 'event_rotations.html',        },
+	{ title : 'SR Sets',            basepath: '/sr-sets',      path: '/sr-sets',           controller: 'MainController',  template: 'sr_sets.html',                },
+	{ title : 'Card Stats',         basepath: '/stats',        path: '/stats/:page?',      controller: 'StatsController', template: 'stats.html',                  },
 ];
 
-var app = angular.module('app', ['ngRoute'],
+const stats_subpages = {
+	'general'   : "General",
+	'event'     : "Event URs",
+	'festival'  : "Festival URs",
+	'party'     : "Party URs",
+	'spotlight' : "Party + Spotlight",
+	'limited'   : "Festival + Party",
+	'gacha'     : "Any Gacha UR",
+	'ur'        : "Any UR",
+	'sr'        : "Any SR",
+};
+
+var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 	function($interpolateProvider)
 	{
 		$interpolateProvider.startSymbol('[[');
@@ -82,13 +94,13 @@ var app = angular.module('app', ['ngRoute'],
 	{
 		$routeProvider.when('/', {
 			controller:  'MainController',
-			templateUrl: 'pages/index.html',
+			templateUrl: 'pages/main.html',
 		});
 		
 		for (const route of routes)
 		{
 			$routeProvider.when(route['path'], {
-				controller:  'MainController',
+				controller:  route['controller'],
 				templateUrl: 'pages/' + route['template'],
 			})
 		}
@@ -125,7 +137,7 @@ var app = angular.module('app', ['ngRoute'],
 			}
 		}
 		
-		$scope.$on('update-title', function()
+		$scope.$on('update-title', function(nonsense, sub_title)
 		{
 			if ($location.path() == '/')
 			{
@@ -137,7 +149,7 @@ var app = angular.module('app', ['ngRoute'],
 				{
 					if ($scope.isActive(route['basepath']))
 					{
-						$rootScope.title = route['title'] + " | " + site_title;
+						$rootScope.title = route['title'] + " / " + sub_title + " &mdash; " + site_title;
 						break;
 					}
 				}
@@ -151,7 +163,6 @@ var app = angular.module('app', ['ngRoute'],
 	function($rootScope, $scope, $routeParams, $location)
 	{
 		$scope.loading = true;
-		$scope.routes = routes;
 		
 		$scope.settings = {
 			use_idolized_thumbnails : true,
@@ -164,15 +175,65 @@ var app = angular.module('app', ['ngRoute'],
 			$scope.active_page = 0;
 		}
 		
+		$scope.isActive = function(page)
+		{
+			return $scope.active_page == page;
+		}
+		
 		$scope.pageActive = function(page)
 		{
-			if ($scope.active_page == page)
+			if ($scope.isActive(page))
 			{
 				return 'active';
 			}
 		}
 		
-		$rootScope.$broadcast('update-title');
+		let page_subtitle = "Page " + (parseInt($scope.active_page) + 1);
+		$rootScope.$broadcast('update-title', page_subtitle);
+		
+		$scope.loading = false;
+		
+		window.scrollTo(0, 0);
+		
+		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
+	}
+])
+
+.controller('StatsController', ['$rootScope', '$scope', '$routeParams', '$location',
+	function($rootScope, $scope, $routeParams, $location)
+	{
+		$scope.loading = true;
+		
+		$scope.active_page = $routeParams.page;
+		if ($scope.active_page === undefined)
+		{
+			$scope.active_page = 'general';
+		}
+		
+		$scope.isActive = function(page)
+		{
+			return $scope.active_page == page;
+		}
+		
+		$scope.pageActive = function(page)
+		{
+			if ($scope.isActive(page))
+			{
+				return 'active';
+			}
+		}
+		
+		$scope.get_subtitle = function(page)
+		{
+			if (stats_subpages[page])
+			{
+				return stats_subpages[page];
+			}
+			return "";
+		}
+		
+		let page_subtitle = $scope.get_subtitle($scope.active_page);
+		$rootScope.$broadcast('update-title', page_subtitle);
 		
 		$scope.loading = false;
 		
