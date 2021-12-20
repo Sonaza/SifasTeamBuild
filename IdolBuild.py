@@ -77,6 +77,7 @@ idols = [
 	Idol(566, Idols.Honoka,    "Fes2",            crit_power,  5.2,          0.0),
 	
 	Idol(373, Idols.Eli,       "Fes2",            crit_power,  7.0,          0.0),
+	Idol(593, Idols.Eli,       "Party",           crit_power,  5.2,          2.6),
 	
 	Idol(144, Idols.Kotori,    "Fes1",            crit_power,  0.0,          5.2),
 	Idol(514, Idols.Kotori,    "Party",           crit_power,  8.4,          4.2),
@@ -97,7 +98,7 @@ idols = [
 	Idol(470, Idols.Ruby,      "Rain Blossom",    crit_power,  5.2,          0.0),
 	Idol(424, Idols.Ruby,      "Cyber",           crit_power,  5.2,          0.0),
 	
-	Idol(319, Idols.Kanan,     "Fes1",            crit_power,  9.5,          3.5),
+	Idol(319, Idols.Kanan,     "Fes1",            crit_power,  9.675,        3.5),
 	Idol(48,  Idols.Kanan,     "Initial",         crit_power,  4.2,          0.0),
 	
 	Idol(262, Idols.Chika,     "Fes1",            crit_power,  7.0,          0.0),
@@ -105,7 +106,7 @@ idols = [
 	
 	Idol(449, Idols.Riko,      "Fes2",            crit_power,  7.0,          0.0),
 	
-	Idol(393, Idols.You,       "Fes2",            crit_power,  9.5,          0.0),
+	Idol(393, Idols.You,       "Fes2",            crit_power,  9.675,        0.0),
 	Idol(478, Idols.You,       "Party",           crit_power,  5.2,          0.0),
 	
 	Idol(181, Idols.Mari,      "Fes1",            crit_power,  7.0,          0.0),
@@ -113,6 +114,7 @@ idols = [
 	
 	Idol(547, Idols.Dia,       "Fes2",            crit_power,  5.2,          2.6),
 	Idol(422, Idols.Dia,       "Party",           crit_power,  8.4,          0.0),
+	Idol(436, Idols.Dia,       "Cherry Blossom",  crit_power,  0.0,          0.0),
 	
 	## ---------------------------------------
 	## Nijigasaki
@@ -127,6 +129,7 @@ idols = [
 	
 	Idol(477, Idols.Shioriko,  "Party",           crit_power,  8.4,          4.2),
 	
+	Idol(308, Idols.Setsuna,   "Rebel",           crit_power,  8.356,        0.0),
 	Idol(146, Idols.Setsuna,   "Fes1",            crit_power,  7.0,          0.0),
 	Idol(584, Idols.Setsuna,   "Fes2",            crit_power,  6.5,          3.2),
 	Idol(496, Idols.Setsuna,   "Party",           crit_power,  10.2,         2.6),
@@ -152,8 +155,8 @@ print("-- | -- | --")
 # 	idol.set_song_modifiers(Attribute.Natural, modifiers=(1.2, 0.8))
 
 for idol in sorted(idols, reverse = True):
-	# if idol.data.type != Type.Sk:
-	# 	continue
+	if idol.data.type != Type.Sk and idol.data.type != Type.Gd:
+		continue
 		
 	print(idol)
 

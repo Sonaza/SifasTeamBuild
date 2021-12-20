@@ -4,6 +4,7 @@ import re
 import sqlite3 as sqlite
 from operator import itemgetter
 import time
+from datetime import datetime
 
 from IdolDatabase import *
 
@@ -16,19 +17,20 @@ class KiraraClientValueError(KiraraClientException): pass
 
 class KiraraClientNotFound(KiraraClientException): pass
 class KiraraClientPartialResult(KiraraClientException): pass
-
+	
 class KiraraIdol():
 	def __init__(self, data):
-		self.ordinal    = data['ordinal']
-		self.id         = data['id']
-		self.member_id  = Member(data['member_id'])
-		self.group_id   = Group(data['group_id'])
-		self.subunit_id = Subunit(data['subunit_id'])
-		self.type       = Type(data['type'])
-		self.attribute  = Attribute(data['attribute'])
-		self.rarity     = Rarity(data['rarity'])
-		self.source     = Source(data['source'])
-		self.data       = json.loads(data['json'])
+		self.ordinal      = data['ordinal']
+		self.id           = data['id']
+		self.member_id    = Member(data['member_id'])
+		self.group_id     = Group(data['group_id'])
+		self.subunit_id   = Subunit(data['subunit_id'])
+		self.type         = Type(data['type'])
+		self.attribute    = Attribute(data['attribute'])
+		self.rarity       = Rarity(data['rarity'])
+		self.source       = Source(data['source'])
+		self.release_date = datetime.fromisoformat(data['release_date'])
+		self.data         = json.loads(data['json'])
 		
 		self.modifiers = (Attribute.Unset, Type.Unset, 1, 1)
 	
@@ -151,6 +153,7 @@ class KiraraClient():
 			    `type`              INTEGER,
 			    `rarity`            INTEGER,
 			    `source`            INTEGER,
+			    `release_date`      INTEGER,
 			    `primary_passive`   INTEGER,
 			    `secondary_passive` INTEGER,   
 			    `json`              TEXT,
@@ -195,29 +198,61 @@ class KiraraClient():
 		self.db.execute(query)
 		return self.convert_to_idol_object(self.db.fetchall())
 	
-	def get_idols(self, member_id : Member = None,
+	def _get_column_from_type(self, column_type, prefix = None):
+		if column_type == None:
+			return ""
+			
+		data_columns = {
+			Member    : 'member_id',
+			Type      : 'type',
+			Attribute : 'attribute',
+			Group     : 'group_id',
+			Subunit   : 'subunit_id',
+			Source    : 'source',
+			Rarity    : 'rarity',
+			Ordinal   : 'ordinal',
+		}
+		if column_type not in data_columns:
+			raise KiraraClientException("Column not found or valid")
+		
+		if prefix:
+			return f"{prefix} {data_columns[column_type]}"
+		else:
+			return data_columns[column_type]
+	
+	def get_idols(self, member : Member = None,
 			type : Type = None, attribute : Attribute = None,
 			group : Group = None, subunit : Subunit = None,
 			source : Source = None,	rarity : Rarity = None,
-			min_rarity : Rarity = None, max_rarity : Rarity = None):
+			min_rarity : Rarity = None, max_rarity : Rarity = None,
+			group_by = None, order_by = Ordinal, order = SortingOrder.Ascending):
 	
 		fields = []
-		if member_id  != None: fields.append(("member_id = ?",  member_id.value))
-		if type       != None: fields.append(("type = ?",       type.value))
-		if attribute  != None: fields.append(("attribute = ?",  attribute.value))
-		if group      != None: fields.append(("group_id = ?",   group.value))
-		if subunit    != None: fields.append(("subunit_id = ?", subunit.value))
-		if source     != None: fields.append(("source = ?",     source.value))
-		if rarity     != None: fields.append(("rarity = ?",     rarity.value))
-		if min_rarity != None: fields.append(("rarity >= ?",    min_rarity.value))
-		if max_rarity != None: fields.append(("rarity <= ?",    max_rarity.value))
+		if member     != None: fields.append(self._make_where_condition("member_id",  member))
+		if type       != None: fields.append(self._make_where_condition("type",       type))
+		if attribute  != None: fields.append(self._make_where_condition("attribute",  attribute))
+		if group      != None: fields.append(self._make_where_condition("group_id",   group))
+		if subunit    != None: fields.append(self._make_where_condition("subunit_id", subunit))
+		if source     != None: fields.append(self._make_where_condition("source",     source))
+		if rarity     != None: fields.append(self._make_where_condition("rarity",     rarity))
+		if min_rarity != None: fields.append(("rarity >= ?",    [min_rarity.value]))
+		if max_rarity != None: fields.append(("rarity <= ?",    [max_rarity.value]))
+		
+		group_by = self._get_column_from_type(group_by, "GROUP BY")
+		order_by = self._get_column_from_type(order_by)
+		if order == SortingOrder.Ascending:
+			order = "ASC"
+		else:
+			order = "DESC"
 		
 		if fields:
-			query = f"SELECT * FROM 'idols' WHERE {' AND '.join([x[0] for x in fields])} ORDER BY ordinal"
-			values = [x[1] for x in fields]
+			query = f"SELECT * FROM 'idols' WHERE {' AND '.join([x[0] for x in fields])} {group_by} ORDER BY {order_by} {order}"
+			print(query)
+			
+			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:
-			query = "SELECT * FROM 'idols' ORDER BY ordinal"
+			query = f"SELECT * FROM 'idols' {group_by} ORDER BY {order_by} {order}"
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())
@@ -230,6 +265,28 @@ class KiraraClient():
 	
 	def get_idols_by_source(self, source : Source, rarity : Rarity = None):
 		return self.get_idols(source=source, rarity=rarity)
+		
+	def _make_where_condition(self, column, data):
+		if isinstance(data, list):
+			return (f"{column} IN ({', '.join(['?'] * len(data))})", [x.value for x in data])
+		else:
+			return (f"{column} = ?", [data.value])
+	
+	def get_newest_idols(self, group : Group = None, rarity : Rarity = None, source : Source = None):
+		fields = []
+		if group      != None: fields.append(self._make_where_condition("group_id", group))
+		if rarity     != None: fields.append(self._make_where_condition("rarity",   rarity))
+		if source     != None: fields.append(self._make_where_condition("source",   source))
+		
+		if fields:
+			query = f"SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal DESC) WHERE {' AND '.join([x[0] for x in fields])} GROUP BY member_id ORDER BY ordinal ASC"
+			values = [value for x in fields for value in x[1]]
+			self.db.execute(query, values)
+		else:
+			query = "SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal DESC) GROUP BY member_id ORDER BY ordinal ASC"
+			self.db.execute(query)
+			
+		return self.convert_to_idol_object(self.db.fetchall())
 		
 	def convert_to_idol_object(self, data):
 		return [KiraraIdol(x) for x in data]
@@ -278,7 +335,6 @@ class KiraraClient():
 		for idol in self.db.fetchall():
 			ordinals.remove(idol['ordinal'])
 			result.append(dict(idol))
-		
 		
 		# If all cards were not found in the database, query them from Kirara endpoint
 		if len(ordinals) > 0:
@@ -354,6 +410,8 @@ class KiraraClient():
 				
 				idol_info = Idols.by_member_id[card['member']]
 				
+				print(card['ordinal'], card['release_dates'])
+				
 				serialized = {
 					'ordinal'           : card['ordinal'],
 					'id'                : card['id'],
@@ -364,6 +422,7 @@ class KiraraClient():
 					'type'              : card['role'],
 					'rarity'            : card['rarity'],
 					'source'            : card['source'],
+					'release_date'      : card['release_dates']['jp'],
 					'primary_passive'   : primary,
 					'secondary_passive' : secondary,
 					'json'              : json.dumps(card),
@@ -372,7 +431,11 @@ class KiraraClient():
 				
 			query_data = list(sorted(query_data, key=itemgetter('ordinal')))
 			
-			fields = ["ordinal", "id", "member_id", "group_id", "subunit_id", "attribute", "type", "rarity", "source", "primary_passive", "secondary_passive", "json"]
+			fields = [
+				"ordinal", "id", "member_id", "group_id", "subunit_id",
+				"attribute", "type", "rarity", "source", "release_date",
+				"primary_passive", "secondary_passive", "json"
+			]
 			query_fields = ', '.join([f"`{name}`" for name in fields])
 			query_keys   = ', '.join([f":{name}"  for name in fields])
 			query = "INSERT INTO `idols` ({}) VALUES ({})".format(query_fields, query_keys)
@@ -386,7 +449,7 @@ class KiraraClient():
 
 
 client = KiraraClient()
-client.cache_all_idols()
+# client.cache_all_idols()
 # exit()
 
 # ids = list(range(400, 515))

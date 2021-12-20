@@ -1,36 +1,64 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="app">
 <head>
 	<title>SIFAS Card Release Rotations</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
 	<link rel="stylesheet" href="fonts.css">
 	<link rel="stylesheet" href="style.css">
 	<link rel="stylesheet" href="atlas.css">
 	<link rel="shortcut icon" href="favicon.ico">
+	<base href="/">
 </head>
-<body>
-	<header id="header">
+<body ng-controller="MainController">
+	<div id="header">
 		<div id="header-inner">
+			<div style="float: right">
+				<button id="switch-icons">Switch Icons</button>
+			</div>
 			<h2>SIFAS Card Release Rotations</h2>
 		</div>
-		<nav>
+	</div>
+	<div id="main-wrapper">
+		<div id="side-nav">
 			<ul>
-				<li class="view-link" data-view="ur-rotations">UR Rotations</li>
-				<li class="view-link" data-view="festival-rotations">Festival Rotations</li>
-				<li class="view-link" data-view="party-rotations">Party Rotations</li>
+				<li><a href="#/ur-rotations">UR Rotations</a></li>
+				<li>µ's</li>
+				<li>Aqours</li>
+				<li>Nijigasaki</li>
+				<li>Festival Rotations</li>
+				<li>Party Rotations</li>
+				<li>Event Rotations</li>
+				<li>SR Sets</li>
 			</ul>
-		</nav>
-	</header>
-	<div id="main" class="using-normal-thumbnails">
-		<button id="switch-icons">Switch Icons</button>
-		<div id="views">
-			<div class="view active ur-rotations">
-				{{ include('ur_rotations.html') }}
-			</div>
-			<div class="view festival-rotations">
-				{{ include('festival_rotations.html') }}
-			</div>
-			<div class="view party-rotations">
-				{{ include('party_rotations.html') }}
+		</div>
+		<div id="main" class="using-idolized-thumbnails">
+			<div id="views" ng-view>
+{# 				<div class="view ur-rotations">
+					{{ include('pages/ur_rotations.html') }}
+				</div>
+				<div class="view active idol-arrays-muse">
+					{{ include('pages/idol_arrays_muse.html') }}
+				</div> 
+				<div class="view idol-arrays-aqours">
+					{{ include('pages/idol_arrays_aqours.html') }}
+				</div> 
+				<div class="view idol-arrays-nijigasaki">
+					{{ include('pages/idol_arrays_nijigasaki.html') }}
+				</div>
+				<div class="view festival-rotations">
+					{{ include('pages/festival_rotations.html') }}
+				</div>
+				<div class="view party-rotations">
+					{{ include('pages/party_rotations.html') }}
+				</div>
+				<div class="view event-rotations">
+					{{ include('pages/event_rotations.html') }}
+				</div>
+				<div class="view sr-sets">
+					{{ include('pages/sr_sets.html') }}
+				</div>  #}
 			</div>
 		</div>
 	</div>
@@ -49,22 +77,8 @@
 			</div>
 		</div>
 	</footer>
-	<script>
-		document.querySelector("#switch-icons").addEventListener('click', function()
-		{
-			let e = document.querySelector("#main");
-			e.classList.toggle("using-normal-thumbnails");
-			e.classList.toggle("using-idolized-thumbnails");
-		});
-		
-		Array.from(document.querySelectorAll("li.view-link")).forEach(link => {
-			link.addEventListener('click', function(e, f, g)
-			{
-				document.querySelector('.view.active').classList.remove('active');
-				let target_view = e.target.getAttribute('data-view');
-				document.querySelector('.view.' + target_view).classList.add('active');
-			}
-		)});
-	</script>
+	<script src="js/vendor/angular/angular.min.js"></script>
+	<script src="js/vendor/angular/angular-route.min.js"></script>
+	<script src="js/public.js"></script>
 </body>
 </html>

@@ -26,7 +26,7 @@ class IdolBase():
 		self.subunit = idol.subunit
 	
 	def __str__(self):
-		return f"{self.full_name} ({self.group.name} / {self.year.name} year / {self.subunit.get_stylized()})"
+		return f"{self.full_name}" #({self.group.name} / {self.year.name} year / {self.subunit.get_stylized()})"
 	
 	def __repr__(self):
 		return f'IdolBase({self.member_id}, "{self.full_name}", {self.group}, {self.year}, {self.subunit})'
@@ -109,7 +109,10 @@ class Idols():
 			Idols.all_idols.append(idol)
 			
 			Idols.by_first_name[idol.first_name] = idol
-			Idols.by_member_id[idol.member_id]   = idol
+			
+			# Add both enum and integer id
+			Idols.by_member_id[idol.member_id]         = idol
+			Idols.by_member_id[idol.member_id.value]   = idol
 			
 			Idols.by_year[idol.year].append(idol)
 			Idols.by_group[idol.group].append(idol)

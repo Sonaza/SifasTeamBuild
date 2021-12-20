@@ -1,0 +1,42 @@
+{% for school, cards in card_stats['event'].items() %}
+	<h2>{{ school.name }}</h2>
+	<table class="stats-table">
+		<colgroup>
+			<col style="width:38px" />
+            <col style="width:34%" />
+            <col style="width:28%" />
+            <col style="width:42%" />
+        </colgroup>
+		<tr>
+			<th colspan="2">Member Name</th>
+			<th colspan="2">Newest Event UR</th>
+		</tr>
+		{% for member, card, time_since in cards %}
+			<tr>
+				<td class="idol-icon" style="background-image:url('/img/icons/32/icon_{{ member.value }}_border.png')"></td>
+				<td>{{ Idols.by_member_id[member].full_name }}</td>
+				{% if is_valid_card(card) %}
+					<td>
+						{% if time_since.days > 0 %}
+							{{ time_since.days }} days ago
+						{% else %}
+							Will release in {{ -time_since.days }} days
+						{% endif %}
+					</td>
+					<td>
+						<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">
+							{{ card.get_card_name(True) }}
+						</a>
+					</td>
+				{% else %}
+					<td>
+						Never
+					</td>
+					<td>
+						&mdash;
+					</td>
+				{% endif %}
+			</tr>
+		{% endfor %}
+	</table>
+{% endfor %}

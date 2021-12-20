@@ -127,3 +127,9 @@ class SkillTarget(Enum):
 	SameMember    = 8
 	SameSubunit   = 9
 	Self          = 10
+	
+class Ordinal(): pass
+class SortingOrder(Enum):
+	Ascending  = 1
+	Descending = 2
+	
