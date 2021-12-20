@@ -36,7 +36,7 @@
 								{% elif time_since.days == 0: %}
 									Today
 								{% else %}
-									Will release in {{ -time_since.days }} days
+									Will release in {{ -time_since.days }} day{{ 's' if -time_since.days != 1 else '' }}
 								{% endif %}
 							</td>
 							<td>
