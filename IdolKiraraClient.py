@@ -6,6 +6,12 @@ from operator import itemgetter
 import time
 from datetime import datetime
 
+try:
+	from backports.datetime_fromisoformat import MonkeyPatch
+	MonkeyPatch.patch_fromisoformat()
+except Exception as e:
+	print(e)
+
 from IdolDatabase import *
 
 def chunked(seq, size):
