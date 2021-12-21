@@ -441,7 +441,7 @@ class CardRotations():
 		]
 		for data in idol_arrays:
 			self._render_and_save("attribute_type_array.html", f"pages/idol_arrays_{group_info[data[0]].tag}.html", {
-				'idol_arrays'  : [ data ],
+				'idol_arrays'        : [ data ],
 			})
 		
 		ur_rotations = [

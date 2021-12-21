@@ -289,7 +289,7 @@ class KiraraClient():
 		
 		if fields:
 			query = f"SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal {disgusting_hack}) WHERE {' AND '.join([x[0] for x in fields])} GROUP BY member_id ORDER BY ordinal ASC"
-			print(query)
+			# print(query)
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:
