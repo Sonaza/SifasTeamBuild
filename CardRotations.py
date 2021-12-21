@@ -299,8 +299,8 @@ class CardRotations():
 		for idol in Idols.by_group[group]:
 			default_group_list[idol.member_id] = None
 			
-			# if idol.member_id in member_delays[source]:
-			# 	cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays[source][idol.member_id])
+			if idol.member_id in member_delays[source]:
+				cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays[source][idol.member_id])
 
 		idols = self.client.get_idols(group=group, rarity=Rarity.UR, source=source)
 		for idol in idols:
