@@ -489,7 +489,7 @@ class CardRotations():
 			'grouped_rotations'  : event_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Event UR Rotations',
-			'page_description'   : 'Rotations for Event URs awarded in exchange and story events.',
+			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
 		})
 		
 		sr_sets = [
@@ -510,7 +510,7 @@ class CardRotations():
 			'general_stats'  : general_stats,
 			'card_stats'     : card_stats,
 			'categories'     : {
-				'event'      : ( "Event URs",         "Event URs awarded in exchange and story events." ),
+				'event'      : ( "Event URs",         "Event URs awarded in item exchange and story events." ),
 				'festival'   : ( "Festival URs",      "Festival limited URs scouted exclusively from All Stars Festival banners." ),
 				'party'      : ( "Party URs",         "Party limited URs scouted exclusively from Party Scouting banners." ),
 				'spotlight'  : ( "Party + Spotlight", "Party and Spotlight URs. Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),

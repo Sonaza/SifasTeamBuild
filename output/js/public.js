@@ -28,14 +28,14 @@ function storageAvailable(type)
 function load_params()
 {
 	let params;
-	
+
 	if (storageAvailable('localStorage'))
 	{
 		let paramsData = window.localStorage.getItem('params');
-		
+
 		if (paramsData && typeof paramsData == "string")
 			paramsData = JSON.parse(paramsData);
-		
+
 		if (!paramsData || !Number.isInteger(paramsData.version) || paramsData.version < defaultParams.version)
 		{
 			console.log("RESETTING PARAMS");
@@ -52,23 +52,74 @@ function load_params()
 		console.log("STORAGE NOT AVAILABEL!");
 		params = JSON.parse(JSON.stringify(defaultParams));
 	}
-	
+
 	return params;
 }
 
 const site_title = "SIFAS Card Rotations";
 
 const routes = [
-	{ title : 'UR Rotations',       basepath: '/ur-rotations', path: '/ur-rotations',      controller: 'MainController',  template: 'ur_rotations.html',           },
-	{ title : 'µ\'s Cards',         basepath: '/muse',         path: '/muse/:page?',       controller: 'MainController',  template: 'idol_arrays_muse.html',       },
-	{ title : 'Aqours Cards',       basepath: '/aqours',       path: '/aqours/:page?',     controller: 'MainController',  template: 'idol_arrays_aqours.html',     },
-	{ title : 'Nijigasaki Cards',   basepath: '/nijigasaki',   path: '/nijigasaki/:page?', controller: 'MainController',  template: 'idol_arrays_nijigasaki.html', },
-	{ title : 'Festival Rotations', basepath: '/festival',     path: '/festival',          controller: 'MainController',  template: 'festival_rotations.html',     },
-	{ title : 'Party Rotations',    basepath: '/party',        path: '/party',             controller: 'MainController',  template: 'party_rotations.html',        },
-	{ title : 'Event Rotations',    basepath: '/event',        path: '/event',             controller: 'MainController',  template: 'event_rotations.html',        },
-	{ title : 'SR Sets',            basepath: '/sr-sets',      path: '/sr-sets',           controller: 'MainController',  template: 'sr_sets.html',                },
-	{ title : 'Card Stats',         basepath: '/stats',        path: '/stats/:page?',      controller: 'StatsController', template: 'stats.html',                  },
+	{
+		title       : 'UR Rotations',
+		path        : '/ur-rotations',
+		controller  : 'MainController',
+		template    : 'ur_rotations.html',
+	},
+	{
+		title       : 'µ\'s Cards',
+		path        : '/muse/:page?',
+		controller  : 'MainController',
+		template    : 'idol_arrays_muse.html',
+		hasSubpages : true,
+	},
+	{
+		title       : 'Aqours Cards',
+		path        : '/aqours/:page?',
+		controller  : 'MainController',
+		template    : 'idol_arrays_aqours.html',
+		hasSubpages : true,
+	},
+	{
+		title       : 'Nijigasaki Cards',
+		path        : '/nijigasaki/:page?',
+		controller  : 'MainController',
+		template    : 'idol_arrays_nijigasaki.html',
+		hasSubpages : true,
+	},
+	{
+		title       : 'Festival Rotations',
+		path        : '/festival',
+		controller  : 'MainController',
+		template    : 'festival_rotations.html',
+	},
+	{
+		title       : 'Party Rotations',
+		path        : '/party',
+		controller  : 'MainController',
+		template    : 'party_rotations.html',
+	},
+	{
+		title       : 'Event Rotations',
+		path        : '/event',
+		controller  : 'MainController',
+		template    : 'event_rotations.html',
+	},
+	{
+		title       : 'SR Sets',
+		path        : '/sr-sets',
+		controller  : 'MainController',
+		template    : 'sr_sets.html',
+	},
+	{
+		title       : 'Card Stats',
+		path        : '/stats/:page?',
+		controller  : 'StatsController',
+		template    : 'stats.html',
+		hasSubpages : true,
+	},
 ];
+
+console.log(routes)
 
 const stats_subpages = {
 	'general'   : "General",
@@ -96,7 +147,7 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 			controller:  'MainController',
 			templateUrl: 'pages/main.html',
 		});
-		
+
 		for (const route of routes)
 		{
 			$routeProvider.when(route['path'], {
@@ -104,11 +155,11 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 				templateUrl: 'pages/' + route['template'],
 			})
 		}
-		
+
 		$routeProvider.otherwise({
 			redirectTo: '/',
 		});
-			
+
 		$locationProvider.hashPrefix('');
 		// $locationProvider.html5Mode(true);
 	}
@@ -136,7 +187,7 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 				return 'active';
 			}
 		}
-		
+
 		$scope.$on('update-title', function(nonsense, sub_title)
 		{
 			if ($location.path() == '/')
@@ -147,15 +198,25 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 			{
 				for (const route of routes)
 				{
-					if ($scope.isActive(route['basepath']))
+					let basepath = '/' + route['path'].split('/')[1];
+					
+					if ($scope.isActive(basepath))
 					{
-						$rootScope.title = route['title'] + " / " + sub_title + " &mdash; " + site_title;
+						console.log(route['path'], route);
+						if (route.hasSubpages)
+						{
+							$rootScope.title = route['title'] + " / " + sub_title + " &mdash; " + site_title;
+						}
+						else
+						{
+							$rootScope.title = route['title'] + " &mdash; " + site_title;
+						}
 						break;
 					}
 				}
 			}
 		})
-		
+
 	}
 ])
 
@@ -163,23 +224,23 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 	function($rootScope, $scope, $routeParams, $location)
 	{
 		$scope.loading = true;
-		
+
 		$scope.settings = {
 			use_idolized_thumbnails : true,
 			order_reversed          : false,
 		};
-		
+
 		$scope.active_page = $routeParams.page;
 		if ($scope.active_page === undefined)
 		{
 			$scope.active_page = 0;
 		}
-		
+
 		$scope.isActive = function(page)
 		{
 			return $scope.active_page == page;
 		}
-		
+
 		$scope.pageActive = function(page)
 		{
 			if ($scope.isActive(page))
@@ -190,11 +251,11 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 		
 		let page_subtitle = "Page " + (parseInt($scope.active_page) + 1);
 		$rootScope.$broadcast('update-title', page_subtitle);
-		
+
 		$scope.loading = false;
-		
+
 		window.scrollTo(0, 0);
-		
+
 		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}
 ])
@@ -203,18 +264,18 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 	function($rootScope, $scope, $routeParams, $location)
 	{
 		$scope.loading = true;
-		
+
 		$scope.active_page = $routeParams.page;
 		if ($scope.active_page === undefined)
 		{
 			$scope.active_page = 'general';
 		}
-		
+
 		$scope.isActive = function(page)
 		{
 			return $scope.active_page == page;
 		}
-		
+
 		$scope.pageActive = function(page)
 		{
 			if ($scope.isActive(page))
@@ -222,7 +283,7 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 				return 'active';
 			}
 		}
-		
+
 		$scope.get_subtitle = function(page)
 		{
 			if (stats_subpages[page])
@@ -231,14 +292,14 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 			}
 			return "";
 		}
-		
+
 		let page_subtitle = $scope.get_subtitle($scope.active_page);
 		$rootScope.$broadcast('update-title', page_subtitle);
-		
+
 		$scope.loading = false;
-		
+
 		window.scrollTo(0, 0);
-		
+
 		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}
 ])
@@ -255,7 +316,7 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 				$parse(attrs.pillButton).assign(scope, !$parse(attrs.pillButton)(scope));
 				scope.$apply();
 			});
-			
+
 			scope.$watch(attrs.pillButton, function(value)
 			{
 				if (value)
