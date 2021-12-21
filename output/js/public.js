@@ -119,8 +119,6 @@ const routes = [
 	},
 ];
 
-console.log(routes)
-
 const stats_subpages = {
 	'general'   : "General",
 	'event'     : "Event URs",
@@ -202,7 +200,6 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 					
 					if ($scope.isActive(basepath))
 					{
-						console.log(route['path'], route);
 						if (route.hasSubpages)
 						{
 							$rootScope.title = route['title'] + " / " + sub_title + " &mdash; " + site_title;
