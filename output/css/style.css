@@ -306,7 +306,7 @@ a:hover, a:active
 
 #side-nav .settings
 {
-	min-height: 12rem;
+	/*min-height: 12rem;*/
 	padding: 1rem 1.2rem;
 	margin: 1rem 0.5rem 0 0.5rem;
 	border-radius: 4px;
