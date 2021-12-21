@@ -5,6 +5,7 @@ import sqlite3 as sqlite
 from operator import itemgetter
 import time
 from datetime import datetime
+import platform
 
 try:
 	from backports.datetime_fromisoformat import MonkeyPatch
@@ -282,12 +283,17 @@ class KiraraClient():
 		if rarity     != None: fields.append(self._make_where_condition("rarity",   rarity))
 		if source     != None: fields.append(self._make_where_condition("source",   source))
 		
+		disgusting_hack = "DESC"
+		if platform.system() == 'Linux':
+			disgusting_hack = "ASC"
+		
 		if fields:
-			query = f"SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal DESC) WHERE {' AND '.join([x[0] for x in fields])} GROUP BY member_id ORDER BY ordinal ASC"
+			query = f"SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal {disgusting_hack}) WHERE {' AND '.join([x[0] for x in fields])} GROUP BY member_id ORDER BY ordinal ASC"
+			print(query)
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:
-			query = "SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal DESC) GROUP BY member_id ORDER BY ordinal ASC"
+			query = f"SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal {disgusting_hack}) GROUP BY member_id ORDER BY ordinal ASC"
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())
