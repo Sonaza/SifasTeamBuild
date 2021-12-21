@@ -458,7 +458,7 @@ class KiraraClient():
 		return self.convert_to_idol_object(result)
 
 
-client = KiraraClient()
+# client = KiraraClient()
 # client.cache_all_idols()
 # exit()
 

@@ -196,6 +196,8 @@ class CardRotations():
 	
 	def __init__(self):
 		self.client = KiraraClient()
+		self.client.cache_all_idols()
+		
 		self.jinja = Environment(
 		    # loader=FileSystemLoader(os.path.dirname(os.path.abspath(__file__)), encoding='utf-8'),
 		    loader=PackageLoader("CardRotations", encoding='utf-8'),
