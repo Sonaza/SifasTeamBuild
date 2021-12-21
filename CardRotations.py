@@ -35,6 +35,18 @@ def ordinalize(number):
 		
 	return f"{number}{suffix}"
 	
+def pluralize(number, singular, plural):
+	if abs(number) == 1:
+		return singular
+	else:
+		return plural
+
+def format_days(value, suffix=''):
+	if abs(value) > 0:
+		return f"{abs(value)} {pluralize(value, 'day', 'days')} {suffix}".strip()
+	
+	return "Today"
+	
 # def include_page(filepath):
 # 	filepath = os.path.join("output", filepath)
 # 	if not os.path.exists(filepath): return f"<h1>Error: {filepath} does not exist.</h1>"
@@ -420,6 +432,10 @@ class CardRotations():
 			Group.Nijigasaki : GroupInfo(tag="nijigasaki", name="Nijigasaki"),
 		}
 		
+		self.jinja.filters.update({
+			'days' : format_days,
+		})
+		
 		self.jinja.globals.update({
 			'Idols'     : Idols,
 			'Attribute' : [Attribute.Smile, Attribute.Pure, Attribute.Cool, Attribute.Active, Attribute.Natural, Attribute.Elegant, ],
@@ -430,8 +446,7 @@ class CardRotations():
 			'is_missing_card':   is_missing_card,
 			'is_nonextant_card': is_nonextant_card,
 			
-			'ordinalize' : ordinalize,
-			
+			'ordinalize' : ordinalize,	
 		})
 		
 		idol_arrays = [

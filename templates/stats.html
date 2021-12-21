@@ -144,11 +144,11 @@
 								{% if is_valid_card(card) %}
 									<td>
 										{% if time_since.days > 0 %}
-											{{ time_since.days }} day{{ 's' if time_since.days != 1 else '' }} ago
+											{{ time_since.days | days("ago") }}
 										{% elif time_since.days == 0: %}
 											Today
 										{% else %}
-											Will release in {{ -time_since.days }} day{{ 's' if -time_since.days != 1 else '' }}
+											Will release in {{ time_since.days | days }}
 										{% endif %}
 									</td>
 									<td class="thumbnail">
