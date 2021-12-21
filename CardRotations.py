@@ -47,6 +47,20 @@ def format_days(value, suffix=''):
 	
 	return "Today"
 	
+def make_random_string():
+	hashvalue = hash(datetime.now()) % 16711425
+	return f"{hashvalue:06x}"
+	
+def cache_buster(filename):
+	full_path = 'output' + filename
+	if not os.path.exists(full_path):
+		return filename
+		
+	modify_time = os.stat(full_path).st_mtime
+	name, ext = os.path.splitext(filename)
+	hashvalue = hash(modify_time) % 16711425
+	return f"{name}.{hashvalue:06x}{ext}"
+		
 # def include_page(filepath):
 # 	filepath = os.path.join("output", filepath)
 # 	if not os.path.exists(filepath): return f"<h1>Error: {filepath} does not exist.</h1>"
@@ -93,17 +107,26 @@ class CardThumbnails():
 				else:
 					print(" FAIL!")
 		
+		# return True
 		return has_new_thumbnails
 	
 	def make_atlas(self):
+		print("Making atlas...")
+		
 		from PIL import Image
 		
 		atlas_by_ordinal = {}
 		sizes = [80]
 		rarities = [Rarity.SR, Rarity.UR]
 		
+		atlas_hash = make_random_string()
+		
 		for rarity in rarities:
+			print(rarity.name)
+			
 			for group in Group:
+				print(group.name)
+				
 				cards = self.client.get_idols_by_group(group, rarity)
 				cards_per_girl = defaultdict(list)
 				for card in cards:
@@ -146,14 +169,17 @@ class CardThumbnails():
 						
 					atlas_normal.save(f'output/img/thumbnails/atlas_{group.value}_{rarity.value}_0_normal.png', 'PNG')
 					atlas_idolized.save(f'output/img/thumbnails/atlas_{group.value}_{rarity.value}_0_idolized.png', 'PNG')
+					print(f'Saved atlas_{group.value}_{rarity.value}_0')
 				
 		groups = []
 		for rarity in rarities:
 			for group in Group:
-				groups.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_normal.png') no-repeat; }}")
-				groups.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_idolized.png') no-repeat; }}")
+				groups.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_normal.{atlas_hash}.png') no-repeat; }}")
+				groups.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_idolized.{atlas_hash}.png') no-repeat; }}")
 				
 		with open("output/css/atlas.css", "w", encoding="utf8") as f:
+			print("Writing css... ")
+			
 			for line in groups:
 				f.write(line + "\n")
 			
@@ -162,6 +188,8 @@ class CardThumbnails():
 				f.write(line + "\n")
 			
 			f.close()
+			
+			print("Done")
 		
 
 class CardRotations():
@@ -426,6 +454,8 @@ class CardRotations():
 		return result
 	
 	def generate_pages(self):
+		from glob import glob
+		
 		group_info = {
 			Group.Muse       : GroupInfo(tag="muse",       name="µ's"),
 			Group.Aqours     : GroupInfo(tag="aqours",     name="Aqours"),
@@ -446,8 +476,15 @@ class CardRotations():
 			'is_missing_card':   is_missing_card,
 			'is_nonextant_card': is_nonextant_card,
 			
+			'make_random_string' : make_random_string,
+			'cache_buster' : cache_buster,
+			
 			'ordinalize' : ordinalize,	
 		})
+		
+		for file in glob("output/pages/*.html"):
+			print("Removing", file)
+			os.remove(file)
 		
 		idol_arrays = [
 			( Group.Muse,       *self.get_attribute_type_array(Group.Muse) ),
@@ -536,11 +573,8 @@ class CardRotations():
 			}
 		})
 		
-		self._render_and_save("main.html", "pages/main.html", {
-			
-		})
-		
-		# self._render_and_save("combined_layout.html", "index.html", {})
+		self._render_and_save("home.html", "pages/home.html", {})
+		self._render_and_save("main_layout.html", "index.html", {})
 		
 
 ##################################

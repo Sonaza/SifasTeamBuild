@@ -143,7 +143,7 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 	{
 		$routeProvider.when('/', {
 			controller:  'MainController',
-			templateUrl: 'pages/main.html',
+			templateUrl: 'pages/home.html',
 		});
 
 		for (const route of routes)

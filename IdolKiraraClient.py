@@ -11,7 +11,7 @@ try:
 	from backports.datetime_fromisoformat import MonkeyPatch
 	MonkeyPatch.patch_fromisoformat()
 except Exception as e:
-	print(e)
+	pass
 
 from IdolDatabase import *
 

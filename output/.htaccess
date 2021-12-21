@@ -74,6 +74,7 @@ FileETag None
     RewriteEngine On
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^(css|js)/(.+)\.([a-z0-9]{6})\.(bmp|css|cur|gif|ico|jpe?g|m?js|png|svgz?|webp|webmanifest)$ $1/$2.$4 [L]
+    RewriteRule ^(img/thumbnails)/(.+)\.([a-z0-9]{6})\.(bmp|css|cur|gif|ico|jpe?g|m?js|png|svgz?|webp|webmanifest)$ $1/$2.$4 [L]
 </IfModule>
 
 <IfModule mod_expires.c>
@@ -83,7 +84,7 @@ FileETag None
 
   # CSS
 
-    # ExpiresByType text/css                              "access plus 1 year"
+    ExpiresByType text/css                              "access plus 1 year"
 
 
   # Data interchange
@@ -136,10 +137,8 @@ FileETag None
     ExpiresByType audio/mpeg                            "access plus 1 month"
     ExpiresByType image/bmp                             "access plus 1 year"
     ExpiresByType image/gif                             "access plus 1 year"
-    
-    ExpiresByType image/jpeg                            "access plus 1 day"
-    ExpiresByType image/png                             "access plus 1 day"
-    
+    ExpiresByType image/jpeg                            "access plus 1 month"
+    ExpiresByType image/png                             "access plus 1 month"
     ExpiresByType image/svg+xml                         "access plus 1 year"
     ExpiresByType image/webp                            "access plus 1 year"
     ExpiresByType video/mp4                             "access plus 1 month"

@@ -5,10 +5,10 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
-	<link rel="stylesheet" href="/css/fonts.9f8cc7.css">
-	<link rel="stylesheet" href="/css/style.af686f.css">
-	<link rel="stylesheet" href="/css/idols.0190ef.css">
-	<link rel="stylesheet" href="/css/atlas.c9fb59.css">
+	<link rel="stylesheet" href="{{ cache_buster('/css/fonts.css') }}">
+	<link rel="stylesheet" href="{{ cache_buster('/css/style.css') }}">
+	<link rel="stylesheet" href="{{ cache_buster('/css/idols.css') }}">
+	<link rel="stylesheet" href="{{ cache_buster('/css/atlas.css') }}">
 	<meta property="og:url" content="https://sifas-cards.sonaza.com/">
 	<meta property="og:title" content="SIFAS Card Rotations">
 	<meta property="og:description" content="View card rotations and related statistics.">
@@ -89,6 +89,6 @@
 	<script src="/js/vendor/angular/angular.min.js"></script>
 	<script src="/js/vendor/angular/angular-route.min.js"></script>
 	<script src="/js/vendor/angular/angular-sanitize.js"></script>
-	<script src="/js/public.037fa5.js"></script>
+	<script src="{{ cache_buster('/js/public.js') }}"></script>
 </body>
 </html>
