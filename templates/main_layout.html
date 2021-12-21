@@ -82,8 +82,7 @@
 		</div>
 		<div id="footer-bottom">
 			<div class="details">
-				Last update performed at {{ last_update }}.
-				<span class="ng-cloak" ng-bind="time_since('{{ last_update_timestamp }}')"></span>
+				Last update performed at {{ last_update }}<span class="ng-cloak time-since-update" ng-bind="time_since('{{ last_update_timestamp }}')"></span>
 			</div>
 			<div class="disclaimer">
 				This website is not affiliated with Love Live!, KLab Inc., SUNRISE Inc., Bushiroad Inc. or any other associated company. Art copyright &copy; KLab Inc.
