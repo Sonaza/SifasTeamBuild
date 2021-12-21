@@ -203,6 +203,16 @@ a:hover, a:active
 	padding: 0.25rem 0;
 }
 
+/*#footer-bottom .details
+{
+	color: #A69CBD;
+}
+
+#footer-bottom .details .time-since-update
+{
+	color: #8778A8;
+}*/
+
 #footer a:link, #footer a:visited
 {
 	color: #DACCF8;

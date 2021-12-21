@@ -56,6 +56,36 @@ function load_params()
 	return params;
 }
 
+let pluralize = function(value, s, p)
+{
+	return new String(value) + " " + (value == 1 ? s : p);
+}
+
+let format_seconds = function(seconds_param)
+{
+	let days = Math.floor(seconds_param / 86400);
+	let hours = Math.floor(seconds_param % 86400 / 3600);
+	let minutes = Math.floor(seconds_param % 86400 % 3600 / 60);
+	let seconds = Math.floor(seconds_param % 86400 % 3600 % 60);
+	
+	if (days > 0)
+	{
+		return pluralize(days, "day", "days") + " ago";
+	}
+	
+	if (hours > 0)
+	{
+		return pluralize(hours, "hour", "hours") + " ago";
+	}
+	
+	if (minutes > 0)
+	{
+		return pluralize(minutes, "minute", "minutes") + " ago";
+	}
+	
+	return pluralize(seconds, "second", "seconds") + " ago";
+}
+
 const site_title = "SIFAS Card Rotations";
 
 const routes = [
@@ -124,8 +154,8 @@ const stats_subpages = {
 	'event'     : "Event URs",
 	'festival'  : "Festival URs",
 	'party'     : "Party URs",
-	'spotlight' : "Party + Spotlight",
 	'limited'   : "Festival + Party",
+	'spotlight' : "Party + Spotlight",
 	'gacha'     : "Any Gacha UR",
 	'ur'        : "Any UR",
 	'sr'        : "Any SR",
@@ -226,6 +256,11 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 			use_idolized_thumbnails : true,
 			order_reversed          : false,
 		};
+		
+		if ($routeParams.page === undefined)
+		{
+			window.scrollTo(0, 0);
+		}
 
 		$scope.active_page = $routeParams.page;
 		if ($scope.active_page === undefined)
@@ -251,9 +286,20 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 
 		$scope.loading = false;
 
-		window.scrollTo(0, 0);
-
 		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
+	}
+])
+
+.controller('FooterController', ['$rootScope', '$scope',
+	function($rootScope, $scope)
+	{
+		$scope.time_since = function(iso_timestamp)
+		{
+			let time = new Date(iso_timestamp);
+			if (!time) return "";
+			let secondsDiff = (new Date().getTime() - time.getTime()) / 1000;
+			return " (" + format_seconds(secondsDiff) + ")";
+		}
 	}
 ])
 
@@ -261,7 +307,12 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 	function($rootScope, $scope, $routeParams, $location)
 	{
 		$scope.loading = true;
-
+		
+		if ($routeParams.page === undefined)
+		{
+			window.scrollTo(0, 0);
+		}
+		
 		$scope.active_page = $routeParams.page;
 		if ($scope.active_page === undefined)
 		{
@@ -294,8 +345,6 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 		$rootScope.$broadcast('update-title', page_subtitle);
 
 		$scope.loading = false;
-
-		window.scrollTo(0, 0);
 
 		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}

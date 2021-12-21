@@ -577,8 +577,10 @@ class CardRotations():
 		
 		self._render_and_save("home.html", "pages/home.html", {})
 		
+		now = datetime.now(timezone.utc)
 		self._render_and_save("main_layout.html", "index.html", {
-			'last_update' : datetime.now(timezone.utc).strftime('%d %B %Y %H:%M %Z')
+			'last_update'           : now.strftime('%d %B %Y %H:%M %Z'),
+			'last_update_timestamp' : now.isoformat(),
 		})
 		
 

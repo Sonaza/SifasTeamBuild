@@ -16,7 +16,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 	<base href="/">
 </head>
-<body ng-controller="MainController as main">
+<body ng-controller="MainController">
 	<div id="header">
 		<div id="header-inner">
 			<h2 ng-bind-html="title">
@@ -69,7 +69,7 @@
 			</div>
 		</div>
 	</div>
-	<footer id="footer">
+	<footer id="footer" ng-controller="FooterController">
 		<div id="footer-top">
 			<div class="footer-top-inner">
 				<div style="width:40%">
@@ -83,6 +83,7 @@
 		<div id="footer-bottom">
 			<div class="details">
 				Last update performed at {{ last_update }}.
+				<span class="ng-cloak" ng-bind="time_since('{{ last_update_timestamp }}')"></span>
 			</div>
 			<div class="disclaimer">
 				This website is not affiliated with Love Live!, KLab Inc., SUNRISE Inc., Bushiroad Inc. or any other associated company. Art copyright &copy; KLab Inc.
