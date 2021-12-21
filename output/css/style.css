@@ -794,6 +794,18 @@ a:hover, a:active
 	border-right: none;
 }
 
+/*                         td.card-link a.card-link-idolized,
+.use-idolized-thumbnails td.card-link a.card-link-normal
+{
+	display: none;
+}
+
+                         td.card-link a.card-link-normal,
+.use-idolized-thumbnails td.card-link a.card-link-idolized
+{
+	display: inline-block;
+}*/
+
 .stats-table td.card-source
 {
 	color: #555;

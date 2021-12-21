@@ -160,7 +160,8 @@
 										{% if not data.show_source %}
 											colspan="2"
 										{% endif %}>
-										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">{{ card.get_card_name(True) }}</a>
+										{# <a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-normal" target="_blank">{{ card.get_card_name(False) }}</a> #}
+										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
 									</td>
 									{% if data.show_source %}
 										<td class="card-source">
