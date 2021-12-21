@@ -193,8 +193,13 @@ a:hover, a:active
 #footer-bottom
 {
 	margin: 0;
-	padding: 1rem 1.5rem;
 	text-align: center;
+}
+
+#footer-bottom .details,
+#footer-bottom .disclaimer
+{
+	padding: 1rem 1.5rem;
 }
 
 #footer a:link, #footer a:visited
