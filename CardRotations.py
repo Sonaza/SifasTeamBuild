@@ -516,7 +516,7 @@ class CardRotations():
 			'grouped_rotations'  : sr_sets,
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
-			'page_description'   : 'Rotations for SR sets. SR release order seems highly variable (and they do not fit into neat rotations) so this page the most likely to have errors.',
+			'page_description'   : 'Rotations for SR sets. SR release order seems highly variable (mainly Shioriko not fitting in neat cycles) so this page may or may not break.',
 		})
 		
 		general_stats = self.get_general_stats()
