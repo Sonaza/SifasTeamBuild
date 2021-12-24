@@ -424,6 +424,12 @@ a:hover, a:active
 	color: #5D2CC2;
 }
 
+#source-selector option
+{
+	font-weight: 700;
+	color: #222;
+}
+
 #main
 {
 	width: calc(100% - 220px);
