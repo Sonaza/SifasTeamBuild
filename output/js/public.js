@@ -295,6 +295,74 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		$scope.keydown = function($event)
 		{
 			if ($event.repeat) return;
+			
+			if (!($event.repeat || $event.ctrlKey || $event.altKey || $event.metaKey))
+			{
+				if ($event.keyCode == 83) // S-key
+	  			{
+	  				for (let i in highlight_options)
+	  				{
+	  					if (highlight_options[i].value == $scope.settings.highlight_source)
+	  					{
+	  						$event.preventDefault();
+	  						
+	  						if (!$event.shiftKey)
+	  						{
+	  							let nextIndex = parseInt(i) + 1; // fuck javascript such a shitty language
+	  						
+		  						if (nextIndex < highlight_options.length)
+		  						{
+		  							$scope.settings.highlight_source = highlight_options[nextIndex].value;
+		  						}
+		  						else
+		  						{
+		  							$scope.settings.highlight_source = highlight_options[0].value;
+		  						}
+	  						}
+	  						else
+	  						{
+	  							let prevIndex = parseInt(i) - 1; // fuck javascript such a shitty language
+		  						if (prevIndex >= 0)
+		  						{
+		  							$scope.settings.highlight_source = highlight_options[prevIndex].value;
+		  						}
+		  						else
+		  						{
+		  							$scope.settings.highlight_source = highlight_options[highlight_options.length-1].value;
+		  						}
+	  						}
+	  						return;
+	  					}
+	  				}
+	  			}
+	  			
+	  			if (!$event.shiftKey)
+	  			{
+		  			if ($event.keyCode == 81) // Q-key
+		  			{
+		  				$event.preventDefault();
+		  				$scope.settings.use_idolized_thumbnails = !$scope.settings.use_idolized_thumbnails;
+		  				return;
+		  			}
+		  			
+		  			if ($event.keyCode == 87) // W-key
+		  			{
+		  				$event.preventDefault();
+		  				$scope.settings.order_reversed	 = !$scope.settings.order_reversed;
+		  				return;
+		  			}
+		  			
+		  			if ($event.keyCode == 82) // R-key
+		  			{
+		  				$event.preventDefault();
+		  				$scope.settings.use_idolized_thumbnails = true;
+		  				$scope.settings.order_reversed          = false;
+		  				$scope.settings.highlight_source        = 0;
+		  				return;
+		  			}
+	  			}
+			}
+			
 			$rootScope.$broadcast('keydown', $event);
 		};
 	}
@@ -338,50 +406,7 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 		
 		$scope.$on('keydown', function(nonsense, e)
 		{
-			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
-			console.log(e);
-  			
-  			if (e.keyCode == 83) // S-key
-  			{
-  				for (let i in highlight_options)
-  				{
-  					if (highlight_options[i].value == $scope.settings.highlight_source)
-  					{
-  						e.preventDefault();
-  						
-  						if (!e.shiftKey)
-  						{
-  							let nextIndex = parseInt(i) + 1; // fuck javascript such a shitty language
-  						
-	  						if (nextIndex < highlight_options.length)
-	  						{
-	  							$scope.settings.highlight_source = highlight_options[nextIndex].value;
-	  						}
-	  						else
-	  						{
-	  							$scope.settings.highlight_source = highlight_options[0].value;
-	  						}
-  						}
-  						else
-  						{
-  							let prevIndex = parseInt(i) - 1; // fuck javascript such a shitty language
-	  						if (prevIndex >= 0)
-	  						{
-	  							$scope.settings.highlight_source = highlight_options[prevIndex].value;
-	  						}
-	  						else
-	  						{
-	  							$scope.settings.highlight_source = highlight_options[highlight_options.length-1].value;
-	  						}
-  						}
-  						
-  						// $scope.$apply();
-  						return;
-  					}
-  				}
-  			}
-  			
-  			if (e.shiftKey) return;
+			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
   			
   			if (num_pages !== undefined)
   			{
@@ -397,32 +422,6 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
   					}
 	  				return;
 	  			}
-  			}
-  			
-  			if (e.keyCode == 81) // Q-key
-  			{
-  				e.preventDefault();
-  				$scope.settings.use_idolized_thumbnails = !$scope.settings.use_idolized_thumbnails;
-  				// $scope.$apply();
-  				return;
-  			}
-  			
-  			if (e.keyCode == 87) // W-key
-  			{
-  				e.preventDefault();
-  				$scope.settings.order_reversed	 = !$scope.settings.order_reversed;
-  				// $scope.$apply();
-  				return;
-  			}
-  			
-  			if (e.keyCode == 82) // W-key
-  			{
-  				e.preventDefault();
-  				$scope.settings.use_idolized_thumbnails = true;
-  				$scope.settings.order_reversed          = false;
-  				$scope.settings.highlight_source        = 0;
-  				// $scope.$apply();
-  				return;
   			}
 		});
 		
