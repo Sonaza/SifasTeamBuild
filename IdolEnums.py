@@ -111,11 +111,6 @@ class Source(Enum):
 	Festival    = 6
 	Party       = 7
 	
-class SkillEffectParameter(Enum):
-	Stamina   = 9
-	Appeal    = 10
-	Technique = 11
-
 class SkillTarget(Enum):
 	All           = 1
 	Group         = 2

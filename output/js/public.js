@@ -168,8 +168,8 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 		$interpolateProvider.endSymbol(']]');
 	}
 )
-.config(['$routeProvider', '$locationProvider',
-	function($routeProvider, $locationProvider)
+
+app.config(function($routeProvider, $locationProvider)
 	{
 		$routeProvider.when('/', {
 			controller:  'MainController',
@@ -191,10 +191,9 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 		$locationProvider.hashPrefix('');
 		// $locationProvider.html5Mode(true);
 	}
-])
+)
 
-.controller('NavController', ['$rootScope', '$scope', '$routeParams', '$location',
-	function($rootScope, $scope, $routeParams, $location)
+app.controller('NavController', function($rootScope, $scope, $routeParams, $location)
 	{
 		$scope.isActive = function(viewLocation, exact_match)
 		{
@@ -245,17 +244,65 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 		})
 
 	}
-])
+)
 
-.controller('MainController', ['$rootScope', '$scope', '$routeParams', '$location',
-	function($rootScope, $scope, $routeParams, $location)
+const highlight_options = [
+	{ 'value' : 0, 'label' : 'No Highlighting' },
+	{ 'value' : 1, 'label' : 'Initial Cards' },
+	{ 'value' : 2, 'label' : 'Events & SBL' },
+	{ 'value' : 3, 'label' : 'Gacha Banners' },
+	{ 'value' : 5, 'label' : 'Spotlight Banners' },
+	{ 'value' : 6, 'label' : 'Festival Banners' },
+	{ 'value' : 7, 'label' : 'Party Banners' },
+]
+
+app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location)
 	{
-		$scope.loading = true;
-
 		$scope.settings = {
 			use_idolized_thumbnails : true,
 			order_reversed          : false,
+			highlight_source        : 0,
 		};
+		
+		$scope.highlight_options = highlight_options;
+		$scope.active_settings = function()
+		{
+			let output = [];
+			
+			if ($scope.settings.use_idolized_thumbnails)
+			{
+				output.push('use-idolized-thumbnails');
+			}
+			
+			if ($scope.settings.order_reversed)
+			{
+				output.push('order-reversed');
+			}
+			
+			output.push('source-highlight-' + $scope.settings.highlight_source);
+			if ($scope.settings.highlight_source == 0)
+			{
+				output.push('source-highlighting-inactive');
+			}
+			else if ($scope.settings.highlight_source != 0)
+			{
+				output.push('source-highlighting-active');
+			}
+			
+			return output.join(' ');
+		}
+		
+		$scope.keydown = function($event)
+		{
+			if ($event.repeat) return;
+			$rootScope.$broadcast('keydown', $event);
+		};
+	}
+)
+
+app.controller('MainController', function($rootScope, $scope, $route, $routeParams, $location)
+	{
+		$scope.loading = true;
 		
 		if ($routeParams.page === undefined)
 		{
@@ -281,6 +328,104 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 			}
 		}
 		
+		let num_pages = undefined;
+		let page_selector = document.querySelector('.array-group-page-selector');
+		if (page_selector)
+		{
+			num_pages = parseInt(page_selector.getAttribute('data-num-pages'));
+		}
+		console.log(page_selector, num_pages);
+		
+		$scope.$on('keydown', function(nonsense, e)
+		{
+			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
+			console.log(e);
+  			
+  			if (e.keyCode == 83) // S-key
+  			{
+  				for (let i in highlight_options)
+  				{
+  					if (highlight_options[i].value == $scope.settings.highlight_source)
+  					{
+  						e.preventDefault();
+  						
+  						if (!e.shiftKey)
+  						{
+  							let nextIndex = parseInt(i) + 1; // fuck javascript such a shitty language
+  						
+	  						if (nextIndex < highlight_options.length)
+	  						{
+	  							$scope.settings.highlight_source = highlight_options[nextIndex].value;
+	  						}
+	  						else
+	  						{
+	  							$scope.settings.highlight_source = highlight_options[0].value;
+	  						}
+  						}
+  						else
+  						{
+  							let prevIndex = parseInt(i) - 1; // fuck javascript such a shitty language
+	  						if (prevIndex >= 0)
+	  						{
+	  							$scope.settings.highlight_source = highlight_options[prevIndex].value;
+	  						}
+	  						else
+	  						{
+	  							$scope.settings.highlight_source = highlight_options[highlight_options.length-1].value;
+	  						}
+  						}
+  						
+  						// $scope.$apply();
+  						return;
+  					}
+  				}
+  			}
+  			
+  			if (e.shiftKey) return;
+  			
+  			if (num_pages !== undefined)
+  			{
+	  			let number = parseInt(e.key);
+	  			if (number !== undefined)
+	  			{
+	  				if (number == 0) number = 10;
+  					let index = number - 1;
+  					if (index < num_pages)
+  					{
+		  				e.preventDefault();
+		  				$route.updateParams({'page': number - 1});
+  					}
+	  				return;
+	  			}
+  			}
+  			
+  			if (e.keyCode == 81) // Q-key
+  			{
+  				e.preventDefault();
+  				$scope.settings.use_idolized_thumbnails = !$scope.settings.use_idolized_thumbnails;
+  				// $scope.$apply();
+  				return;
+  			}
+  			
+  			if (e.keyCode == 87) // W-key
+  			{
+  				e.preventDefault();
+  				$scope.settings.order_reversed	 = !$scope.settings.order_reversed;
+  				// $scope.$apply();
+  				return;
+  			}
+  			
+  			if (e.keyCode == 82) // W-key
+  			{
+  				e.preventDefault();
+  				$scope.settings.use_idolized_thumbnails = true;
+  				$scope.settings.order_reversed          = false;
+  				$scope.settings.highlight_source        = 0;
+  				// $scope.$apply();
+  				return;
+  			}
+		});
+		
 		let page_subtitle = "Page " + (parseInt($scope.active_page) + 1);
 		$rootScope.$broadcast('update-title', page_subtitle);
 
@@ -288,10 +433,9 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 
 		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}
-])
+)
 
-.controller('FooterController', ['$rootScope', '$scope',
-	function($rootScope, $scope)
+app.controller('FooterController', function($rootScope, $scope)
 	{
 		$scope.time_since = function(iso_timestamp)
 		{
@@ -301,10 +445,9 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 			return " (" + format_seconds(secondsDiff) + ")";
 		}
 	}
-])
+)
 
-.controller('StatsController', ['$rootScope', '$scope', '$routeParams', '$location',
-	function($rootScope, $scope, $routeParams, $location)
+app.controller('StatsController', function($rootScope, $scope, $route, $routeParams, $location)
 	{
 		$scope.loading = true;
 		
@@ -340,6 +483,31 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 			}
 			return "";
 		}
+		
+		$scope.$on('keydown', function(nonsense, e)
+		{
+  			if (e.repeat || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+  			
+  			console.log(e);
+  			
+  			let number = parseInt(e.key);
+  			if (number !== undefined)
+  			{
+  				if (number == 0) number = 10;
+  				let index = number - 1;
+  				
+  				let keys = Object.keys(stats_subpages);
+  				console.log(number, keys);
+  				
+  				if (index < keys.length)
+  				{
+  					e.preventDefault();
+	  				$route.updateParams({'page': keys[index]});
+	  				// $scope.$apply();
+	  				return;
+  				}
+  			}
+  		});
 
 		let page_subtitle = $scope.get_subtitle($scope.active_page);
 		$rootScope.$broadcast('update-title', page_subtitle);
@@ -348,9 +516,9 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 
 		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}
-])
+)
 
-.directive('pillButton', ['$parse', function ($parse)
+app.directive('pillButton', function ($parse)
 {
 	return {
 		restrict: 'A',
@@ -376,4 +544,19 @@ var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 			});
 		}
 	}
-}])
+})
+
+
+// app.directive('shitface', function ($document)
+// {
+// 	return {
+// 		// restrict: 'E',
+// 		link: function()
+// 		{
+// 			$document.keydown(function(e)
+// 			{
+// 			   console.log(e);
+// 			})
+// 		}
+// 	}
+// })

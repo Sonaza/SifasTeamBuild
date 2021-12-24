@@ -16,7 +16,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 	<base href="/">
 </head>
-<body ng-controller="MainController">
+<body ng-controller="BaseController" ng-class="active_settings()" ng-keydown="keydown($event)" tabindex="0">
 	<div id="header">
 		<div id="header-inner">
 			<h2 ng-bind-html="title">
@@ -31,13 +31,16 @@
 					<ul>
 						<li><a href="#/"             ng-class="classActive('/', true)">Home</a></li>
 						<li><a href="#/ur-rotations" ng-class="classActive('/ur-rotations')">UR Rotations</a></li>
+						<li class="spacer"></li>
 						<li><a href="#/muse"         ng-class="classActive('/muse')">µ's Cards</a></li>
 						<li><a href="#/aqours"       ng-class="classActive('/aqours')">Aqours Cards</a></li>
 						<li><a href="#/nijigasaki"   ng-class="classActive('/nijigasaki')">Nijigasaki Cards</a></li>
+						<li class="spacer"></li>
 						<li><a href="#/festival"     ng-class="classActive('/festival')">Festival Rotations</a></li>
 						<li><a href="#/party"        ng-class="classActive('/party')">Party Rotations</a></li>
 						<li><a href="#/event"        ng-class="classActive('/event')">Event Rotations</a></li>
 						<li><a href="#/sr-sets"      ng-class="classActive('/sr-sets')">SR Sets</a></li>
+						<li class="spacer"></li>
 						<li><a href="#/stats"        ng-class="classActive('/stats')">Card Stats</a></li>
 					</ul>
 					<div class="settings">
@@ -57,10 +60,16 @@
 								Newest First
 							</div>
 						</div>
+						<div>
+							<select id="source-selector" class="ng-cloak" ng-model="settings.highlight_source">
+								<option disabled>&mdash; Source Highlight &mdash;</option>
+								<option ng-repeat="option in highlight_options" ng-value="option.value">[[ option.label ]]</option>
+							</select>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div id="main" class="" ng-class="{'use-idolized-thumbnails' : settings.use_idolized_thumbnails, 'order-reversed' : settings.order_reversed}">
+			<div id="main">
 				<div id="main-inner">
 					<div class="main-content" ng-view>
 
@@ -89,9 +98,9 @@
 			</div>
 		</div>
 	</footer>
-	<script src="/js/vendor/angular/angular.min.js"></script>
+	<script src="/js/vendor/angular/angular.js"></script>
 	<script src="/js/vendor/angular/angular-route.min.js"></script>
-	<script src="/js/vendor/angular/angular-sanitize.js"></script>
+	<script src="/js/vendor/angular/angular-sanitize.min.js"></script>
 	<script src="{{ cache_buster('/js/public.js') }}"></script>
 </body>
 </html>

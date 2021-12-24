@@ -35,17 +35,25 @@ def ordinalize(number):
 		
 	return f"{number}{suffix}"
 	
-def pluralize(number, singular, plural):
-	if abs(number) == 1:
-		return singular
+def pluralize(value, singular, plural):
+	if abs(value) == 1:
+		return f"{abs(value)} {singular}"
 	else:
-		return plural
+		return f"{abs(value)} {plural}"
 
-def format_days(value, suffix=''):
-	if abs(value) > 0:
-		return f"{abs(value)} {pluralize(value, 'day', 'days')} {suffix}".strip()
+def format_days(value):
+	if value > 0:
+		return f"{pluralize(value, 'day', 'days')} ago"
+	elif value == 0:
+		return "Today"
+	else:
+		return f"In {pluralize(value, 'day', 'days')}"
 	
-	return "Today"
+def css(classname, condition):
+	if condition:
+		return classname
+	else:
+		return ''
 	
 def make_random_string():
 	hashvalue = hash(datetime.now()) % 16711425
@@ -87,7 +95,7 @@ class CardThumbnails():
 	def download_thumbnails(self):
 		has_new_thumbnails = False
 		
-		cards = self.client.get_all_idols()
+		cards = self.client.get_all_idols(with_json=True)
 		for card in cards:
 			normal_path = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_normal.png"
 			if not os.path.exists(normal_path):
@@ -465,7 +473,7 @@ class CardRotations():
 		}
 		
 		self.jinja.filters.update({
-			'days' : format_days,
+			'format_days' : format_days,
 		})
 		
 		self.jinja.globals.update({
@@ -477,6 +485,8 @@ class CardRotations():
 			'is_valid_card':     is_valid_card,
 			'is_missing_card':   is_missing_card,
 			'is_nonextant_card': is_nonextant_card,
+			
+			'css' : css,
 			
 			'make_random_string' : make_random_string,
 			'cache_buster' : cache_buster,

@@ -59,7 +59,7 @@ class Idol(IdolBase):
 
 #########################################################
 
-number_of_bangles = 0
+number_of_bangles = 2
 crit_power = 1.8 * (1 + number_of_bangles * 0.2)
 
 idols = [
@@ -151,11 +151,11 @@ idols = [
 print("Card | Effective Appeal (incl. self buffs) | Crit Rate")
 print("-- | -- | --")
 
-# for idol in sorted(idols, reverse = True):
-# 	idol.set_song_modifiers(Attribute.Natural, modifiers=(1.2, 0.8))
+for idol in sorted(idols, reverse = True):
+	idol.set_song_modifiers(Attribute.Cool, modifiers=(1.2, 0.75))
 
 for idol in sorted(idols, reverse = True):
-	if idol.data.type != Type.Sk and idol.data.type != Type.Gd:
+	if idol.data.type != Type.Sk :
 		continue
 		
 	print(idol)

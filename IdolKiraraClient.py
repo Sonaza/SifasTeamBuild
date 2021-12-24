@@ -4,7 +4,7 @@ import re
 import sqlite3 as sqlite
 from operator import itemgetter
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 import platform
 
 try:
@@ -24,20 +24,45 @@ class KiraraClientValueError(KiraraClientException): pass
 
 class KiraraClientNotFound(KiraraClientException): pass
 class KiraraClientPartialResult(KiraraClientException): pass
+
+class KiraraIdolLazyLoader():
+	def __init__(self, ordinal):
+		self.ordinal = ordinal
+		self.data_loaded 
+		self.data = {}
+	
+	def __getitem__(self, key):
+		pass
+	
+# class KiraraIdolSkill():
 	
 class KiraraIdol():
-	def __init__(self, data):
-		self.ordinal      = data['ordinal']
-		self.id           = data['id']
-		self.member_id    = Member(data['member_id'])
-		self.group_id     = Group(data['group_id'])
-		self.subunit_id   = Subunit(data['subunit_id'])
-		self.type         = Type(data['type'])
-		self.attribute    = Attribute(data['attribute'])
-		self.rarity       = Rarity(data['rarity'])
-		self.source       = Source(data['source'])
-		self.release_date = datetime.fromisoformat(data['release_date'])
-		self.data         = json.loads(data['json'])
+	def __init__(self, client, data):
+		self._client        = client
+		
+		self.ordinal        = data['ordinal']
+		self.id             = data['id']
+		
+		self.member_id      = Member(data['member_id'])
+		self.group_id       = Group(data['group_id'])
+		self.subunit_id     = Subunit(data['subunit_id'])
+		
+		self.normal_name    = data['normal_name']
+		self.idolized_name  = data['idolized_name']
+		
+		self.type           = Type(data['type'])
+		self.attribute      = Attribute(data['attribute'])
+		self.rarity         = Rarity(data['rarity'])
+		
+		self.source         = Source(data['source'])
+		
+		self.release_date   = datetime.fromisoformat(data['release_date'])
+		
+		try:
+			self.data = json.loads(data['json'])
+		except IndexError:
+			self.data = {}
+			# self.data = KiraraIdolLazyLoader()
 		
 		self.modifiers = (Attribute.Unset, Type.Unset, 1, 1)
 	
@@ -51,9 +76,9 @@ class KiraraIdol():
 	
 	def get_card_name(self, idolized : bool):
 		if idolized:
-			return self.data['idolized_appearance']['name'].strip()
-		
-		return self.data['normal_appearance']['name']
+			return self.idolized_name
+		else:
+			return self.normal_name
 	
 	def set_song_modifiers(self, matching_attribute = Attribute.Unset, matching_type = Type.Unset, modifiers = (1, 1)):
 		self.modifiers = (matching_attribute, matching_type, modifiers[0], modifiers[1])
@@ -113,8 +138,6 @@ class KiraraIdol():
 #-----------------------------------------------------------------------------------------------------------------------
 
 class KiraraClient():
-	Database = {}
-	
 	DatabaseFile = "idols.sqlite"
 	
 	Endpoints = {
@@ -140,34 +163,58 @@ class KiraraClient():
 	
 	def _create_tables(self):
 		schemas = [
-			# Passive skills
-			'''CREATE TABLE `passives` (
-				`id`          INTEGER PRIMARY KEY AUTOINCREMENT,
-				`parameter`   INTEGER,
-				`values`      TEXT,
-				`target`      INTEGER,
-				`target_data` TEXT
-			)''',
+			# Database params
+			'''CREATE TABLE `parameters` (
+				`key`         TEXT UNIQUE NOT NULL,
+				`value`       TEXT,
+			    PRIMARY KEY(`key`)
+			) WITHOUT ROWID''',
+			
+			# Idols json table
+			'''CREATE TABLE `idols_json` (
+			    `ordinal`           INTEGER UNIQUE,
+			    `json`              TEXT,
+			    PRIMARY KEY(`ordinal`)
+			) WITHOUT ROWID''',
 			
 			# Idols table
 			'''CREATE TABLE `idols` (
-			    `ordinal`           INTEGER UNIQUE,
-			    `id`                INTEGER UNIQUE,
+			    `id`                INTEGER UNIQUE NOT NULL,
+			    `ordinal`           INTEGER UNIQUE NOT NULL,
 			    `member_id`         INTEGER,
 			    `group_id`          INTEGER,
 			    `subunit_id`        INTEGER,
+			    `normal_name`       TEXT,
+			    `idolized_name`     TEXT,
 			    `attribute`         INTEGER,
 			    `type`              INTEGER,
 			    `rarity`            INTEGER,
 			    `source`            INTEGER,
 			    `release_date`      INTEGER,
-			    `primary_passive`   INTEGER,
-			    `secondary_passive` INTEGER,   
-			    `json`              TEXT,
-			    PRIMARY KEY(`ordinal`, `id`),
-			    FOREIGN KEY(`primary_passive`)   REFERENCES passives(`id`),
-			    FOREIGN KEY(`secondary_passive`) REFERENCES passives(`id`)
+			    PRIMARY KEY(`id`, `ordinal`)
 			) WITHOUT ROWID''',
+			
+			# Passive skills
+			# '''CREATE TABLE `skills` (
+			# 	`skill_id`            INTEGER PRIMARY KEY,
+			# 	`name`                TEXT,
+			# 	`description`         TEXT,
+			# 	`trigger_type`        INTEGER,
+			# 	`trigger_probability` INTEGER,
+			# 	`effect_type`         INTEGER,
+			# 	`target`              INTEGER,
+			# 	`levels`              TEXT,
+			# ) WITHOUT ROWID''',
+			
+			# Idols skills table
+			# '''CREATE TABLE `idols_skills` (
+			#     `ordinal`           INTEGER UNIQUE,
+			#     `primary_passive`   INTEGER,
+			#     `secondary_passive` INTEGER,
+			#     PRIMARY KEY(`ordinal`),
+			#     FOREIGN KEY(`primary_passive`)   REFERENCES skills(`id`),
+			#     FOREIGN KEY(`secondary_passive`) REFERENCES skills(`id`)
+			# ) WITHOUT ROWID''',
 		]
 		
 		for schema in schemas:
@@ -175,35 +222,229 @@ class KiraraClient():
 				self.db.execute(schema)
 			except sqlite.OperationalError as e:
 				error_str = str(e)
-				if not ('table' in error_str and 'already exists' in error_str): raise e
+				if not ('table' in error_str and 'already exists' in error_str):
+					print(schema)
+					raise e
 				
 		self.dbcon.commit()
+		
+	def database_needs_update(self):
+		query = "SELECT value FROM parameters WHERE key = 'last_database_update'"
+		self.db.execute(query)
+		data = self.db.fetchone()
+		if data == None: return True
+		
+		now = datetime.now(timezone.utc)
+		try:
+			last_update = datetime.fromisoformat(data['value'])
+		except:
+			return True
+		
+		# Update database if it has been over 12 hours
+		last_update_seconds = (now - last_update).seconds
+		print(f"{last_update_seconds / 3600:0.1f} hours since the last database update.")
+		return last_update_seconds > 12 * 3600
+		
+	def refresh_last_update_time(self):
+		query = "INSERT OR REPLACE INTO parameters (key, value) VALUES ('last_database_update', ?)"
+		self.db.execute(query, [datetime.now(timezone.utc).isoformat()])
+		self.dbcon.commit()
+	
+	def _make_insert_query(self, table, data):
+		columns = ', '.join(data.keys())
+		values = ', '.join([f":{key}"  for key in data.keys()])
+		return f"""INSERT INTO {table} ({columns}) VALUES ({values})"""
+	
+	def _make_where_placeholders(self, data):
+		return ', '.join(['?'] * len(data))
+		
+	def _query_idol_data_by_ordinal(self, ordinals):
+		query = f"""SELECT * FROM idols_json
+		            WHERE ordinal IN ({self._make_where_placeholders(ordinals)})"""
+		self.db.execute(query, ordinals)
+		
+		idols_data = []
+		
+		existing_ordinals = []
+		for ordinal, json_data in self.db.fetchall():
+			existing_ordinals.append(ordinal)
+			idols_data.append(json.loads(json_data))
+			ordinals.remove(ordinal)
+		
+		print("existing_ordinals", existing_ordinals)
+		if existing_ordinals:
+			if ordinals:
+				print("Some idols were already present in database json archive.")
+			else:
+				print("All idols were already present in database json archive. No need to query Kirara database.")
+		
+		if ordinals:
+			print("Requesting data from Kirara database...")
+			
+			query_ordinals = ','.join([str(x) for x in ordinals])
+			url = KiraraClient.Endpoints['by_ordinal'].format(query_ordinals)
+			r = requests.get(url)
+			print("Request result code:", r.status_code)
+			
+			time.sleep(0.5)
+			
+			if r.status_code == 404:
+				raise KiraraClientNotFound(f"No result with given ordinals: {list(ordinals)}")
+			
+			if r.status_code != 200:
+				raise KiraraClientException("Endpoint status not OK")
+			
+			response_data = r.json()
+			if 'result' not in response_data:
+				raise KiraraClientException("Response data does not contain result")
+		
+			idols_data.extend(response_data['result'])
+		
+			result_ordinals = set()
+			for card in data:
+				result_ordinals.add(card['ordinal'])
+			
+			if not all(x in result_ordinals for x in ordinals):
+				partial_result = [x for x in ordinals if x in result_ordinals]
+				raise KiraraClientPartialResult(f"Partial result with given ordinals. Missing: {partial_result}")
+		
+		for card in sorted(idols_data, key=itemgetter('ordinal')):
+			idol_info = Idols.by_member_id[card['member']]
+			
+			if card['ordinal'] not in existing_ordinals:
+				serialized = {
+					'ordinal'           : card['ordinal'],
+					'json'              : json.dumps(card),
+				}
+				query = self._make_insert_query('idols_json', serialized)
+				self.db.execute(query, serialized)
+			
+			serialized = {
+				'id'                : card['id'],
+				'ordinal'           : card['ordinal'],
+				'member_id'         : card['member'],
+				'group_id'          : idol_info.group.value,
+				'subunit_id'        : idol_info.subunit.value,
+				'normal_name'       : card['normal_appearance']['name'].strip(),
+				'idolized_name'     : card['idolized_appearance']['name'].strip(),
+				'attribute'         : card['attribute'],
+				'type'              : card['role'],
+				'rarity'            : card['rarity'],
+				'source'            : card['source'],
+				'release_date'      : card['release_dates']['jp'],
+			}
+			query = self._make_insert_query('idols', serialized)
+			self.db.execute(query, serialized)
+		
+		
+		# for card in sorted(data['result'], key=itemgetter('ordinal')):
+		
+		# card_skills = {}
+		
+		# fields = ["parameter", "values", "target", "target_data"]
+		# query_fields = ', '.join([f"'{name}'" for name in fields])
+		# query_keys   = ', '.join([f":{name}"  for name in fields])
+		
+		# for card in data['result']:
+		# 	card_skills[card['ordinal']] = [(None, None), (None, None)]
+			
+		# 	passive_skill = card['passive_skills'][0]
+			
+		# 	targets_data = [passive_skill['target'], passive_skill['target_2']]
+		# 	levels_data = [passive_skill['levels'], passive_skill['levels_2']]
+			
+		# 	for skill_index, target_data, levels in zip([0, 1], targets_data, levels_data):
+		# 		if target_data == None or levels == None:
+		# 			assert(target_data == None and levels == None)
+		# 			break
+				
+		# 		parameter = levels[0][1]
+		# 		values = [x[2] for x in levels]
+				
+		# 		# print(target_data)
+		# 		target = self.determine_skill_target(target_data, card).value
+				
+		# 		serialized = {
+		# 			'parameter'   : parameter,
+		# 			'values'      : json.dumps(values),
+		# 			'target'      : target,
+		# 			'target_data' : json.dumps(target_data),
+		# 		}
+				
+		# 		query = "INSERT INTO 'skills_passive' ({}) VALUES ({})".format(query_fields, query_keys)
+		# 		self.db.execute(query, serialized)
+				
+		# 		passive_id = self.db.lastrowid
+		# 		print(passive_id)
+				
+		# 		card_skills[card['ordinal']][skill_index] = (passive_id, serialized)
+		
+		# query_data = []
+		
+		self.dbcon.commit()
+		
+		return True
 	
 	def cache_all_idols(self):
+		if not self.database_needs_update():
+			print("No need to update database right now.")
+			return
+			
+		self.refresh_last_update_time()
+		
+		print("Updating database...")
+		
 		url = KiraraClient.Endpoints['id_list']
 		r = requests.get(url)
 		if r.status_code != 200:
 			raise KiraraClientException("Endpoint status not OK")
 		
-		data = r.json()
+		response_data = r.json()
+		if 'result' not in response_data:
+			raise KiraraClientException("Response data does not contain result")
+		
+		idols_data = response_data['result']
+		print(f"Received {len(idols_data)} ordinals from Kirara database.")
+		
+		missing_ordinals = []
 		existing_ordinals = set([x[0] for x in self.db.execute("SELECT ordinal FROM 'idols'")])
-		
-		ordinals = []
-		for card in data['result']:
+		for card in idols_data:
 			if card['ordinal'] not in existing_ordinals:
-				ordinals.append(card['ordinal'])
+				missing_ordinals.append(card['ordinal'])
 		
-		for x in chunked(ordinals, 20):
-			print(x)
-			self.get_idols_by_ordinal(x)
-			time.sleep(0.5)
+		print(f"Missing {len(missing_ordinals)} in the local database.")
+				
+		for ordinals_chunk in chunked(missing_ordinals, 20):
+			print("Querying chunk: ", ordinals_chunk)
+			self._query_idol_data_by_ordinal(ordinals_chunk)
 	
 	######################################################################
 	
-	def get_all_idols(self):
-		query = "SELECT * FROM 'idols' ORDER BY ordinal"
+	def get_all_idols(self, with_json = False):
+		if with_json:
+			query = f"""SELECT idols.*, idols_json.json FROM idols
+			            LEFT JOIN idols_json ON idols.ordinal = idols_json.ordinal
+			            ORDER BY ordinal"""
+		else:
+			query = f"""SELECT * FROM idols
+			            ORDER BY ordinal"""
+		            
 		self.db.execute(query)
 		return self.convert_to_idol_object(self.db.fetchall())
+		
+	def get_all_idol_thumbnails(self):
+		query = f"""SELECT * FROM idols_json
+		            ORDER BY ordinal"""
+		self.db.execute(query)
+		
+		output = []
+		for data in self.db.fetchall():
+			json_data = json.loads(data['json'])
+			output.append(( data['ordinal'], {
+				'normal'   : json_data['normal_appearance']['thumbnail_asset_path'],
+				'idolized' : json_data['idolized_appearance']['thumbnail_asset_path'],
+			}))
+		return output
 	
 	def _get_column_from_type(self, column_type, prefix = None):
 		if column_type == None:
@@ -211,12 +452,12 @@ class KiraraClient():
 			
 		data_columns = {
 			Member    : 'member_id',
-			Type      : 'type',
-			Attribute : 'attribute',
 			Group     : 'group_id',
 			Subunit   : 'subunit_id',
-			Source    : 'source',
+			Type      : 'type',
+			Attribute : 'attribute',
 			Rarity    : 'rarity',
+			Source    : 'source',
 			Ordinal   : 'ordinal',
 		}
 		if column_type not in data_columns:
@@ -253,11 +494,14 @@ class KiraraClient():
 			order = "DESC"
 		
 		if fields:
-			query = f"SELECT * FROM 'idols' WHERE {' AND '.join([x[0] for x in fields])} {group_by} ORDER BY {order_by} {order}"
+			query = f"""SELECT * FROM 'idols'
+			            WHERE {' AND '.join([x[0] for x in fields])} {group_by}
+			            ORDER BY {order_by} {order}"""
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:
-			query = f"SELECT * FROM 'idols' {group_by} ORDER BY {order_by} {order}"
+			query = f"""SELECT * FROM 'idols' {group_by}
+			            ORDER BY {order_by} {order}"""
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())
@@ -273,7 +517,7 @@ class KiraraClient():
 		
 	def _make_where_condition(self, column, data):
 		if isinstance(data, list):
-			return (f"{column} IN ({', '.join(['?'] * len(data))})", [x.value for x in data])
+			return (f"{column} IN ({self._make_where_placeholders(data)})", [x.value for x in data])
 		else:
 			return (f"{column} = ?", [data.value])
 	
@@ -283,27 +527,33 @@ class KiraraClient():
 		if rarity     != None: fields.append(self._make_where_condition("rarity",   rarity))
 		if source     != None: fields.append(self._make_where_condition("source",   source))
 		
-		disgusting_hack = "DESC"
-		if platform.system() == 'Linux':
-			disgusting_hack = "ASC"
-		
 		if fields:
-			query = f"SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal {disgusting_hack}) WHERE {' AND '.join([x[0] for x in fields])} GROUP BY member_id ORDER BY ordinal ASC"
+			query = f"""SELECT * FROM 'idols'
+			            WHERE ordinal IN (
+			            	SELECT MAX(ordinal) FROM 'idols'
+			            	WHERE {' AND '.join([x[0] for x in fields])}
+			            	GROUP BY member_id
+			            )
+			            ORDER BY ordinal ASC"""
 			# print(query)
-			values = [value for x in fields for value in x[1]]
-			self.db.execute(query, values)
+			self.db.execute(query, [value for x in fields for value in x[1]])
 		else:
-			query = f"SELECT * FROM (SELECT * FROM 'idols' ORDER BY ordinal {disgusting_hack}) GROUP BY member_id ORDER BY ordinal ASC"
+			query = f"""SELECT * FROM 'idols'
+						WHERE ordinal IN (
+							SELECT MAX(ordinal) FROM 'idols'
+							GROUP BY member_id
+						)
+						ORDER BY ordinal ASC"""
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())
 		
 	def convert_to_idol_object(self, data):
-		return [KiraraIdol(x) for x in data]
+		return [KiraraIdol(self, x) for x in data]
 	
 	######################################################################	
 	
-	def determine_skill_target(self, target_data, card_data):
+	def _determine_skill_target(self, target_data, card_data):
 		try:
 			assert(len(target_data['fixed_attributes']) == 0)
 			assert(len(target_data['fixed_subunits']) == 0)
@@ -327,150 +577,58 @@ class KiraraClient():
 			assert(target_data['fixed_members'][0] == card_data['member'])
 			return SkillTarget.SameMember
 		elif target_data['apply_count'] == 9: return SkillTarget.All
-		
-		
+	
 	def get_idols_by_ordinal(self, ordinals):
 		assert isinstance(ordinals, int) or isinstance(ordinals, list) or isinstance(ordinals, set)
 		
-		if isinstance(ordinals, int):
-			ordinals = set([ordinals])
-		elif isinstance(ordinals, list) or isinstance(ordinals, set):
-			ordinals = set(ordinals)
+		if isinstance(ordinals, int) or isinstance(ordinals, set):
+			ordinals = list(ordinals)
 			
-		result = []
+		query = f"""SELECT * FROM `idols`
+		            WHERE `ordinal` IN ({self._make_where_placeholders(ordinals)})"""
+		self.db.execute(query, ordinals)
 		
-		# Check for cards in cache database
-		query = "SELECT * FROM `idols` WHERE `ordinal` IN ({})".format(', '.join(['?'] * len(ordinals)))
-		self.db.execute(query, list(ordinals))
-		for idol in self.db.fetchall():
-			ordinals.remove(idol['ordinal'])
-			result.append(dict(idol))
+		return self.convert_to_idol_object(self.db.fetchall())
+	
+	def do_crap(self):
+		query = f"SELECT json FROM idols_json ORDER BY ordinal"
+		self.db.execute(query)
 		
-		# If all cards were not found in the database, query them from Kirara endpoint
-		if len(ordinals) > 0:
-			print("Not found in database", ordinals)
+		targets = defaultdict(list)
+		for data in self.db.fetchall():
+			data = json.loads(data['json'])
 			
-			query_ordinals = ','.join([str(x) for x in ordinals])
-			url = KiraraClient.Endpoints['by_ordinal'].format(query_ordinals)
-			
-			r = requests.get(url)
-			print(r.status_code)
-			if r.status_code == 404:
-				raise KiraraClientNotFound(f"No result with given ordinals: {list(ordinals)}")
-			
-			if r.status_code != 200:
-				raise KiraraClientException("Endpoint status not OK")
-			
-			data = r.json()
-			
-			result_ordinals = set()
-			for card in data['result']:
-				result_ordinals.add(card['ordinal'])
-			
-			if not all(x in result_ordinals for x in ordinals):
-				partial_result = [x for x in ordinals if x in result_ordinals]
-				raise KiraraClientPartialResult(f"Partial result with given ordinals. Missing: {partial_result}")
-			
-			card_skills = {}
-			
-			fields = ["parameter", "values", "target", "target_data"]
-			query_fields = ', '.join([f"'{name}'" for name in fields])
-			query_keys   = ', '.join([f":{name}"  for name in fields])
-			
-			for card in data['result']:
-				card_skills[card['ordinal']] = [(None, None), (None, None)]
+			for skill_data in data['passive_skills']:
+				target_id = int(skill_data['target']['id'])
+				target = skill_data['programmatic_target']
+				target = re.sub('<[^<]+?>', '', target).strip()
 				
-				passive_skill = card['passive_skills'][0]
+				guess = self._determine_skill_target(skill_data['target'], data)
+				targets[target_id].append((target, guess))
 				
-				targets_data = [passive_skill['target'], passive_skill['target_2']]
-				levels_data = [passive_skill['levels'], passive_skill['levels_2']]
+				if skill_data['target_2'] != None:
+					if skill_data['target']['id'] != skill_data['target_2']['id']:
+						print("LOAL", data['ordinal'], skill_data['target_2']['id'], skill_data['levels_2'][0][1], skill_data['name'], skill_data['programmatic_target'])
 				
-				for skill_index, target_data, levels in zip([0, 1], targets_data, levels_data):
-					if target_data == None or levels == None:
-						assert(target_data == None and levels == None)
-						break
-					
-					parameter = levels[0][1]
-					values = [x[2] for x in levels]
-					
-					# print(target_data)
-					target = self.determine_skill_target(target_data, card).value
-					
-					serialized = {
-						'parameter'   : parameter,
-						'values'      : json.dumps(values),
-						'target'      : target,
-						'target_data' : json.dumps(target_data),
-					}
-					
-					query = "INSERT INTO 'passives' ({}) VALUES ({})".format(query_fields, query_keys)
-					self.db.execute(query, serialized)
-					
-					passive_id = self.db.lastrowid
-					print(passive_id)
-					
-					card_skills[card['ordinal']][skill_index] = (passive_id, serialized)
-			
-			query_data = []
-			for card in data['result']:
-				skills = card_skills[card['ordinal']]
+				# if target_id == 58 and len(target) > 0:
+				# 	print(data['ordinal'], target_id, skill_data['name'], skill_data['programmatic_target'])
 				
-				primary = skills[0][0]
-				secondary = skills[1][0]
-				
-				idol_info = Idols.by_member_id[card['member']]
-				
-				print(card['ordinal'], card['release_dates'])
-				
-				serialized = {
-					'ordinal'           : card['ordinal'],
-					'id'                : card['id'],
-					'member_id'         : card['member'],
-					'group_id'          : idol_info.group.value,
-					'subunit_id'        : idol_info.subunit.value,
-					'attribute'         : card['attribute'],
-					'type'              : card['role'],
-					'rarity'            : card['rarity'],
-					'source'            : card['source'],
-					'release_date'      : card['release_dates']['jp'],
-					'primary_passive'   : primary,
-					'secondary_passive' : secondary,
-					'json'              : json.dumps(card),
-				}
-				query_data.append(serialized)
-				
-			query_data = list(sorted(query_data, key=itemgetter('ordinal')))
-			
-			fields = [
-				"ordinal", "id", "member_id", "group_id", "subunit_id",
-				"attribute", "type", "rarity", "source", "release_date",
-				"primary_passive", "secondary_passive", "json"
-			]
-			query_fields = ', '.join([f"`{name}`" for name in fields])
-			query_keys   = ', '.join([f":{name}"  for name in fields])
-			query = "INSERT INTO `idols` ({}) VALUES ({})".format(query_fields, query_keys)
-			self.db.executemany(query, query_data)
-			
-			self.dbcon.commit()
-			
-			result.extend(query_data)
+				# if target_id > 1 and target_id < 50:
+				# 	print(guess, data['ordinal'], target_id, skill_data['name'], skill_data['programmatic_target'])
 		
-		return self.convert_to_idol_object(result)
+		for tid, targets in sorted(targets.items(), key=itemgetter(0)):
+			print(tid)
+			for target, guess in set(targets):
+				print(f"\t{target} {guess}")
+			print("------------------------------------")
+			
 
-
-# client = KiraraClient()
-# client.cache_all_idols()
-# exit()
-
-# ids = list(range(400, 515))
-# ids = []
-# ids.extend([319, 422])
-# ids.extend(list(range(160, 170)))
-# ids.extend(list(range(300, 310)))
-# ids.extend(list(range(450, 470)))
-# print(ids)
-# data = client.get_idols_by_ordinal(ids)
-
+if __name__ == "__main__":
+	client = KiraraClient()
+	client.cache_all_idols()
+	# client.do_crap()
+	exit()
+	
 if __name__ == "__maian__":
 	effects = defaultdict(list)
 
@@ -496,19 +654,9 @@ if __name__ == "__maian__":
 			# levels[0].pop('finish_type')
 			print(f"  {target_id:<5}{eff_str:<90}{levels[0]}")
 
-# data = client.get_idols_by_ordinal(466)
-# for card in data:
-# 	print(card)
-
-# data = client.get_idols_by_ordinal([105, 193, 343, 412, 466])
-# data = client.get_idols_by_ordinal([455, 42, 41, 343])
 
 # for card in data:
 # 	print(card)
 # 	print()
 # 	card.get_passive_skill()
 # 	print("\n----------------------------------------------------------\n")
-
-# print(data)
-# params = data.get_parameters(82, 5)
-# print(params)

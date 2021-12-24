@@ -1,7 +1,7 @@
 
 <div class="array-wrapper">
 	{% for group, num_pages, group_data in idol_arrays %}
-		<ul class="array-group-page-selector">
+		<ul class="array-group-page-selector" data-num-pages="{{ num_pages }}">
 			{% for page_index in range(num_pages): %}
 				<li>
 					<a href="#/{{ GroupInfo[group].tag }}/{{ page_index }}" ng-class="pageActive({{ page_index }})">
@@ -35,7 +35,9 @@
 											<div class="card-array-cell idol-bg-color-dark">
 												<div class="grid-icon">
 													<a href="https://allstars.kirara.ca/card/{{ card_array[type][attribute][page_index].ordinal }}" target="_blank">
-														<span class="card-thumbnail group-{{ card_array[type][attribute][page_index].group_id.value }}-{{ card_array[type][attribute][page_index].rarity.value }} card-{{ card_array[type][attribute][page_index].ordinal }}"></span>
+														<span class="card-thumbnail group-{{ card_array[type][attribute][page_index].group_id.value }}-{{ card_array[type][attribute][page_index].rarity.value }} card-{{ card_array[type][attribute][page_index].ordinal }}">
+															<span class="source-indicator source-{{ card_array[type][attribute][page_index].source.value }}"></span>
+														</span>
 													</a>
 												</div>
 											</div>

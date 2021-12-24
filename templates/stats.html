@@ -15,73 +15,60 @@
 	<p>Numbers of different types of cards.</p>
 	{% for group, data in general_stats.items() %}
 		<div class="stats-category-group {{ GroupInfo[group].tag }}">
-			<table class="stats-table general wide">
+			<table class="stats-table general">
 				<colgroup>
-					<col style="width: 38px">
-					<col style="width: 24%">
+					<col style="width: 25%">
 					
 					<col style="width: 7.5%">
 					<col style="width: 7.5%">
+					<col style="width: 7.5%">
+					<col style="width: 7.5%">
+					<col style="width: 7.5%">
+					<col style="width: 7.5%">
 					
-					<col style="width: 15%">
-					<col style="width: 15%">
-					<col style="width: 15%">
-					<col style="width: 15%">
+					<col style="width: 7.5%">
+					<col style="width: 7.5%">
+					<col style="width: 7.5%">
+					<col style="width: 7.5%">
 				</colgroup>
+				
 				<thead>
 					<tr>
-						<th colspan="2">{{ GroupInfo[group].name }} Members</th>
+						<th>{{ GroupInfo[group].name }} Members</th>
 						
 						<th>URs</th>
 						<th>SRs</th>
 						
-						<th>Festival</th>
-						<th>Party</th>
-						<th>Event</th>
-						<th>Gacha</th>
+						<th colspan="2">Festival</th>
+						<th colspan="2">Party</th>
+						<th colspan="2">Event</th>
+						<th colspan="2">Gacha</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for member, stats in data %}
 						<tr class="idol-{{ member.value }}">
-							<td class="idol-icon idol-icon-32-border idol-bg-color-dim"></td>
-							<td>{{ Idols.by_member_id[member].full_name }}</td>
+							<td class="idol-identity">
+								<div class="flex-wrapper">
+									<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+									<span class="idol-name">{{ Idols.by_member_id[member].full_name }}</span>
+								</div>
+							</td>
 							
 							<td class="stat-number">{{ stats['URs'] }}</td>
 							<td class="stat-number">{{ stats['SRs'] }}</td>
 							
-							<td class="stat-number">{{ stats['festival'] }}</td>
-							<td class="stat-number">{{ stats['party'] }}</td>
-							<td class="stat-number">{{ stats['event'] }}</td>
-							<td class="stat-number">{{ stats['gacha'] }}</td>
+							<td colspan="2" class="stat-number">{{ stats['festival'] }}</td>
+							<td colspan="2" class="stat-number">{{ stats['party'] }}</td>
+							<td colspan="2" class="stat-number">{{ stats['event'] }}</td>
+							<td colspan="2" class="stat-number">{{ stats['gacha'] }}</td>
 						</tr>
 					{% endfor %}
 				</tbody>
-			</table>
-			
-			<table class="stats-table general wide">
-				<colgroup>
-					<col style="width: 38px">
-					<col style="width: 24%">
-					
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					
-					{# <col style="width: 47%">
-					<col style="width: 33%"> #}
-				</colgroup>
+				
 				<thead>
 					<tr>
-						<th colspan="2">{{ GroupInfo[group].name }} Members</th>
+						<th>{{ GroupInfo[group].name }} Members</th>
 						<th colspan="6">Attributes</th>
 						<th colspan="4">Types</th>
 					</tr>
@@ -89,16 +76,20 @@
 				<tbody>
 					{% for member, stats in data %}
 						<tr class="idol-{{ member.value }}">
-							<td class="idol-icon idol-icon-32-border idol-bg-color-dim"></td>
-							<td>{{ Idols.by_member_id[member].full_name }}</td>
+							<td class="idol-identity">
+								<div class="flex-wrapper">
+									<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+									<span class="idol-name">{{ Idols.by_member_id[member].full_name }}</span>
+								</div>
+							</td>
 							
 							{% for attribute in Attribute %}
-								<td class="stat-various {{ 'has-none' if stats['attributes'][attribute] == 0 else '' }} attribute-{{ attribute.value }} attribute-bg-color-dim">
+								<td class="stat-various {{ css('has-none', stats['attributes'][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
 									<span class="icon-32 attribute-{{ attribute.value }}">{{ stats['attributes'][attribute] }}</span>
 								</td>
 							{% endfor %}
 							{% for type in Type %}
-								<td class="stat-various {{ 'has-none' if stats['types'][type] == 0 else '' }} type-{{ type.value }} type-bg-color-dim">
+								<td class="stat-various {{ css('has-none', stats['types'][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
 									<span class="icon-32 type-{{ type.value }}">{{ stats['types'][type] }}</span>
 								</td>
 							{% endfor %}
@@ -117,62 +108,56 @@
 		{% for group, data in category_data.items() %}
 			<div class="stats-category-group {{ GroupInfo[group].tag }}">
 				{# <h2>{{ GroupInfo[group].name }}</h2> #}
-				<table class="stats-table {{ 'with-source' if data.show_source else '' }}">
+				<table class="stats-table {{ css('with-source', data.show_source) }}">
 					<colgroup>
-						<col style="width: 38px">
-						<col style="width: 24%">
-						<col style="width: 24%">
-						<col style="width: 38px">
-						{% if data.show_source %}
-							<col style="width: 40%">
-							<col style="width: 13%">
-						{% else %}
-							<col style="width: 52%">
-						{% endif %}
+						<col style="width: 25%">
+						<col style="width: 20%">
+						<col style="width: 55%">
 					</colgroup>
 					<thead>
 						<tr>
-							<th colspan="2">{{ GroupInfo[group].name }} Members</th>
-							<th colspan="4">Most Recent Card</th>
+							<th>{{ GroupInfo[group].name }} Members</th>
+							<th colspan="2">Most Recent Card</th>
 						</tr>
 					</thead>
 					<tbody>
 						{% for member, card, time_since in data.cards %}
 							<tr class="idol-{{ member.value }}">
-								<td class="idol-icon idol-icon-32-border idol-bg-color-dim"></td>
-								<td>{{ Idols.by_member_id[member].full_name }}</td>
+								<td class="idol-identity">
+									<div class="flex-wrapper">
+										<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+										<span class="idol-name">{{ Idols.by_member_id[member].full_name }}</span>
+									</div>
+								</td>
 								{% if is_valid_card(card) %}
-									<td>
-										{% if time_since.days > 0 %}
-											{{ time_since.days | days("ago") }}
-										{% elif time_since.days == 0: %}
-											Today
-										{% else %}
-											Will release in {{ time_since.days | days }}
-										{% endif %}
+									<td title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
+										{{ time_since.days | format_days }}
 									</td>
-									<td class="thumbnail">
-										<div class="thumbnail-wrapper">
-											<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}"></a>
+									<td class="card-details">
+										<div class="flex-wrapper">
+											<span class="thumbnail">
+												<div class="thumbnail-wrapper">
+													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+														<span class="source-indicator source-{{ card.source.value }}"></span>
+													</a>
+												</div>
+											</span>
+											<span class="card-link">
+												{# <a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-normal" target="_blank">{{ card.get_card_name(False) }}</a> #}
+												<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
+											</span>
+											{% if data.show_source %}
+												<span class="card-source">
+													{{ card.source.name }}
+												</span>
+											{% endif %}
 										</div>
 									</td>
-									<td class="card-link"
-										{% if not data.show_source %}
-											colspan="2"
-										{% endif %}>
-										{# <a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-normal" target="_blank">{{ card.get_card_name(False) }}</a> #}
-										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
-									</td>
-									{% if data.show_source %}
-										<td class="card-source">
-											{{ card.source.name }}
-										</td>
-									{% endif %}
 								{% else %} 
 									<td>
 										Never
 									</td>
-									<td colspan="3" style="color: #aaa;">
+									<td style="color: #aaa;">
 										&mdash;
 									</td>
 								{% endif %}
