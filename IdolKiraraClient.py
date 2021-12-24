@@ -385,8 +385,8 @@ class KiraraClient():
 		
 		return True
 	
-	def cache_all_idols(self):
-		if not self.database_needs_update():
+	def cache_all_idols(self, forced=False):
+		if not forced and not self.database_needs_update():
 			print("No need to update database right now.")
 			return
 			

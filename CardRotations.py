@@ -1,14 +1,14 @@
+import argparse
+import os
+import time
 from operator import itemgetter
 from enum import Enum
 from collections import defaultdict, namedtuple
+from datetime import datetime, timezone
+from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
 from IdolDatabase import *
 from IdolKiraraClient import KiraraClient, KiraraIdol
-
-import os
-import time
-from datetime import datetime, timezone
-from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
 GroupInfo = namedtuple("GroupInfo", "tag name")
 
@@ -201,10 +201,22 @@ class CardThumbnails():
 		
 
 class CardRotations():
-	
 	def __init__(self):
+		self.parser = argparse.ArgumentParser(description='Make some card rotations.')
+		
+		self.parser.add_argument("-f", "--force", help="Force database update regardless of when it was last performed.",
+		                    action="store_true")
+		
+		self.parser.add_argument("-r", "--remake-atlas", help="Remake the atlas of thumbnails and the associated CSS code.",
+		                    action="store_true")
+		
+		self.parser.add_argument("-a", "--auto", help="Flags this update as having been done automatically.",
+		                    action="store_true")
+		
+		self.args = self.parser.parse_args()
+		
 		self.client = KiraraClient()
-		self.client.cache_all_idols()
+		self.client.cache_all_idols(forced=self.args.force)
 		
 		self.jinja = Environment(
 		    # loader=FileSystemLoader(os.path.dirname(os.path.abspath(__file__)), encoding='utf-8'),
@@ -213,7 +225,7 @@ class CardRotations():
 		)
 		
 		self.thumbnails = CardThumbnails(self.client)
-		if self.thumbnails.download_thumbnails():
+		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
 			self.thumbnails.make_atlas()
 		
 	def _sort_rotation(self, group, rotation, order):
@@ -491,7 +503,9 @@ class CardRotations():
 			'make_random_string' : make_random_string,
 			'cache_buster' : cache_buster,
 			
-			'ordinalize' : ordinalize,	
+			'ordinalize' : ordinalize,
+			
+			'automatic_update' : self.args.auto,
 		})
 		
 		for file in glob("output/pages/*.html"):
