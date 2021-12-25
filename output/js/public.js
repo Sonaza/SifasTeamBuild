@@ -197,10 +197,11 @@ const highlight_options = [
 	{ 'value' : 0,         'label' : 'No Highlighting' },
 	{ 'value' : 1,         'label' : 'Initial Cards' },
 	{ 'value' : 2,         'label' : 'Events & SBL' },
-	{ 'value' : 3,         'label' : 'Gacha Banners' },
-	{ 'value' : 5,         'label' : 'Spotlight Banners' },
+	{ 'value' : 3,         'label' : 'Event Gacha' },
+	{ 'value' : 5,         'label' : 'Spotlight Banners ' },
 	{ 'value' : 6,         'label' : 'Festival Banners' },
 	{ 'value' : 7,         'label' : 'Party Banners' },
+	{ 'value' : 'gacha',   'label' : 'Any Gacha' },
 	{ 'value' : 'limited', 'label' : 'Any Limited' },
 ]
 
