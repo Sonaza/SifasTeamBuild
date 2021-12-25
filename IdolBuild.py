@@ -8,13 +8,13 @@ client = KiraraClient()
 
 class IdolError(Exception): pass
 
-name_length = 20
+name_length = 25
 
 class Idol(IdolBase):
 	def __init__(self, card_ordinal : int, idol : IdolBase, identifier, crit_power, buff_appeal, buff_technique):
 		# super().__init__(idol.FullName, idol.School, idol.Year, idol.Subunit)
 		
-		self.data = client.get_idols_by_ordinal(card_ordinal)[0]
+		self.data = client.get_idols_by_ordinal(card_ordinal, with_json=True)[0]
 		
 		idol = Idols.by_member_id[self.data.member_id]
 		self.set(idol)

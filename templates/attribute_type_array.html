@@ -4,20 +4,23 @@
 		<ul class="array-group-page-selector" data-num-pages="{{ num_pages }}">
 			{% for page_index in range(num_pages): %}
 				<li>
-					<a href="#/{{ GroupInfo[group].tag }}/{{ page_index }}" ng-class="pageActive({{ page_index }})">
+					<a href="#/{{ group.tag }}/{{ page_index }}" ng-class="pageActive({{ page_index }})">
 						Page {{ page_index + 1 }}
 					</a>
 				</li>
 			{% endfor %}
 		</ul>
+		{# <p>
+			A map view of {{ group.displayname }} idols, organized by attributes against types.
+		</p> #}
 		{% for page_index in range(num_pages): %}
-			<div class="array-group {{ GroupInfo[group].tag }}" ng-class="pageActive({{ page_index }})">
+			<div class="array-group {{ group.tag }}" ng-class="pageActive({{ page_index }})">
 				{% for member_id, card_array in group_data %}
 					<div class="card-array idol-{{ member_id.value }}">
 						<div class="card-array-inner">
 							<div class="card-array-row">
 								<div class="card-array-header-cell idol-bg-color">
-									<div class="grid-icon idol-icon-48-border" title="{{ Idols.by_member_id[member_id].full_name }}"></div>
+									<div class="grid-icon idol-icon-48-border" title="{{ member_id.full_name }}"></div>
 								</div>
 								{% for attribute in Attribute %}
 									<div class="card-array-header-cell idol-bg-color">
@@ -31,12 +34,13 @@
 										<div class="grid-icon icon-48 type-{{ type.value }}" title="{{ type.name }}-type"></div>
 									</div>
 									{% for attribute in Attribute %}
-										{% if card_array[type][attribute][page_index] %}
+										{% set card = card_array[type][attribute][page_index] %}
+										{% if card %}
 											<div class="card-array-cell idol-bg-color-dark">
 												<div class="grid-icon">
-													<a href="https://allstars.kirara.ca/card/{{ card_array[type][attribute][page_index].ordinal }}" target="_blank">
-														<span class="card-thumbnail group-{{ card_array[type][attribute][page_index].group_id.value }}-{{ card_array[type][attribute][page_index].rarity.value }} card-{{ card_array[type][attribute][page_index].ordinal }}">
-															<span class="source-indicator source-{{ card_array[type][attribute][page_index].source.value }}"></span>
+													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">
+														<span class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+															<span class="source-indicator source-{{ card.source.value }}"></span>
 														</span>
 													</a>
 												</div>

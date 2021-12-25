@@ -193,9 +193,136 @@ app.config(function($routeProvider, $locationProvider)
 	}
 )
 
+const highlight_options = [
+	{ 'value' : 0,         'label' : 'No Highlighting' },
+	{ 'value' : 1,         'label' : 'Initial Cards' },
+	{ 'value' : 2,         'label' : 'Events & SBL' },
+	{ 'value' : 3,         'label' : 'Gacha Banners' },
+	{ 'value' : 5,         'label' : 'Spotlight Banners' },
+	{ 'value' : 6,         'label' : 'Festival Banners' },
+	{ 'value' : 7,         'label' : 'Party Banners' },
+	{ 'value' : 'limited', 'label' : 'Any Limited' },
+]
+
+app.run(($rootScope) =>
+	{
+		$rootScope.settings = {
+			use_idolized_thumbnails : true,
+			order_reversed          : false,
+			highlight_source        : 0,
+		}
+	}
+)
+
+app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location)
+	{
+		$scope.highlight_options = highlight_options;
+		$scope.active_settings = () =>
+		{
+			let output = [];
+			
+			if ($rootScope.settings.use_idolized_thumbnails)
+			{
+				output.push('use-idolized-thumbnails');
+			}
+			
+			if ($rootScope.settings.order_reversed)
+			{
+				output.push('order-reversed');
+			}
+			
+			output.push('source-highlight-' + $rootScope.settings.highlight_source);
+			if ($rootScope.settings.highlight_source == 0)
+			{
+				output.push('source-highlighting-inactive');
+			}
+			else if ($rootScope.settings.highlight_source != 0)
+			{
+				output.push('source-highlighting-active');
+			}
+			
+			return output.join(' ');
+		}
+		
+		$scope.keydown = ($event) =>
+		{
+			if ($event.repeat) return;
+			
+			if (!($event.repeat || $event.ctrlKey || $event.altKey || $event.metaKey))
+			{
+				if ($event.keyCode == 83) // S-key
+	  			{
+	  				for (let i in highlight_options)
+	  				{
+	  					if (highlight_options[i].value == $rootScope.settings.highlight_source)
+	  					{
+	  						$event.preventDefault();
+	  						
+	  						if (!$event.shiftKey)
+	  						{
+	  							let nextIndex = parseInt(i) + 1; // fuck javascript such a shitty language
+	  						
+		  						if (nextIndex < highlight_options.length)
+		  						{
+		  							$rootScope.settings.highlight_source = highlight_options[nextIndex].value;
+		  						}
+		  						else
+		  						{
+		  							$rootScope.settings.highlight_source = highlight_options[0].value;
+		  						}
+	  						}
+	  						else
+	  						{
+	  							let prevIndex = parseInt(i) - 1; // fuck javascript such a shitty language
+		  						if (prevIndex >= 0)
+		  						{
+		  							$rootScope.settings.highlight_source = highlight_options[prevIndex].value;
+		  						}
+		  						else
+		  						{
+		  							$rootScope.settings.highlight_source = highlight_options[highlight_options.length-1].value;
+		  						}
+	  						}
+	  						return;
+	  					}
+	  				}
+	  			}
+	  			
+	  			if (!$event.shiftKey)
+	  			{
+		  			if ($event.keyCode == 81) // Q-key
+		  			{
+		  				$event.preventDefault();
+		  				$rootScope.settings.use_idolized_thumbnails = !$rootScope.settings.use_idolized_thumbnails;
+		  				return;
+		  			}
+		  			
+		  			if ($event.keyCode == 87) // W-key
+		  			{
+		  				$event.preventDefault();
+		  				$rootScope.settings.order_reversed	 = !$rootScope.settings.order_reversed;
+		  				return;
+		  			}
+		  			
+		  			if ($event.keyCode == 82) // R-key
+		  			{
+		  				$event.preventDefault();
+		  				$rootScope.settings.use_idolized_thumbnails = true;
+		  				$rootScope.settings.order_reversed          = false;
+		  				$rootScope.settings.highlight_source        = 0;
+		  				return;
+		  			}
+	  			}
+			}
+			
+			$rootScope.$broadcast('keydown', $event);
+		};
+	}
+)
+
 app.controller('NavController', function($rootScope, $scope, $routeParams, $location)
 	{
-		$scope.isActive = function(viewLocation, exact_match)
+		$scope.isActive = (viewLocation, exact_match) =>
 		{
 			if (exact_match)
 			{
@@ -207,7 +334,7 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 			}
 		};
 
-		$scope.classActive = function(viewLocation, exact_match)
+		$scope.classActive = (viewLocation, exact_match) =>
 		{
 			if ($scope.isActive(viewLocation, exact_match))
 			{
@@ -215,7 +342,7 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 			}
 		}
 
-		$scope.$on('update-title', function(nonsense, sub_title)
+		$scope.$on('update-title', (_, sub_title) =>
 		{
 			if ($location.path() == '/')
 			{
@@ -246,128 +373,6 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 	}
 )
 
-const highlight_options = [
-	{ 'value' : 0, 'label' : 'No Highlighting' },
-	{ 'value' : 1, 'label' : 'Initial Cards' },
-	{ 'value' : 2, 'label' : 'Events & SBL' },
-	{ 'value' : 3, 'label' : 'Gacha Banners' },
-	{ 'value' : 5, 'label' : 'Spotlight Banners' },
-	{ 'value' : 6, 'label' : 'Festival Banners' },
-	{ 'value' : 7, 'label' : 'Party Banners' },
-]
-
-app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location)
-	{
-		$scope.settings = {
-			use_idolized_thumbnails : true,
-			order_reversed          : false,
-			highlight_source        : 0,
-		};
-		
-		$scope.highlight_options = highlight_options;
-		$scope.active_settings = function()
-		{
-			let output = [];
-			
-			if ($scope.settings.use_idolized_thumbnails)
-			{
-				output.push('use-idolized-thumbnails');
-			}
-			
-			if ($scope.settings.order_reversed)
-			{
-				output.push('order-reversed');
-			}
-			
-			output.push('source-highlight-' + $scope.settings.highlight_source);
-			if ($scope.settings.highlight_source == 0)
-			{
-				output.push('source-highlighting-inactive');
-			}
-			else if ($scope.settings.highlight_source != 0)
-			{
-				output.push('source-highlighting-active');
-			}
-			
-			return output.join(' ');
-		}
-		
-		$scope.keydown = function($event)
-		{
-			if ($event.repeat) return;
-			
-			if (!($event.repeat || $event.ctrlKey || $event.altKey || $event.metaKey))
-			{
-				if ($event.keyCode == 83) // S-key
-	  			{
-	  				for (let i in highlight_options)
-	  				{
-	  					if (highlight_options[i].value == $scope.settings.highlight_source)
-	  					{
-	  						$event.preventDefault();
-	  						
-	  						if (!$event.shiftKey)
-	  						{
-	  							let nextIndex = parseInt(i) + 1; // fuck javascript such a shitty language
-	  						
-		  						if (nextIndex < highlight_options.length)
-		  						{
-		  							$scope.settings.highlight_source = highlight_options[nextIndex].value;
-		  						}
-		  						else
-		  						{
-		  							$scope.settings.highlight_source = highlight_options[0].value;
-		  						}
-	  						}
-	  						else
-	  						{
-	  							let prevIndex = parseInt(i) - 1; // fuck javascript such a shitty language
-		  						if (prevIndex >= 0)
-		  						{
-		  							$scope.settings.highlight_source = highlight_options[prevIndex].value;
-		  						}
-		  						else
-		  						{
-		  							$scope.settings.highlight_source = highlight_options[highlight_options.length-1].value;
-		  						}
-	  						}
-	  						return;
-	  					}
-	  				}
-	  			}
-	  			
-	  			if (!$event.shiftKey)
-	  			{
-		  			if ($event.keyCode == 81) // Q-key
-		  			{
-		  				$event.preventDefault();
-		  				$scope.settings.use_idolized_thumbnails = !$scope.settings.use_idolized_thumbnails;
-		  				return;
-		  			}
-		  			
-		  			if ($event.keyCode == 87) // W-key
-		  			{
-		  				$event.preventDefault();
-		  				$scope.settings.order_reversed	 = !$scope.settings.order_reversed;
-		  				return;
-		  			}
-		  			
-		  			if ($event.keyCode == 82) // R-key
-		  			{
-		  				$event.preventDefault();
-		  				$scope.settings.use_idolized_thumbnails = true;
-		  				$scope.settings.order_reversed          = false;
-		  				$scope.settings.highlight_source        = 0;
-		  				return;
-		  			}
-	  			}
-			}
-			
-			$rootScope.$broadcast('keydown', $event);
-		};
-	}
-)
-
 app.controller('MainController', function($rootScope, $scope, $route, $routeParams, $location)
 	{
 		$scope.loading = true;
@@ -383,12 +388,12 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 			$scope.active_page = 0;
 		}
 
-		$scope.isActive = function(page)
+		$scope.isActive = (page) =>
 		{
 			return $scope.active_page == page;
 		}
 
-		$scope.pageActive = function(page)
+		$scope.pageActive = (page) =>
 		{
 			if ($scope.isActive(page))
 			{
@@ -402,9 +407,8 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 		{
 			num_pages = parseInt(page_selector.getAttribute('data-num-pages'));
 		}
-		console.log(page_selector, num_pages);
 		
-		$scope.$on('keydown', function(nonsense, e)
+		$scope.$on('keydown', (_, e) =>
 		{
 			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
   			
@@ -436,7 +440,7 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 
 app.controller('FooterController', function($rootScope, $scope)
 	{
-		$scope.time_since = function(iso_timestamp)
+		$scope.time_since = (iso_timestamp) =>
 		{
 			let time = new Date(iso_timestamp);
 			if (!time) return "";
@@ -446,7 +450,7 @@ app.controller('FooterController', function($rootScope, $scope)
 	}
 )
 
-app.controller('StatsController', function($rootScope, $scope, $route, $routeParams, $location)
+app.controller('StatsController', function($rootScope, $scope, $route, $routeParams, $location, $timeout)
 	{
 		$scope.loading = true;
 		
@@ -461,12 +465,12 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 			$scope.active_page = 'general';
 		}
 
-		$scope.isActive = function(page)
+		$scope.isActive = (page) =>
 		{
 			return $scope.active_page == page;
 		}
 
-		$scope.pageActive = function(page)
+		$scope.pageActive = (page) =>
 		{
 			if ($scope.isActive(page))
 			{
@@ -474,7 +478,7 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 			}
 		}
 
-		$scope.get_subtitle = function(page)
+		$scope.get_subtitle = (page) =>
 		{
 			if (stats_subpages[page])
 			{
@@ -483,11 +487,50 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 			return "";
 		}
 		
-		$scope.$on('keydown', function(nonsense, e)
+		// $scope.$watch('$root.settings', function(bs, settings)
+		// {
+		// 	console.log("SETTINGS CHANGED!", settings);
+			
+		// 	$timeout($scope.update_row_order);
+		// }, true);
+		
+		// let reverse_rows = (selector, remove_class, add_class) => 
+		// {
+		// 	let rows_parent = document.querySelectorAll(selector);
+		// 	console.log(selector, rows_parent);
+		// 	for (let parent of rows_parent)
+		// 	{
+		// 		for (let i = 1; i < parent.childNodes.length; i++)
+		// 		{
+		// 	        parent.insertBefore(parent.childNodes[i], parent.firstChild);
+		// 	    }
+		// 	}
+		// 	angular.element(rows_parent).removeClass(remove_class).addClass(add_class);
+		// }
+		
+		// $scope.reversed = false;
+		
+		$scope.update_row_order = () => 
+		{
+			console.log("UPDATING ROW ORDER!", $rootScope.settings.order_reversed, $scope.reversed);
+			
+			if ($rootScope.settings.order_reversed)
+			{
+				reverse_rows('tbody.reversible', 'not-reversed', 'reversed');
+			}
+			else
+			{
+				reverse_rows('tbody.reversible', 'reversed', 'not-reversed');
+			}
+		}
+		// if ($rootScope.settings.order_reversed)
+		// {
+		// 	$scope.update_row_order();
+		// }
+		
+		$scope.$on('keydown', (_, e) =>
 		{
   			if (e.repeat || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
-  			
-  			console.log(e);
   			
   			let number = parseInt(e.key);
   			if (number !== undefined)
@@ -496,8 +539,6 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
   				let index = number - 1;
   				
   				let keys = Object.keys(stats_subpages);
-  				console.log(number, keys);
-  				
   				if (index < keys.length)
   				{
   					e.preventDefault();
@@ -517,7 +558,7 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 	}
 )
 
-app.directive('pillButton', function ($parse)
+app.directive('pillButton', function($parse)
 {
 	return {
 		restrict: 'A',
@@ -544,18 +585,3 @@ app.directive('pillButton', function ($parse)
 		}
 	}
 })
-
-
-// app.directive('shitface', function ($document)
-// {
-// 	return {
-// 		// restrict: 'E',
-// 		link: function()
-// 		{
-// 			$document.keydown(function(e)
-// 			{
-// 			   console.log(e);
-// 			})
-// 		}
-// 	}
-// })

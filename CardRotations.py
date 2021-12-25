@@ -9,8 +9,7 @@ from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoesca
 
 from IdolDatabase import *
 from IdolKiraraClient import KiraraClient, KiraraIdol
-
-GroupInfo = namedtuple("GroupInfo", "tag name")
+import htmlmin
 
 class CardNonExtant(): pass
 class CardMissing(): pass
@@ -235,6 +234,22 @@ class CardRotations():
 				output.append((ordered_member_id, rotation[ordered_member_id]))
 		
 		return output
+		
+	def _render_and_save(self, template_path, output_path, data, minify=True):
+		print(f"Rendering {template_path} to {output_path}... ", end='')
+		
+		# template = self.jinja.get_template(os.path.join("templates", template_path).replace("\\","/"))
+		template = self.jinja.get_template(template_path)
+		rendered_output = template.render(data)
+		
+		if minify:
+			rendered_output = htmlmin.minify(rendered_output, remove_empty_space=True)
+		
+		with open(os.path.join("output", output_path), "w", encoding="utf8") as f:
+			f.write(rendered_output)
+			f.close()
+		
+		print("Done")
 	
 	def get_attribute_type_array(self, group : Group):
 		cards_per_girl = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
@@ -277,6 +292,15 @@ class CardRotations():
 			},
 		}
 		
+		set_title_overrides = {
+			Rarity.SR : {
+				Group.Nijigasaki : dict([
+					(0, "1st Nijigasaki Solo"),
+					(5, "3rd Nijigasaki Solo"),
+				])
+			}
+		}
+		
 		cards_per_girl = defaultdict(list)
 
 		default_group_list = dict()
@@ -302,12 +326,18 @@ class CardRotations():
 			
 		num_rotations = 0
 		for member_id, cards in cards_per_girl.items():
-			# print(f"{Idols.by_member_id[member_id].first_name:>10} has {len(cards):>2} URs")
 			num_rotations = max(num_rotations, len(cards))
 
 		rotations = []
 		for rotation_index in range(num_rotations):
 			current_rotation = dict(default_group_list)
+			
+			try:
+				set_title = set_title_overrides[rarity][group][rotation_index]
+			except KeyError:
+				set_title = None
+			
+			titles = defaultdict(int)
 			
 			for idol in Idols.by_group[group]:
 				if idol.member_id not in cards_per_girl:
@@ -316,10 +346,22 @@ class CardRotations():
 					cards = cards_per_girl[idol.member_id]
 					if rotation_index < len(cards):
 						current_rotation[idol.member_id] = cards[rotation_index]
+						
+						if set_title == None and rarity == Rarity.SR and is_valid_card(cards[rotation_index]):
+							t = cards[rotation_index].get_card_name(True)
+							titles[t] += 1
 					else:
 						current_rotation[idol.member_id] = CardMissing()
 			
-			rotations.append(self._sort_rotation(group, current_rotation, Idols.member_order[group]))
+			if set_title == None and rarity == Rarity.SR:
+				titles = sorted(titles.items(), key=itemgetter(1), reverse=True)
+				if titles:
+					if titles[0][1] > 1:
+						set_title = titles[0][0]
+					else:
+						print("WARNING! No set name could be determined for", rarity, group, "index", rotation_index)
+			
+			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order[group]), set_title ))
 			rotation_index += 1
 		
 		return rotations
@@ -375,23 +417,10 @@ class CardRotations():
 					else:
 						current_rotation[idol.member_id] = CardMissing()
 			
-			rotations.append(self._sort_rotation(group, current_rotation, Idols.member_order[group]))
+			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order[group]), None ))
 			rotation_index += 1
 		
 		return rotations
-		
-	def _render_and_save(self, template_path, output_path, data):
-		print(f"Rendering {template_path} to {output_path}... ", end='')
-		
-		# template = self.jinja.get_template(os.path.join("templates", template_path).replace("\\","/"))
-		template = self.jinja.get_template(template_path)
-		rendered_output = template.render(data)
-		
-		with open(os.path.join("output", output_path), "w", encoding="utf8") as f:
-			f.write(rendered_output)
-			f.close()
-		
-		print("Done")
 		
 	def _make_general_stats(self, group : Group):
 		categories = ['SRs', 'URs', 'event', 'festival', 'party', 'gacha', ]
@@ -478,21 +507,14 @@ class CardRotations():
 	def generate_pages(self):
 		from glob import glob
 		
-		group_info = {
-			Group.Muse       : GroupInfo(tag="muse",       name="µ's"),
-			Group.Aqours     : GroupInfo(tag="aqours",     name="Aqours"),
-			Group.Nijigasaki : GroupInfo(tag="nijigasaki", name="Nijigasaki"),
-		}
-		
 		self.jinja.filters.update({
 			'format_days' : format_days,
 		})
 		
 		self.jinja.globals.update({
 			'Idols'     : Idols,
-			'Attribute' : [Attribute.Smile, Attribute.Pure, Attribute.Cool, Attribute.Active, Attribute.Natural, Attribute.Elegant, ],
-			'Type'      : [Type.Vo, Type.Sp, Type.Gd, Type.Sk, ],
-			'GroupInfo' : group_info,
+			'Attribute' : Attribute.get_valid(),
+			'Type'      : Type.get_valid(),
 			
 			'is_valid_card':     is_valid_card,
 			'is_missing_card':   is_missing_card,
@@ -504,6 +526,7 @@ class CardRotations():
 			'cache_buster' : cache_buster,
 			
 			'ordinalize' : ordinalize,
+			'reversed' : reversed,
 			
 			'automatic_update' : self.args.auto,
 		})
@@ -512,33 +535,21 @@ class CardRotations():
 			print("Removing", file)
 			os.remove(file)
 		
-		idol_arrays = [
-			( Group.Muse,       *self.get_attribute_type_array(Group.Muse) ),
-			( Group.Aqours,     *self.get_attribute_type_array(Group.Aqours) ),
-			( Group.Nijigasaki, *self.get_attribute_type_array(Group.Nijigasaki) ),
-		]
+		idol_arrays = [(group, *self.get_attribute_type_array(group)) for group in Group]
 		for data in idol_arrays:
-			self._render_and_save("attribute_type_array.html", f"pages/idol_arrays_{group_info[data[0]].tag}.html", {
+			self._render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
 				'idol_arrays'        : [ data ],
 			})
 		
-		ur_rotations = [
-			( Group.Muse,       self.get_general_rotation(Group.Muse,       Rarity.UR)),
-			( Group.Aqours,     self.get_general_rotation(Group.Aqours,     Rarity.UR)),
-			( Group.Nijigasaki, self.get_general_rotation(Group.Nijigasaki, Rarity.UR)),
-		]
+		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
 			'grouped_rotations'  : ur_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
-			'page_description'   : 'Rotations for any UR cards released.',
+			'page_description'   : 'Rotations for all UR cards.',
 		})
 		
-		festival_rotations = [
-			( Group.Muse,       self.get_source_rotation(Group.Muse,       Source.Festival)),
-			( Group.Aqours,     self.get_source_rotation(Group.Aqours,     Source.Festival)),
-			( Group.Nijigasaki, self.get_source_rotation(Group.Nijigasaki, Source.Festival)),
-		]
+		festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
 			'grouped_rotations'  : festival_rotations,
 			'set_label'          : 'Rotation',
@@ -546,11 +557,7 @@ class CardRotations():
 			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
 		})
 		
-		party_rotations = [
-			( Group.Muse,       self.get_source_rotation(Group.Muse,       Source.Party)),
-			( Group.Aqours,     self.get_source_rotation(Group.Aqours,     Source.Party)),
-			( Group.Nijigasaki, self.get_source_rotation(Group.Nijigasaki, Source.Party)),
-		]
+		party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
 			'grouped_rotations'  : party_rotations,
 			'set_label'          : 'Rotation',
@@ -558,11 +565,7 @@ class CardRotations():
 			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
 		})
 		
-		event_rotations = [
-			( Group.Muse,       self.get_source_rotation(Group.Muse,       Source.Event)),
-			( Group.Aqours,     self.get_source_rotation(Group.Aqours,     Source.Event)),
-			( Group.Nijigasaki, self.get_source_rotation(Group.Nijigasaki, Source.Event)),
-		]
+		event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
 			'grouped_rotations'  : event_rotations,
 			'set_label'          : 'Rotation',
@@ -570,16 +573,12 @@ class CardRotations():
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
 		})
 		
-		sr_sets = [
-			( Group.Muse,       self.get_general_rotation(Group.Muse,       Rarity.SR)),
-			( Group.Aqours,     self.get_general_rotation(Group.Aqours,     Rarity.SR)),
-			( Group.Nijigasaki, self.get_general_rotation(Group.Nijigasaki, Rarity.SR)),
-		]
+		sr_sets = [(group, self.get_general_rotation(group, Rarity.SR)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
 			'grouped_rotations'  : sr_sets,
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
-			'page_description'   : 'Rotations for SR sets. SR release order seems highly variable (mainly Shioriko not fitting in neat cycles) so this page may or may not break.',
+			'page_description'   : 'Rotations for SR sets. SR release order seems highly variable (mainly the new girls not fitting in neat cycles) so this page may or may not break.',
 		})
 		
 		general_stats = self.get_general_stats()
@@ -593,7 +592,7 @@ class CardRotations():
 				'party'      : ( "Party URs",         "Party limited URs scouted exclusively from Party Scouting banners." ),
 				'spotlight'  : ( "Party + Spotlight", "Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),
 				'limited'    : ( "Festival + Party",  "The most recent Festival and Party limited URs. Due to their higher average power level and limited nature, the same member is unlikely to receive two in quick succession." ),
-				'gacha'      : ( "Any Gacha UR",      "Any UR scouted from gacha banners using Star Gems." ),
+				'gacha'      : ( "Any Gacha UR",      "Any UR scouted from banners using Star Gems." ),
 				'ur'         : ( "Any UR",            "Any most recent UR, free or otherwise." ),
 				'sr'         : ( "Any SR",            "Any most recent SR, free or otherwise" ),
 			}
@@ -605,7 +604,7 @@ class CardRotations():
 		self._render_and_save("main_layout.html", "index.html", {
 			'last_update'           : now.strftime('%d %B %Y %H:%M %Z'),
 			'last_update_timestamp' : now.isoformat(),
-		})
+		}, minify=False)
 		
 
 ##################################

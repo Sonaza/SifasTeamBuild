@@ -578,14 +578,21 @@ class KiraraClient():
 			return SkillTarget.SameMember
 		elif target_data['apply_count'] == 9: return SkillTarget.All
 	
-	def get_idols_by_ordinal(self, ordinals):
+	def get_idols_by_ordinal(self, ordinals, with_json = False):
 		assert isinstance(ordinals, int) or isinstance(ordinals, list) or isinstance(ordinals, set)
 		
-		if isinstance(ordinals, int) or isinstance(ordinals, set):
+		if isinstance(ordinals, set):
 			ordinals = list(ordinals)
-			
-		query = f"""SELECT * FROM `idols`
-		            WHERE `ordinal` IN ({self._make_where_placeholders(ordinals)})"""
+		elif isinstance(ordinals, int):
+			ordinals = [ordinals]
+		
+		if with_json:
+			query = f"""SELECT idols.*, idols_json.json FROM idols
+			            LEFT JOIN idols_json ON idols.ordinal = idols_json.ordinal
+			            WHERE idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
+		else:
+			query = f"""SELECT * FROM idols
+			            WHERE idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
 		self.db.execute(query, ordinals)
 		
 		return self.convert_to_idol_object(self.db.fetchall())

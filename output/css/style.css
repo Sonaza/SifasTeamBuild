@@ -490,7 +490,7 @@ a:hover, a:active
 
 .rotation-group .rotation-title
 {
-	padding: 9px 0 10px 0;
+	padding: 0;
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 700;
 	font-size: 12pt;
@@ -499,6 +499,25 @@ a:hover, a:active
 	border-top-right-radius: 3px;
 	border: 1px solid;
 	border-bottom: none;
+}
+
+.rotation-group .rotation-title .set-index
+{
+	padding: 9px 0 9px 0;
+}
+
+.rotation-group .rotation-title .set-title
+{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	
+	font-size: 10pt;
+	color: #fff;
+	background: #000000b0;
+	padding: 8px 12px;
+	height: 3.2rem;
+	overflow: hidden;
 }
 
 .rotation-group.muse .rotation-title
@@ -589,7 +608,9 @@ a:hover, a:active
 .source-highlight-3 .source-indicator.source-3,
 .source-highlight-5 .source-indicator.source-5,
 .source-highlight-6 .source-indicator.source-6,
-.source-highlight-7 .source-indicator.source-7
+.source-highlight-7 .source-indicator.source-7,
+.source-highlight-limited .source-indicator.source-6,
+.source-highlight-limited .source-indicator.source-7
 {
 	background: transparent !important;
 }
@@ -645,12 +666,7 @@ a:hover, a:active
     -o-user-select: none;
 }
 
-.source-highlight-1 .grid-icon.non-extant > div,
-.source-highlight-2 .grid-icon.non-extant > div,
-.source-highlight-3 .grid-icon.non-extant > div,
-.source-highlight-5 .grid-icon.non-extant > div,
-.source-highlight-6 .grid-icon.non-extant > div,
-.source-highlight-7 .grid-icon.non-extant > div 
+.source-highlighting-active .grid-icon.non-extant > div
 {
 	background: #0008;
 	color: #aaa;
@@ -879,6 +895,18 @@ a:hover, a:active
 .stats-table tbody tr:hover td
 {
 	background: #fff;
+}
+
+.stats-table tbody.reversed,
+.order-reversed .stats-table tbody.non-reversed
+{
+	display: none;
+}
+
+.stats-table tbody.non-reversed,
+.order-reversed .stats-table tbody.reversed
+{
+	display: table-row-group;
 }
 
 .stats-table thead th
