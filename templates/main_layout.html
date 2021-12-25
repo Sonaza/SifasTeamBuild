@@ -30,16 +30,17 @@
 				<div class="side-nav-inner">
 					<ul ng-controller="NavController">
 						<li><a href="#/"             ng-class="classActive('/', true)">Home</a></li>
-						<li><a href="#/ur-rotations" ng-class="classActive('/ur-rotations')">UR Rotations</a></li>
 						<li class="spacer"></li>
-						<li><a href="#/muse"         ng-class="classActive('/muse')">µ's Cards</a></li>
-						<li><a href="#/aqours"       ng-class="classActive('/aqours')">Aqours Cards</a></li>
-						<li><a href="#/nijigasaki"   ng-class="classActive('/nijigasaki')">Nijigasaki Cards</a></li>
+						<li><a href="#/ur-rotations" ng-class="classActive('/ur-rotations')">UR Rotations</a></li>
+						<li><a href="#/sr-sets"      ng-class="classActive('/sr-sets')">SR Sets</a></li>
 						<li class="spacer"></li>
 						<li><a href="#/festival"     ng-class="classActive('/festival')">Festival Rotations</a></li>
 						<li><a href="#/party"        ng-class="classActive('/party')">Party Rotations</a></li>
 						<li><a href="#/event"        ng-class="classActive('/event')">Event Rotations</a></li>
-						<li><a href="#/sr-sets"      ng-class="classActive('/sr-sets')">SR Sets</a></li>
+						<li class="spacer"></li>
+						<li><a href="#/muse"         ng-class="classActive('/muse')">µ's Cards</a></li>
+						<li><a href="#/aqours"       ng-class="classActive('/aqours')">Aqours Cards</a></li>
+						<li><a href="#/nijigasaki"   ng-class="classActive('/nijigasaki')">Nijigasaki Cards</a></li>
 						<li class="spacer"></li>
 						<li><a href="#/stats"        ng-class="classActive('/stats')">Card Stats</a></li>
 					</ul>
@@ -101,7 +102,7 @@
 			</div>
 		</div>
 	</footer>
-	<script src="/js/vendor/angular/angular.js"></script>
+	<script src="/js/vendor/angular/angular.min.js"></script>
 	<script src="/js/vendor/angular/angular-route.min.js"></script>
 	<script src="/js/vendor/angular/angular-sanitize.min.js"></script>
 	<script src="{{ cache_buster('/js/public.js') }}"></script>
