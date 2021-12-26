@@ -1,3 +1,7 @@
+import cssmin
+
+minify = False
+
 idols = [
 	1, 2, 3, 4, 5, 6, 7, 8, 9,                                   # Muse
 	101, 102, 103, 104, 105, 106, 107, 108, 109,                 # Aqours
@@ -27,84 +31,93 @@ def darken(hex, m):
 	b = int(int(hex[4:6], 16) * m)
 	return f'{r:02x}{g:02x}{b:02x}'
 
-f = open("../output/css/idols.css", "w", encoding="utf-8")
+css = []
 
 for size in icon_sizes:
 	for attribute in attributes:
 		line = f".icon-{size}.attribute-{attribute} {{ background-image: url('/img/icons/{size}/attribute-{attribute}.png') !important; }}"
-		f.write(line + "\n")
+		css.append(line)
 		
 for attribute, color in attribute_colors:
 	line = f".attribute-{attribute}.attribute-bg-color      {{ background-color: #{color} !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 	line = f".attribute-{attribute}.attribute-bg-color-dim  {{ background-color: #{darken(color, 0.7)} !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 	line = f".attribute-{attribute}.attribute-bg-color-dark {{ background-color: #{darken(color, 0.4)} !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 	
 	line = f"tr:hover .attribute-{attribute}.attribute-bg-color-dim  {{ background-color: #{darken(color, 0.85)} !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 
 for size in icon_sizes:
 	for type in types:
 		line = f".icon-{size}.type-{type} {{ background-image: url('/img/icons/{size}/type-{type}.png') !important; }}"
-		f.write(line + "\n")
+		css.append(line)
 		
 for type, color in type_colors:
 	line = f".type-{type}.type-bg-color      {{ background-color: #{color} !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 	line = f".type-{type}.type-bg-color-dim  {{ background-color: #{darken(color, 0.7)} !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 	line = f".type-{type}.type-bg-color-dark {{ background-color: #{darken(color, 0.4)} !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 	
 	line = f"tr:hover .type-{type}.type-bg-color-dim  {{ background-color: #{darken(color, 0.85)} !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 
 for size in icon_sizes:
 	for rarity in rarities:
 		line = f".icon-{size}.rarity-{rarity} {{ background-image: url('/img/icons/{size}/rarity-{rarity}.png') !important; }}"
-		f.write(line + "\n")
+		css.append(line)
 
-f.write("\n")
+css.append('')
 
 for size in icon_sizes:
 	for idol in idols:
 		line = f".idol-{idol:<3} .idol-icon-{size}        {{ background-image: url('/img/icons/{size}/icon-{idol}.png') !important; }}"
-		f.write(line + "\n")
-	f.write("\n")
+		css.append(line)
+	css.append('')
 	
 for size in icon_sizes:
 	for idol in idols:
 		line = f".idol-{idol:<3} .idol-icon-{size}-border {{ background-image: url('/img/icons/{size}/icon-{idol}-border.png') !important; }}"
-		f.write(line + "\n")
+		css.append(line)
 		
-	f.write("\n")
+	css.append('')
 
 for idol, color in idol_colors:
 	line = f".idol-{idol:<3} .idol-bg-color      {{ background-color: #{color} !important; }}"
-	f.write(line + "\n")
-f.write("\n")
+	css.append(line)
+css.append('')
 
 for idol, color in idol_colors:
 	line = f".idol-{idol:<3} .idol-bg-color-dim  {{ background-color: #{darken(color, 0.7)} !important; }}"
-	f.write(line + "\n")
-f.write("\n")
+	css.append(line)
+css.append('')
 
 for idol, color in idol_colors:
 	line = f".idol-{idol:<3} .idol-bg-color-dark {{ background-color: #{darken(color, 0.4)} !important; }}"
-	f.write(line + "\n")
-f.write("\n")
+	css.append(line)
+css.append('')
 
 for idol, color in idol_colors:
 	line = f".idol-{idol:<3} .idol-bg-glow       {{ box-shadow: inset 0 0 4px 2px #{color}77 !important; }}"
-	f.write(line + "\n")
-f.write("\n")
+	css.append(line)
+css.append('')
 
 for idol, color in idol_colors:
 	line = f".idol-{idol:<3} .idol-bg-glow-faint {{ box-shadow: inset 0 0 4px 2px #{color}33 !important; }}"
-	f.write(line + "\n")
+	css.append(line)
 
 for idol, color in idol_colors:
 	line = f".idol-{idol:<3} .idol-bg-glow-border {{ box-shadow: inset 0 0 1px 1px #{color}44 !important; }}"
-	f.write(line + "\n")
+	css.append(line)
+
+with open("../output/css/idols.css", "w", encoding="utf-8") as f:
+	code = '\n'.join(css)
+	
+	if minify:
+		code = cssmin.cssmin(code)
+	
+	f.write(code)
+	f.close()
