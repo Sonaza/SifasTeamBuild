@@ -175,7 +175,10 @@ class IdolBondBonuses():
 			print(f"   {k.name:<15}  : {v:>4.2f}")
 		print()
 
-# IdolBondBonuses.get_bond_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
-IdolBondBonuses.get_bond_parameters(117, 50, [ BondParameter.CritPower ])
-# IdolBondBonuses.get_bond_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])
-# IdolBondBonuses.get_bond_parameters(77, 30, [ BondParameter.CritRate ])
+
+## TEST CODE
+if __name__ == "__main__":
+	# IdolBondBonuses.get_bond_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
+	IdolBondBonuses.get_bond_parameters(117, 50, [ BondParameter.CritPower ])
+	# IdolBondBonuses.get_bond_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])
+	# IdolBondBonuses.get_bond_parameters(77, 30, [ BondParameter.CritRate ])

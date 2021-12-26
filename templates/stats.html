@@ -120,95 +120,52 @@
 						</tr>
 					</thead>
 					
-					<tbody class="non-reversed">
-						{% for member, card, time_since in data.cards %}
-							<tr class="idol-{{ member.value }}" data-index="{{ loop.index }}">
-								<td class="idol-identity">
-									<div class="flex-wrapper">
-										<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-										<span class="idol-name">{{ Idols.by_member_id[member].full_name }}</span>
-									</div>
-								</td>
-								{% if is_valid_card(card) %}
-									<td title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
-										{{ time_since.days | format_days }}
-									</td>
-									<td class="card-details">
+					{% for class, cards in [('non-reversed', data.cards), ('reversed', reversed(data.cards))] %}
+						<tbody class="non-reversed">
+							{% for member, card, time_since in cards %}
+								<tr class="idol-{{ member.value }}" data-index="{{ loop.index }}">
+									<td class="idol-identity">
 										<div class="flex-wrapper">
-											<span class="thumbnail">
-												<div class="thumbnail-wrapper">
-													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
-														<span class="source-indicator source-{{ card.source.value }}"></span>
-													</a>
-												</div>
-											</span>
-											<span class="card-link">
-												{# <a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-normal" target="_blank">{{ card.get_card_name(False) }}</a> #}
-												<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
-											</span>
-											{% if data.show_source %}
-												<span class="card-source">
-													{{ card.source.displayname }}
-												</span>
-											{% endif %}
+											<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+											<span class="idol-name">{{ Idols.by_member_id[member].full_name }}</span>
 										</div>
 									</td>
-								{% else %} 
-									<td>
-										Never
-									</td>
-									<td style="color: #aaa;">
-										&mdash;
-									</td>
-								{% endif %}
-							</tr>
-						{% endfor %}
-					</tbody>
-					
-					<tbody class="reversed">
-						{% for member, card, time_since in reversed(data.cards) %}
-							<tr class="idol-{{ member.value }}">
-								<td class="idol-identity">
-									<div class="flex-wrapper">
-										<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-										<span class="idol-name">{{ Idols.by_member_id[member].full_name }}</span>
-									</div>
-								</td>
-								{% if is_valid_card(card) %}
-									<td title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
-										{{ time_since.days | format_days }}
-									</td>
-									<td class="card-details">
-										<div class="flex-wrapper">
-											<span class="thumbnail">
-												<div class="thumbnail-wrapper">
-													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
-														<span class="source-indicator source-{{ card.source.value }}"></span>
-													</a>
-												</div>
-											</span>
-											<span class="card-link">
-												{# <a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-normal" target="_blank">{{ card.get_card_name(False) }}</a> #}
-												<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
-											</span>
-											{% if data.show_source %}
-												<span class="card-source">
-													{{ card.source.displayname }}
+									{% if is_valid_card(card) %}
+										<td title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
+											{{ time_since.days | format_days }}
+										</td>
+										<td class="card-details">
+											<div class="flex-wrapper">
+												<span class="thumbnail">
+													<div class="thumbnail-wrapper">
+														<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+															<span class="source-indicator source-{{ card.source.value }}"></span>
+														</a>
+													</div>
 												</span>
-											{% endif %}
-										</div>
-									</td>
-								{% else %} 
-									<td>
-										Never
-									</td>
-									<td style="color: #aaa;">
-										&mdash;
-									</td>
-								{% endif %}
-							</tr>
-						{% endfor %}
-					</tbody>
+												<span class="card-link">
+													{# <a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-normal" target="_blank">{{ card.get_card_name(False) }}</a> #}
+													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
+												</span>
+												{% if data.show_source %}
+													<span class="card-source">
+														{{ card.source.displayname }}
+													</span>
+												{% endif %}
+											</div>
+										</td>
+									{% else %} 
+										<td>
+											Never
+										</td>
+										<td style="color: #aaa;">
+											&mdash;
+										</td>
+									{% endif %}
+								</tr>
+							{% endfor %}
+						</tbody>
+					{% endfor %}
 				</table>
 			</div>
 		{% endfor %}

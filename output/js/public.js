@@ -197,20 +197,43 @@ const highlight_options = [
 	{ 'value' : 0,         'label' : 'No Highlighting' },
 	{ 'value' : 1,         'label' : 'Initial Cards' },
 	{ 'value' : 2,         'label' : 'Events & SBL' },
-	{ 'value' : 3,         'label' : 'Event Gacha' },
-	{ 'value' : 5,         'label' : 'Spotlight Banners ' },
-	{ 'value' : 6,         'label' : 'Festival Banners' },
-	{ 'value' : 7,         'label' : 'Party Banners' },
+	{ 'value' : 3,         'label' : 'Gacha' },
+	{ 'value' : 5,         'label' : 'Spotlight ' },
+	{ 'value' : 6,         'label' : 'Festival' },
+	{ 'value' : 7,         'label' : 'Party' },
 	{ 'value' : 'gacha',   'label' : 'Any Gacha' },
 	{ 'value' : 'limited', 'label' : 'Any Limited' },
 ]
 
+let getStorage = (key, default_value) =>
+{
+	let value = window.localStorage.getItem(key);
+	if (value === null)
+		return default_value;
+	
+	return {
+		'boolean'   : (v) => v == 'true',
+		'number'    : Number,
+		'string'    : String,
+		'undefined' : () => console.warn('value type undefined'),
+	}[typeof default_value](value);
+}
+
+let saveStorage = (values) =>
+{
+	for (let [key, value] of Object.entries(values))
+	{
+		window.localStorage.setItem(key, value);
+	}
+}
+
 app.run(($rootScope) =>
 	{
 		$rootScope.settings = {
-			use_idolized_thumbnails : true,
-			order_reversed          : false,
-			highlight_source        : 0,
+			use_idolized_thumbnails : getStorage('use_idolized_thumbnails', true),
+			order_reversed          : getStorage('order_reversed', false),
+			highlight_source        : getStorage('highlight_source', 0),
+			show_tooltips           : getStorage('show_tooltips', true),
 		}
 	}
 )
@@ -232,6 +255,11 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 				output.push('order-reversed');
 			}
 			
+			if (!$rootScope.settings.show_tooltips)
+			{
+				output.push('hide-tooltips');
+			}
+			
 			output.push('source-highlight-' + $rootScope.settings.highlight_source);
 			if ($rootScope.settings.highlight_source == 0)
 			{
@@ -244,6 +272,11 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			
 			return output.join(' ');
 		}
+		
+		$scope.$watch('$root.settings', function(bs, settings)
+		{
+			saveStorage($rootScope.settings);
+		}, true);
 		
 		$scope.keydown = ($event) =>
 		{
@@ -302,6 +335,13 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		  			{
 		  				$event.preventDefault();
 		  				$rootScope.settings.order_reversed	 = !$rootScope.settings.order_reversed;
+		  				return;
+		  			}
+		  			
+		  			if ($event.keyCode == 84) // T-key
+		  			{
+		  				$event.preventDefault();
+		  				$rootScope.settings.show_tooltips	 = !$rootScope.settings.show_tooltips;
 		  				return;
 		  			}
 		  			
@@ -430,6 +470,63 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
   			}
 		});
 		
+		$scope.toggleTooltip = function($event, show)
+		{
+			$scope.display_tooltip = show;
+			let tooltip = document.querySelector("#card-tooltip");
+			if (!show)
+			{
+				tooltip.style.visibility = 'hidden';
+				tooltip.style.top = '-999px';
+				tooltip.style.left = '-999px';
+				tooltip.style.right = 'auto';
+				return;
+			}
+			
+			tooltip.style.visibility = 'visible';
+			
+			let e = $event.target.closest('.tooltip-data');
+			
+			const keys = [
+				'member-id', 'member-name',
+				'card-attribute', 'card-type',
+				'card-title-normal', 'card-title-idolized',
+				'card-source', 'card-release-date',
+			];
+			
+			$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
+				return {
+					[key.replace(/-/g, '_')] : e.getAttribute('data-' + key)
+				}
+			}));
+			
+			let rect = e.getBoundingClientRect();
+			
+			const doc = document.documentElement;
+			const view_width = doc.clientWidth;
+			const scroll_top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+			
+			const flipAnchor = (rect.x > view_width * 0.66);
+			
+			const x_offset = 15;
+			const y_offset = -16;
+			
+			if (flipAnchor)
+			{
+				tooltip.style.top = (rect.top + scroll_top + y_offset) + 'px';
+				
+				tooltip.style.right = (view_width - rect.left + x_offset) + 'px';
+				tooltip.style.left = 'auto';
+			}
+			else
+			{
+				tooltip.style.top = (rect.top + scroll_top + y_offset) + 'px';
+				
+				tooltip.style.left = (rect.right + x_offset) + 'px';
+				tooltip.style.right = 'auto';
+			}
+		}
+		
 		let page_subtitle = "Page " + (parseInt($scope.active_page) + 1);
 		$rootScope.$broadcast('update-title', page_subtitle);
 
@@ -488,47 +585,6 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 			return "";
 		}
 		
-		// $scope.$watch('$root.settings', function(bs, settings)
-		// {
-		// 	console.log("SETTINGS CHANGED!", settings);
-			
-		// 	$timeout($scope.update_row_order);
-		// }, true);
-		
-		// let reverse_rows = (selector, remove_class, add_class) => 
-		// {
-		// 	let rows_parent = document.querySelectorAll(selector);
-		// 	console.log(selector, rows_parent);
-		// 	for (let parent of rows_parent)
-		// 	{
-		// 		for (let i = 1; i < parent.childNodes.length; i++)
-		// 		{
-		// 	        parent.insertBefore(parent.childNodes[i], parent.firstChild);
-		// 	    }
-		// 	}
-		// 	angular.element(rows_parent).removeClass(remove_class).addClass(add_class);
-		// }
-		
-		// $scope.reversed = false;
-		
-		$scope.update_row_order = () => 
-		{
-			console.log("UPDATING ROW ORDER!", $rootScope.settings.order_reversed, $scope.reversed);
-			
-			if ($rootScope.settings.order_reversed)
-			{
-				reverse_rows('tbody.reversible', 'not-reversed', 'reversed');
-			}
-			else
-			{
-				reverse_rows('tbody.reversible', 'reversed', 'not-reversed');
-			}
-		}
-		// if ($rootScope.settings.order_reversed)
-		// {
-		// 	$scope.update_row_order();
-		// }
-		
 		$scope.$on('keydown', (_, e) =>
 		{
   			if (e.repeat || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
@@ -586,3 +642,20 @@ app.directive('pillButton', function($parse)
 		}
 	}
 })
+
+app.directive('cardTooltip', function($parse)
+{
+	return {
+		restrict: 'A',
+		templateUrl: 'tooltip.html',
+		link: function (scope, element, attrs)
+		{
+			// let lol = $parse(attrs.cardTooltip)(scope);
+			scope.$watch(attrs.cardTooltip, function(value)
+			{
+				scope.data = value;
+			}, true);
+		}
+	}
+})
+

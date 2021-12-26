@@ -1,14 +1,15 @@
+from IdolDatabase import *
+from CardThumbnails import CardThumbnails
+
 import argparse
 import os
 import time
+
 from operator import itemgetter
-from enum import Enum
 from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
-from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
-from IdolDatabase import *
-from IdolKiraraClient import KiraraClient, KiraraIdol
+from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 import htmlmin
 
 class CardNonExtant(): pass
@@ -53,11 +54,7 @@ def css(classname, condition):
 		return classname
 	else:
 		return ''
-	
-def make_random_string():
-	hashvalue = hash(datetime.now()) % 16711425
-	return f"{hashvalue:06x}"
-	
+
 def cache_buster(filename):
 	full_path = 'output' + filename
 	if not os.path.exists(full_path):
@@ -68,138 +65,24 @@ def cache_buster(filename):
 	hashvalue = hash(modify_time) % 16711425
 	return f"{name}.{hashvalue:06x}{ext}"
 		
-# def include_page(filepath):
-# 	filepath = os.path.join("output", filepath)
-# 	if not os.path.exists(filepath): return f"<h1>Error: {filepath} does not exist.</h1>"
-# 	with open(filepath, encoding="utf8") as f:
-# 		return f.read()
-# 	return f"<h1>Error: Failed to open {filepath}.</h1>"
-
-class CardThumbnails():
-	def __init__(self, client):
-		self.client = client
-	
-	def _download_file(self, url, target_path):
-		import requests
-		r = requests.get(url)
-		if r.status_code == 200:
-			with open(target_path, "wb") as f:
-				f.write(r.content)
-				f.close()
-			return True
-			
-		print(f"Return code {r.status_code}, failed to download resource: {url}")
-		return False
-				
-	def download_thumbnails(self):
-		has_new_thumbnails = False
-		
-		cards = self.client.get_all_idols(with_json=True)
-		for card in cards:
-			normal_path = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_normal.png"
-			if not os.path.exists(normal_path):
-				print(normal_path, end='')
-				if self._download_file(card.data["normal_appearance"]["thumbnail_asset_path"], normal_path):
-					print(" OK")
-					has_new_thumbnails = True
-				else:
-					print(" FAIL!")
-			
-			idolized_path = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_idolized.png"
-			if not os.path.exists(idolized_path):
-				print(idolized_path, end='')
-				if self._download_file(card.data["idolized_appearance"]["thumbnail_asset_path"], idolized_path):
-					print(" OK")
-					has_new_thumbnails = True
-				else:
-					print(" FAIL!")
-		
-		# return True
-		return has_new_thumbnails
-	
-	def make_atlas(self):
-		print("Making atlas...")
-		
-		from PIL import Image
-		
-		atlas_by_ordinal = {}
-		sizes = [80]
-		rarities = [Rarity.SR, Rarity.UR]
-		
-		atlas_hash = make_random_string()
-		
-		for rarity in rarities:
-			print(rarity.name)
-			
-			for group in Group:
-				print(group.name)
-				
-				cards = self.client.get_idols_by_group(group, rarity)
-				cards_per_girl = defaultdict(list)
-				for card in cards:
-					cards_per_girl[card.member_id].append(card)
-				
-				num_rotations = 0
-				num_members = len(Idols.by_group[group])
-				for member_id, cards in cards_per_girl.items():
-					num_rotations = max(num_rotations, len(cards))
-				
-				for size in sizes:
-					thumbnail_size = (size, size)
-					image_size = (thumbnail_size[0] * num_members, thumbnail_size[1] * (num_rotations + 1))
-					atlas_normal = Image.new('RGB', image_size, (0, 0, 0,))
-					atlas_idolized = Image.new('RGB', image_size, (0, 0, 0,))
-					
-					missing_icon = Image.open("thumbnails/missing_icon.png")
-					missing_icon.thumbnail(thumbnail_size)
-					atlas_normal.paste(missing_icon, (0, 0))
-					atlas_idolized.paste(missing_icon, (0, 0))
-					
-					for column_index, ordered_member_id in enumerate(Idols.member_order[group]):
-						for row_index, card in enumerate(cards_per_girl[ordered_member_id]):
-							target_coordinates = (thumbnail_size[0] * column_index, thumbnail_size[1] * (row_index + 1))
-							
-							atlas_by_ordinal[card.ordinal] = (group, rarity, 0, target_coordinates)
-							
-							normal = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_normal.png"
-							im_normal = Image.open(normal)
-							im_normal.thumbnail(thumbnail_size)
-							atlas_normal.paste(im_normal, target_coordinates)
-							
-							idolized = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_idolized.png"
-							im_idolized = Image.open(idolized)
-							im_idolized.thumbnail(thumbnail_size)
-							atlas_idolized.paste(im_idolized, target_coordinates)
-							
-							im_normal.close()
-							im_idolized.close()
-						
-					atlas_normal.save(f'output/img/thumbnails/atlas_{group.value}_{rarity.value}_0_normal.png', 'PNG')
-					atlas_idolized.save(f'output/img/thumbnails/atlas_{group.value}_{rarity.value}_0_idolized.png', 'PNG')
-					print(f'Saved atlas_{group.value}_{rarity.value}_0')
-				
-		groups = []
-		for rarity in rarities:
-			for group in Group:
-				groups.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_normal.{atlas_hash}.png') no-repeat; }}")
-				groups.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_idolized.{atlas_hash}.png') no-repeat; }}")
-				
-		with open("output/css/atlas.css", "w", encoding="utf8") as f:
-			print("Writing css... ")
-			
-			for line in groups:
-				f.write(line + "\n")
-			
-			for ordinal, (group, rarity, atlas_index, coordinates) in atlas_by_ordinal.items():
-				line = f".card-thumbnail.card-{ordinal} {{ background-position: {-coordinates[0]}px {-coordinates[1]}px !important; }}"
-				f.write(line + "\n")
-			
-			f.close()
-			
-			print("Done")
-		
+def get_card_debuted_source(source : Source):
+	sources = {
+		Source.Unspecified : 'Initial',
+		Source.Event       : 'Event',
+		Source.Gacha       : 'Gacha',
+		Source.Spotlight   : 'Spotlight Banners',
+		Source.Festival    : 'Festival Banners',
+		Source.Party       : 'Party Banners',
+	}
+	try:
+		return sources[source]
+	except:
+		print("Source not in the list!")
+		return "Unknown"
 
 class CardRotations():
+	OutputDirectory = "output"
+	
 	def __init__(self):
 		self.parser = argparse.ArgumentParser(description='Make some card rotations.')
 		
@@ -223,7 +106,7 @@ class CardRotations():
 		    # autoescape=select_autoescape()
 		)
 		
-		self.thumbnails = CardThumbnails(self.client)
+		self.thumbnails = CardThumbnails(self.client, CardRotations.OutputDirectory)
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
 			self.thumbnails.make_atlas()
 		
@@ -235,17 +118,17 @@ class CardRotations():
 		
 		return output
 		
-	def _render_and_save(self, template_path, output_path, data, minify=True):
-		print(f"Rendering {template_path} to {output_path}... ", end='')
+	def _render_and_save(self, template_filename, output_filename, data, minify=True):
+		print(f"Rendering {template_filename} to {output_filename}... ", end='')
 		
-		# template = self.jinja.get_template(os.path.join("templates", template_path).replace("\\","/"))
-		template = self.jinja.get_template(template_path)
+		# template = self.jinja.get_template(os.path.join("templates", template_filename).replace("\\","/"))
+		template = self.jinja.get_template(template_filename)
 		rendered_output = template.render(data)
 		
 		if minify:
 			rendered_output = htmlmin.minify(rendered_output, remove_empty_space=True)
 		
-		with open(os.path.join("output", output_path), "w", encoding="utf8") as f:
+		with open(os.path.join(CardRotations.OutputDirectory, output_filename), "w", encoding="utf8") as f:
 			f.write(rendered_output)
 			f.close()
 		
@@ -391,8 +274,10 @@ class CardRotations():
 		for idol in Idols.by_group[group]:
 			default_group_list[idol.member_id] = None
 			
-			if idol.member_id in member_delays[source]:
+			try:
 				cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays[source][idol.member_id])
+			except KeyError:
+				pass
 
 		idols = self.client.get_idols(group=group, rarity=Rarity.UR, source=source)
 		for idol in idols:
@@ -512,6 +397,8 @@ class CardRotations():
 		})
 		
 		self.jinja.globals.update({
+			'reversed' : reversed,
+			
 			'Idols'     : Idols,
 			'Attribute' : Attribute.get_valid(),
 			'Type'      : Type.get_valid(),
@@ -520,18 +407,16 @@ class CardRotations():
 			'is_missing_card':   is_missing_card,
 			'is_nonextant_card': is_nonextant_card,
 			
+			'ordinalize' : ordinalize,
 			'css' : css,
 			
-			'make_random_string' : make_random_string,
 			'cache_buster' : cache_buster,
 			
-			'ordinalize' : ordinalize,
-			'reversed' : reversed,
-			
 			'automatic_update' : self.args.auto,
+			'get_card_debuted_source' : get_card_debuted_source,
 		})
 		
-		for file in glob("output/pages/*.html"):
+		for file in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html")):
 			print("Removing", file)
 			os.remove(file)
 		

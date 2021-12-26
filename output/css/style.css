@@ -131,6 +131,12 @@ a:hover, a:active
 	transition: all ease-out 70ms;
 }
 
+
+.pill-button:last-child .inner
+{
+	margin-bottom: 0;
+}
+
 .pill-button:hover .inner
 {
 	box-shadow: 0 0 0 4px #fff6;
@@ -405,6 +411,8 @@ a:hover, a:active
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+	
+	margin-bottom: 0.75rem;
 }
 
 #source-selector:hover,
@@ -581,6 +589,14 @@ a:hover, a:active
 	outline: none;
 	border: none;
 	background: center center no-repeat;
+	position: relative;
+}
+
+.grid-icon > a
+{
+	display: inline-block;
+	width: 64px;
+	height: 64px;
 }
 
 .grid-icon .card-thumbnail
@@ -591,6 +607,121 @@ a:hover, a:active
 	filter: brightness(0.94);
 	box-shadow: 0 0 10px #0000;
 	transform: scale(0.8) translate(-10px, -10px);
+}
+
+#card-tooltip
+{
+	visibility: hidden;
+	
+	position: absolute;
+	
+	float: left;
+	top: -999px;
+	left: -999px;
+	z-index: 999999;
+	
+	font-size: 11pt;
+	color: #222;
+	
+	background: #ffffffee;
+	border: 1px solid #444d;
+	border-radius: 4px;
+	box-shadow: 0 0 5px #0006;
+	
+	pointer-events: none;
+}
+
+.hide-tooltips #card-tooltip
+{
+	display: none;
+}
+
+#card-tooltip .member-info
+{
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: center;
+	align-items: center;
+	padding: 8px 16px;
+	
+	color: #fff;
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
+	
+	white-space: nowrap;
+}
+
+#card-tooltip .member-info .name
+{
+	text-shadow: 0 -1px 1px #000a, 0 2px 1px #000a;
+}
+
+#card-tooltip .member-info .card-info
+{
+	padding: 0 8px;
+}
+
+#card-tooltip .member-info .card-info .icon-32
+{
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 0 3px;
+	background: center center no-repeat;
+	background-size: 20px;
+	filter: drop-shadow(0 1px 3px #0007);
+}
+
+#card-tooltip .card-details *
+{
+	white-space: nowrap;
+}
+
+#card-tooltip .card-details
+{
+	margin: 8px 10px;
+}
+
+#card-tooltip .card-details th
+{
+	text-align: left;
+	font-weight: 700;
+}
+
+#card-tooltip .card-details .card-title td
+{
+	text-align: center !important;
+	padding: 0 0 6px 0;
+	border-bottom: 1px solid #ccc;
+}
+
+#card-tooltip .card-details .card-title td .normal,
+#card-tooltip .card-details .card-title td .idolized
+{
+	font-weight: 700;
+	padding: 0 5px;
+}
+
+#card-tooltip .card-details .card-title td .normal,
+.use-idolized-thumbnails #card-tooltip .card-details .card-title td .idolized
+{
+	display: inline-block;
+}
+
+.use-idolized-thumbnails #card-tooltip .card-details .card-title td .normal,
+#card-tooltip .card-details .card-title td .idolized
+{
+	display: none;
+}
+
+#card-tooltip .card-details tr:nth-child(2) > *
+{
+	padding: 6px 0 0 0;
+}
+
+#card-tooltip .card-details-missing
+{
+	padding: 8px 10px;
 }
 
 .source-indicator
@@ -629,6 +760,13 @@ a:hover, a:active
 	transform: scale(0.9) translate(-10px, -10px);
 	box-shadow: 0 0 10px #0005, 0 0 5px 5px #0005;
 }
+/*
+.grid-icon:hover > a
+{
+	display: inline-block;
+	width: 80px;
+	height: 80px;
+}*/
 
 :hover > .source-indicator
 {
@@ -1033,6 +1171,7 @@ a:hover, a:active
 	font-size: 10pt;
 	text-align: right;
 	padding: 0 0.8rem 0 0;
+	white-space: nowrap;
 }
 
 .stats-table td.stat-number

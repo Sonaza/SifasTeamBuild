@@ -1,7 +1,7 @@
 from enum import Enum
 from collections import defaultdict
 
-from IdolEnums import *
+from .Enums import *
 
 class IdolBase():
 	def __init__(self, member_id : Member):
@@ -120,9 +120,3 @@ class Idols():
 			Idols.by_subunit[idol.subunit].append(idol)
 
 Idols.initialize()
-
-
-# for key, idols in Idols.By_School.items():
-# 	print(key)
-# 	for idol in idols:
-# 		print("  ", idol)

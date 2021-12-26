@@ -1,11 +1,9 @@
 import requests
 import json
-import re
+import time
 import sqlite3 as sqlite
 from operator import itemgetter
-import time
 from datetime import datetime, timezone
-import platform
 
 try:
 	from backports.datetime_fromisoformat import MonkeyPatch
@@ -13,7 +11,8 @@ try:
 except Exception as e:
 	pass
 
-from IdolDatabase import *
+from .Enums import *
+from .Idols import *
 
 def chunked(seq, size):
 	for x in range(0, len(seq), size):
@@ -60,7 +59,7 @@ class KiraraIdol():
 		
 		try:
 			self.data = json.loads(data['json'])
-		except IndexError:
+		except:
 			self.data = {}
 			# self.data = KiraraIdolLazyLoader()
 		
@@ -138,7 +137,7 @@ class KiraraIdol():
 #-----------------------------------------------------------------------------------------------------------------------
 
 class KiraraClient():
-	DatabaseFile = "idols.sqlite"
+	DefaultDatabaseFile = "idols.sqlite"
 	
 	Endpoints = {
 		'id_list'    : "https://allstars.kirara.ca/api/private/cards/id_list.json",
@@ -146,15 +145,19 @@ class KiraraClient():
 		'by_ordinal' : "https://allstars.kirara.ca/api/private/cards/ordinal/{}.json",
 	}
 
-	def __init__(self):
+	def __init__(self, database_file = None):
+		if database_file == None:
+			self.database_path = KiraraClient.DefaultDatabaseFile
+		else:
+			self.database_path = database_file
+			
 		self.initialize()
 
 	def initialize(self):
 		try:
-			self.dbcon = sqlite.connect(KiraraClient.DatabaseFile)
+			self.dbcon = sqlite.connect(self.database_path)
 		except:
-			print("Failed to open database connection.")
-			return False
+			raise KiraraClientException("Failed to open database connection.")
 			
 		self.dbcon.row_factory = sqlite.Row
 		self.db = self.dbcon.cursor()
@@ -179,8 +182,8 @@ class KiraraClient():
 			
 			# Idols table
 			'''CREATE TABLE `idols` (
-			    `id`                INTEGER UNIQUE NOT NULL,
 			    `ordinal`           INTEGER UNIQUE NOT NULL,
+			    `id`                INTEGER UNIQUE NOT NULL,
 			    `member_id`         INTEGER,
 			    `group_id`          INTEGER,
 			    `subunit_id`        INTEGER,
@@ -191,7 +194,7 @@ class KiraraClient():
 			    `rarity`            INTEGER,
 			    `source`            INTEGER,
 			    `release_date`      INTEGER,
-			    PRIMARY KEY(`id`, `ordinal`)
+			    PRIMARY KEY(`ordinal`, `id`)
 			) WITHOUT ROWID''',
 			
 			# Passive skills
@@ -301,7 +304,7 @@ class KiraraClient():
 			idols_data.extend(response_data['result'])
 		
 			result_ordinals = set()
-			for card in data:
+			for card in idols_data:
 				result_ordinals.add(card['ordinal'])
 			
 			if not all(x in result_ordinals for x in ordinals):
@@ -312,12 +315,16 @@ class KiraraClient():
 			idol_info = Idols.by_member_id[card['member']]
 			
 			if card['ordinal'] not in existing_ordinals:
+				print("ORDINAL NOT IN EXISTING! MUST COMMIT!")
+				
 				serialized = {
 					'ordinal'           : card['ordinal'],
 					'json'              : json.dumps(card),
 				}
 				query = self._make_insert_query('idols_json', serialized)
 				self.db.execute(query, serialized)
+			else:
+				print(" ORDINAL EXISTS, GOOD BAI")
 			
 			serialized = {
 				'id'                : card['id'],
@@ -389,8 +396,6 @@ class KiraraClient():
 		if not forced and not self.database_needs_update():
 			print("No need to update database right now.")
 			return
-			
-		self.refresh_last_update_time()
 		
 		print("Updating database...")
 		
@@ -417,6 +422,8 @@ class KiraraClient():
 		for ordinals_chunk in chunked(missing_ordinals, 20):
 			print("Querying chunk: ", ordinals_chunk)
 			self._query_idol_data_by_ordinal(ordinals_chunk)
+			
+		self.refresh_last_update_time()
 	
 	######################################################################
 	
@@ -598,6 +605,7 @@ class KiraraClient():
 		return self.convert_to_idol_object(self.db.fetchall())
 	
 	def do_crap(self):
+		import re
 		query = f"SELECT json FROM idols_json ORDER BY ordinal"
 		self.db.execute(query)
 		
@@ -636,34 +644,3 @@ if __name__ == "__main__":
 	# client.do_crap()
 	exit()
 	
-if __name__ == "__maian__":
-	effects = defaultdict(list)
-
-	data = client.get_idols_by_rarity(Rarity.UR)
-	for card in data:
-		passive, target, levels = card.get_passive_skill()
-		target_id = target['id']
-		
-		effect_type = levels[0]['effect_type']
-		# effect_type = levels[0][1]
-		
-		eff_str = f"{passive['name']} / {passive['programmatic_description'].strip()} / {passive['programmatic_target']}"
-		eff_str = re.sub('<[^<]+?>', '', eff_str)
-		
-		eff = (target, target_id, levels, eff_str)
-		effects[effect_type].append(eff)
-
-	for effect_type, effects in effects.items():
-		print(effect_type)
-		for target, target_id, levels, eff_str in sorted(effects, key=itemgetter(1)):
-			levels[0].pop('target_parameter')
-			levels[0].pop('finish_value')
-			# levels[0].pop('finish_type')
-			print(f"  {target_id:<5}{eff_str:<90}{levels[0]}")
-
-
-# for card in data:
-# 	print(card)
-# 	print()
-# 	card.get_passive_skill()
-# 	print("\n----------------------------------------------------------\n")
