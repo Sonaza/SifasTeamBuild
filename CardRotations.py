@@ -485,15 +485,15 @@ class CardRotations():
 		
 		self._render_and_save("home.html", "pages/home.html", {})
 		
-		self._minify_css(
-			[
-				"fonts.css",
-				"atlas.css",
-				"idols.css",
-				"style.css",
-			],
-			"public.css"
-		)
+		# self._minify_css(
+		# 	[
+		# 		"fonts.css",
+		# 		"atlas.css",
+		# 		"idols.css",
+		# 		"style.css",
+		# 	],
+		# 	"public.css"
+		# )
 		
 		now = datetime.now(timezone.utc)
 		self._render_and_save("main_layout.html", "index.html", {
