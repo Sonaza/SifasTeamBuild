@@ -489,6 +489,7 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 			
 			const keys = [
 				'member-id', 'member-name',
+				'card-status',
 				'card-attribute', 'card-type',
 				'card-title-normal', 'card-title-idolized',
 				'card-source', 'card-release-date',
@@ -499,30 +500,34 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 					[key.replace(/-/g, '_')] : e.getAttribute('data-' + key)
 				}
 			}));
+			if (!$scope.tooltip_data.card_status)
+				$scope.tooltip_data.card_status = 1;
 			
 			let rect = e.getBoundingClientRect();
 			
 			const doc = document.documentElement;
 			const view_width = doc.clientWidth;
-			const scroll_top = (window.pageYOffset || doc.scrollTop)  - (doc.clientTop || 0);
+			const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 			
 			const flipAnchor = (rect.x > view_width * 0.66);
 			
-			const x_offset = 15;
-			const y_offset = -16;
+			const offset = ($scope.tooltip_data.card_status == 1 ? 
+				{x: 15, y: -16} :
+				{x: 15, y: -4}
+			);
 			
 			if (flipAnchor)
 			{
-				tooltip.style.top = (rect.top + scroll_top + y_offset) + 'px';
+				tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
 				
-				tooltip.style.right = (view_width - rect.left + x_offset) + 'px';
+				tooltip.style.right = (view_width - rect.left + offset.x) + 'px';
 				tooltip.style.left = 'auto';
 			}
 			else
 			{
-				tooltip.style.top = (rect.top + scroll_top + y_offset) + 'px';
+				tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
 				
-				tooltip.style.left = (rect.right + x_offset) + 'px';
+				tooltip.style.left = (rect.right + offset.x) + 'px';
 				tooltip.style.right = 'auto';
 			}
 		}
@@ -654,6 +659,7 @@ app.directive('cardTooltip', function($parse)
 			scope.$watch(attrs.cardTooltip, function(value)
 			{
 				scope.data = value;
+				scope.first_name = value.member_name.split(' ')[0];
 			}, true);
 		}
 	}

@@ -15,73 +15,61 @@ import htmlmin, cssmin
 class CardNonExtant(): pass
 class CardMissing(): pass
 
-def is_valid_card(value):
-	return isinstance(value, KiraraIdol)
-
-def is_missing_card(value):
-	return isinstance(value, CardMissing)
-	
-def is_nonextant_card(value):
-	return isinstance(value, CardNonExtant)
-
-def ordinalize(number):
-	suffix = "th"
-	if (number % 10) == 1 and number != 11:
-		suffix = "st"
-	elif (number % 10) == 2 and number != 12:
-		suffix = "nd"
-	elif (number % 10) == 3 and number != 13:
-		suffix = "rd"
-		
-	return f"{number}{suffix}"
-	
-def pluralize(value, singular, plural):
-	if abs(value) == 1:
-		return f"{abs(value)} {singular}"
-	else:
-		return f"{abs(value)} {plural}"
-
-def format_days(value):
-	if value > 0:
-		return f"{pluralize(value, 'day', 'days')} ago"
-	elif value == 0:
-		return "Today"
-	else:
-		return f"In {pluralize(value, 'day', 'days')}"
-	
-def css(classname, condition):
-	if condition:
-		return classname
-	else:
-		return ''
-
-def cache_buster(filename):
-	full_path = CardRotations.OutputDirectory + filename
-	if not os.path.exists(full_path):
-		return filename
-		
-	modify_time = os.stat(full_path).st_mtime
-	name, ext = os.path.splitext(filename)
-	hashvalue = hash(modify_time) % 16711425
-	return f"{name}.{hashvalue:06x}{ext}"
-		
-def get_card_debuted_source(source : Source):
-	sources = {
-		Source.Unspecified : 'Initial',
-		Source.Event       : 'Event',
-		Source.Gacha       : 'Gacha',
-		Source.Spotlight   : 'Spotlight Banners',
-		Source.Festival    : 'Festival Banners',
-		Source.Party       : 'Party Banners',
-	}
-	try:
-		return sources[source]
-	except:
-		print("Source not in the list!")
-		return "Unknown"
-
 class CardRotations():
 	OutputDirectory = "output"
+	
+	@staticmethod
+	def is_valid_card(value):     return isinstance(value, KiraraIdol)
+	@staticmethod
+	def is_missing_card(value):   return isinstance(value, CardMissing)
+	@staticmethod
+	def is_nonextant_card(value): return isinstance(value, CardNonExtant)
+
+	@staticmethod
+	def ordinalize(number):
+		suffix = "th"
+		if (number % 10) == 1 and number != 11:
+			suffix = "st"
+		elif (number % 10) == 2 and number != 12:
+			suffix = "nd"
+		elif (number % 10) == 3 and number != 13:
+			suffix = "rd"
+			
+		return f"{number}{suffix}"
+		
+	@staticmethod
+	def pluralize(value, singular, plural):
+		if abs(value) == 1:
+			return f"{abs(value)} {singular}"
+		else:
+			return f"{abs(value)} {plural}"
+
+	@staticmethod
+	def format_days(value):
+		if value > 0:
+			return f"{CardRotations.pluralize(value, 'day', 'days')} ago"
+		elif value == 0:
+			return "Today"
+		else:
+			return f"In {pluralize(value, 'day', 'days')}"
+		
+	@staticmethod
+	def css(classname, condition):
+		if condition:
+			return classname
+		else:
+			return ''
+
+	@staticmethod
+	def cache_buster(filename):
+		full_path = CardRotations.OutputDirectory + filename
+		if not os.path.exists(full_path):
+			return filename
+			
+		modify_time = os.stat(full_path).st_mtime
+		name, ext = os.path.splitext(filename)
+		hashvalue = hash(modify_time) % 16711425
+		return f"{name}.{hashvalue:06x}{ext}"
 	
 	def __init__(self):
 		self.parser = argparse.ArgumentParser(description='Make some card rotations.')
@@ -89,13 +77,24 @@ class CardRotations():
 		self.parser.add_argument("-f", "--force", help="Force database update regardless of when it was last performed.",
 		                    action="store_true")
 		
-		self.parser.add_argument("-r", "--remake-atlas", help="Remake the atlas of thumbnails and the associated CSS code.",
+		self.parser.add_argument("-ra", "--remake-atlas", help="Remake the atlas of thumbnails and the associated CSS code.",
 		                    action="store_true")
 		
 		self.parser.add_argument("-a", "--auto", help="Flags this update as having been done automatically.",
 		                    action="store_true")
 		
+		self.parser.add_argument("-dev", help="Flags it as developing build.",
+		                    action="store_true")
+		
 		self.args = self.parser.parse_args()
+		
+		if self.args.dev:
+			print("------ BUILDING IN DEV MODE ------")
+		else:
+			print("------ BUILDING IN PROD MODE ------")
+		print()
+		
+		print("Current Working Directory", os.getcwd())
 		
 		self.client = KiraraClient()
 		self.client.cache_all_idols(forced=self.args.force)
@@ -230,7 +229,7 @@ class CardRotations():
 					if rotation_index < len(cards):
 						current_rotation[idol.member_id] = cards[rotation_index]
 						
-						if set_title == None and rarity == Rarity.SR and is_valid_card(cards[rotation_index]):
+						if set_title == None and rarity == Rarity.SR and CardRotations.is_valid_card(cards[rotation_index]):
 							t = cards[rotation_index].get_card_name(True)
 							titles[t] += 1
 					else:
@@ -393,27 +392,26 @@ class CardRotations():
 		from glob import glob
 		
 		self.jinja.filters.update({
-			'format_days' : format_days,
+			'format_days' : CardRotations.format_days,
 		})
 		
 		self.jinja.globals.update({
+			'cmd_args' : self.args,
+			
 			'reversed' : reversed,
 			
-			'Idols'     : Idols,
+			# 'Idols'     : Idols,
 			'Attribute' : Attribute.get_valid(),
 			'Type'      : Type.get_valid(),
 			
-			'is_valid_card':     is_valid_card,
-			'is_missing_card':   is_missing_card,
-			'is_nonextant_card': is_nonextant_card,
+			'is_valid_card':     CardRotations.is_valid_card,
+			'is_missing_card':   CardRotations.is_missing_card,
+			'is_nonextant_card': CardRotations.is_nonextant_card,
 			
-			'ordinalize' : ordinalize,
-			'css' : css,
+			'ordinalize' : CardRotations.ordinalize,
+			'css' : CardRotations.css,
 			
-			'cache_buster' : cache_buster,
-			
-			'automatic_update' : self.args.auto,
-			'get_card_debuted_source' : get_card_debuted_source,
+			'cache_buster' : CardRotations.cache_buster,
 		})
 		
 		for file in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html")):

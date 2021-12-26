@@ -19,10 +19,16 @@
 </head>
 <body ng-controller="BaseController" ng-class="active_settings()" ng-keydown="keydown($event)" tabindex="0">
 	<div id="header">
-		<div id="header-inner">
+		<div id="header-inner" style="position: relative;">
 			<h2 ng-bind-html="title">
 				SIFAS Card Rotations
 			</h2>
+			{% if cmd_args.dev %}
+				<div style="float: left; position: absolute; top: 12px; left: 20px; width: 200px; background: #CFB8F9; color: #222; font-weight: 700;
+							font-family: 'Montserrat'; box-shadow: 0 0 4px #000a; padding: 7px 20px; border-radius: 4px; text-shadow: none">
+					DEV BUILD!
+				</div>
+			{% endif %}
 		</div>
 	</div>
 	<div id="main-outer-wrapper">
@@ -102,7 +108,7 @@
 		<div id="footer-bottom">
 			<div class="details">
 				Last update performed
-				{% if automatic_update %}
+				{% if cmd_args.auto %}
 					automatically
 				{% endif %} at {{ last_update }}<span class="ng-cloak time-since-update" ng-bind="time_since('{{ last_update_timestamp }}')"></span>
 			</div>
