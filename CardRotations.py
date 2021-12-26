@@ -10,7 +10,7 @@ from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
-import htmlmin
+import htmlmin, cssmin
 
 class CardNonExtant(): pass
 class CardMissing(): pass
@@ -56,7 +56,7 @@ def css(classname, condition):
 		return ''
 
 def cache_buster(filename):
-	full_path = 'output' + filename
+	full_path = CardRotations.OutputDirectory + filename
 	if not os.path.exists(full_path):
 		return filename
 		
@@ -485,11 +485,37 @@ class CardRotations():
 		
 		self._render_and_save("home.html", "pages/home.html", {})
 		
+		self._minify_css(
+			[
+				"fonts.css",
+				"atlas.css",
+				"idols.css",
+				"style.css",
+			],
+			"public.css"
+		)
+		
 		now = datetime.now(timezone.utc)
 		self._render_and_save("main_layout.html", "index.html", {
 			'last_update'           : now.strftime('%d %B %Y %H:%M %Z'),
 			'last_update_timestamp' : now.isoformat(),
 		}, minify=False)
+	
+	def _minify_css(self, source, destination):
+		code = ""
+		
+		for file in source:
+			path = os.path.join(CardRotations.OutputDirectory, "css", file)
+			code += open(path, "r", encoding="utf8").read() + "\n"
+		
+		minified = cssmin.cssmin(code)
+		
+		print(f"CSS Minify reduced size from {len(code) / 1024:.2f} KB to {len(minified) / 1024:.2f} KB. Yay!")
+		
+		output_path = os.path.join(CardRotations.OutputDirectory, "css", destination)
+		with open(output_path, "w", encoding="utf8") as f:
+			f.write(minified)
+			f.close()
 		
 
 ##################################
