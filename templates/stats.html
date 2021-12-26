@@ -121,7 +121,7 @@
 					</thead>
 					
 					{% for class, cards in [('non-reversed', data.cards), ('reversed', reversed(data.cards))] %}
-						<tbody class="non-reversed">
+						<tbody class="{{ class }}">
 							{% for member, card, time_since in cards %}
 								<tr class="idol-{{ member.value }}" data-index="{{ loop.index }}">
 									<td class="idol-identity">
