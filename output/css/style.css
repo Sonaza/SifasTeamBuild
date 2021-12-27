@@ -131,10 +131,14 @@ a:hover, a:active
 	transition: all ease-out 70ms;
 }
 
-
 .pill-button:last-child .inner
 {
 	margin-bottom: 0;
+}
+
+.pill-button.changed .inner
+{
+	box-shadow: 0 0 4px 2px #fff6;
 }
 
 .pill-button:hover .inner
@@ -289,6 +293,7 @@ a:hover, a:active
 	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.6);
 	
 	background: #f5f5f5cc;
+	/*background: #111111cc;*/
 }
 
 #side-nav
@@ -438,12 +443,18 @@ a:hover, a:active
 	background-position: right .75rem center;
 	background-size: 16px 12px;
 	
-	transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+	transition: border-color .075s ease-in-out, box-shadow .075s ease-in-out;
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
 	
 	margin-bottom: 0.75rem;
+}
+
+.source-selector.changed
+{
+	border: 1px solid #9562FF;
+	box-shadow: 0 0 2px 3px #fff6;
 }
 
 .source-selector:hover,
@@ -482,6 +493,8 @@ a:hover, a:active
 .main-content
 {
 	background: #fffb;
+	/*background: #222b;*/
+	/*color: #fff;*/
 	padding: 1.2rem;
 	border-radius: 3px;
 }

@@ -210,7 +210,7 @@ app.run(($rootScope) =>
 	}
 )
 
-app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location)
+app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location, $timeout)
 	{
 		angular.element(document.querySelector("body")).removeClass('no-js');
 		
@@ -251,6 +251,15 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		{
 			saveStorage($rootScope.settings);
 		}, true);
+		
+		$scope.$watch('$root.settings.highlight_source', function(bs, settings)
+		{
+			let e = document.querySelector(".source-selector");
+			angular.element(e).addClass('changed');
+			$timeout(() => {
+				angular.element(e).removeClass('changed');
+			}, 200);
+		});
 		
 		$scope.keydown = ($event) =>
 		{
@@ -596,7 +605,7 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 	}
 )
 
-app.directive('pillButton', function($parse)
+app.directive('pillButton', function($parse, $timeout)
 {
 	return {
 		restrict: 'A',
@@ -613,12 +622,17 @@ app.directive('pillButton', function($parse)
 			{
 				if (value)
 				{
-					angular.element(element).addClass('active');
+					angular.element(element).addClass('active').addClass('changed');
 				}
 				else
 				{
 					angular.element(element).removeClass('active');
 				}
+				
+				angular.element(element).addClass('changed');
+				$timeout(() => {
+					angular.element(element).removeClass('changed');
+				}, 200);
 			});
 		}
 	}
