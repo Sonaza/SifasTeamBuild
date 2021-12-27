@@ -4,7 +4,7 @@ from CardThumbnails import CardThumbnails
 import argparse
 import os
 import time
-
+from glob import glob
 from operator import itemgetter
 from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
@@ -26,16 +26,13 @@ class CardRotations():
 	def is_nonextant_card(value): return isinstance(value, CardNonExtant)
 
 	@staticmethod
-	def ordinalize(number):
-		suffix = "th"
-		if (number % 10) == 1 and number != 11:
-			suffix = "st"
-		elif (number % 10) == 2 and number != 12:
-			suffix = "nd"
-		elif (number % 10) == 3 and number != 13:
-			suffix = "rd"
-			
-		return f"{number}{suffix}"
+	def ordinalize(n):
+		n = int(n)
+		if 11 <= (n % 100) <= 13:
+			suffix = 'th'
+		else:
+			suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+		return str(n) + suffix
 		
 	@staticmethod
 	def pluralize(value, singular, plural):
@@ -51,19 +48,26 @@ class CardRotations():
 		elif value == 0:
 			return "Today"
 		else:
-			return f"In {pluralize(value, 'day', 'days')}"
+			return f"In {CardRotations.pluralize(value, 'day', 'days')}"
 		
 	@staticmethod
-	def css(classname, condition):
+	def conditional_css(class_names, condition):
+		assert isinstance(class_names, str) or isinstance(class_names, list) or isinstance(class_names, tuple)
+		assert isinstance(condition, bool)
+		
+		if isinstance(class_names, str): class_names = [class_names, '']
+		elif len(class_names) == 1:      class_names = [class_names[0], '']
+			
 		if condition:
-			return classname
+			return class_names[0]
 		else:
-			return ''
-
+			return class_names[1]
+			
 	@staticmethod
 	def cache_buster(filename):
-		full_path = CardRotations.OutputDirectory + filename
+		full_path = os.path.normpath(CardRotations.OutputDirectory + '/' + filename)
 		if not os.path.exists(full_path):
+			print(f"Cache busting path {full_path} does not exist!")
 			return filename
 			
 		modify_time = os.stat(full_path).st_mtime
@@ -75,16 +79,16 @@ class CardRotations():
 		self.parser = argparse.ArgumentParser(description='Make some card rotations.')
 		
 		self.parser.add_argument("-f", "--force", help="Force database update regardless of when it was last performed.",
-		                    action="store_true")
+							action="store_true")
 		
 		self.parser.add_argument("-ra", "--remake-atlas", help="Remake the atlas of thumbnails and the associated CSS code.",
-		                    action="store_true")
+							action="store_true")
 		
 		self.parser.add_argument("-a", "--auto", help="Flags this update as having been done automatically.",
-		                    action="store_true")
+							action="store_true")
 		
 		self.parser.add_argument("-dev", help="Flags it as developing build.",
-		                    action="store_true")
+							action="store_true")
 		
 		self.args = self.parser.parse_args()
 		
@@ -97,13 +101,42 @@ class CardRotations():
 		print("Current Working Directory", os.getcwd())
 		
 		self.client = KiraraClient()
-		self.client.cache_all_idols(forced=self.args.force)
+		# self.client.cache_all_idols(forced=self.args.force)
+		self.client.cache_all_idols(forced=True)
 		
 		self.jinja = Environment(
-		    # loader=FileSystemLoader(os.path.dirname(os.path.abspath(__file__)), encoding='utf-8'),
-		    loader=PackageLoader("CardRotations", encoding='utf-8'),
-		    # autoescape=select_autoescape()
+			# loader=FileSystemLoader(os.path.dirname(os.path.abspath(__file__)), encoding='utf-8'),
+			loader=PackageLoader("CardRotations", encoding='utf-8'),
+			# autoescape=select_autoescape()
 		)
+		
+		self.jinja.filters.update({
+			'format_days'     : CardRotations.format_days,
+			'pluralize'       : CardRotations.pluralize,
+			'ordinalize'      : CardRotations.ordinalize,
+			
+			'conditional_css' : CardRotations.conditional_css,
+		})
+		
+		self.jinja.globals.update({
+			# Python built in functions
+			'reversed'    : reversed,
+			
+			# Application related variables
+			'cmd_args'      : self.args,
+			
+			# Application related global enums
+			'Attribute' : Attribute.get_valid(),
+			'Type'      : Type.get_valid(),
+			
+			# Page specific functions
+			'is_valid_card'     : CardRotations.is_valid_card,
+			'is_missing_card'   : CardRotations.is_missing_card,
+			'is_nonextant_card' : CardRotations.is_nonextant_card,
+			
+			# Systems stuff
+			'cache_buster'      : CardRotations.cache_buster,
+		})
 		
 		self.thumbnails = CardThumbnails(self.client, CardRotations.OutputDirectory)
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
@@ -389,31 +422,6 @@ class CardRotations():
 		return result
 	
 	def generate_pages(self):
-		from glob import glob
-		
-		self.jinja.filters.update({
-			'format_days' : CardRotations.format_days,
-		})
-		
-		self.jinja.globals.update({
-			'cmd_args' : self.args,
-			
-			'reversed' : reversed,
-			
-			# 'Idols'     : Idols,
-			'Attribute' : Attribute.get_valid(),
-			'Type'      : Type.get_valid(),
-			
-			'is_valid_card':     CardRotations.is_valid_card,
-			'is_missing_card':   CardRotations.is_missing_card,
-			'is_nonextant_card': CardRotations.is_nonextant_card,
-			
-			'ordinalize' : CardRotations.ordinalize,
-			'css' : CardRotations.css,
-			
-			'cache_buster' : CardRotations.cache_buster,
-		})
-		
 		for file in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html")):
 			print("Removing", file)
 			os.remove(file)

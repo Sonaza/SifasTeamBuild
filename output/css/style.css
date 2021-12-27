@@ -380,6 +380,37 @@ a:hover, a:active
 	margin: 1rem 0.5rem 0 0.5rem;
 	border-radius: 4px;
 	background: #481E9F;
+	position: relative;
+}
+
+#side-nav .settings .revert-button
+{
+	position: absolute;
+	top: -8px;
+	right: -8px;
+	width: 40px;
+	height: 40px;
+	background: url('/img/revert.png') center center no-repeat #501DA4aa;
+	background-size: 24px;
+	filter: drop-shadow(0 1px 1px #000);
+	border-radius: 3px;
+	border: 1px solid #9869E6;
+	transition: all ease-in-out 100ms;
+	cursor: pointer;
+	box-shadow: 0 3px 1px #000a;
+}
+
+#side-nav .settings .revert-button:hover
+{
+	background-color: #7B43D6aa;
+	border-color: #D6C1F9;
+}
+
+#side-nav .settings .revert-button:active
+{
+	background-color: #A77AF0aa;
+	top: -5px;
+	box-shadow: 0 0 1px #0008;
 }
 
 #source-selector

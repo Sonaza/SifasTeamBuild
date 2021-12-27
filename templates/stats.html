@@ -84,12 +84,12 @@
 							</td>
 							
 							{% for attribute in Attribute %}
-								<td class="stat-various {{ css('has-none', stats['attributes'][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
+								<td class="stat-various {{ 'has-none' | conditional_css(stats['attributes'][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
 									<span class="icon-32 attribute-{{ attribute.value }}">{{ stats['attributes'][attribute] }}</span>
 								</td>
 							{% endfor %}
 							{% for type in Type %}
-								<td class="stat-various {{ css('has-none', stats['types'][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
+								<td class="stat-various {{ 'has-none' | conditional_css(stats['types'][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
 									<span class="icon-32 type-{{ type.value }}">{{ stats['types'][type] }}</span>
 								</td>
 							{% endfor %}
@@ -107,7 +107,7 @@
 		<p>{{ categories[category_tag][1] }}</p>
 		{% for group, data in category_data.items() %}
 			<div class="stats-category-group {{ group.tag }}">
-				<table class="stats-table {{ css('with-source', data.show_source) }}">
+				<table class="stats-table {{ 'with-source' | conditional_css(data.show_source) }}">
 					<colgroup>
 						<col style="width: 25%">
 						<col style="width: 20%">
