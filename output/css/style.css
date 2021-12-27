@@ -413,7 +413,7 @@ a:hover, a:active
 	box-shadow: 0 0 1px #0008;
 }
 
-#source-selector
+.source-selector
 {
 	display: block;
 	width: 100%;
@@ -446,24 +446,24 @@ a:hover, a:active
 	margin-bottom: 0.75rem;
 }
 
-#source-selector:hover,
-#source-selector:focus
+.source-selector:hover,
+.source-selector:focus
 {
 	border: 1px solid #9562FF;
 	box-shadow: 0 0 0 3px #fff6;
 }
 
-.source-highlighting-inactive #source-selector
+.source-highlighting-inactive .source-selector
 {
 	color: #78669E;
 }
 
-.source-highlighting-active #source-selector
+.source-highlighting-active .source-selector
 {
 	color: #5D2CC2;
 }
 
-#source-selector option
+.source-selector option
 {
 	font-weight: 700;
 	color: #222;
@@ -782,6 +782,11 @@ a:hover, a:active
 	background: transparent !important;
 }
 
+.no-js .source-indicator
+{
+	background: transparent !important;
+}
+
 .grid-icon .card-thumbnail:hover
 {
 	filter: brightness(1);
@@ -846,11 +851,6 @@ a:hover, a:active
 	color: #aaa;
 }
 
-.array-wrapper
-{
-	
-}
-
 .array-group
 {
 	display: none;
@@ -858,7 +858,8 @@ a:hover, a:active
 	margin: 0 0 1.5rem 2px;
 }
 
-.array-group.active
+.array-group.active,
+.no-js .array-group
 {
 	display: flex;
 }
@@ -1238,4 +1239,11 @@ a:hover, a:active
 	text-align: center;
 	
 	color: #fff;
+}
+
+/**************/
+
+.ng-cloak
+{
+	display: none !important;
 }

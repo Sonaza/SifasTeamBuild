@@ -212,6 +212,8 @@ app.run(($rootScope) =>
 
 app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location)
 	{
+		angular.element(document.querySelector("body")).removeClass('no-js');
+		
 		$scope.highlight_options = highlight_options;
 		$scope.active_settings = () =>
 		{
@@ -329,6 +331,8 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			}
 			
 			$rootScope.$broadcast('keydown', $event);
+			
+			angular.element(document.querySelector("#source-selector-default")).remove();
 		};
 	}
 )

@@ -74,6 +74,14 @@ class CardRotations():
 		name, ext = os.path.splitext(filename)
 		hashvalue = hash(modify_time) % 16711425
 		return f"{name}.{hashvalue:06x}{ext}"
+		
+	@staticmethod
+	def include_page(filepath):
+		filepath = os.path.join("output", filepath)
+		if not os.path.exists(filepath): return f"<h1>Error: {filepath} does not exist.</h1>"
+		with open(filepath, encoding="utf8") as f:
+			return f.read()
+		return f"<h1>Error: Failed to open {filepath}.</h1>"
 	
 	def __init__(self):
 		self.parser = argparse.ArgumentParser(description='Make some card rotations.')
@@ -133,6 +141,8 @@ class CardRotations():
 			'is_valid_card'     : CardRotations.is_valid_card,
 			'is_missing_card'   : CardRotations.is_missing_card,
 			'is_nonextant_card' : CardRotations.is_nonextant_card,
+			
+			'include_page' : CardRotations.include_page,
 			
 			# Systems stuff
 			'cache_buster'      : CardRotations.cache_buster,

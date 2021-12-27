@@ -17,7 +17,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 	<base href="/">
 </head>
-<body ng-controller="BaseController" ng-class="active_settings()" ng-keydown="keydown($event)" tabindex="0">
+<body ng-controller="BaseController" class="no-js" ng-class="active_settings()" ng-keydown="keydown($event)" tabindex="0">
 	<div id="header">
 		<div id="header-inner" style="position: relative;">
 			<h2 ng-bind-html="title">
@@ -70,9 +70,12 @@
 							</div>
 						</div>
 						<div>
-							<select id="source-selector" class="ng-cloak" ng-model="settings.highlight_source">
+							<select class="source-selector ng-cloak" ng-model="settings.highlight_source">
 								<option disabled>&mdash; Source Highlight &mdash;</option>
 								<option ng-repeat="option in highlight_options" ng-value="option.value">[[ option.label ]]</option>
+							</select>
+							<select class="source-selector" id="source-selector-loading" ng-if="loading">
+								<option selected disabled>Loading...</option>
 							</select>
 						</div>
 						<div class="pill-button" pill-button="settings.show_tooltips">
@@ -89,7 +92,10 @@
 			<div id="main">
 				<div id="main-inner">
 					<div class="main-content" ng-view>
-
+						{# {{ include_page("pages/home.html") }} #}
+						<noscript>
+							{{ include_page("noscript_notice.html") }}
+						</noscript>
 					</div>
 				</div>
 			</div>
