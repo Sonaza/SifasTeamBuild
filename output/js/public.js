@@ -25,37 +25,6 @@ function storageAvailable(type)
     }
 }
 
-function load_params()
-{
-	let params;
-
-	if (storageAvailable('localStorage'))
-	{
-		let paramsData = window.localStorage.getItem('params');
-
-		if (paramsData && typeof paramsData == "string")
-			paramsData = JSON.parse(paramsData);
-
-		if (!paramsData || !Number.isInteger(paramsData.version) || paramsData.version < defaultParams.version)
-		{
-			console.log("RESETTING PARAMS");
-			params = JSON.parse(JSON.stringify(defaultParams));
-		}
-		else
-		{
-			console.log("LOADING PARAMS");
-			params = paramsData;
-		}
-	}
-	else
-	{
-		console.log("STORAGE NOT AVAILABEL!");
-		params = JSON.parse(JSON.stringify(defaultParams));
-	}
-
-	return params;
-}
-
 let pluralize = function(value, s, p)
 {
 	return new String(value) + " " + (value == 1 ? s : p);
@@ -194,21 +163,24 @@ app.config(function($routeProvider, $locationProvider)
 )
 
 const highlight_options = [
-	{ 'value' : 0,         'label' : 'No Highlighting' },
-	{ 'value' : 1,         'label' : 'Initial Cards' },
-	{ 'value' : 2,         'label' : 'Events & SBL' },
-	{ 'value' : 3,         'label' : 'Gacha' },
-	{ 'value' : 5,         'label' : 'Spotlight ' },
-	{ 'value' : 6,         'label' : 'Festival' },
-	{ 'value' : 7,         'label' : 'Party' },
+	{ 'value' : '0',       'label' : 'No Highlighting' },
+	{ 'value' : '1',       'label' : 'Initial Cards' },
+	{ 'value' : '2',       'label' : 'Events & SBL' },
+	{ 'value' : '3',       'label' : 'Gacha' },
+	{ 'value' : '5',       'label' : 'Spotlight ' },
+	{ 'value' : '6',       'label' : 'Festival' },
+	{ 'value' : '7',       'label' : 'Party' },
 	{ 'value' : 'gacha',   'label' : 'Any Gacha' },
 	{ 'value' : 'limited', 'label' : 'Any Limited' },
 ]
 
 let getStorage = (key, default_value) =>
 {
+	if (!storageAvailable('localStorage'))
+		return default_value;
+	
 	let value = window.localStorage.getItem(key);
-	if (value === null)
+	if (value === null || value === "null")
 		return default_value;
 	
 	return {
@@ -232,9 +204,11 @@ app.run(($rootScope) =>
 		$rootScope.settings = {
 			use_idolized_thumbnails : getStorage('use_idolized_thumbnails', true),
 			order_reversed          : getStorage('order_reversed', false),
-			highlight_source        : getStorage('highlight_source', 0),
+			highlight_source        : getStorage('highlight_source', '0'),
 			show_tooltips           : getStorage('show_tooltips', true),
 		}
+		
+		console.log("SETTINGS", $rootScope.settings);
 	}
 )
 
@@ -655,11 +629,13 @@ app.directive('cardTooltip', function($parse)
 		templateUrl: 'tooltip.html',
 		link: function (scope, element, attrs)
 		{
-			// let lol = $parse(attrs.cardTooltip)(scope);
 			scope.$watch(attrs.cardTooltip, function(value)
 			{
-				scope.data = value;
-				scope.first_name = value.member_name.split(' ')[0];
+				if (value)
+				{
+					scope.data = value;
+					scope.first_name = value.member_name.split(' ')[0];
+				}
 			}, true);
 		}
 	}
