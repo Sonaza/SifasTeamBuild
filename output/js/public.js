@@ -207,8 +207,6 @@ app.run(($rootScope) =>
 			highlight_source        : getStorage('highlight_source', '0'),
 			show_tooltips           : getStorage('show_tooltips', true),
 		}
-		
-		console.log("SETTINGS", $rootScope.settings);
 	}
 )
 
@@ -324,7 +322,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		  				$event.preventDefault();
 		  				$rootScope.settings.use_idolized_thumbnails = true;
 		  				$rootScope.settings.order_reversed          = false;
-		  				$rootScope.settings.highlight_source        = 0;
+		  				$rootScope.settings.highlight_source        = '0';
 		  				return;
 		  			}
 	  			}
