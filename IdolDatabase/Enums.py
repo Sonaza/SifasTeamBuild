@@ -106,11 +106,11 @@ class Member(Enum):
 	# ------------ Nijigasaki ------------
 	Rina     = 209, "Rina Tennouji",      Group.Nijigasaki, Year.First, Subunit.Quartz
 	Kasumi   = 202, "Kasumi Nakasu",      Group.Nijigasaki, Year.First, Subunit.Quartz
-	Shizuku  = 203, "Shizuku Osaka",      Group.Nijigasaki, Year.First, Subunit.Azuna
+	Shizuku  = 203, "Shizuku Ousaka",     Group.Nijigasaki, Year.First, Subunit.Azuna
 	Shioriko = 210, "Shioriko Mifune",    Group.Nijigasaki, Year.First, Subunit.Rebirth
 
 	Ayumu    = 201, "Ayumu Uehara",       Group.Nijigasaki, Year.Second, Subunit.Azuna
-	Setsuna  = 207, "Setsuna Yuki",       Group.Nijigasaki, Year.Second, Subunit.Azuna
+	Setsuna  = 207, "Setsuna Yuuki",      Group.Nijigasaki, Year.Second, Subunit.Azuna
 	Ai       = 205, "Ai Miyashita",       Group.Nijigasaki, Year.Second, Subunit.Diverdiva
 	Lanzhu   = 212, "Lanzhu Zhong",       Group.Nijigasaki, Year.Second, Subunit.Rebirth
 
