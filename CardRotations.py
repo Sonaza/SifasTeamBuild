@@ -445,7 +445,7 @@ class CardRotations():
 			'grouped_rotations'  : ur_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
-			'page_description'   : 'Rotations for all UR cards. Note that Nijigasaki did not receive URs during the first two rotations of µ\'s and Aqours.',
+			'page_description'   : 'Rotations for all UR cards.',
 		}, minify=not self.args.dev)
 		
 		festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
