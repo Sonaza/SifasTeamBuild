@@ -77,7 +77,7 @@ class CardRotations():
 		
 	@staticmethod
 	def include_page(filepath):
-		filepath = os.path.join("output", filepath)
+		# filepath = os.path.join("output", filepath)
 		if not os.path.exists(filepath): return f"<h1>Error: {filepath} does not exist.</h1>"
 		with open(filepath, encoding="utf8") as f:
 			return f.read()

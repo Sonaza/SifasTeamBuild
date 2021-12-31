@@ -16,9 +16,6 @@
 						{% endif %}
 					</div>
 					<div class="card-grid">
-						{% if not card_rotation %}
-							<h1>No cards!</h1>
-						{% endif %}
 						{% for member_id, card in card_rotation %}
 							<div class="grid-icon-wrapper idol-{{ member_id.value }}">
 								{% if is_valid_card(card) %}
