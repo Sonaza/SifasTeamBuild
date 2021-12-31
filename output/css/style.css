@@ -1337,13 +1337,22 @@ a:hover, a:active
 
 .work-in-progress
 {
-	background: #D0A1EB;
-	padding: 0.5rem 0.75rem;
+	background: #E0BBF5;
+	border: 1px solid #D180FF;
+	padding: 0.5rem 1rem;
 	margin-bottom: 1rem;
 	font-size: 90%;
 	text-align: center;
 	font-weight: 600;
 	border-radius: 5px
+}
+
+.work-in-progress p
+{
+	padding: 0 0 0.5rem 0;
+}
+.work-in-progress p:last-child {
+	padding: 0;
 }
 
 .show-mobile
