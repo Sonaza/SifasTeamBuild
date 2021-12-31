@@ -1,5 +1,11 @@
 @media screen and (max-width: 1100px) {
 
+
+#side-nav
+{
+	/*width: 200px;*/
+}
+
 #main-outer-wrapper
 {
 	background: url('/img/background-mobile.jpg') no-repeat center center fixed;
@@ -11,6 +17,11 @@
 	min-width: auto;
 	margin: 0;
 	background: transparent !important;
+}
+
+#main
+{
+	/*width: calc(100% - 200px);*/
 }
 
 #main-inner
