@@ -28,22 +28,24 @@
 					<div class="st-th st-cell-15">Event</div>
 					<div class="st-th st-cell-15">Gacha</div>
 				</div>
-				{% for member, stats in data %}
-					<div class="st-tr st-tbody idol-{{ member.value }}">
-						<div class="st-td st-cell-25 idol-identity">
-							<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-							<span class="idol-name">{{ member.full_name }}</span>
+				<div class="st-tbody">
+					{% for member, stats in data %}
+						<div class="st-tr idol-{{ member.value }}">
+							<div class="st-td st-cell-25 idol-identity">
+								<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+								<span class="idol-name">{{ member.full_name }}</span>
+							</div>
+							
+							<div class="st-td st-cell-7-5 stat-number">{{ stats['URs'] }}</div>
+							<div class="st-td st-cell-7-5 stat-number">{{ stats['SRs'] }}</div>
+							
+							<div class="st-td st-cell-15 stat-number">{{ stats['festival'] }}</div>
+							<div class="st-td st-cell-15 stat-number">{{ stats['party'] }}</div>
+							<div class="st-td st-cell-15 stat-number">{{ stats['event'] }}</div>
+							<div class="st-td st-cell-15 stat-number">{{ stats['gacha'] }}</div>
 						</div>
-						
-						<div class="st-td st-cell-7-5 stat-number">{{ stats['URs'] }}</div>
-						<div class="st-td st-cell-7-5 stat-number">{{ stats['SRs'] }}</div>
-						
-						<div class="st-td st-cell-15 stat-number">{{ stats['festival'] }}</div>
-						<div class="st-td st-cell-15 stat-number">{{ stats['party'] }}</div>
-						<div class="st-td st-cell-15 stat-number">{{ stats['event'] }}</div>
-						<div class="st-td st-cell-15 stat-number">{{ stats['gacha'] }}</div>
-					</div>
-				{% endfor %}
+					{% endfor %}
+				</div>
 				
 				
 				<div class="st-tr st-thead">
