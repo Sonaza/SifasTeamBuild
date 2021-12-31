@@ -1,28 +1,28 @@
 
 function storageAvailable(type)
 {
-    var storage;
-    try {
-        storage = window[type];
-        var x = '__storage_test__';
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-    }
-    catch(e) {
-        return e instanceof DOMException && (
-            // everything except Firefox
-            e.code === 22 ||
-            // Firefox
-            e.code === 1014 ||
-            // test name field too, because code might not be present
-            // everything except Firefox
-            e.name === 'QuotaExceededError' ||
-            // Firefox
-            e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-            // acknowledge QuotaExceededError only if there's something already stored
-            (storage && storage.length !== 0);
-    }
+	var storage;
+	try {
+		storage = window[type];
+		var x = '__storage_test__';
+		storage.setItem(x, x);
+		storage.removeItem(x);
+		return true;
+	}
+	catch(e) {
+		return e instanceof DOMException && (
+			// everything except Firefox
+			e.code === 22 ||
+			// Firefox
+			e.code === 1014 ||
+			// test name field too, because code might not be present
+			// everything except Firefox
+			e.name === 'QuotaExceededError' ||
+			// Firefox
+			e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+			// acknowledge QuotaExceededError only if there's something already stored
+			(storage && storage.length !== 0);
+	}
 }
 
 let pluralize = function(value, s, p)
@@ -206,11 +206,12 @@ app.run(($rootScope) =>
 			order_reversed          : getStorage('order_reversed', false),
 			highlight_source        : getStorage('highlight_source', '0'),
 			show_tooltips           : getStorage('show_tooltips', true),
+			alt           : true,
 		}
 	}
 )
 
-app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location, $timeout)
+app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location, $timeout, $parse)
 	{
 		angular.element(document.querySelector("body")).removeClass('no-js');
 		
@@ -223,6 +224,11 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			{
 				output.push('use-idolized-thumbnails');
 			}
+			
+			// if ($rootScope.settings.alt)
+			// {
+			// 	output.push('alt-view');
+			// }
 			
 			if ($rootScope.settings.order_reversed)
 			{
@@ -244,12 +250,20 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 				output.push('source-highlighting-active');
 			}
 			
+			if ($scope.navigation_visible || $scope.settings_visible)
+			{
+				output.push('sidebar-open');
+			}
+			
 			return output.join(' ');
 		}
 		
 		$scope.$watch('$root.settings', function(bs, settings)
 		{
 			saveStorage($rootScope.settings);
+			$timeout(() => {
+				$scope.unfocus();
+			}, 350);
 		}, true);
 		
 		$scope.$watch('$root.settings.highlight_source', function(bs, settings)
@@ -261,6 +275,107 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			}, 200);
 		});
 		
+		$scope.navigation_visible = false;
+		$scope.settings_visible = false;
+		
+		$scope.header_hidden = false;
+		$scope.hiddenHeaderActive = () =>
+		{
+			if ($scope.navigation_visible || $scope.settings_visible)
+			{
+				return '';
+			}
+			
+			if ($scope.header_hidden)
+			{
+				return 'header-hidden';
+			}
+		}
+		
+		$scope.scroll_accumulator = 0;
+		$scope.scroll = (event, diff) =>
+		{
+			if ((diff < 0 && $scope.scroll_accumulator > 0) || (diff > 0 && $scope.scroll_accumulator < 0))
+			{
+				$scope.scroll_accumulator = 0;
+			}
+			
+			$scope.scroll_accumulator += diff;
+			
+			if (diff > 0)
+			{
+				if ($scope.scroll_accumulator > 150)
+				{
+					$scope.header_hidden = true;
+				}
+			}
+			else if (diff < 0)
+			{
+				if ($scope.scroll_accumulator < -200)
+				{
+					$scope.header_hidden = false;
+				}
+			}
+		}
+		
+		
+		$scope.toggle = ($event, variable_name) =>
+		{
+			let variable = $parse(variable_name);
+			let value = variable($scope);
+			
+			$scope.navigation_visible = false;
+			$scope.settings_visible = false;
+			
+			variable.assign($scope, !value);
+		}
+		
+		$scope.sidebarToggleActive = (value) => 
+		{
+			if (value)
+			{
+				return 'visible';
+			}
+		}
+		
+		$scope.anySideBarToggleActive = () =>
+		{
+			if ($scope.navigation_visible || $scope.settings_visible)
+			{
+				return 'sidebar-visible';
+			}
+		}
+		
+		$scope.unfocus = ($event) =>
+		{
+			$scope.navigation_visible = false;
+			$scope.settings_visible = false;
+			
+			$scope.scroll_accumulator = 0;
+			$scope.header_hidden = false;
+		}
+		
+		$scope.tap_unfocus = ($event) =>
+		{
+			if (!$event) return;
+			
+			if ($event.target == $event.target.closest('#header'))
+			{
+				return;
+			}
+			
+			if ($event.target == $event.target.closest('.unfocus-target') || 
+				$event.target == $event.target.closest('#side-nav'))
+			{
+				$scope.unfocus();
+			}
+		}
+		
+		$rootScope.$on("$locationChangeStart", function(event, next, current)
+		{ 
+			$scope.unfocus();
+		});
+		
 		$scope.keydown = ($event) =>
 		{
 			if ($event.repeat) return;
@@ -268,75 +383,75 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			if (!($event.repeat || $event.ctrlKey || $event.altKey || $event.metaKey))
 			{
 				if ($event.keyCode == 83) // S-key
-	  			{
-	  				for (let i in highlight_options)
-	  				{
-	  					if (highlight_options[i].value == $rootScope.settings.highlight_source)
-	  					{
-	  						$event.preventDefault();
-	  						
-	  						if (!$event.shiftKey)
-	  						{
-	  							let nextIndex = parseInt(i) + 1; // fuck javascript such a shitty language
-	  						
-		  						if (nextIndex < highlight_options.length)
-		  						{
-		  							$rootScope.settings.highlight_source = highlight_options[nextIndex].value;
-		  						}
-		  						else
-		  						{
-		  							$rootScope.settings.highlight_source = highlight_options[0].value;
-		  						}
-	  						}
-	  						else
-	  						{
-	  							let prevIndex = parseInt(i) - 1; // fuck javascript such a shitty language
-		  						if (prevIndex >= 0)
-		  						{
-		  							$rootScope.settings.highlight_source = highlight_options[prevIndex].value;
-		  						}
-		  						else
-		  						{
-		  							$rootScope.settings.highlight_source = highlight_options[highlight_options.length-1].value;
-		  						}
-	  						}
-	  						return;
-	  					}
-	  				}
-	  			}
-	  			
-	  			if (!$event.shiftKey)
-	  			{
-		  			if ($event.keyCode == 81) // Q-key
-		  			{
-		  				$event.preventDefault();
-		  				$rootScope.settings.use_idolized_thumbnails = !$rootScope.settings.use_idolized_thumbnails;
-		  				return;
-		  			}
-		  			
-		  			if ($event.keyCode == 87) // W-key
-		  			{
-		  				$event.preventDefault();
-		  				$rootScope.settings.order_reversed	 = !$rootScope.settings.order_reversed;
-		  				return;
-		  			}
-		  			
-		  			if ($event.keyCode == 84) // T-key
-		  			{
-		  				$event.preventDefault();
-		  				$rootScope.settings.show_tooltips	 = !$rootScope.settings.show_tooltips;
-		  				return;
-		  			}
-		  			
-		  			if ($event.keyCode == 82) // R-key
-		  			{
-		  				$event.preventDefault();
-		  				$rootScope.settings.use_idolized_thumbnails = true;
-		  				$rootScope.settings.order_reversed          = false;
-		  				$rootScope.settings.highlight_source        = '0';
-		  				return;
-		  			}
-	  			}
+				{
+					for (let i in highlight_options)
+					{
+						if (highlight_options[i].value == $rootScope.settings.highlight_source)
+						{
+							$event.preventDefault();
+							
+							if (!$event.shiftKey)
+							{
+								let nextIndex = parseInt(i) + 1; // fuck javascript such a shitty language
+							
+								if (nextIndex < highlight_options.length)
+								{
+									$rootScope.settings.highlight_source = highlight_options[nextIndex].value;
+								}
+								else
+								{
+									$rootScope.settings.highlight_source = highlight_options[0].value;
+								}
+							}
+							else
+							{
+								let prevIndex = parseInt(i) - 1; // fuck javascript such a shitty language
+								if (prevIndex >= 0)
+								{
+									$rootScope.settings.highlight_source = highlight_options[prevIndex].value;
+								}
+								else
+								{
+									$rootScope.settings.highlight_source = highlight_options[highlight_options.length-1].value;
+								}
+							}
+							return;
+						}
+					}
+				}
+				
+				if (!$event.shiftKey)
+				{
+					if ($event.keyCode == 81) // Q-key
+					{
+						$event.preventDefault();
+						$rootScope.settings.use_idolized_thumbnails = !$rootScope.settings.use_idolized_thumbnails;
+						return;
+					}
+					
+					if ($event.keyCode == 87) // W-key
+					{
+						$event.preventDefault();
+						$rootScope.settings.order_reversed	 = !$rootScope.settings.order_reversed;
+						return;
+					}
+					
+					if ($event.keyCode == 84) // T-key
+					{
+						$event.preventDefault();
+						$rootScope.settings.show_tooltips	 = !$rootScope.settings.show_tooltips;
+						return;
+					}
+					
+					if ($event.keyCode == 82) // R-key
+					{
+						$event.preventDefault();
+						$rootScope.settings.use_idolized_thumbnails = true;
+						$rootScope.settings.order_reversed          = false;
+						$rootScope.settings.highlight_source        = '0';
+						return;
+					}
+				}
 			}
 			
 			$rootScope.$broadcast('keydown', $event);
@@ -437,22 +552,22 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 		$scope.$on('keydown', (_, e) =>
 		{
 			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return;
-  			
-  			if (num_pages !== undefined)
-  			{
-	  			let number = parseInt(e.key);
-	  			if (number !== undefined)
-	  			{
-	  				if (number == 0) number = 10;
-  					let index = number - 1;
-  					if (index < num_pages)
-  					{
-		  				e.preventDefault();
-		  				$route.updateParams({'page': number - 1});
-  					}
-	  				return;
-	  			}
-  			}
+			
+			if (num_pages !== undefined)
+			{
+				let number = parseInt(e.key);
+				if (number !== undefined)
+				{
+					if (number == 0) number = 10;
+					let index = number - 1;
+					if (index < num_pages)
+					{
+						e.preventDefault();
+						$route.updateParams({'page': number - 1});
+					}
+					return;
+				}
+			}
 		});
 		
 		$scope.toggleTooltip = function($event, show)
@@ -577,24 +692,40 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 		
 		$scope.$on('keydown', (_, e) =>
 		{
-  			if (e.repeat || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
-  			
-  			let number = parseInt(e.key);
-  			if (number !== undefined)
-  			{
-  				if (number == 0) number = 10;
-  				let index = number - 1;
-  				
-  				let keys = Object.keys(stats_subpages);
-  				if (index < keys.length)
-  				{
-  					e.preventDefault();
-	  				$route.updateParams({'page': keys[index]});
-	  				// $scope.$apply();
-	  				return;
-  				}
-  			}
-  		});
+			if (e.repeat || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+			
+			let number = parseInt(e.key);
+			if (number !== undefined)
+			{
+				if (number == 0) number = 10;
+				let index = number - 1;
+				
+				let keys = Object.keys(stats_subpages);
+				if (index < keys.length)
+				{
+					e.preventDefault();
+					$route.updateParams({'page': keys[index]});
+					// $scope.$apply();
+					return;
+				}
+			}
+		});
+		
+		setTimeout(() => {
+			const scroller = document.querySelector('.stats-page-selector');
+			const active = document.querySelector('.stats-page-selector a.active');
+			if (!scroller || !active) return;
+			
+			const scroller_rect = scroller.getBoundingClientRect();
+			const scroller_width = scroller_rect.right - scroller_rect.left;
+			
+			const element = active.closest('li');
+			
+			const active_rect = element.getBoundingClientRect();
+			const active_width = active_rect.right - active_rect.left;
+			
+			scroller.scrollLeft = active_rect.left - (scroller_width - active_width) / 2 - scroller_rect.left;
+		});
 
 		let page_subtitle = $scope.get_subtitle($scope.active_page);
 		$rootScope.$broadcast('update-title', page_subtitle);
@@ -657,3 +788,27 @@ app.directive('cardTooltip', function($parse)
 	}
 })
 
+app.directive('scroll', function($parse, $window)
+{
+	return {
+		link: function (scope, element, attrs)
+		{
+			let get_current_scroll = () =>
+			{
+				let doc = document.documentElement;
+				return (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+			}
+			let lastScroll = get_current_scroll();
+			angular.element($window).on('scroll', function (e)
+			{
+				const current = get_current_scroll();
+				const diff = current - lastScroll;
+				lastScroll = current;
+				scope.$apply(function()
+				{
+					scope.$eval(attrs.scroll, {$event: e, diff: diff});
+				});
+			});
+		}
+	}
+});

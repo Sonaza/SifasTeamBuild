@@ -12,16 +12,20 @@
 	<p>
 		Card statistics page uses the original JP release dates for calculating how long it has been since a card was added to the game.
 	</p>
-	<p style="background: #D0A1EB;padding:0.5rem 0.75rem; margin-bottom: 1rem; font-size: 90%; text-align: center; font-weight: 600; border-radius: 5px">
-		This website is still a work in progress so things are subject to change.<br>In particular a mobile layout is still completely non-existent.
+	<p class="work-in-progress">
+		This website is still a work in progress so things are subject to change.<br><br>
+		Mobile layout is a pretty new addition so it probably still has things to improve.<br><br>
+		Seems to run rather slow on mobile Chrome on Android (but it's fine on Firefox Android), not sure there is much to be done about that with how complex this site's HTML code actually is.
 	</p>
 	<h2>Getting started</h2>
-	<p>
-		Just navigate to any of the categories in the navigation bar.
-	</p>
-	<p>
-		Note that you can also operate the settings by keybindings:
-		<ul class="settings-keybinds">
+	<div class="hide-mobile">
+		<p>
+			Just navigate to any of the categories in the navigation bar on the left.
+		</p>
+		<p>
+			Note that you can also operate the settings by keybindings:
+		</p>
+		<ul class="hide-mobile settings-keybinds">
 			<li><b>Q</b> Toggles the idolized switch.</li>
 			<li><b>W</b> Toggles the reversed order switch.</li>
 			<li><b>S</b> Cycles to the next source highlight option. Use with the <b>Shift key</b> to go backwards.</li>
@@ -29,5 +33,13 @@
 			<li><b>T</b> Toggles the tooltip visibility.</li>
 			<li><b>Number keys</b> Changes the active sub-page when applicable.</li>
 		</ul>
-	</p>
+	</div>
+	<div class="show-mobile">
+		<p>
+			Just navigate to any of the categories in the navigation bar by tapping the bars icon in the top bar.
+		</p>
+		<p>
+			Some site settings can be modified from the settings menu available by tapping the cog icon.
+		</p>
+	</div>
 </div>

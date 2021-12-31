@@ -46,7 +46,7 @@ for attribute, color in attribute_colors:
 	line = f".attribute-{attribute}.attribute-bg-color-dark {{ background-color: #{darken(color, 0.4)} !important; }}"
 	css.append(line)
 	
-	line = f"tr:hover .attribute-{attribute}.attribute-bg-color-dim  {{ background-color: #{darken(color, 0.85)} !important; }}"
+	line = f".st-tr:hover .attribute-{attribute}.attribute-bg-color-dim  {{ background-color: #{darken(color, 0.85)} !important; }}"
 	css.append(line)
 
 for size in icon_sizes:
@@ -62,7 +62,7 @@ for type, color in type_colors:
 	line = f".type-{type}.type-bg-color-dark {{ background-color: #{darken(color, 0.4)} !important; }}"
 	css.append(line)
 	
-	line = f"tr:hover .type-{type}.type-bg-color-dim  {{ background-color: #{darken(color, 0.85)} !important; }}"
+	line = f".st-tr:hover .type-{type}.type-bg-color-dim  {{ background-color: #{darken(color, 0.85)} !important; }}"
 	css.append(line)
 
 for size in icon_sizes:

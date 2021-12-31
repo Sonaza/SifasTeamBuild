@@ -25,27 +25,27 @@
 .attribute-1.attribute-bg-color      { background-color: #dd4aa5 !important; }
 .attribute-1.attribute-bg-color-dim  { background-color: #9a3373 !important; }
 .attribute-1.attribute-bg-color-dark { background-color: #581d42 !important; }
-tr:hover .attribute-1.attribute-bg-color-dim  { background-color: #bb3e8c !important; }
+.st-tr:hover .attribute-1.attribute-bg-color-dim  { background-color: #bb3e8c !important; }
 .attribute-2.attribute-bg-color      { background-color: #38a75c !important; }
 .attribute-2.attribute-bg-color-dim  { background-color: #277440 !important; }
 .attribute-2.attribute-bg-color-dark { background-color: #164224 !important; }
-tr:hover .attribute-2.attribute-bg-color-dim  { background-color: #2f8d4e !important; }
+.st-tr:hover .attribute-2.attribute-bg-color-dim  { background-color: #2f8d4e !important; }
 .attribute-3.attribute-bg-color      { background-color: #0099ee !important; }
 .attribute-3.attribute-bg-color-dim  { background-color: #006ba6 !important; }
 .attribute-3.attribute-bg-color-dark { background-color: #003d5f !important; }
-tr:hover .attribute-3.attribute-bg-color-dim  { background-color: #0082ca !important; }
+.st-tr:hover .attribute-3.attribute-bg-color-dim  { background-color: #0082ca !important; }
 .attribute-4.attribute-bg-color      { background-color: #db3e3e !important; }
 .attribute-4.attribute-bg-color-dim  { background-color: #992b2b !important; }
 .attribute-4.attribute-bg-color-dark { background-color: #571818 !important; }
-tr:hover .attribute-4.attribute-bg-color-dim  { background-color: #ba3434 !important; }
+.st-tr:hover .attribute-4.attribute-bg-color-dim  { background-color: #ba3434 !important; }
 .attribute-5.attribute-bg-color      { background-color: #edba3c !important; }
 .attribute-5.attribute-bg-color-dim  { background-color: #a5822a !important; }
 .attribute-5.attribute-bg-color-dark { background-color: #5e4a18 !important; }
-tr:hover .attribute-5.attribute-bg-color-dim  { background-color: #c99e33 !important; }
+.st-tr:hover .attribute-5.attribute-bg-color-dim  { background-color: #c99e33 !important; }
 .attribute-6.attribute-bg-color      { background-color: #85519c !important; }
 .attribute-6.attribute-bg-color-dim  { background-color: #5d386d !important; }
 .attribute-6.attribute-bg-color-dark { background-color: #35203e !important; }
-tr:hover .attribute-6.attribute-bg-color-dim  { background-color: #714484 !important; }
+.st-tr:hover .attribute-6.attribute-bg-color-dim  { background-color: #714484 !important; }
 .icon-32.type-1 { background-image: url('/img/icons/32/type-1.png') !important; }
 .icon-32.type-2 { background-image: url('/img/icons/32/type-2.png') !important; }
 .icon-32.type-3 { background-image: url('/img/icons/32/type-3.png') !important; }
@@ -65,19 +65,19 @@ tr:hover .attribute-6.attribute-bg-color-dim  { background-color: #714484 !impor
 .type-1.type-bg-color      { background-color: #cf413f !important; }
 .type-1.type-bg-color-dim  { background-color: #902d2c !important; }
 .type-1.type-bg-color-dark { background-color: #521a19 !important; }
-tr:hover .type-1.type-bg-color-dim  { background-color: #af3735 !important; }
+.st-tr:hover .type-1.type-bg-color-dim  { background-color: #af3735 !important; }
 .type-2.type-bg-color      { background-color: #268fd0 !important; }
 .type-2.type-bg-color-dim  { background-color: #1a6491 !important; }
 .type-2.type-bg-color-dark { background-color: #0f3953 !important; }
-tr:hover .type-2.type-bg-color-dim  { background-color: #2079b0 !important; }
+.st-tr:hover .type-2.type-bg-color-dim  { background-color: #2079b0 !important; }
 .type-3.type-bg-color      { background-color: #3fa45d !important; }
 .type-3.type-bg-color-dim  { background-color: #2c7241 !important; }
 .type-3.type-bg-color-dark { background-color: #194125 !important; }
-tr:hover .type-3.type-bg-color-dim  { background-color: #358b4f !important; }
+.st-tr:hover .type-3.type-bg-color-dim  { background-color: #358b4f !important; }
 .type-4.type-bg-color      { background-color: #e3b643 !important; }
 .type-4.type-bg-color-dim  { background-color: #9e7f2e !important; }
 .type-4.type-bg-color-dark { background-color: #5a481a !important; }
-tr:hover .type-4.type-bg-color-dim  { background-color: #c09a38 !important; }
+.st-tr:hover .type-4.type-bg-color-dim  { background-color: #c09a38 !important; }
 .icon-32.rarity-10 { background-image: url('/img/icons/32/rarity-10.png') !important; }
 .icon-32.rarity-20 { background-image: url('/img/icons/32/rarity-20.png') !important; }
 .icon-32.rarity-30 { background-image: url('/img/icons/32/rarity-30.png') !important; }

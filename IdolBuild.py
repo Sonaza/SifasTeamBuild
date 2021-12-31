@@ -2,7 +2,6 @@ from operator import itemgetter
 from enum import Enum
 
 from IdolDatabase import *
-from IdolKiraraClient import KiraraClient
 
 client = KiraraClient()
 
@@ -152,10 +151,10 @@ print("Card | Effective Appeal (incl. self buffs) | Crit Rate")
 print("-- | -- | --")
 
 for idol in sorted(idols, reverse = True):
-	idol.set_song_modifiers(Attribute.Cool, modifiers=(1.2, 0.75))
+	idol.set_song_modifiers(Attribute.Cool, modifiers=(1.2, 0.8))
 
 for idol in sorted(idols, reverse = True):
-	if idol.data.type != Type.Sk :
+	if idol.data.type != Type.Sp:
 		continue
 		
 	print(idol)

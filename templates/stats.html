@@ -1,4 +1,4 @@
-<ul class="array-group-page-selector">
+<ul class="page-selector stats-page-selector">
 	<li><a href="#/stats/general"   ng-class="pageActive('general')">General</a></li>
 	<li><a href="#/stats/event"     ng-class="pageActive('event')">Event URs</a></li>
 	<li><a href="#/stats/festival"  ng-class="pageActive('festival')">Festival URs</a></li>
@@ -13,90 +13,67 @@
 <div class="stats-category general" ng-if="isActive('general')">
 	<h2>General Stats</h2>
 	<p>Numbers of different types of cards.</p>
+	<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
 	{% for group, data in general_stats.items() %}
 		<div class="stats-category-group {{ group.tag }}">
-			<table class="stats-table general">
-				<colgroup>
-					<col style="width: 25%">
+			<div class="stats-table general">
+				<div class="st-tr st-thead">
+					<div class="st-th st-cell-25">{{ group.displayname }} Members</div>
 					
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
+					<div class="st-th st-cell-7-5">URs</div>
+					<div class="st-th st-cell-7-5">SRs</div>
 					
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-					<col style="width: 7.5%">
-				</colgroup>
-				
-				<thead>
-					<tr>
-						<th>{{ group.displayname }} Members</th>
+					<div class="st-th st-cell-15">Festival</div>
+					<div class="st-th st-cell-15">Party</div>
+					<div class="st-th st-cell-15">Event</div>
+					<div class="st-th st-cell-15">Gacha</div>
+				</div>
+				{% for member, stats in data %}
+					<div class="st-tr st-tbody idol-{{ member.value }}">
+						<div class="st-td st-cell-25 idol-identity">
+							<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+							<span class="idol-name">{{ member.full_name }}</span>
+						</div>
 						
-						<th>URs</th>
-						<th>SRs</th>
+						<div class="st-td st-cell-7-5 stat-number">{{ stats['URs'] }}</div>
+						<div class="st-td st-cell-7-5 stat-number">{{ stats['SRs'] }}</div>
 						
-						<th colspan="2">Festival</th>
-						<th colspan="2">Party</th>
-						<th colspan="2">Event</th>
-						<th colspan="2">Gacha</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for member, stats in data %}
-						<tr class="idol-{{ member.value }}">
-							<td class="idol-identity">
-								<div class="flex-wrapper">
-									<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-									<span class="idol-name">{{ member.full_name }}</span>
-								</div>
-							</td>
-							
-							<td class="stat-number">{{ stats['URs'] }}</td>
-							<td class="stat-number">{{ stats['SRs'] }}</td>
-							
-							<td colspan="2" class="stat-number">{{ stats['festival'] }}</td>
-							<td colspan="2" class="stat-number">{{ stats['party'] }}</td>
-							<td colspan="2" class="stat-number">{{ stats['event'] }}</td>
-							<td colspan="2" class="stat-number">{{ stats['gacha'] }}</td>
-						</tr>
-					{% endfor %}
-				</tbody>
+						<div class="st-td st-cell-15 stat-number">{{ stats['festival'] }}</div>
+						<div class="st-td st-cell-15 stat-number">{{ stats['party'] }}</div>
+						<div class="st-td st-cell-15 stat-number">{{ stats['event'] }}</div>
+						<div class="st-td st-cell-15 stat-number">{{ stats['gacha'] }}</div>
+					</div>
+				{% endfor %}
 				
-				<thead>
-					<tr>
-						<th>{{ group.name }} Members</th>
-						<th colspan="6">Attributes</th>
-						<th colspan="4">Types</th>
-					</tr>
-				</thead>
-				<tbody>
+				
+				<div class="st-tr st-thead">
+					<div class="st-th st-cell-25">{{ group.displayname }} Members</div>
+					<div class="st-th st-cell-45">Attributes</div>
+					<div class="st-th st-cell-30">Types</div>
+				</div>
+				<div class="st-tbody">
 					{% for member, stats in data %}
-						<tr class="idol-{{ member.value }}">
-							<td class="idol-identity">
-								<div class="flex-wrapper">
-									<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-									<span class="idol-name">{{ member.full_name }}</span>
-								</div>
-							</td>
+						<div class="st-tr idol-{{ member.value }}">
+							<div class="st-td st-cell-25 idol-identity">
+								<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
+								<div class="idol-name">{{ member.full_name }}</div>
+							</div>
 							
 							{% for attribute in Attribute %}
-								<td class="stat-various {{ 'has-none' | conditional_css(stats['attributes'][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
+								<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats['attributes'][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
 									<span class="icon-32 attribute-{{ attribute.value }}">{{ stats['attributes'][attribute] }}</span>
-								</td>
+								</div>
 							{% endfor %}
+							
 							{% for type in Type %}
-								<td class="stat-various {{ 'has-none' | conditional_css(stats['types'][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
+								<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats['types'][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
 									<span class="icon-32 type-{{ type.value }}">{{ stats['types'][type] }}</span>
-								</td>
+								</div>
 							{% endfor %}
-						</tr>
+						</div>
 					{% endfor %}
-				</tbody>
-			</table>
+				</div>
+			</div>
 		</div>
 	{% endfor %}
 </div>
@@ -105,68 +82,55 @@
 	<div class="stats-category {{ category_tag }}" ng-if="isActive('{{ category_tag }}')">
 		<h2>{{ categories[category_tag][0] }}</h2>
 		<p>{{ categories[category_tag][1] }}</p>
+		<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
 		{% for group, data in category_data.items() %}
 			<div class="stats-category-group {{ group.tag }}">
-				<table class="stats-table {{ 'with-source' | conditional_css(data.show_source) }}">
-					<colgroup>
-						<col style="width: 25%">
-						<col style="width: 20%">
-						<col style="width: 55%">
-					</colgroup>
-					<thead>
-						<tr>
-							<th>{{ group.displayname }} Members</th>
-							<th colspan="2">Most Recent Card</th>
-						</tr>
-					</thead>
+				<div class="stats-table {{ 'with-source' | conditional_css(data.show_source) }}">
+					<div class="st-tr st-thead">
+						<div class="st-th st-cell-30">{{ group.displayname }} Members</div>
+						<div class="st-th st-cell-70">Most Recent Card</div>
+					</div>
 					
-					{% for class, cards in [('non-reversed', data.cards), ('reversed', reversed(data.cards))] %}
-						<tbody class="{{ class }}">
-							{% for member, card, time_since in cards %}
-								<tr class="idol-{{ member.value }}" data-index="{{ loop.index }}">
-									<td class="idol-identity">
-										<div class="flex-wrapper">
-											<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-											<span class="idol-name">{{ member.full_name }}</span>
-										</div>
-									</td>
-									{% if is_valid_card(card) %}
-										<td title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
-											{{ time_since.days | format_days }}
-										</td>
-										<td class="card-details">
-											<div class="flex-wrapper">
-												<span class="thumbnail">
-													<div class="thumbnail-wrapper">
-														<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
-															<span class="source-indicator source-{{ card.source.value }}"></span>
-														</a>
-													</div>
-												</span>
-												<span class="card-link">
-													{# <a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-normal" target="_blank">{{ card.get_card_name(False) }}</a> #}
-													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
-												</span>
-												{% if data.show_source %}
-													<span class="card-source">
-														{{ card.source.displayname }}
-													</span>
-												{% endif %}
+					<div class="st-tbody reversable">
+						{% for member, card, time_since in data.cards %}
+							<div class="st-tr idol-{{ member.value }}" data-index="{{ loop.index }}">
+								<div class="st-td st-cell-30 idol-identity">
+									<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
+									<div class="idol-name">{{ member.full_name }}</div>
+								</div>
+								{% if is_valid_card(card) %}
+									<div class="st-td st-cell-20" title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
+										{{ time_since.days | format_days }}
+									</div>
+									<div class="st-td st-cell-50 card-details">
+										<div class="thumbnail">
+											<div class="thumbnail-wrapper">
+												<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+													<span class="source-indicator source-{{ card.source.value }}"></span>
+												</a>
 											</div>
-										</td>
-									{% else %} 
-										<td>
-											Never
-										</td>
-										<td style="color: #aaa;">
-											&mdash;
-										</td>
-									{% endif %}
-								</tr>
-							{% endfor %}
-						</tbody>
-					{% endfor %}
-				</table>
+										</div>
+										<div class="card-link">
+											<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
+										</div>
+										{% if data.show_source %}
+											<div class="card-source">
+												{{ card.source.displayname }}
+											</div>
+										{% endif %}
+									</div>
+								{% else %} 
+									<div class="st-td st-cell-20">
+										Never
+									</div>
+									<div class="st-td st-cell-50" style="color: #aaa;">
+										&mdash;
+									</div>
+								{% endif %}
+							</div>
+						{% endfor %}
+					</div>
+				</div>
 			</div>
 		{% endfor %}
 	</div>

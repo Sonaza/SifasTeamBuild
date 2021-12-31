@@ -109,8 +109,7 @@ class CardRotations():
 		print("Current Working Directory", os.getcwd())
 		
 		self.client = KiraraClient()
-		# self.client.cache_all_idols(forced=self.args.force)
-		self.client.cache_all_idols(forced=True)
+		self.client.cache_all_idols(forced=self.args.force)
 		
 		self.jinja = Environment(
 			# loader=FileSystemLoader(os.path.dirname(os.path.abspath(__file__)), encoding='utf-8'),
@@ -278,14 +277,13 @@ class CardRotations():
 					else:
 						current_rotation[idol.member_id] = CardMissing()
 			
-			if set_title == None and rarity == Rarity.SR:
+			if titles:
 				titles = sorted(titles.items(), key=itemgetter(1), reverse=True)
-				if titles:
-					if titles[0][1] > 1:
-						set_title = titles[0][0]
-					else:
-						print("WARNING! No set name could be determined for", rarity, group, "index", rotation_index)
-			
+				if len(titles) == 1 or titles[0][1] > 1:
+					set_title = titles[0][0]
+				else:
+					print("WARNING! No set name could be determined for", rarity, group, "index", rotation_index)
+		
 			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order[group]), set_title ))
 			rotation_index += 1
 		
@@ -440,7 +438,7 @@ class CardRotations():
 		for data in idol_arrays:
 			self._render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
 				'idol_arrays'        : [ data ],
-			})
+			}, minify=not self.args.dev)
 		
 		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
@@ -448,7 +446,7 @@ class CardRotations():
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
 			'page_description'   : 'Rotations for all UR cards.',
-		})
+		}, minify=not self.args.dev)
 		
 		festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
@@ -456,7 +454,7 @@ class CardRotations():
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Festival UR Rotations',
 			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
-		})
+		}, minify=not self.args.dev)
 		
 		party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
@@ -464,7 +462,7 @@ class CardRotations():
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Party UR Rotations',
 			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
-		})
+		}, minify=not self.args.dev)
 		
 		event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
@@ -472,7 +470,7 @@ class CardRotations():
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Event UR Rotations',
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
-		})
+		}, minify=not self.args.dev)
 		
 		sr_sets = [(group, self.get_general_rotation(group, Rarity.SR)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
@@ -497,9 +495,9 @@ class CardRotations():
 				'ur'         : ( "Any UR",            "Any most recent UR, free or otherwise." ),
 				'sr'         : ( "Any SR",            "Any most recent SR, free or otherwise" ),
 			}
-		})
+		}, minify=not self.args.dev)
 		
-		self._render_and_save("home.html", "pages/home.html", {})
+		self._render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
 		# self._minify_css(
 		# 	[
