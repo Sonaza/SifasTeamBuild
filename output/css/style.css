@@ -1307,6 +1307,7 @@ a:hover, a:active
 	align-items: center;
 	padding: 0;
 	text-align: center;
+	border-bottom: 1px solid #bbb7;
 }
 
 .stats-table .st-td.stat-various.has-none
