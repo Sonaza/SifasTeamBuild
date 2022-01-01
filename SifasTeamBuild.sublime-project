@@ -16,6 +16,26 @@
 
 			"working_dir": "$project_path",
 			"quiet": false
+		},
+		{
+			"name": "Python Dev Build Force Update",
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"shell_cmd": "python -u \"$project_path\\CardRotations.py\" -dev -f",
+
+			"env": {"PYTHONIOENCODING": "utf-8"},
+
+			"working_dir": "$project_path",
+			"quiet": false
+		},
+		{
+			"name": "Python Dev Build Rebuild Atlas",
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"shell_cmd": "python -u \"$project_path\\CardRotations.py\" -dev -ra",
+
+			"env": {"PYTHONIOENCODING": "utf-8"},
+
+			"working_dir": "$project_path",
+			"quiet": false
 		}
 	]
 }

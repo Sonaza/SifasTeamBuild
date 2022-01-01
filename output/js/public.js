@@ -295,6 +295,15 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		$scope.scroll_accumulator = 0;
 		$scope.scroll = (event, diff) =>
 		{
+			let doc = document.documentElement;
+			const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+			if ($scope.header_hidden && scroll_top < 50)
+			{
+				$scope.scroll_accumulator = 0;
+				$scope.header_hidden = false;
+				return;
+			}
+			
 			if ((diff < 0 && $scope.scroll_accumulator > 0) || (diff > 0 && $scope.scroll_accumulator < 0))
 			{
 				$scope.scroll_accumulator = 0;

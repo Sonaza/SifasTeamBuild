@@ -17,6 +17,7 @@
 	min-width: auto;
 	margin: 0;
 	background: transparent !important;
+	box-shadow: none;
 }
 
 #main

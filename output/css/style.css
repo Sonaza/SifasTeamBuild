@@ -495,7 +495,8 @@ a:hover, a:active
 #main-outer-wrapper
 {
 	min-height: calc(100vh - 150px - 60px);
-	margin-top: 60px;
+	/*margin-top: 60px;*/
+	padding-top: 60px;
 	background: url('/img/background.jpg') no-repeat center center fixed;
 	background-size: cover;
 }

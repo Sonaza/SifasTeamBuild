@@ -150,11 +150,11 @@ idols = [
 print("Card | Effective Appeal (incl. self buffs) | Crit Rate")
 print("-- | -- | --")
 
-for idol in sorted(idols, reverse = True):
-	idol.set_song_modifiers(Attribute.Cool, modifiers=(1.2, 0.8))
+# for idol in sorted(idols, reverse = True):
+# 	idol.set_song_modifiers(Attribute.Cool, modifiers=(1.2, 0.8))
 
 for idol in sorted(idols, reverse = True):
-	if idol.data.type != Type.Sp:
+	if idol.data.type != Type.Sk:
 		continue
 		
 	print(idol)
