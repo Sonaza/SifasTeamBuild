@@ -390,12 +390,16 @@ class CardRotations():
 			
 		return stats
 	
-	def _time_since_last(self, group, idols):
+	def _time_since_last(self, idols, group=None):
 		now = datetime.now(timezone.utc)
 		
 		all_idols = set()
-		for idol in Idols.by_group[group]:
-			all_idols.add(idol.member_id)
+		if group == None:
+			for idol in Idols.all_idols:
+				all_idols.add(idol.member_id)
+		else:
+			for idol in Idols.by_group[group]:
+				all_idols.add(idol.member_id)
 			
 		out = []
 		for idol in idols:
@@ -423,9 +427,14 @@ class CardRotations():
 		for category, (rarity, sources) in categories.items():
 			for group in Group:
 				result[category][group] = {
-					'cards'       : self._time_since_last(group, self.client.get_newest_idols(group=group, rarity=rarity, source=sources)),
+					'cards'       : self._time_since_last(idols=self.client.get_newest_idols(group=group, rarity=rarity, source=sources), group=group),
 					'show_source' : (not isinstance(sources, list) or len(sources) > 1),
 				}
+			
+			result[category]['collapsed'] = {
+				'cards'       : self._time_since_last(idols=self.client.get_newest_idols(rarity=rarity, source=sources), group=None),
+				'show_source' : (not isinstance(sources, list) or len(sources) > 1),
+			}
 		
 		return result
 	

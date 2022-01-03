@@ -537,7 +537,7 @@ class KiraraClient():
 			            	WHERE {' AND '.join([x[0] for x in fields])}
 			            	GROUP BY member_id
 			            )
-			            ORDER BY ordinal ASC"""
+			            ORDER BY release_date ASC"""
 			# print(query)
 			self.db.execute(query, [value for x in fields for value in x[1]])
 		else:
@@ -546,7 +546,7 @@ class KiraraClient():
 							SELECT MAX(ordinal) FROM 'idols'
 							GROUP BY member_id
 						)
-						ORDER BY ordinal ASC"""
+						ORDER BY release_date ASC"""
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())

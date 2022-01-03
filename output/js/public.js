@@ -230,6 +230,8 @@ app.run(($rootScope) =>
 			order_reversed          : getStorage('order_reversed', false),
 			highlight_source        : getStorage('highlight_source', '0'),
 			show_tooltips           : getStorage('show_tooltips', true),
+			collapsed               : getStorage('collapsed', false),
+			
 			alt           : true,
 		}
 	}
@@ -299,6 +301,11 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			// {
 			// 	output.push('alt-view');
 			// }
+			
+			if ($rootScope.settings.collapsed)
+			{
+				output.push('collapsed-tables');
+			}
 			
 			if ($rootScope.settings.order_reversed)
 			{
@@ -527,12 +534,20 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 						return;
 					}
 					
+					if ($event.keyCode == 67) // C-key
+					{
+						$event.preventDefault();
+						$rootScope.settings.collapsed	     = !$rootScope.settings.collapsed;
+						return;
+					}
+					
 					if ($event.keyCode == 82) // R-key
 					{
 						$event.preventDefault();
 						$rootScope.settings.use_idolized_thumbnails = true;
 						$rootScope.settings.order_reversed          = false;
 						$rootScope.settings.highlight_source        = '0';
+						$rootScope.settings.collapsed               = false;
 						return;
 					}
 				}

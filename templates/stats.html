@@ -86,7 +86,7 @@
 		<p>{{ categories[category_tag][1] }}</p>
 		<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
 		{% for group, data in category_data.items() %}
-			<div class="stats-category-group {{ group.tag }}">
+			<div class="stats-category-group collapsible {{ group.tag or group }}">
 				<div class="stats-table {{ 'with-source' | conditional_css(data.show_source) }}">
 					<div class="st-tr st-thead">
 						<div class="st-th st-cell-30">{{ group.displayname }} Members</div>
