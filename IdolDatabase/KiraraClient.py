@@ -315,16 +315,12 @@ class KiraraClient():
 			idol_info = Idols.by_member_id[card['member']]
 			
 			if card['ordinal'] not in existing_ordinals:
-				print("ORDINAL NOT IN EXISTING! MUST COMMIT!")
-				
 				serialized = {
 					'ordinal'           : card['ordinal'],
 					'json'              : json.dumps(card),
 				}
 				query = self._make_insert_query('idols_json', serialized)
 				self.db.execute(query, serialized)
-			else:
-				print(" ORDINAL EXISTS, GOOD BAI")
 			
 			serialized = {
 				'id'                : card['id'],

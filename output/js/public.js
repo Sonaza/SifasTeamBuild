@@ -172,7 +172,31 @@ const highlight_options = [
 	{ 'value' : '7',       'label' : 'Party' },
 	{ 'value' : 'gacha',   'label' : 'Any Gacha' },
 	{ 'value' : 'limited', 'label' : 'Any Limited' },
-]
+];
+
+const highlight_map = {
+	'none'      : '0',
+	'initial'   : '1',
+	'event'     : '2',
+	'gacha'     : '3',
+	'spotlight' : '5',
+	'festival'  : '6',
+	'party'     : '7',
+	'any_gacha' : 'gacha',
+	'limited'   : 'limited',
+};
+
+const highlight_reverse_map = {
+	'0'       : 'none',
+	'1'       : 'initial',
+	'2'       : 'event',
+	'3'       : 'gacha',
+	'5'       : 'spotlight',
+	'6'       : 'festival',
+	'7'       : 'party',
+	'gacha'   : 'any_gacha',
+	'limited' : 'limited',
+};
 
 let getStorage = (key, default_value) =>
 {
@@ -214,6 +238,54 @@ app.run(($rootScope) =>
 app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location, $timeout, $parse)
 	{
 		angular.element(document.querySelector("body")).removeClass('no-js');
+		
+		const url_options = $location.search();
+		if (url_options.idolized !== undefined)
+		{
+			if (url_options.idolized === 'true' || url_options.idolized == 1)
+			{
+				$rootScope.settings.use_idolized_thumbnails = true;
+			}
+			else
+			{
+				$rootScope.settings.use_idolized_thumbnails = false;
+			}
+		}
+		
+		if (url_options.reverse !== undefined)
+		{
+			if (url_options.reverse === 'true' || url_options.reverse == 1)
+			{
+				$rootScope.settings.order_reversed = true;
+			}
+			else
+			{
+				$rootScope.settings.order_reversed = false;
+			}
+		}
+		
+		if (url_options.highlight !== undefined)
+		{
+			console.log(highlight_map, url_options.highlight in highlight_map);
+			
+			if (url_options.highlight in highlight_map)
+			{
+				$rootScope.settings.highlight_source = highlight_map[url_options.highlight];
+			}
+			else
+			{
+				for (const opt of highlight_options)
+				{
+					if (opt.value == url_options.highlight)
+					{
+						$rootScope.settings.highlight_source = opt.value;
+						break;
+					}
+				}
+			}
+		}
+		
+		//////////////////////////////////////////////////
 		
 		$scope.highlight_options = highlight_options;
 		$scope.active_settings = () =>
@@ -264,6 +336,10 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			$timeout(() => {
 				$scope.unfocus();
 			}, 350);
+			
+			$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]);
+			// $location.search('idolized', $rootScope.settings.use_idolized_thumbnails ? 'true' : 'false');
+			// $location.search('reverse', $rootScope.settings.order_reversed ? 'true' : 'false');
 		}, true);
 		
 		$scope.$watch('$root.settings.highlight_source', function(bs, settings)
