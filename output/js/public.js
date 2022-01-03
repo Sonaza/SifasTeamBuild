@@ -457,6 +457,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		$rootScope.$on("$locationChangeStart", function(event, next, current)
 		{ 
 			$scope.unfocus();
+			$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]);
 		});
 		
 		$scope.keydown = ($event) =>
