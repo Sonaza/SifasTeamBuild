@@ -558,6 +558,7 @@ a:hover, a:active
 	padding: 0 1.5rem 0 0;
 	display: flex;
 	flex-flow: column wrap;
+	justify-content: left;
 }
 
 .order-reversed .rotation-column-wrapper .rotation-column
