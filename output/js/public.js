@@ -266,8 +266,6 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		
 		if (url_options.highlight !== undefined)
 		{
-			console.log(highlight_map, url_options.highlight in highlight_map);
-			
 			if (url_options.highlight in highlight_map)
 			{
 				$rootScope.settings.highlight_source = highlight_map[url_options.highlight];
