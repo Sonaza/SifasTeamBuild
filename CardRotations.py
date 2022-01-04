@@ -106,6 +106,10 @@ class CardRotations():
 			print("------ BUILDING IN PROD MODE ------")
 		print()
 		
+		try:
+			print("Current user id", os.getuid())
+		except:
+			pass
 		print("Current Working Directory", os.getcwd())
 		
 		self.client = KiraraClient()
@@ -523,6 +527,8 @@ class CardRotations():
 			'last_update'           : now.strftime('%d %B %Y %H:%M %Z'),
 			'last_update_timestamp' : now.isoformat(),
 		}, minify=False)
+		
+		print("\nAll done!\n")
 	
 	def _minify_css(self, source, destination):
 		code = ""
@@ -545,6 +551,11 @@ class CardRotations():
 
 if __name__ == "__main__":
 	cr = CardRotations()
-	cr.generate_pages()
+	
+	try:
+		cr.generate_pages()
+	except Exception as e:
+		print(e)
+		raise e
 
 	print()
