@@ -274,6 +274,7 @@ app.run(($rootScope) =>
 			highlight_source        : getStorage('highlight_source', '0'),
 			show_tooltips           : getStorage('show_tooltips', true),
 			collapsed               : getStorage('collapsed', false),
+			hide_empty_rows         : getStorage('hide_empty_rows', false),
 			
 			alt           : true,
 		}
@@ -347,7 +348,12 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			
 			if ($rootScope.settings.collapsed)
 			{
-				output.push('collapsed-tables');
+				output.push('stats-collapsed-tables');
+			}
+			
+			if ($rootScope.settings.hide_empty_rows)
+			{
+				output.push('stats-hide-empty-rows');
 			}
 			
 			if ($rootScope.settings.order_reversed)
@@ -586,6 +592,15 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 						return;
 					}
 					
+					if ($event.keyCode == 82) // R-key
+					{
+						$event.preventDefault();
+						$rootScope.settings.use_idolized_thumbnails = true;
+						$rootScope.settings.order_reversed          = false;
+						$rootScope.settings.highlight_source        = '0';
+						return;
+					}
+					
 					if ($event.keyCode == 67) // C-key
 					{
 						$event.preventDefault();
@@ -593,13 +608,10 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 						return;
 					}
 					
-					if ($event.keyCode == 82) // R-key
+					if ($event.keyCode == 72) // H-key
 					{
 						$event.preventDefault();
-						$rootScope.settings.use_idolized_thumbnails = true;
-						$rootScope.settings.order_reversed          = false;
-						$rootScope.settings.highlight_source        = '0';
-						$rootScope.settings.collapsed               = false;
+						$rootScope.settings.hide_empty_rows  = !$rootScope.settings.hide_empty_rows;
 						return;
 					}
 				}

@@ -234,12 +234,12 @@ body.sidebar-open
 	margin-right: 0;
 }
 
-.pill-button .label
+#side-nav .pill-button .label
 {
 	height: 2.5rem;
 }
 
-.pill-button .inner
+#side-nav .pill-button .inner
 {
 	
 }
@@ -374,6 +374,17 @@ body.sidebar-open
 .source-indicator
 {
 	transition: none !important;
+}
+
+.stats-category .stats-settings
+{
+	flex-flow: column nowrap;
+}
+
+.stats-category .stats-settings .pill-button
+{
+	margin: 0;
+	padding: 0.6rem 0;
 }
 
 .stats-category-group

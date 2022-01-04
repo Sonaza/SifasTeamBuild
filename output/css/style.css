@@ -79,6 +79,22 @@ ul.settings-keybinds b
 	margin-right: 0.4rem;
 }
 
+ul.settings-keybinds li.keybind-header
+{
+	padding-top: 0.6rem;
+	margin-bottom: 0.6rem;
+	font-family: 'Montserrat', sans-serif;	
+	font-weight: 700;
+	font-size: 1.06em;
+	color: #481E9F;
+	border-bottom: 1px solid #ddd;
+}
+
+ul.settings-keybinds li:first-child.keybind-header
+{
+	padding-top: 0;
+}
+
 b
 {
 	font-weight: 700;
@@ -111,13 +127,18 @@ a:hover, a:active
 	font-size: 11pt;
 	
 	padding-top: 0.2rem;
-	color: #fff;
+	color: #491186;
 	
 	user-select: none;
     -moz-user-select: none;
     -khtml-user-select: none;
     -webkit-user-select: none;
     -o-user-select: none;
+}
+
+#side-nav .settings .pill-button .label
+{
+	color: #fff;
 }
 
 .pill-button .inner
@@ -389,12 +410,11 @@ a:hover, a:active
 	color: #fff;
 	background: #BA98FF;
 }
-
 #side-nav .settings
 {
 	/*min-height: 12rem;*/
 	padding: 1rem 1.2rem;
-	margin: 1rem 0.5rem 0 0.5rem;
+	margin: 1rem 0 0 0.5rem;
 	border-radius: 4px;
 	background: #481E9F;
 	position: relative;
@@ -1061,6 +1081,33 @@ a:hover, a:active
 
 /***********************************************/
 
+.stats-category .stats-settings
+{
+	max-width: 1000px;
+	margin: -0.3rem 0 0.5rem 0;
+	padding: 0.8rem 0.8rem 0.8rem 0.8rem;
+	display: flex;
+	flex-flow: row nowrap;
+	justify-content: left;
+	background: #B294E555;
+	border-radius: 4px;
+}
+
+.stats-category .stats-settings .pill-button
+{
+	margin: 0 1rem 0 0;
+}
+
+.stats-category .stats-settings .pill-button .inner
+{
+	margin-bottom: 0;
+}
+
+.stats-category .stats-settings .pill-button .label > span
+{
+	opacity: 0.5;
+}
+
 .stats-category-group
 {
 	display: flex;
@@ -1068,14 +1115,19 @@ a:hover, a:active
 	margin-bottom: 1rem;
 }
 
-body:not(.collapsed-tables) .stats-category-group.collapsible.collapsed
+body:not(.stats-collapsed-tables) .stats-category-group.collapsible.collapsed
 {
 	display: none;
 }
 
-body.collapsed-tables .stats-category-group.collapsible:not(.collapsed)
+body.stats-collapsed-tables .stats-category-group.collapsible:not(.collapsed)
 {
 	display: none;
+}
+
+body.stats-hide-empty-rows .stats-table .st-tr.empty-row
+{
+	display: none !important;
 }
 
 .stats-category-group .stats-table

@@ -88,6 +88,24 @@
 		<h2>{{ category_info[0] }}</h2>
 		<p>{{ category_info[1] }}</p>
 		<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
+		<div class="stats-settings">
+			<div class="pill-button" pill-button="settings.collapsed">
+				<div class="inner">
+					<div class="inner-dot">&nbsp;</div>
+				</div>
+				<div class="label">
+					Collapse Groups <span class="hide-mobile">(C)</span>
+				</div>
+			</div>
+			<div class="pill-button" pill-button="settings.hide_empty_rows">
+				<div class="inner">
+					<div class="inner-dot">&nbsp;</div>
+				</div>
+				<div class="label">
+					Hide Empty Rows <span class="hide-mobile">(H)</span>
+				</div>
+			</div>
+		</div>
 		{% for group, data in category_data.items() %}
 			<div class="stats-category-group collapsible {{ group.tag or group }}">
 				<div class="stats-table {{ 'with-source' | conditional_css(data.show_source) }}">
@@ -98,7 +116,7 @@
 					
 					<div class="st-tbody reversable">
 						{% for member, card, time_since in data.cards %}
-							<div class="st-tr idol-{{ member.value }}" data-index="{{ loop.index }}">
+							<div class="st-tr idol-{{ member.value }} {{ 'empty-row' | conditional_css(not is_valid_card(card)) }}" data-index="{{ loop.index }}">
 								<div class="st-td st-cell-30 idol-identity">
 									<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
 									<div class="idol-name">{{ member.full_name }}</div>
