@@ -10,80 +10,83 @@
 	<li><a href="#/stats/sr"        ng-class="pageActive('sr')">Any SR</a></li>
 </ul>
 
-<div class="stats-category general" ng-if="isActive('general')">
-	<h2>General Stats</h2>
-	<p>Numbers of different types of cards.</p>
-	<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
-	{% for group, data in general_stats.items() %}
-		<div class="stats-category-group {{ group.tag }}">
-			<div class="stats-table general">
-				<div class="st-tr st-thead">
-					<div class="st-th st-cell-25">{{ group.displayname }} Members</div>
-					
-					<div class="st-th st-cell-7-5">URs</div>
-					<div class="st-th st-cell-7-5">SRs</div>
-					
-					<div class="st-th st-cell-15">Festival</div>
-					<div class="st-th st-cell-15">Party</div>
-					<div class="st-th st-cell-15">Event</div>
-					<div class="st-th st-cell-15">Gacha</div>
-				</div>
-				<div class="st-tbody">
-					{% for member, stats in data %}
-						<div class="st-tr idol-{{ member.value }}">
-							<div class="st-td st-cell-25 idol-identity">
-								<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-								<span class="idol-name">{{ member.full_name }}</span>
-							</div>
-							
-							<div class="st-td st-cell-7-5 stat-number">{{ stats['URs'] }}</div>
-							<div class="st-td st-cell-7-5 stat-number">{{ stats['SRs'] }}</div>
-							
-							<div class="st-td st-cell-15 stat-number">{{ stats['festival'] }}</div>
-							<div class="st-td st-cell-15 stat-number">{{ stats['party'] }}</div>
-							<div class="st-td st-cell-15 stat-number">{{ stats['event'] }}</div>
-							<div class="st-td st-cell-15 stat-number">{{ stats['gacha'] }}</div>
-						</div>
-					{% endfor %}
-				</div>
-				
-				
-				<div class="st-tr st-thead">
-					<div class="st-th st-cell-25">{{ group.displayname }} Members</div>
-					<div class="st-th st-cell-45">Attributes</div>
-					<div class="st-th st-cell-30">Types</div>
-				</div>
-				<div class="st-tbody">
-					{% for member, stats in data %}
-						<div class="st-tr idol-{{ member.value }}">
-							<div class="st-td st-cell-25 idol-identity">
-								<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
-								<div class="idol-name">{{ member.full_name }}</div>
-							</div>
-							
-							{% for attribute in Attribute %}
-								<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats['attributes'][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
-									<span class="icon-32 attribute-{{ attribute.value }}">{{ stats['attributes'][attribute] }}</span>
+{% if category_tag == 'general' %}
+
+	<div class="stats-category general">
+		<h2>General Stats</h2>
+		<p>Numbers of different types of cards.</p>
+		<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
+		{% for group, data in general_stats.items() %}
+			<div class="stats-category-group {{ group.tag }}">
+				<div class="stats-table general">
+					<div class="st-tr st-thead">
+						<div class="st-th st-cell-25">{{ group.displayname }} Members</div>
+						
+						<div class="st-th st-cell-7-5">URs</div>
+						<div class="st-th st-cell-7-5">SRs</div>
+						
+						<div class="st-th st-cell-15">Festival</div>
+						<div class="st-th st-cell-15">Party</div>
+						<div class="st-th st-cell-15">Event</div>
+						<div class="st-th st-cell-15">Gacha</div>
+					</div>
+					<div class="st-tbody">
+						{% for member, stats in data %}
+							<div class="st-tr idol-{{ member.value }}">
+								<div class="st-td st-cell-25 idol-identity">
+									<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+									<span class="idol-name">{{ member.full_name }}</span>
 								</div>
-							{% endfor %}
-							
-							{% for type in Type %}
-								<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats['types'][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
-									<span class="icon-32 type-{{ type.value }}">{{ stats['types'][type] }}</span>
+								
+								<div class="st-td st-cell-7-5 stat-number">{{ stats['URs'] }}</div>
+								<div class="st-td st-cell-7-5 stat-number">{{ stats['SRs'] }}</div>
+								
+								<div class="st-td st-cell-15 stat-number">{{ stats['festival'] }}</div>
+								<div class="st-td st-cell-15 stat-number">{{ stats['party'] }}</div>
+								<div class="st-td st-cell-15 stat-number">{{ stats['event'] }}</div>
+								<div class="st-td st-cell-15 stat-number">{{ stats['gacha'] }}</div>
+							</div>
+						{% endfor %}
+					</div>
+					
+					
+					<div class="st-tr st-thead">
+						<div class="st-th st-cell-25">{{ group.displayname }} Members</div>
+						<div class="st-th st-cell-45">Attributes</div>
+						<div class="st-th st-cell-30">Types</div>
+					</div>
+					<div class="st-tbody">
+						{% for member, stats in data %}
+							<div class="st-tr idol-{{ member.value }}">
+								<div class="st-td st-cell-25 idol-identity">
+									<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
+									<div class="idol-name">{{ member.full_name }}</div>
 								</div>
-							{% endfor %}
-						</div>
-					{% endfor %}
+								
+								{% for attribute in Attribute %}
+									<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats['attributes'][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
+										<span class="icon-32 attribute-{{ attribute.value }}">{{ stats['attributes'][attribute] }}</span>
+									</div>
+								{% endfor %}
+								
+								{% for type in Type %}
+									<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats['types'][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
+										<span class="icon-32 type-{{ type.value }}">{{ stats['types'][type] }}</span>
+									</div>
+								{% endfor %}
+							</div>
+						{% endfor %}
+					</div>
 				</div>
 			</div>
-		</div>
-	{% endfor %}
-</div>
-	
-{% for category_tag, category_data in card_stats.items() %}
-	<div class="stats-category {{ category_tag }}" ng-if="isActive('{{ category_tag }}')">
-		<h2>{{ categories[category_tag][0] }}</h2>
-		<p>{{ categories[category_tag][1] }}</p>
+		{% endfor %}
+	</div>
+
+{% else %}
+
+	<div class="stats-category {{ category_tag }}">
+		<h2>{{ category_info[0] }}</h2>
+		<p>{{ category_info[1] }}</p>
 		<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
 		{% for group, data in category_data.items() %}
 			<div class="stats-category-group collapsible {{ group.tag or group }}">
@@ -136,4 +139,5 @@
 			</div>
 		{% endfor %}
 	</div>
-{% endfor %}
+	
+{% endif %}

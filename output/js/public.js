@@ -57,6 +57,18 @@ let format_seconds = function(seconds_param)
 
 const site_title = "SIFAS Card Rotations";
 
+const stats_subpages = {
+	'general'   : "General",
+	'event'     : "Event URs",
+	'festival'  : "Festival URs",
+	'party'     : "Party URs",
+	'limited'   : "Festival + Party",
+	'spotlight' : "Party + Spotlight",
+	'gacha'     : "Any Gacha UR",
+	'ur'        : "Any UR",
+	'sr'        : "Any SR",
+};
+
 const routes = [
 	{
 		title       : 'UR Rotations',
@@ -113,22 +125,26 @@ const routes = [
 		title       : 'Card Stats',
 		path        : '/stats/:page?',
 		controller  : 'StatsController',
-		template    : 'stats.html',
+		template    : function(params)
+		{
+			if (params.page !== undefined && params.page in stats_subpages)
+			{
+				if (params.page != 'general')
+				{
+					return 'stats_' + params.page + '.html';
+				}
+			}
+			else if (params.page === undefined || params.page === 'general')
+			{	
+				return 'stats.html';
+			}
+			
+			return false;
+		},
+		templateErrorRedirect    : '/stats',
 		hasSubpages : true,
 	},
 ];
-
-const stats_subpages = {
-	'general'   : "General",
-	'event'     : "Event URs",
-	'festival'  : "Festival URs",
-	'party'     : "Party URs",
-	'limited'   : "Festival + Party",
-	'spotlight' : "Party + Spotlight",
-	'gacha'     : "Any Gacha UR",
-	'ur'        : "Any UR",
-	'sr'        : "Any SR",
-};
 
 var app = angular.module('app', ['ngRoute', 'ngSanitize'],
 	function($interpolateProvider)
@@ -147,9 +163,36 @@ app.config(function($routeProvider, $locationProvider)
 
 		for (const route of routes)
 		{
-			$routeProvider.when(route['path'], {
-				controller:  route['controller'],
-				templateUrl: 'pages/' + route['template'],
+			$routeProvider.when(route.path, {
+				controller:  route.controller,
+				templateUrl: function(params)
+				{
+					if (typeof route.template == "function")
+					{
+						let page_path = route.template(params);
+						if (page_path !== false)
+						{
+							return 'pages/' + page_path;
+						}
+						else
+						{
+							return false;
+						}
+					}
+					
+					return 'pages/' + route.template;
+				},
+				redirectTo : function(route_params, location_path, location_params)
+				{
+					if (typeof route.template == "function")
+					{
+						let page_path = route.template(route_params);
+						if (page_path === false)
+						{
+							return route.templateErrorRedirect;
+						}
+					}
+				}
 			})
 		}
 
@@ -335,6 +378,17 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			return output.join(' ');
 		}
 		
+		$scope.update_search_params = () =>
+		{
+			$location.search({});
+			if ($rootScope.settings.highlight_source != '0')
+			{
+				$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]);
+			}
+			// $location.search('idolized', $rootScope.settings.use_idolized_thumbnails ? 'true' : 'false');
+			// $location.search('reverse', $rootScope.settings.order_reversed ? 'true' : 'false');
+		}
+		
 		$scope.$watch('$root.settings', function(bs, settings)
 		{
 			saveStorage($rootScope.settings);
@@ -342,9 +396,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 				$scope.unfocus();
 			}, 350);
 			
-			$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]);
-			// $location.search('idolized', $rootScope.settings.use_idolized_thumbnails ? 'true' : 'false');
-			// $location.search('reverse', $rootScope.settings.order_reversed ? 'true' : 'false');
+			$scope.update_search_params();
 		}, true);
 		
 		$scope.$watch('$root.settings.highlight_source', function(bs, settings)
@@ -464,7 +516,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		$rootScope.$on("$locationChangeStart", function(event, next, current)
 		{ 
 			$scope.unfocus();
-			$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]);
+			$scope.update_search_params();
 		});
 		
 		$scope.keydown = ($event) =>

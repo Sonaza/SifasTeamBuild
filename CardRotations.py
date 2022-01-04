@@ -426,21 +426,32 @@ class CardRotations():
 			'ur'        : (Rarity.UR, None, ),
 			'sr'        : (Rarity.SR, None, ),
 		}
+		category_info = {
+			'event'      : ( "Event URs",         "Event URs awarded in item exchange and story events." ),
+			'festival'   : ( "Festival URs",      "Festival limited URs scouted exclusively from All Stars Festival banners." ),
+			'party'      : ( "Party URs",         "Party limited URs scouted exclusively from Party Scouting banners." ),
+			'spotlight'  : ( "Party + Spotlight", "Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),
+			'limited'    : ( "Festival + Party",  "The most recent Festival and Party limited URs. Due to their higher average power level and limited nature, the same member is unlikely to receive two in quick succession." ),
+			'gacha'      : ( "Any Gacha UR",      "Any UR scouted from banners using Star Gems." ),
+			'ur'         : ( "Any UR",            "Any most recent UR, free or otherwise." ),
+			'sr'         : ( "Any SR",            "Any most recent SR, free or otherwise" ),
+		}
 		
-		result = defaultdict(dict)
+		category_data = defaultdict(dict)
+		
 		for category, (rarity, sources) in categories.items():
 			for group in Group:
-				result[category][group] = {
+				category_data[category][group] = {
 					'cards'       : self._time_since_last(idols=self.client.get_newest_idols(group=group, rarity=rarity, source=sources), group=group),
 					'show_source' : (not isinstance(sources, list) or len(sources) > 1),
 				}
 			
-			result[category]['collapsed'] = {
+			category_data[category]['collapsed'] = {
 				'cards'       : self._time_since_last(idols=self.client.get_newest_idols(rarity=rarity, source=sources), group=None),
 				'show_source' : (not isinstance(sources, list) or len(sources) > 1),
 			}
 		
-		return result
+		return (category_data, category_info)
 	
 	def generate_pages(self):
 		for file in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html")):
@@ -494,21 +505,18 @@ class CardRotations():
 		})
 		
 		general_stats = self.get_general_stats()
-		card_stats = self.get_card_stats()
 		self._render_and_save("stats.html", "pages/stats.html", {
+			'category_tag'   : 'general',
 			'general_stats'  : general_stats,
-			'card_stats'     : card_stats,
-			'categories'     : {
-				'event'      : ( "Event URs",         "Event URs awarded in item exchange and story events." ),
-				'festival'   : ( "Festival URs",      "Festival limited URs scouted exclusively from All Stars Festival banners." ),
-				'party'      : ( "Party URs",         "Party limited URs scouted exclusively from Party Scouting banners." ),
-				'spotlight'  : ( "Party + Spotlight", "Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),
-				'limited'    : ( "Festival + Party",  "The most recent Festival and Party limited URs. Due to their higher average power level and limited nature, the same member is unlikely to receive two in quick succession." ),
-				'gacha'      : ( "Any Gacha UR",      "Any UR scouted from banners using Star Gems." ),
-				'ur'         : ( "Any UR",            "Any most recent UR, free or otherwise." ),
-				'sr'         : ( "Any SR",            "Any most recent SR, free or otherwise" ),
-			}
 		}, minify=not self.args.dev)
+		
+		card_stats, category_info = self.get_card_stats()
+		for category_tag in card_stats.keys():
+			self._render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
+				'category_tag'   : category_tag,
+				'category_data'  : card_stats[category_tag],
+				'category_info'  : category_info[category_tag],
+			}, minify=not self.args.dev)
 		
 		self._render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
