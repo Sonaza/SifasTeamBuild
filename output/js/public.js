@@ -903,29 +903,48 @@ app.directive('pillButton', function($parse, $timeout)
 {
 	return {
 		restrict: 'A',
+		transclude: true,
+		scope: {
+			// variable: '=model',
+			// keybind: '=keybind',
+		},
+		template: '<div class="inner"><div class="inner-dot">&nbsp;</div></div><div class="label">[[ label ]] <span class="hide-mobile" ng-if="keybind">([[ keybind ]])</span></div>',
+		controller: function($scope, $transclude)
+		{
+			$transclude(function(clone, scope)
+			{
+				$scope.label = angular.element('<div>').append(clone).html();
+			});
+		},
 		link: function (scope, element, attrs)
 		{
-			element.on('click', function(event)
+			let e = angular.element(element[0]); //.querySelector('div.pill-button');
+			
+			e.addClass('pill-button');
+			
+			scope.keybind = attrs.keybind;
+			
+			element.on('mousedown', function(event)
 			{
 				event.preventDefault();
-				$parse(attrs.pillButton).assign(scope, !$parse(attrs.pillButton)(scope));
-				scope.$apply();
+				$parse(attrs.model).assign(scope.$parent, !$parse(attrs.model)(scope.$parent));
+				scope.$parent.$apply();
 			});
 
-			scope.$watch(attrs.pillButton, function(value)
+			scope.$parent.$watch(attrs.model, function(value)
 			{
 				if (value)
 				{
-					angular.element(element).addClass('active').addClass('changed');
+					e.addClass('active').addClass('changed');
 				}
 				else
 				{
-					angular.element(element).removeClass('active');
+					e.removeClass('active');
 				}
 				
-				angular.element(element).addClass('changed');
+				e.addClass('changed');
 				$timeout(() => {
-					angular.element(element).removeClass('changed');
+					e.removeClass('changed');
 				}, 200);
 			});
 		}

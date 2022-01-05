@@ -234,14 +234,19 @@ body.sidebar-open
 	margin-right: 0;
 }
 
-#side-nav .pill-button .label
+#side-nav .pill-button
 {
-	height: 2.5rem;
+	padding: 0.3rem 0;
 }
 
-#side-nav .pill-button .inner
+#side-nav .source-selector
 {
-	
+	padding: .475rem 2.25rem .475rem .75rem;
+}
+
+#side-nav .pill-button .label
+{
+	font-size: 12pt;
 }
 
 #side-nav li a
@@ -384,7 +389,7 @@ body.sidebar-open
 .stats-category .stats-settings .pill-button
 {
 	margin: 0;
-	padding: 0.6rem 0;
+	padding: 0.6rem 0.6rem;
 }
 
 .stats-category-group

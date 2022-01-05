@@ -72,29 +72,14 @@
 					<div class="settings-wrapper unfocus-target" ng-class="sidebarToggleActive(settings_visible)">
 						<div class="settings">
 							{# <div class="revert-button"></div> #}
-							<div class="pill-button" pill-button="settings.use_idolized_thumbnails">
-								<div class="inner">
-									<div class="inner-dot">&nbsp;</div>
-								</div>
-								<div class="label">
-									Idolized
-								</div>
+							<div pill-button model="settings.use_idolized_thumbnails">
+								Idolized
 							</div>
-							<div class="pill-button" pill-button="settings.order_reversed">
-								<div class="inner">
-									<div class="inner-dot">&nbsp;</div>
-								</div>
-								<div class="label">
-									Newest First
-								</div>
+							<div pill-button model="settings.order_reversed">
+								Newest First
 							</div>
-							{# <div class="pill-button" pill-button="settings.alt">
-								<div class="inner">
-									<div class="inner-dot">&nbsp;</div>
-								</div>
-								<div class="label">
-									Alt
-								</div>
+							{# <div pill-button model="settings.alt">
+								Alt
 							</div> #}
 							<div>
 								<select class="source-selector ng-cloak" ng-model="settings.highlight_source">
@@ -105,13 +90,8 @@
 									<option selected disabled>Loading...</option>
 								</select>
 							</div>
-							<div class="pill-button hide-mobile" pill-button="settings.show_tooltips">
-								<div class="inner">
-									<div class="inner-dot">&nbsp;</div>
-								</div>
-								<div class="label">
-									Tooltips
-								</div>
+							<div pill-button model="settings.show_tooltips">
+								Tooltips
 							</div>
 						</div>
 					</div>

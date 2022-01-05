@@ -115,7 +115,8 @@ a:hover, a:active
 .pill-button
 {
 	display: flex;
-	/*justify-content: center;*/
+	justify-content: left;
+	align-items: center;
 	cursor: pointer;
 }
 
@@ -124,7 +125,7 @@ a:hover, a:active
 	height: 1.5rem;
 	font-family: 'Montserrat';
 	font-weight: 700;
-	font-size: 11pt;
+	font-size: 10pt;
 	
 	padding-top: 0.2rem;
 	color: #491186;
@@ -150,7 +151,7 @@ a:hover, a:active
 	
 	width: 2.75rem;
 	height: 1.5rem;
-	margin: 0 1rem 0.5rem 0;
+	margin: 0 0.6rem 0 0;
 	
 	background: #fff;
 	border-radius: 16px;
@@ -412,12 +413,25 @@ a:hover, a:active
 }
 #side-nav .settings
 {
-	/*min-height: 12rem;*/
-	padding: 1rem 1.2rem;
+	display: flex;
+	flex-flow: column nowrap;
+	justify-content: left;
+	
+	padding: 0.75rem 1.2rem;
 	margin: 1rem 0 0 0.5rem;
 	border-radius: 4px;
 	background: #481E9F;
 	position: relative;
+}
+
+#side-nav .settings .pill-button
+{
+	margin: 0.25rem 0;
+}
+
+#side-nav .settings .pill-button .label > span
+{
+	opacity: 0.5;
 }
 
 #side-nav .settings .revert-button
@@ -465,6 +479,8 @@ a:hover, a:active
 	text-align: center;
 	
 	padding: .375rem 2.25rem .375rem .75rem;
+	margin: 0.25rem 0 0.4rem 0;
+	
 	-moz-padding-start: calc(0.75rem - 3px);
 	line-height: 1.5;
 	color: #242129;
@@ -479,8 +495,6 @@ a:hover, a:active
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
-	
-	margin-bottom: 0.75rem;
 }
 
 .source-selector.changed
