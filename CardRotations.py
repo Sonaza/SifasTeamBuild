@@ -8,6 +8,7 @@ from glob import glob
 from operator import itemgetter
 from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
+import statistics
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 import htmlmin, cssmin
@@ -453,7 +454,162 @@ class CardRotations():
 		
 		return (category_data, category_info)
 	
+	def _make_bias_map(self, data, member_adjustments = None):
+		members = []
+		numbers = []
+		for member, value in data.items():
+			if member_adjustments != None and member in member_adjustments: value += member_adjustments[member]
+			
+			if value == None:
+				continue
+			
+			members.append(member)
+			numbers.append(value)
+		
+		mean = statistics.mean(numbers)
+		median = statistics.median(numbers)
+		
+		variance = statistics.pvariance(numbers)
+		standard_deviation = statistics.pstdev(numbers)
+		
+		print(variance, standard_deviation)
+		
+		mean_bias               = dict(sorted(zip(members, [mean - n for n in numbers]),                        key=itemgetter(1), reverse=True))
+		median_bias             = dict(sorted(zip(members, [median - n for n in numbers]),                      key=itemgetter(1), reverse=True))
+		standard_deviation_bias = dict(sorted(zip(members, [(n - mean) / standard_deviation for n in numbers]), key=itemgetter(1), reverse=True))
+		
+		return {
+			'mean'                    : mean,
+			'median'                  : median,
+			'standard_deviation'      : standard_deviation,
+			
+			'mean_bias'               : mean_bias,
+			'median_bias'             : median_bias,
+			'standard_deviation_bias' : standard_deviation_bias,
+		}
+	
+	def get_predictions(self):
+		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
+		member_adjustments = {
+			Member.Rina     : 2,
+			Member.Kasumi   : 2,
+			Member.Shizuku  : 2,
+			Member.Ayumu    : 2,
+			Member.Setsuna  : 2,
+			Member.Ai       : 2,
+			Member.Emma     : 2,
+			Member.Kanata   : 2,
+			Member.Karin    : 2,
+			Member.Shioriko : 5,
+			Member.Lanzhu   : 9,
+			Member.Mia      : 9,
+		}
+		rotation_adjustment = {
+			Group.Muse       : 0,
+			Group.Aqours     : 0,
+			Group.Nijigasaki : 2,
+		}
+		
+		class Category(Enum):
+			UR        = 1
+			Event     = 2
+			Festival  = 3
+			Party     = 4
+			Limited   = 5
+		
+		def nmax(a, b):
+			try:
+				return a if a < b else b
+			except:
+				if a == None: return b
+				if b == None: return a
+			return None
+		
+		num_rotations = {}
+		for group, rotations in ur_rotations:
+			num_rotations[group] = len(rotations) + rotation_adjustment[group]
+		
+		stats = defaultdict(lambda: defaultdict(lambda: int))
+		last_release = defaultdict(lambda: defaultdict(lambda: int))
+		for category in Category:
+			for member in Member:
+				stats[category][member] = 0
+				last_release[category][member] = None
+		
+		now = datetime.now(timezone.utc)
+		
+		idols = self.client.get_idols(rarity=Rarity.UR)
+		for idol in idols:
+			member = idol.member_id
+			date_diff = now - idol.release_date
+			
+			stats[Category.UR][member] += 1
+			
+			last_release[Category.UR][member] = nmax(last_release[Category.UR][member], date_diff.days)
+			
+			if idol.source == Source.Event:
+				stats[Category.Event][member] += 1
+				
+				last_release[Category.Event][member] = nmax(last_release[Category.Event][member], date_diff.days)
+				
+			elif idol.source == Source.Festival:
+				stats[Category.Festival][member] += 1
+				stats[Category.Limited][member] += 1
+				
+				last_release[Category.Festival][member] = nmax(last_release[Category.Festival][member], date_diff.days)
+				last_release[Category.Limited][member] = nmax(last_release[Category.Limited][member], date_diff.days)
+				
+			elif idol.source == Source.Party:
+				stats[Category.Party][member] += 1
+				stats[Category.Limited][member] += 1
+				
+				last_release[Category.Party][member] = nmax(last_release[Category.Party][member], date_diff.days)
+				last_release[Category.Limited][member] = nmax(last_release[Category.Limited][member], date_diff.days)
+				
+			# elif idol.source == Source.Gacha or idol.source == Source.Spotlight or idol.source == Source.Unspecified:
+			# 	stats[idol.member_id]['gacha'] += 1
+			
+		for category in Category:
+			for member in Member:
+				if last_release[category][member] == None:
+					last_release[category][member] = 0
+		
+		bm_urs = self._make_bias_map(stats[Category.UR], member_adjustments)
+		bm_festival_urs = self._make_bias_map(stats[Category.Festival])
+		bm_limited_urs = self._make_bias_map(stats[Category.Limited])
+		for member, bias in bm_urs['standard_deviation_bias'].items(): print(f"{member.first_name:<10} {bias}")
+		
+		bm_ur_release_date = self._make_bias_map(last_release[Category.UR])
+		bm_festival_release_date = self._make_bias_map(last_release[Category.Festival])
+		bm_limited_release_date = self._make_bias_map(last_release[Category.Limited])
+		# print("Release Date Bias")
+		
+		
+		##########################
+		print("--------------------------------------------")
+		
+		urs_general_predictions = {}
+		for member in Member:
+			try:
+				# urs_general_predictions[member] = bm_urs['standard_deviation_bias'][member] * 1.0 + bm_release_date['standard_deviation_bias'][member] * -1.75
+				urs_general_predictions[member] = bm_urs['standard_deviation_bias'][member] * -2.0 + \
+				                                  bm_festival_urs['standard_deviation_bias'][member] * -2.0 + \
+				                                  min(0, bm_limited_urs['standard_deviation_bias'][member] * -3.0) + \
+				                                  bm_ur_release_date['standard_deviation_bias'][member] * 3.5 + \
+				                                  bm_festival_release_date['standard_deviation_bias'][member] * 2.75 + \
+				                                  min(0, bm_limited_release_date['standard_deviation_bias'][member] * 1.55)
+			except:
+				pass
+		
+		urs_general_predictions = list(sorted(urs_general_predictions.items(), key=itemgetter(1), reverse=True))
+		
+		print("Predictions")
+		for member, bias in urs_general_predictions: print(f"{member.first_name:<10} {bias:.3f}")
+	
 	def generate_pages(self):
+		self.get_predictions()
+		return
+		
 		for file in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html")):
 			print("Removing", file)
 			os.remove(file)
