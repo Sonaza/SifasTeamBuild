@@ -8,6 +8,16 @@
 	"build_systems":
 	[
 		{
+			"name": "Python Build Current File",
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"shell_cmd": "python -u \"$file\"",
+
+			"env": {"PYTHONIOENCODING": "utf-8"},
+
+			"working_dir": "$project_path",
+			"quiet": false
+		},
+		{
 			"name": "Python Dev Build",
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
 			"shell_cmd": "python -u \"$project_path\\CardRotations.py\" -dev",

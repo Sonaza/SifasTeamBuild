@@ -163,3 +163,16 @@ class SortingOrder(Enum):
 	Ascending  = 1
 	Descending = 2
 	
+class EventType(Enum):
+	Unset    = 0
+	Story    = 1
+	Exchange = 2
+	
+	@classmethod
+	def from_string(cls, name):
+		for e in cls:
+			if e.name == name:
+				return e
+		
+		return EventType.Unset
+	

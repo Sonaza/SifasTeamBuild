@@ -113,7 +113,7 @@ class CardRotations():
 		print("Current Working Directory", os.getcwd())
 		
 		self.client = KiraraClient()
-		self.client.cache_all_idols(forced=self.args.force)
+		self.client.update_database(forced=self.args.force)
 		
 		self.jinja = Environment(
 			# loader=FileSystemLoader(os.path.dirname(os.path.abspath(__file__)), encoding='utf-8'),
