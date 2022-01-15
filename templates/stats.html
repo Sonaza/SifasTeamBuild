@@ -20,7 +20,7 @@
 			<div class="stats-category-group {{ group.tag }}">
 				<div class="stats-table general">
 					<div class="st-tr st-thead">
-						<div class="st-th st-cell-25">{{ group.displayname }} Members</div>
+						<div class="st-th st-cell-25">{{ group.display_name }} Members</div>
 						
 						<div class="st-th st-cell-7-5">URs</div>
 						<div class="st-th st-cell-7-5">SRs</div>
@@ -51,7 +51,7 @@
 					
 					
 					<div class="st-tr st-thead">
-						<div class="st-th st-cell-25">{{ group.displayname }} Members</div>
+						<div class="st-th st-cell-25">{{ group.display_name }} Members</div>
 						<div class="st-th st-cell-45">Attributes</div>
 						<div class="st-th st-cell-30">Types</div>
 					</div>
@@ -100,7 +100,7 @@
 			<div class="stats-category-group collapsible {{ group.tag or group }}">
 				<div class="stats-table {{ 'with-source' | conditional_css(data.show_source) }}">
 					<div class="st-tr st-thead">
-						<div class="st-th st-cell-30">{{ group.displayname }} Members</div>
+						<div class="st-th st-cell-30">{{ group.display_name }} Members</div>
 						<div class="st-th st-cell-70">Most Recent Card</div>
 					</div>
 					
@@ -128,7 +128,7 @@
 										</div>
 										{% if data.show_source %}
 											<div class="card-source">
-												{{ card.source.displayname }}
+												{{ card.source.display_name }}
 											</div>
 										{% endif %}
 									</div>

@@ -7,7 +7,7 @@
 				<div class="rotation-group {{ group.tag }}">
 					<div class="rotation-title">
 						<div class="set-index">
-							{{ loop.index | ordinalize }} {{ group.displayname }} {{ set_label if set_label else 'Rotation' }}
+							{{ loop.index | ordinalize }} {{ group.display_name }} {{ set_label if set_label else 'Rotation' }}
 						</div>
 						{% if rotation_title %}
 							<div class="set-title">

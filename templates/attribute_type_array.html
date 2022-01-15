@@ -11,7 +11,7 @@
 			{% endfor %}
 		</ul>
 		{# <p>
-			A map view of {{ group.displayname }} idols, organized by attributes against types.
+			A map view of {{ group.display_name }} idols, organized by attributes against types.
 		</p> #}
 		{% for page_index in range(num_pages): %}
 			<div class="array-group {{ group.tag }}" ng-class="pageActive({{ page_index }})">
@@ -44,7 +44,7 @@
 													data-card-type="{{ card.type.value }}"
 													data-card-title-normal="{{ card.get_card_name(False) | e }}"
 													data-card-title-idolized="{{ card.get_card_name(True) | e }}"
-													data-card-source="{{ card.source.displayname }}"
+													data-card-source="{{ get_card_source_label(card) }}"
 													data-card-release-date="{{ card.release_date.strftime('%d %B %Y') }}"
 													data-card-event="{{ card.event_title or '' | e }}"
 													ng-mouseover="toggleTooltip($event, true)"
