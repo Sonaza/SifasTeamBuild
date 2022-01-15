@@ -360,9 +360,9 @@ class KiraraClient():
 	# -------------------------------------------------------------------------------------------
 	
 	def update_database(self, forced=False):
-		# if not forced and not self.database_needs_update():
-		# 	print("No need to update database right now.")
-		# 	return
+		if not forced and not self.database_needs_update():
+			print("No need to update database right now.")
+			return
 		
 		print("Populating members...")
 		self._populate_members_and_metadata()

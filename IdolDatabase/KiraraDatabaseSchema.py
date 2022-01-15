@@ -64,8 +64,6 @@ schemas = [
 	    `ordinal`           INTEGER UNIQUE NOT NULL,
 	    `id`                INTEGER UNIQUE NOT NULL,
 	    `member_id`         INTEGER,
---	    `group_id`          INTEGER,
---	    `subunit_id`        INTEGER,
 	    `normal_name`       TEXT,
 	    `idolized_name`     TEXT,
 	    `attribute`         INTEGER,
@@ -74,8 +72,6 @@ schemas = [
 	    `source`            INTEGER,
 	    `release_date`      TEXT,
 	    FOREIGN KEY(`member_id`)    REFERENCES members(`id`),
---	    FOREIGN KEY(`group_id`)     REFERENCES groups(`id`),
---	    FOREIGN KEY(`subunit_id`)   REFERENCES subunits(`id`),
 	    FOREIGN KEY(`attribute`)    REFERENCES attributes(`id`),
 	    FOREIGN KEY(`type`)         REFERENCES types(`id`),
 	    PRIMARY KEY(`ordinal`, `id`)
