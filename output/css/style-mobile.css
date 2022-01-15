@@ -392,7 +392,8 @@ body.sidebar-open
 	padding: 0.6rem 0.6rem;
 }
 
-.stats-category-group
+.stats-category-group,
+.event-cards-group
 {
 	overflow-y: hidden !important;
 	overflow-x: scroll !important;
@@ -403,12 +404,12 @@ body.sidebar-open
 	min-width: 850px;
 }
 
-.stats-table .st-td.idol-identity
+.stats-table.event-cards-table
 {
-	
+	min-width: 1100px;
 }
 
-.stats-table .st-td.idol-identity .idol-icon
+.stats-table .st-td.idol-identity:first-child .idol-icon
 {
 	float: left;
 	position: absolute;
@@ -417,7 +418,7 @@ body.sidebar-open
 	z-index: 199999;
 }
 
-.stats-table .st-td.idol-identity .idol-name
+.stats-table .st-td.idol-identity:first-child .idol-name
 {
 	margin-left: 36px;
 }

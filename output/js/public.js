@@ -75,6 +75,7 @@ const routes = [
 		path        : '/ur-rotations',
 		controller  : 'MainController',
 		template    : 'ur_rotations.html',
+		exact_match : true,
 	},
 	{
 		title       : 'µ\'s Cards',
@@ -114,6 +115,14 @@ const routes = [
 		path        : '/event',
 		controller  : 'MainController',
 		template    : 'event_rotations.html',
+		exact_match : true,
+	},
+	{
+		title       : 'Event Cards',
+		path        : '/event_cards',
+		controller  : 'MainController',
+		template    : 'event_cards.html',
+		exact_match : true,
 	},
 	{
 		title       : 'SR Sets',
@@ -659,7 +668,7 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 				{
 					let basepath = '/' + route['path'].split('/')[1];
 					
-					if ($scope.isActive(basepath))
+					if ($scope.isActive(basepath, route['exact_match']))
 					{
 						if (route.hasSubpages)
 						{

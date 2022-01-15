@@ -463,6 +463,16 @@ class CardRotations():
 		
 		return (category_data, category_info)
 	
+	def get_events_with_cards(self):
+		events = self.client.get_events_with_cards()
+		
+		sbl_counter = -1
+		for event_id in events.keys():
+			events[event_id]['sbl'] = max(1, sbl_counter)
+			sbl_counter += 1
+		
+		return events
+	
 	def generate_pages(self):
 		for file in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html")):
 			print("Removing", file)
@@ -505,6 +515,11 @@ class CardRotations():
 			'page_title'         : 'Event UR Rotations',
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
 		}, minify=not self.args.dev)
+		
+		events_with_cards = self.get_events_with_cards()
+		self._render_and_save("event_cards.html", "pages/event_cards.html", {
+			'events_with_cards'  : events_with_cards,
+		})
 		
 		sr_sets = [(group, self.get_general_rotation(group, Rarity.SR)) for group in Group]
 		self._render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {

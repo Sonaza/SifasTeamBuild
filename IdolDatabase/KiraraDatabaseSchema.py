@@ -139,7 +139,21 @@ schemas = [
 	'''CREATE VIEW v_idols_with_events AS
 	    SELECT
 	        v_idols.*,
+	        events.id AS event_id,
 	        events.title_en AS event_title
+	    FROM v_idols
+	    LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
+	    LEFT JOIN events      ON events.id = event_cards.event_id
+	''',
+	
+	'''CREATE VIEW v_idols_with_event_info AS
+	    SELECT
+	        v_idols.*,
+	        events.id AS event_id,
+	        events.type AS event_type,
+	        events.title_en AS event_title,
+	        events.start_jp AS event_start,
+	        events.end_jp AS event_end
 	    FROM v_idols
 	    LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
 	    LEFT JOIN events      ON events.id = event_cards.event_id

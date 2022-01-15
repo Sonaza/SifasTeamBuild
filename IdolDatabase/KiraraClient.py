@@ -691,19 +691,40 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def get_associated_event(self):
-		source = self._get_enum_values([Source.Event, Source.Gacha])
-		rarities = self._get_enum_values([Rarity.SR, Rarity.UR])
+	def get_events_with_cards(self):
+		query = """SELECT * FROM v_idols_with_event_info"""
+		self.db.execute(query)
 		
-		query = f"""SELECT idols.ordinal, events.title_en FROM idols
-		            LEFT JOIN events ON idols.release_date BETWEEN events.start AND events.end
-		            WHERE idols.source IN ({self._make_where_placeholders(sources)})
-		              AND idols.rarity IN ({self._make_where_placeholders(rarities)})"""
+		events = defaultdict(lambda: { 'event' : None, 'gacha' : [], 'free': [] })
+		for data in self.db.fetchall():
+			if not data['event_id']:
+				continue
+			
+			event_id = data['event_id'];
+			
+			if not events[event_id]['event']:
+				events[event_id]['event'] = {
+					'title' : data['event_title'],
+					'type'  : EventType(data['event_type']),
+					'start' : datetime.fromisoformat(data['event_start']).strftime('%d %B %Y'), # strftime('%d %B %Y %H:%M %Z')
+					'end'   : datetime.fromisoformat(data['event_end']).strftime('%d %B %Y'),
+				}
+			
+			card = KiraraIdol(self, data)
+			
+			if card.source == Source.Event:
+				events[event_id]['free'].append(card)
+				events[event_id]['free'] = list(sorted(events[event_id]['free'], key=lambda x: (-x.rarity.value, x.ordinal) ))
+				
+			elif card.source == Source.Gacha:
+				events[event_id]['gacha'].append(card)
+				events[event_id]['gacha'] = list(sorted(events[event_id]['gacha'], key=lambda x: (-x.rarity.value, x.ordinal) ))
+			
+			else:
+				raise KiraraClientException("An unexpected card source for event cards.")
 		
-		self.db.execute(query, source + rarities)
-		for v in self.db.fetchall():
-			print(dict(v))
-	
+		return events
+		
 	# -------------------------------------------------------------------------------------------
 		
 	def convert_to_idol_object(self, data):
