@@ -59,6 +59,11 @@ class KiraraIdol():
 		self.release_date   = datetime.fromisoformat(data['release_date'])
 		
 		try:
+			self.event_title  = data['event_title']
+		except:
+			self.event_title  = None
+		
+		try:
 			self.data = json.loads(data['json'])
 		except:
 			self.data = {}
@@ -170,108 +175,7 @@ class KiraraClient():
 	# -------------------------------------------------------------------------------------------
 	
 	def _create_tables(self):
-		schemas = [
-			# Database params
-			'''CREATE TABLE `parameters` (
-				`key`         TEXT UNIQUE NOT NULL,
-				`value`       TEXT,
-			    PRIMARY KEY(`key`)
-			) WITHOUT ROWID''',
-			
-			# Idols json table
-			'''CREATE TABLE `idols_json` (
-			    `ordinal`           INTEGER UNIQUE,
-			    `json`              TEXT,
-			    PRIMARY KEY(`ordinal`)
-			) WITHOUT ROWID''',
-			
-			# Groups table
-			'''CREATE TABLE `groups` (
-			    `id`                INTEGER UNIQUE NOT NULL,
-			    `tag`               TEXT,
-			    `name`              TEXT,
-			    PRIMARY KEY(`id`)
-			) WITHOUT ROWID''',
-			
-			# Subunit table
-			'''CREATE TABLE `subunits` (
-			    `id`                INTEGER UNIQUE NOT NULL,
-			    `name`              TEXT,
-			    PRIMARY KEY(`id`)
-			) WITHOUT ROWID''',
-			
-			# Members table
-			'''CREATE TABLE `members` (
-			    `id`                INTEGER UNIQUE NOT NULL,
-			    `name`              TEXT,
-			    `year`              INTEGER,
-			    `group_id`          INTEGER NOT NULL,
-			    `subunit_id`        INTEGER NOT NULL,
-			    FOREIGN KEY(`group_id`)     REFERENCES groups(`id`),
-			    FOREIGN KEY(`subunit_id`)   REFERENCES subunits(`id`),
-			    PRIMARY KEY(`id`)
-			) WITHOUT ROWID''',
-			
-			# Idols table
-			'''CREATE TABLE `idols` (
-			    `ordinal`           INTEGER UNIQUE NOT NULL,
-			    `id`                INTEGER UNIQUE NOT NULL,
-			    `member_id`         INTEGER,
-			    `group_id`          INTEGER,
-			    `subunit_id`        INTEGER,
-			    `normal_name`       TEXT,
-			    `idolized_name`     TEXT,
-			    `attribute`         INTEGER,
-			    `type`              INTEGER,
-			    `rarity`            INTEGER,
-			    `source`            INTEGER,
-			    `release_date`      TEXT,
-			    PRIMARY KEY(`ordinal`, `id`)
-			) WITHOUT ROWID''',
-			
-			# Events table
-			'''CREATE TABLE `events` (
-				`id`                INTEGER UNIQUE NOT NULL,
-			    `title`             TEXT,
-			    `title_jp`          TEXT,
-			    `type`              INTEGER,
-			    `start`             TEXT,
-			    `end`               TEXT,
-			    PRIMARY KEY(`id` AUTOINCREMENT)
-			)''',
-			
-			# Events related cards
-			'''CREATE TABLE `event_cards` (
-			    `event_id`          INTEGER NOT NULL,
-			    `ordinal`           INTEGER NOT NULL,
-			    FOREIGN KEY(`event_id`)     REFERENCES events(`id`),
-			    FOREIGN KEY(`ordinal`)      REFERENCES idols(`ordinal`),
-			    PRIMARY KEY(`event_id`, `ordinal`)
-			)''',
-			
-			# Passive skills
-			# '''CREATE TABLE `skills` (
-			# 	`skill_id`            INTEGER PRIMARY KEY,
-			# 	`name`                TEXT,
-			# 	`description`         TEXT,
-			# 	`trigger_type`        INTEGER,
-			# 	`trigger_probability` INTEGER,
-			# 	`effect_type`         INTEGER,
-			# 	`target`              INTEGER,
-			# 	`levels`              TEXT,
-			# ) WITHOUT ROWID''',
-			
-			# Idols skills table
-			# '''CREATE TABLE `idols_skills` (
-			#     `ordinal`           INTEGER UNIQUE,
-			#     `primary_passive`   INTEGER,
-			#     `secondary_passive` INTEGER,
-			#     PRIMARY KEY(`ordinal`),
-			#     FOREIGN KEY(`primary_passive`)   REFERENCES skills(`id`),
-			#     FOREIGN KEY(`secondary_passive`) REFERENCES skills(`id`)
-			# ) WITHOUT ROWID''',
-		]
-		
+		from .KiraraDatabaseSchema import schemas
 		for schema in schemas:
 			try:
 				self.db.execute(schema)
@@ -311,9 +215,13 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _make_insert_query(self, table, data):
-		columns = ', '.join(data.keys())
-		values = ', '.join([f":{key}"  for key in data.keys()])
+	def _make_insert_query(self, table, data=None, keys=None):
+		if keys == None:
+			if data == None: raise KiraraClientValueError("Data can't be None if keys are not explicitly defined.")
+			keys = data.keys()
+		
+		columns = ', '.join(keys)
+		values = ', '.join([f":{key}"  for key in keys])
 		return f"""INSERT INTO {table} ({columns}) VALUES ({values})"""
 		
 	def _get_enum_values(self, enum_list):
@@ -389,8 +297,6 @@ class KiraraClient():
 				'id'                : card['id'],
 				'ordinal'           : card['ordinal'],
 				'member_id'         : card['member'],
-				'group_id'          : idol_info.group.value,
-				'subunit_id'        : idol_info.subunit.value,
 				'normal_name'       : card['normal_appearance']['name'].strip(),
 				'idolized_name'     : card['idolized_appearance']['name'].strip(),
 				'attribute'         : card['attribute'],
@@ -458,45 +364,76 @@ class KiraraClient():
 		# 	print("No need to update database right now.")
 		# 	return
 		
-		self._populate_members()
-		exit()
+		print("Populating members...")
+		self._populate_members_and_metadata()
 		
 		print("Updating event database...")
 		self._cache_events()
 		
 		print("Updating idol database...")
 		self._cache_all_idols()
-		exit()
+		# exit()
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _populate_members(self):
-		group_data = []
-		for group in Group:
-			group_data.append({
-				'id'         : group.value,
-				'tag'        : group.tag,
-				'name'       : group.displayname,
+	def _populate_members_and_metadata(self):
+		def executemany(query, data):
+			for d in data:
+				try:
+					self.db.execute(query, d)
+				except sqlite.IntegrityError as e:
+					if not 'UNIQUE constraint failed' in str(e):
+						print(e)
+		
+		data = []
+		for d in Attribute.get_valid():
+			data.append({
+				'id'         : d.value,
+				'name'       : d.name,
 			})
 		
-		query = self._make_insert_query("groups", group_data[0])
-		try:
-			self.db.executemany(query, group_data)
-		except Exception as e:
-			print(e)
-			
-		subunit_data = []
-		for subunit in Subunit:
-			subunit_data.append({
-				'id'         : subunit.value,
-				'name'       : subunit.displayname,
+		query = self._make_insert_query("attributes", data[0])
+		executemany(query, data)
+		
+		# ---------------------
+		
+		data = []
+		for d in Type.get_valid():
+			data.append({
+				'id'         : d.value,
+				'name'       : d.name,
+				'full_name'  : d.full_name,
 			})
 		
-		query = self._make_insert_query("subunits", subunit_data[0])
-		try:
-			self.db.executemany(query, subunit_data)
-		except Exception as e:
-			print(e)
+		query = self._make_insert_query("types", data[0])
+		executemany(query, data)
+		
+		# ---------------------
+		
+		data = []
+		for d in Group:
+			data.append({
+				'id'         : d.value,
+				'tag'        : d.tag,
+				'name'       : d.display_name,
+			})
+		
+		query = self._make_insert_query("groups", data[0])
+		executemany(query, data)
+		
+		# ---------------------
+		
+		data = []
+		for d in Subunit:
+			data.append({
+				'id'         : d.value,
+				'name'       : d.display_name,
+			})
+		
+		query = self._make_insert_query("subunits", data[0])
+		executemany(query, data)
+		
+		# ---------------------
 		
 		member_data = []
 		for member in Member:
@@ -509,46 +446,62 @@ class KiraraClient():
 			})
 		
 		query = self._make_insert_query("members", member_data[0])
-		try:
-			self.db.executemany(query, member_data)
-		except Exception as e:
-			print(e)
+		executemany(query, member_data)
+		
+		# ---------------------
 		
 		self.dbcon.commit()
 	
 	# -------------------------------------------------------------------------------------------
 	
 	def _cache_events(self):
-		query = "SELECT title FROM events"
+		query = "SELECT title_en, title_jp FROM events"
 		self.db.execute(query)
 		
-		known_events = [x['title'] for x in self.db.fetchall()]
-		print("Known events", len(known_events))
+		known_events = [y for x in self.db.fetchall() for y in (x['title_en'], x['title_jp'])]
+		
+		# with open("history.json", "r", encoding="utf-8") as f:
+		# 	crawled_events_data = json.load(fp=f)
 		
 		hc = HistoryCrawler()
-		events_data = hc.crawl_events(known_events)
-		if not events_data:
+		crawled_events_data = hc.crawl_events(known_events)
+		if not crawled_events_data:
 			print("Found no event data. Nothing to do...")
 			return
 		
-		query_data = []
-		for data in events_data:
-			if data['title'] in known_events: continue
-			data['start'] = data['start'].isoformat()
-			data['end'] = data['end'].isoformat()
-			data['type'] = EventType.from_string(data['type']).value
-			query_data.append(data)
+		# with open("history.json", "w", encoding="utf-8") as f:
+		# 	json.dump(crawled_events_data, fp=f)
 			
-		if len(query_data) == 0:
+		event_data = []
+		for data in crawled_events_data:
+			if data['title_en'] in known_events or data['title_jp'] in known_events: continue
+			# data['start_jp'] = data['start_jp'].isoformat()
+			# data['end_jp'] = data['end_jp'].isoformat()
+			data['type'] = EventType.from_string(data['type']).value
+			event_data.append(data)
+			
+		if len(event_data) == 0:
 			print("Found data but everything is up to date.")
 			return
+		
+		num_cards = 0	
+		for data in event_data:
+			ordinals = data['cards']
+			del data['cards']
 			
-		print("Found data to update", query_data)
+			event_query = self._make_insert_query('events', data)
+			self.db.execute(event_query, data)
+			
+			cards = [{'event_id': self.db.lastrowid, 'ordinal': ordinal} for ordinal in ordinals]
+			
+			event_card_query = self._make_insert_query('event_cards', cards[0])
+			self.db.executemany(event_card_query, cards)
+			
+			num_cards += len(cards)
+			# print(f"Added event '{data['title_en']}' with {len(cards)} associated cards to database.")
 		
-		query = self._make_insert_query('events', query_data[0])
-		print(query)
-		
-		self.db.executemany(query, query_data)
+		print(f"Added {len(event_data)} events with {num_cards} associated cards to database.")
+			
 		self.dbcon.commit()
 	
 	# -------------------------------------------------------------------------------------------
@@ -584,11 +537,11 @@ class KiraraClient():
 	
 	def get_all_idols(self, with_json = False):
 		if with_json:
-			query = f"""SELECT idols.*, idols_json.json FROM idols
-			            LEFT JOIN idols_json ON idols.ordinal = idols_json.ordinal
+			query = f"""SELECT v_idols.*, idols_json.json FROM 'v_idols'
+			            LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
 			            ORDER BY ordinal"""
 		else:
-			query = f"""SELECT * FROM idols
+			query = f"""SELECT * FROM v_idols
 			            ORDER BY ordinal"""
 		            
 		self.db.execute(query)
@@ -662,13 +615,14 @@ class KiraraClient():
 			order = "DESC"
 		
 		if fields:
-			query = f"""SELECT * FROM 'idols'
+			query = f"""SELECT * FROM 'v_idols_with_events'
 			            WHERE {' AND '.join([x[0] for x in fields])} {group_by}
 			            ORDER BY {order_by} {order}"""
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:
-			query = f"""SELECT * FROM 'idols' {group_by}
+			query = f"""SELECT * FROM 'v_idols_with_events'
+			            {group_by}
 			            ORDER BY {order_by} {order}"""
 			self.db.execute(query)
 			
@@ -700,9 +654,9 @@ class KiraraClient():
 		if source     != None: fields.append(self._make_where_condition("source",   source))
 		
 		if fields:
-			query = f"""SELECT * FROM 'idols'
+			query = f"""SELECT * FROM 'v_idols'
 			            WHERE ordinal IN (
-			            	SELECT MAX(ordinal) FROM 'idols'
+			            	SELECT MAX(ordinal) FROM 'v_idols'
 			            	WHERE {' AND '.join([x[0] for x in fields])}
 			            	GROUP BY member_id
 			            )
@@ -710,9 +664,9 @@ class KiraraClient():
 			# print(query)
 			self.db.execute(query, [value for x in fields for value in x[1]])
 		else:
-			query = f"""SELECT * FROM 'idols'
+			query = f"""SELECT * FROM 'v_idols'
 						WHERE ordinal IN (
-							SELECT MAX(ordinal) FROM 'idols'
+							SELECT MAX(ordinal) FROM 'v_idols'
 							GROUP BY member_id
 						)
 						ORDER BY release_date ASC"""
@@ -741,7 +695,7 @@ class KiraraClient():
 		source = self._get_enum_values([Source.Event, Source.Gacha])
 		rarities = self._get_enum_values([Rarity.SR, Rarity.UR])
 		
-		query = f"""SELECT idols.ordinal, events.title FROM idols
+		query = f"""SELECT idols.ordinal, events.title_en FROM idols
 		            LEFT JOIN events ON idols.release_date BETWEEN events.start AND events.end
 		            WHERE idols.source IN ({self._make_where_placeholders(sources)})
 		              AND idols.rarity IN ({self._make_where_placeholders(rarities)})"""

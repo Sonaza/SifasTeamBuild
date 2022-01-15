@@ -6,13 +6,13 @@ class Rarity(Enum):
 	UR = 30
 
 class Type(Enum):
-	_init_ = 'value valid'
+	_init_ = 'value full_name valid'
 	
-	Unset = 0, False
-	Vo    = 1, True
-	Sp    = 2, True
-	Gd    = 3, True
-	Sk    = 4, True
+	Unset = 0, "Unset",   False
+	Vo    = 1, "Voltage", True
+	Sp    = 2, "Special", True
+	Gd    = 3, "Guard",   True
+	Sk    = 4, "Skill",   True
 	
 	@classmethod
 	def get_valid(cls):
@@ -42,7 +42,7 @@ class Attribute(Enum):
 		return ret
 
 class Group(Enum):
-	_init_ = 'value tag displayname'
+	_init_ = 'value tag display_name'
 	
 	Muse        = 1, 'muse',       'µ\'s'
 	Aqours      = 2, 'aqours',     'Aqours'
@@ -50,14 +50,14 @@ class Group(Enum):
 #	Liella      = 4, 'liella', 'Liella'
 	
 class Year(Enum):
-	_init_ = 'value displayname'
+	_init_ = 'value display_name'
 	
 	First  = 1, '1st year'
 	Second = 2, '2nd year'
 	Third  = 3, '3rd year'
 	
 class Subunit(Enum):
-	_init_ = 'value displayname'
+	_init_ = 'value display_name'
 	
 	Printemps    = 1,  "Printemps"
 	Lilywhite    = 2,  "lilywhite"
@@ -136,7 +136,7 @@ class Member(Enum):
 		return Enum.__getattribute__(self, attr)
 
 class Source(Enum):
-	_init_ = 'value displayname'
+	_init_ = 'value display_name'
 	
 	Unspecified = 1, 'Initial'
 	Event       = 2, 'Event'

@@ -46,6 +46,7 @@
 													data-card-title-idolized="{{ card.get_card_name(True) | e }}"
 													data-card-source="{{ card.source.displayname }}"
 													data-card-release-date="{{ card.release_date.strftime('%d %B %Y') }}"
+													data-card-event="{{ card.event_title or '' | e }}"
 													ng-mouseover="toggleTooltip($event, true)"
 													ng-mouseleave="toggleTooltip($event, false)">
 													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">

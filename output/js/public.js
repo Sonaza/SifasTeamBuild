@@ -182,6 +182,7 @@ app.config(function($routeProvider, $locationProvider)
 					
 					return 'pages/' + route.template;
 				},
+				reloadOnSearch: false,
 				redirectTo : function(route_params, location_path, location_params)
 				{
 					if (typeof route.template == "function")
@@ -756,6 +757,7 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 				'card-attribute', 'card-type',
 				'card-title-normal', 'card-title-idolized',
 				'card-source', 'card-release-date',
+				'card-event',
 			];
 			
 			$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
@@ -956,7 +958,7 @@ app.directive('cardTooltip', function($parse)
 	return {
 		restrict: 'A',
 		// templateUrl: 'tooltip.html',
-		template: '<div class="card-tooltip-inner" ng-class="\'idol-\' + data.member_id"><div class="member-info idol-bg-color-dark idol-bg-glow-border"><div class="name">[[ data.member_name]]</div><div class="card-info" ng-if="data.card_status==1"><span class="icon-32" ng-class="\'attribute-\' + data.card_attribute"></span><span class="icon-32" ng-class="\'type-\' + data.card_type"></span></div></div><table class="card-details" ng-if="data.card_status==1"><colgroup><col style="min-width: 10rem"><col></colgroup><tr class="card-title"><td colspan="2">&#12300;<span class="normal">[[ data.card_title_normal]]</span><span class="idolized">[[ data.card_title_idolized]]</span>&#12301;</td></tr><tr><th>Debuted</th><td>[[ data.card_source]]</td></tr><tr><th>Release Date (JP)</th><td>[[ data.card_release_date]]</td></tr></table><div class="card-details" ng-if="data.card_status==2"><b>[[ first_name]]</b> has yet to receive a card in this cycle.</div><div class="card-details" ng-if="data.card_status==3"><b>[[ first_name]]</b> did not receive a card in this cycle.</div></div>',
+		template: '<div class="card-tooltip-inner" ng-class="\'idol-\' + data.member_id"><div class="member-info idol-bg-color-dark idol-bg-glow-border"><div class="name">[[ data.member_name ]]</div><div class="card-info" ng-if="data.card_status == 1"><span class="icon-32" ng-class="\'attribute-\' + data.card_attribute"></span><span class="icon-32" ng-class="\'type-\' + data.card_type"></span></div></div><table class="card-details" ng-if="data.card_status == 1"><colgroup><col style="min-width: 10rem"><col></colgroup><tr class="card-title"><td colspan="2">&#12300;<span class="normal">[[ data.card_title_normal ]]</span><span class="idolized">[[ data.card_title_idolized ]]</span>&#12301;</td></tr><tr><th>Debuted</th><td>[[ data.card_source ]]</td></tr><tr ng-if="data.card_event"><th>Related Event</th><td>[[ data.card_event ]]</td></tr><tr><th>Release Date (JP)</th><td>[[ data.card_release_date ]]</td></tr></table><div class="card-details" ng-if="data.card_status == 2"><b>[[ first_name ]]</b> has yet to receive a card in this cycle.</div><div class="card-details" ng-if="data.card_status == 3"><b>[[ first_name ]]</b> did not receive a card in this cycle.</div></div>',
 		link: function (scope, element, attrs)
 		{
 			scope.$watch(attrs.cardTooltip, function(value)

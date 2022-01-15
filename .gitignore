@@ -3,6 +3,7 @@
 wanha/
 res/
 output/index.html
+history.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

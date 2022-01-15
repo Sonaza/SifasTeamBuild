@@ -82,6 +82,14 @@ class CardRotations():
 		with open(filepath, encoding="utf8") as f:
 			return f.read()
 		return f"<h1>Error: Failed to open {filepath}.</h1>"
+		
+	@staticmethod
+	def get_card_source_label(card):
+		if card.source == Source.Gacha:
+			if card.event_title != None:
+				return 'Event Gacha'
+			
+		return card.source.display_name
 	
 	def __init__(self):
 		self.parser = argparse.ArgumentParser(description='Make some card rotations.')
@@ -149,6 +157,8 @@ class CardRotations():
 			
 			# Systems stuff
 			'cache_buster'      : CardRotations.cache_buster,
+			
+			'get_card_source_label' : CardRotations.get_card_source_label,
 		})
 		
 		self.thumbnails = CardThumbnails(self.client, CardRotations.OutputDirectory)

@@ -27,7 +27,7 @@ class IdolBase():
 		self.subunit    = idol.subunit
 	
 	def __str__(self):
-		return f"{self.full_name}" #({self.group.displayname} / {self.year.displayname} / {self.subunit.displayname})"
+		return f"{self.full_name}" #({self.group.display_name} / {self.year.display_name} / {self.subunit.display_name})"
 	
 	def __repr__(self):
 		return f'IdolBase({self.member_id}, "{self.full_name}", {self.group}, {self.year}, {self.subunit})'
