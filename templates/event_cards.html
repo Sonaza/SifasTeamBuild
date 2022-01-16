@@ -1,15 +1,15 @@
 <h2>Event Cards</h2>
-<p>List of events, event runtimes, featured member and associated cards.</p>
+<p>List of events with the original event runtime (JP), featured member and associated cards. An estimated date of addition to SBL shop is also present for applicable events.</p>
 
-<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
+<p class="show-mobile show-narrow-1400"><b>Hint:</b> You can scroll the table horizontally if it doesn't fit on screen.</p>
 
 <div class="event-cards-group">
 	<div class="stats-table event-cards-table">
 		<div class="st-tr st-thead">
-			<div class="st-th st-cell-40">Event</div>
-			<div class="st-th st-cell-15">Featured</div>
-			<div class="st-th st-cell-22-5">Free Cards</div>
-			<div class="st-th st-cell-22-5">Gacha Cards</div>
+			<div class="st-th st-cell-event-title">Event</div>
+			<div class="st-th st-cell-event-featured">Featured</div>
+			<div class="st-th st-cell-event-cards">Free Cards</div>
+			<div class="st-th st-cell-event-cards">Gacha Cards</div>
 		</div>
 		
 		<div class="st-tbody reversable">
@@ -17,44 +17,50 @@
 				{% set event = event_data['event'] %}
 				{% set member = event_data['free'][0].member_id %}
 				<div class="st-tr">
-					<div class="st-td st-cell-40 event-details">
+					<div class="st-td st-cell-event-title event-details">
 						<div class="event-title">
-							<span class="event-title-label" title="{{ event['title'] | e }}">
-								<span>{{ event_id }}.</span> {{ event['title'] | e }}
+							<span class="event-title-label" ellipsis-bullshit title="{{ event['title'] | e }}">
+								<span>{{ loop.index }}.</span> {{ event['title'] | e }}
 							</span>
 							<span class="event-title-type">
 								({{ event['type'].name }})
 							</span>
 						</div>
 						<div class="event-runtime">
-							{# {{ event['start'] }} &mdash; {{ event['end'] }} #}
-							SBL {{ event_data['sbl'] }}
+							<span class="event-runtime-label">
+								{{ event['start'] }} &mdash; {{ event['end'] }}
+							</span>
+							{% if event_data['sbl']: %}
+								<span class="sbl-addition">
+									(SBL {{ event_data['sbl'] }})
+								</span>
+							{% endif %}
 						</div>
 					</div>
-					<div class="st-td st-cell-15 event-featured idol-identity idol-{{ member.value }}">
+					<div class="st-td st-cell-event-featured event-featured idol-identity idol-{{ member.value }}">
 						<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
 						<div class="idol-name">{{ member.first_name }}</div>
 					</div>
-					<div class="st-td st-cell-22-5 card-details">
+					<div class="st-td st-cell-event-cards card-details">
 						<div class="flex-wrapper">
 							{% for card in event_data['free']: %}
 								<div class="thumbnail">
 									<div class="thumbnail-wrapper">
 										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
-											<span class="source-indicator source-{{ card.source.value }}"></span>
+											<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 										</a>
 									</div>
 								</div>
 							{% endfor %}
 						</div>
 					</div>
-					<div class="st-td st-cell-22-5 card-details">
+					<div class="st-td st-cell-event-cards card-details">
 						<div class="flex-wrapper">
 							{% for card in event_data['gacha']: %}
 								<div class="thumbnail">
 									<div class="thumbnail-wrapper">
 										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
-											<span class="source-indicator source-{{ card.source.value }}"></span>
+											<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 										</a>
 									</div>
 								</div>

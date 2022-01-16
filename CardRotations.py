@@ -8,6 +8,7 @@ from glob import glob
 from operator import itemgetter
 from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
+from dateutil.relativedelta import relativedelta
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 import htmlmin, cssmin
@@ -466,10 +467,31 @@ class CardRotations():
 	def get_events_with_cards(self):
 		events = self.client.get_events_with_cards()
 		
-		sbl_counter = -1
-		for event_id in events.keys():
-			events[event_id]['sbl'] = max(1, sbl_counter)
-			sbl_counter += 1
+		# sbl_events = [{'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Secret Party!'}, {'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Your Models are Here!'}, {'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Odd Old Town Tour'}, {'title': 'SIFAS Big Live Show Round 1', 'event': 'Refresh with a Hike!'}, {'title': 'SIFAS Big Live Show Round 2', 'event': 'Invitation to a Wonderful Place!'}, {'title': 'SIFAS Big Live Show Round 3', 'event': 'All Aboard the School Idol Train!'}, {'title': 'SIFAS Big Live Show Round 4', 'event': 'Great Battle on the High Seas'}, {'title': 'SIFAS Big Live Show Round 5', 'event': 'Come Enjoy These Special Sweets'}, {'title': 'Mega Live Show!', 'event': 'Music Made Together'}, {'title': 'SIFAS Big Live Show Round 7', 'event': "Cryptid Catchin' Crusade!"}, {'title': 'SIFAS Big Live Show Round 8', 'event': 'Catch the Mischievous Wolf!'}, {'title': 'School Idol Festival Round 1!', 'event': 'Magical Time!'}, {'title': 'SIFAS Big Live Show Round 9', 'event': 'Cooking with Vegetables!'}, {'title': 'SIFAS Big Live Show Round 10', 'event': 'Ice Skating Youth'}, {'title': 'SIFAS Big Live Show Round 11', 'event': 'Hot Spring Rhapsody'}, {'title': 'SIFAS Big Live Show Round 12', 'event': 'Save the Ramen of Joy!'}, {'title': 'SIFAS Big Live Show Round 13', 'event': 'Three Princesses'}, {'title': 'SIFAS Big Live Show Round 14', 'event': 'Singing in the Rain with You'}, {'title': 'SIFAS Big Live Show Round 15', 'event': "Yohane and Hanayo's Whodunit Caper"}, {'title': 'SIFAS Big Live Show Round 16', 'event': "Rina's Creepy Haunted House"}, {'title': '2nd Anniversary SIFAS Big Live Show', 'event': 'Grab Victory in the Sports Battle!'}, {'title': 'SIFAS Big Live Show Round 17', 'event': 'Toy Store Panic'}, {'title': 'SIFAS Big Live Show Round 18', 'event': 'Rebel-ish Makeover'}, {'title': 'SIFAS Big Live Show Round 19', 'event': 'Enjoy the Taste of Fall!'}]
+		
+		sbl_reference_point = {
+			'event_id' : 24,
+			'date'     : datetime(2022, 1, 1),
+		}
+		today = datetime.today()
+		while sbl_reference_point['date'].month != today.month:
+			 if (sbl_reference_point['event_id'] + 1) not in events:
+			 	break
+			 	
+			 sbl_reference_point['event_id'] += 1
+			 sbl_reference_point['date'] += relativedelta(months=1)
+		
+		for event_id, data in events.items():
+			# strftime('%d %B %Y %H:%M %Z')
+			data['event']['start'] = data['event']['start'].strftime('%d %b %Y')
+			data['event']['end']   = data['event']['end'].strftime('%d %b %Y')
+			
+			if event_id <= sbl_reference_point['event_id']:
+				continue
+			
+			diff = event_id - sbl_reference_point['event_id']
+			estimated_addition = sbl_reference_point['date'] + relativedelta(months=diff)
+			data['sbl'] = estimated_addition.strftime('%b %Y')
 		
 		return events
 	

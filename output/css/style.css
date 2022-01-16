@@ -891,7 +891,11 @@ a:hover, a:active
 .source-highlight-gacha .source-indicator.source-6,
 .source-highlight-gacha .source-indicator.source-7,
 .source-highlight-limited .source-indicator.source-6,
-.source-highlight-limited .source-indicator.source-7
+.source-highlight-limited .source-indicator.source-7,
+
+.source-highlight-muse .source-indicator.group-1,
+.source-highlight-aqours .source-indicator.group-2,
+.source-highlight-nijigasaki .source-indicator.group-3
 {
 	background: transparent !important;
 }
@@ -1261,6 +1265,10 @@ body.stats-hide-empty-rows .stats-table .st-tr.empty-row
 .stats-table .st-cell-70    { width: 70%; }
 .stats-table .st-cell-75    { width: 75%; }
 
+.stats-table .st-cell-event-cards    { width: 224px; }
+.stats-table .st-cell-event-featured { width: 20%; }
+.stats-table .st-cell-event-title    { width: calc(80% - 448px) }
+
 .stats-table .st-tbody .st-tr .st-th,
 .stats-table .st-tbody .st-tr .st-td
 {
@@ -1504,6 +1512,7 @@ body.stats-hide-empty-rows .stats-table .st-tr.empty-row
 .event-cards-table .event-title
 {
 	white-space: nowrap;
+	overflow: hidden;
 }
 
 .event-cards-table .event-title > span
@@ -1531,12 +1540,35 @@ body.stats-hide-empty-rows .stats-table .st-tr.empty-row
 	color: #444;
 	font-weight: 400;
 	font-size: 10pt;
+	transition: all ease-out 100ms;
 }
 
 .event-cards-table .event-runtime
 {
+	display: flex;
+	flex-flow: row nowrap;
 	color: #444;
 	font-size: 10pt;
+	padding-top: 3px;
+}
+
+.event-cards-table .event-runtime > span.event-runtime-label
+{
+	width: 100%;
+}
+
+.event-cards-table .event-runtime > span.sbl-addition
+{
+	color: #638640;
+	white-space: nowrap;
+	font-size: 9pt;
+}
+
+.event-cards-table .st-tr:hover .event-title.text-overflowed > span.event-title-type
+/*, .event-cards-table .st-tr:hover .event-runtime > span.sbl-addition*/
+{
+	/*display: none;*/
+	margin-right: -200px;
 }
 
 .event-cards-table .event-featured

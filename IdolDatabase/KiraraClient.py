@@ -706,8 +706,8 @@ class KiraraClient():
 				events[event_id]['event'] = {
 					'title' : data['event_title'],
 					'type'  : EventType(data['event_type']),
-					'start' : datetime.fromisoformat(data['event_start']).strftime('%d %B %Y'), # strftime('%d %B %Y %H:%M %Z')
-					'end'   : datetime.fromisoformat(data['event_end']).strftime('%d %B %Y'),
+					'start' : datetime.fromisoformat(data['event_start']),
+					'end'   : datetime.fromisoformat(data['event_end']),
 				}
 			
 			card = KiraraIdol(self, data)
