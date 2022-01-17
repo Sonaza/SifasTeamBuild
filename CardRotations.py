@@ -146,6 +146,9 @@ class CardRotations():
 			'cmd_args'      : self.args,
 			
 			# Application related global enums
+			'Idols'     : Idols,
+			'Member'    : Member,
+			'Groups'    : Group,
 			'Attribute' : Attribute.get_valid(),
 			'Type'      : Type.get_valid(),
 			
@@ -205,7 +208,7 @@ class CardRotations():
 			cards_per_girl[idol.member_id][idol.type][idol.attribute].append(idol)
 			num_pages = max(num_pages, len(cards_per_girl[idol.member_id][idol.type][idol.attribute]))
 		
-		order = Idols.member_order[group]
+		order = Idols.member_order_by_group[group]
 		if group == Group.Nijigasaki:
 			order = [
 				Member.Rina,     Member.Kasumi,  Member.Shizuku, 
@@ -299,7 +302,7 @@ class CardRotations():
 				else:
 					print("WARNING! No set name could be determined for", rarity, group, "index", rotation_index)
 		
-			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order[group]), set_title ))
+			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order_by_group[group]), set_title ))
 			rotation_index += 1
 		
 		return rotations
@@ -357,7 +360,7 @@ class CardRotations():
 					else:
 						current_rotation[idol.member_id] = CardMissing()
 			
-			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order[group]), None ))
+			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order_by_group[group]), None ))
 			rotation_index += 1
 		
 		return rotations
@@ -396,7 +399,7 @@ class CardRotations():
 				stats[idol.member_id]['attributes'][idol.attribute] += 1
 				stats[idol.member_id]['types'][idol.type] += 1
 		
-		return self._sort_rotation(group, stats, Idols.member_order[group])
+		return self._sort_rotation(group, stats, Idols.member_order_by_group[group])
 	
 	def get_general_stats(self):
 		stats = {}
@@ -485,6 +488,14 @@ class CardRotations():
 			# strftime('%d %B %Y %H:%M %Z')
 			data['event']['start'] = data['event']['start'].strftime('%d %b %Y')
 			data['event']['end']   = data['event']['end'].strftime('%d %b %Y')
+			
+			data['idols'] = []
+			data['idols'].append(f"featured-idol-{data['free'][0].member_id.value}")
+			
+			for idol in data['free'] + data['gacha']:
+				data['idols'].append(f"has-idol-{idol.member_id.value}")
+			data['idols'] = ' '.join(data['idols'])
+			
 			
 			if event_id <= sbl_reference_point['event_id']:
 				continue

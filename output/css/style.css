@@ -464,10 +464,9 @@ a:hover, a:active
 	box-shadow: 0 0 1px #0008;
 }
 
-.source-selector
+select
 {
 	display: block;
-	width: 100%;
 	
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 700;
@@ -475,8 +474,6 @@ a:hover, a:active
 	
 	border: 1px solid #5E2BC7;
 	border-radius: 0.25rem;
-	
-	text-align: center;
 	
 	padding: .375rem 2.25rem .375rem .75rem;
 	margin: 0.25rem 0 0.4rem 0;
@@ -495,33 +492,52 @@ a:hover, a:active
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
+	
+	color: #5D2CC2;
 }
 
-.source-selector.changed
+#side-nav .settings select
+{
+	width: 100%;
+	text-align: center;
+}
+
+select.changed
 {
 	border: 1px solid #9562FF;
 	box-shadow: 0 0 2px 3px #fff6;
 }
 
-.source-selector:hover,
-.source-selector:focus
+select:hover,
+select:focus
 {
 	border: 1px solid #9562FF;
 	box-shadow: 0 0 0 3px #fff6;
 }
 
-.source-highlighting-inactive .source-selector
+.source-highlighting-inactive #side-nav .settings select
 {
 	color: #78669E;
 }
 
-.source-highlighting-active .source-selector
+.source-highlighting-active #side-nav .settings select
 {
 	color: #5D2CC2;
 }
 
-.source-selector option
+select optgroup
 {
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
+	color: #5D2CC2;
+	background: #E7DEFA;
+	text-align: center !important;
+	font-style: normal;
+}
+
+select option
+{
+	font-family: 'Montserrat', sans-serif;
 	font-weight: 700;
 	color: #222;
 }
@@ -1099,20 +1115,160 @@ a:hover, a:active
 
 /***********************************************/
 
-.stats-category .stats-settings
+.page-settings-bar
 {
-	max-width: 1000px;
 	margin: -0.3rem 0 0.5rem 0;
 	padding: 0.35rem;
 	display: flex;
-	flex-flow: row nowrap;
+	flex-flow: row wrap;
 	justify-content: left;
+	align-items: center;
 	background: #B294E555;
 	border-radius: 4px;
 	border: 1px solid #C4ADEC;
 }
 
-.stats-category .stats-settings .pill-button
+.page-settings-bar.stats-settings
+{
+	max-width: 1000px;
+}
+
+.page-settings-bar.event-card-settings
+{
+	max-width: 1100px;
+}
+
+.page-settings-bar.event-card-settings label
+{
+	display: inline-block;
+	
+	font-family: 'Montserrat';
+	font-weight: 700;
+	font-size: 10pt;
+	
+	padding: 0 0.5rem 0 0.75rem;
+	color: #491186;
+	
+	user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+    -o-user-select: none;
+}
+
+.page-settings-bar.event-card-settings label > span
+{
+	opacity: 0.5;
+}
+
+.page-settings-bar.event-card-settings select
+{
+	
+}
+.event-cards-table .filtering-active .st-tr.event-row
+{
+	display: none;
+}
+
+.event-cards-table .filtering-active.show-idol-8:not(.featured-only)    .has-idol-8   { display: flex; }
+.event-cards-table .filtering-active.show-idol-5:not(.featured-only)    .has-idol-5   { display: flex; }
+.event-cards-table .filtering-active.show-idol-6:not(.featured-only)    .has-idol-6   { display: flex; }
+.event-cards-table .filtering-active.show-idol-1:not(.featured-only)    .has-idol-1   { display: flex; }
+.event-cards-table .filtering-active.show-idol-3:not(.featured-only)    .has-idol-3   { display: flex; }
+.event-cards-table .filtering-active.show-idol-4:not(.featured-only)    .has-idol-4   { display: flex; }
+.event-cards-table .filtering-active.show-idol-7:not(.featured-only)    .has-idol-7   { display: flex; }
+.event-cards-table .filtering-active.show-idol-2:not(.featured-only)    .has-idol-2   { display: flex; }
+.event-cards-table .filtering-active.show-idol-9:not(.featured-only)    .has-idol-9   { display: flex; }
+.event-cards-table .filtering-active.show-idol-107:not(.featured-only)  .has-idol-107 { display: flex; }
+.event-cards-table .filtering-active.show-idol-106:not(.featured-only)  .has-idol-106 { display: flex; }
+.event-cards-table .filtering-active.show-idol-109:not(.featured-only)  .has-idol-109 { display: flex; }
+.event-cards-table .filtering-active.show-idol-101:not(.featured-only)  .has-idol-101 { display: flex; }
+.event-cards-table .filtering-active.show-idol-102:not(.featured-only)  .has-idol-102 { display: flex; }
+.event-cards-table .filtering-active.show-idol-105:not(.featured-only)  .has-idol-105 { display: flex; }
+.event-cards-table .filtering-active.show-idol-103:not(.featured-only)  .has-idol-103 { display: flex; }
+.event-cards-table .filtering-active.show-idol-104:not(.featured-only)  .has-idol-104 { display: flex; }
+.event-cards-table .filtering-active.show-idol-108:not(.featured-only)  .has-idol-108 { display: flex; }
+.event-cards-table .filtering-active.show-idol-209:not(.featured-only)  .has-idol-209 { display: flex; }
+.event-cards-table .filtering-active.show-idol-202:not(.featured-only)  .has-idol-202 { display: flex; }
+.event-cards-table .filtering-active.show-idol-203:not(.featured-only)  .has-idol-203 { display: flex; }
+.event-cards-table .filtering-active.show-idol-210:not(.featured-only)  .has-idol-210 { display: flex; }
+.event-cards-table .filtering-active.show-idol-201:not(.featured-only)  .has-idol-201 { display: flex; }
+.event-cards-table .filtering-active.show-idol-207:not(.featured-only)  .has-idol-207 { display: flex; }
+.event-cards-table .filtering-active.show-idol-205:not(.featured-only)  .has-idol-205 { display: flex; }
+.event-cards-table .filtering-active.show-idol-212:not(.featured-only)  .has-idol-212 { display: flex; }
+.event-cards-table .filtering-active.show-idol-208:not(.featured-only)  .has-idol-208 { display: flex; }
+.event-cards-table .filtering-active.show-idol-206:not(.featured-only)  .has-idol-206 { display: flex; }
+.event-cards-table .filtering-active.show-idol-204:not(.featured-only)  .has-idol-204 { display: flex; }
+.event-cards-table .filtering-active.show-idol-211:not(.featured-only)  .has-idol-211 { display: flex; }
+
+.event-cards-table .filtering-active.show-idol-8.featured-only    .featured-idol-8   { display: flex; }
+.event-cards-table .filtering-active.show-idol-5.featured-only    .featured-idol-5   { display: flex; }
+.event-cards-table .filtering-active.show-idol-6.featured-only    .featured-idol-6   { display: flex; }
+.event-cards-table .filtering-active.show-idol-1.featured-only    .featured-idol-1   { display: flex; }
+.event-cards-table .filtering-active.show-idol-3.featured-only    .featured-idol-3   { display: flex; }
+.event-cards-table .filtering-active.show-idol-4.featured-only    .featured-idol-4   { display: flex; }
+.event-cards-table .filtering-active.show-idol-7.featured-only    .featured-idol-7   { display: flex; }
+.event-cards-table .filtering-active.show-idol-2.featured-only    .featured-idol-2   { display: flex; }
+.event-cards-table .filtering-active.show-idol-9.featured-only    .featured-idol-9   { display: flex; }
+.event-cards-table .filtering-active.show-idol-107.featured-only  .featured-idol-107 { display: flex; }
+.event-cards-table .filtering-active.show-idol-106.featured-only  .featured-idol-106 { display: flex; }
+.event-cards-table .filtering-active.show-idol-109.featured-only  .featured-idol-109 { display: flex; }
+.event-cards-table .filtering-active.show-idol-101.featured-only  .featured-idol-101 { display: flex; }
+.event-cards-table .filtering-active.show-idol-102.featured-only  .featured-idol-102 { display: flex; }
+.event-cards-table .filtering-active.show-idol-105.featured-only  .featured-idol-105 { display: flex; }
+.event-cards-table .filtering-active.show-idol-103.featured-only  .featured-idol-103 { display: flex; }
+.event-cards-table .filtering-active.show-idol-104.featured-only  .featured-idol-104 { display: flex; }
+.event-cards-table .filtering-active.show-idol-108.featured-only  .featured-idol-108 { display: flex; }
+.event-cards-table .filtering-active.show-idol-209.featured-only  .featured-idol-209 { display: flex; }
+.event-cards-table .filtering-active.show-idol-202.featured-only  .featured-idol-202 { display: flex; }
+.event-cards-table .filtering-active.show-idol-203.featured-only  .featured-idol-203 { display: flex; }
+.event-cards-table .filtering-active.show-idol-210.featured-only  .featured-idol-210 { display: flex; }
+.event-cards-table .filtering-active.show-idol-201.featured-only  .featured-idol-201 { display: flex; }
+.event-cards-table .filtering-active.show-idol-207.featured-only  .featured-idol-207 { display: flex; }
+.event-cards-table .filtering-active.show-idol-205.featured-only  .featured-idol-205 { display: flex; }
+.event-cards-table .filtering-active.show-idol-212.featured-only  .featured-idol-212 { display: flex; }
+.event-cards-table .filtering-active.show-idol-208.featured-only  .featured-idol-208 { display: flex; }
+.event-cards-table .filtering-active.show-idol-206.featured-only  .featured-idol-206 { display: flex; }
+.event-cards-table .filtering-active.show-idol-204.featured-only  .featured-idol-204 { display: flex; }
+.event-cards-table .filtering-active.show-idol-211.featured-only  .featured-idol-211 { display: flex; }
+
+.event-cards-table .filtering-active.highlight .source-indicator
+{
+	background: #0008 !important;
+}
+
+.event-cards-table .filtering-active.highlight.show-idol-8  .source-indicator.idol-8 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-5  .source-indicator.idol-5 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-6  .source-indicator.idol-6 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-1  .source-indicator.idol-1 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-3  .source-indicator.idol-3 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-4  .source-indicator.idol-4 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-7  .source-indicator.idol-7 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-2  .source-indicator.idol-2 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-9  .source-indicator.idol-9 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-107  .source-indicator.idol-107 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-106  .source-indicator.idol-106 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-109  .source-indicator.idol-109 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-101  .source-indicator.idol-101 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-102  .source-indicator.idol-102 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-105  .source-indicator.idol-105 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-103  .source-indicator.idol-103 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-104  .source-indicator.idol-104 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-108  .source-indicator.idol-108 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-209  .source-indicator.idol-209 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-202  .source-indicator.idol-202 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-203  .source-indicator.idol-203 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-210  .source-indicator.idol-210 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-201  .source-indicator.idol-201 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-207  .source-indicator.idol-207 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-205  .source-indicator.idol-205 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-212  .source-indicator.idol-212 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-208  .source-indicator.idol-208 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-206  .source-indicator.idol-206 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-204  .source-indicator.idol-204 { background: transparent !important; }
+.event-cards-table .filtering-active.highlight.show-idol-211  .source-indicator.idol-211 { background: transparent !important; }
+
+.page-settings-bar .pill-button
 {
 	margin: 0 0.5rem 0 0;
 	padding: 0.45rem 0.65rem;
@@ -1120,19 +1276,19 @@ a:hover, a:active
 	border: 1px solid transparent;
 }
 
-.stats-category .stats-settings .pill-button:hover
+.page-settings-bar .pill-button:hover
 {
 	border-radius: 3px;
 	background: #fff5;
 	border: 1px solid #B294E5aa;
 }
 
-.stats-category .stats-settings .pill-button .inner
+.page-settings-bar .pill-button .inner
 {
 	margin-bottom: 0;
 }
 
-.stats-category .stats-settings .pill-button .label > span
+.page-settings-bar .pill-button .label > span
 {
 	opacity: 0.5;
 }
@@ -1264,6 +1420,11 @@ body.stats-hide-empty-rows .stats-table .st-tr.empty-row
 .stats-table .st-cell-65    { width: 65%; }
 .stats-table .st-cell-70    { width: 70%; }
 .stats-table .st-cell-75    { width: 75%; }
+.stats-table .st-cell-80    { width: 80%; }
+.stats-table .st-cell-85    { width: 85%; }
+.stats-table .st-cell-90    { width: 90%; }
+.stats-table .st-cell-95    { width: 95%; }
+.stats-table .st-cell-100   { width: 100%; }
 
 .stats-table .st-cell-event-cards    { width: 224px; }
 .stats-table .st-cell-event-featured { width: 20%; }
@@ -1275,12 +1436,12 @@ body.stats-hide-empty-rows .stats-table .st-tr.empty-row
 	transition: background linear 50ms;
 }
 
-.stats-table .st-tbody .st-tr:nth-child(2n+1)
+.stats-table .st-tbody .st-tr:nth-child(odd)
 {
 	background: #f8f8f866;
 }
 
-.stats-table .st-tbody .st-tr:nth-child(2n)
+.stats-table .st-tbody .st-tr:nth-child(even)
 {
 	background: #ddd6;
 }

@@ -82,7 +82,7 @@ class Idols():
 	by_group      = defaultdict(list)
 	by_subunit    = defaultdict(list)
 	
-	member_order = {
+	member_order_by_group = {
 		Group.Muse : [
 			Member.Hanayo, Member.Rin,    Member.Maki,
 			Member.Honoka, Member.Kotori, Member.Umi,
@@ -101,9 +101,12 @@ class Idols():
 			Member.Emma,  Member.Kanata,  Member.Karin,   Member.Mia, 
 		],
 	}
+	member_order = []
 	
 	@staticmethod
 	def initialize():
+		Idols.member_order = sum([Idols.member_order_by_group[group] for group in Group], [])
+		
 		members = [key for key in dir(Idols) if isinstance(getattr(Idols, key), IdolBase)]
 		for key in members:
 			idol = getattr(Idols, key)
@@ -118,5 +121,20 @@ class Idols():
 			Idols.by_year[idol.year].append(idol)
 			Idols.by_group[idol.group].append(idol)
 			Idols.by_subunit[idol.subunit].append(idol)
+		
+		def sort(unsorted, order):
+			output = []
+			
+			unsorted = dict((x.member_id, x) for x in unsorted)
+			for ordered_member_id in order:
+				if ordered_member_id in unsorted:
+					output.append(unsorted[ordered_member_id])
+			
+			return output
+		
+		for key, data in Idols.by_year.items():    Idols.by_year[key]    = sort(Idols.by_year[key], Idols.member_order)
+		for key, data in Idols.by_group.items():   Idols.by_group[key]   = sort(Idols.by_group[key], Idols.member_order)
+		for key, data in Idols.by_subunit.items(): Idols.by_subunit[key] = sort(Idols.by_subunit[key], Idols.member_order)
+		
 
 Idols.initialize()

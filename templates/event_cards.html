@@ -3,10 +3,37 @@
 	List of events with the original event runtime (JP), featured member and associated cards.
 </p>
 <p>
-	An estimated date of addition to SBL shop is also present for applicable events (assumes addition rate of one event per SBL round).
+	An estimated date of addition to SBL shop is also present for applicable events (assumes rate of one event added per SBL round).
 </p>
 
 <p class="show-mobile show-narrow-1400"><b>Hint:</b> You can scroll the table horizontally if it doesn't fit on screen.</p>
+
+<div class="page-settings-bar event-card-settings">
+	<label for="filter-event-cards">
+		Filter Events <span>(E)</span>
+	</label>
+	<select id="filter-event-cards" ng-model="filter_settings.filter">
+		<option ng-value="-1">&mdash; Show All &mdash;</option>
+		{# <optgroup label="Groups">
+			{% for group in Groups %}
+				<option ng-value="['group', group.value]">{{ group.display_name }}</option>
+			{% endfor %}
+		</optgroup> #}
+		{% for group in Groups %}
+			<optgroup label="{{ group.display_name }}">
+				{% for idol in Idols.by_group[group] %}
+					<option ng-value="{{ idol.member_id.value }}">{{ idol.member_id.full_name }}</option>
+				{% endfor %}
+			</optgroup>
+		{% endfor %}
+	</select>
+	<div pill-button model="filter_settings.featured_only" keybind="F">
+		Apply filter to featured member
+	</div>
+	<div pill-button model="filter_settings.highlight" keybind="H">
+		Highlight selected member
+	</div>
+</div>
 
 <div class="event-cards-group">
 	<div class="stats-table event-cards-table">
@@ -17,11 +44,11 @@
 			<div class="st-th st-cell-event-cards">Gacha Cards</div>
 		</div>
 		
-		<div class="st-tbody reversable">
+		<div class="st-tbody reversable" id="galaxy-brain" ng-class="filterEventsClass()">
 			{% for event_id, event_data in events_with_cards.items() %}
 				{% set event = event_data['event'] %}
 				{% set member = event_data['free'][0].member_id %}
-				<div class="st-tr">
+				<div class="st-tr event-row {{ event_data['idols'] }}">
 					<div class="st-td st-cell-event-title event-details">
 						<div class="event-title">
 							<span class="event-title-label" ellipsis-bullshit title="{{ event['title'] | e }}">
@@ -52,7 +79,7 @@
 								<div class="thumbnail">
 									<div class="thumbnail-wrapper">
 										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
-											<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+											<span class="source-indicator idol-{{ card.member_id.value }} source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 										</a>
 									</div>
 								</div>
@@ -65,7 +92,7 @@
 								<div class="thumbnail">
 									<div class="thumbnail-wrapper">
 										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
-											<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+											<span class="source-indicator idol-{{ card.member_id.value }} source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 										</a>
 									</div>
 								</div>

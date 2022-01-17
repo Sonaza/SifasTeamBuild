@@ -120,7 +120,7 @@ const routes = [
 	{
 		title       : 'Event Cards',
 		path        : '/event_cards',
-		controller  : 'MainController',
+		controller  : 'EventCardsController',
 		template    : 'event_cards.html',
 		exact_match : true,
 	},
@@ -350,7 +350,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		//////////////////////////////////////////////////
 		
 		$scope.highlight_options = highlight_options;
-		$scope.active_settings = () =>
+		$scope.activeSettingsClass = () =>
 		{
 			let output = [];
 			
@@ -616,21 +616,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 						$rootScope.settings.use_idolized_thumbnails = true;
 						$rootScope.settings.order_reversed          = false;
 						$rootScope.settings.highlight_source        = '0';
-						return;
-					}
-					
-					if ($event.keyCode == 67) // C-key
-					{
-						$event.preventDefault();
-						$rootScope.settings.collapsed	     = !$rootScope.settings.collapsed;
-						return;
-					}
-					
-					if ($event.keyCode == 72) // H-key
-					{
-						$event.preventDefault();
-						$rootScope.settings.hide_empty_rows  = !$rootScope.settings.hide_empty_rows;
-						return;
+						// return;
 					}
 				}
 			}
@@ -726,15 +712,150 @@ app.directive('ellipsisBullshit', function($window)
 	}
 })
 
-app.controller('MainController', function($rootScope, $scope, $route, $routeParams, $location)
+app.controller('EventCardsController', function($rootScope, $scope, $route, $routeParams, $location)
 	{
 		$scope.loading = true;
 		
-		$scope.isEllipsisActive = (e) =>
+		if ($routeParams.page === undefined)
 		{
-			console.log("isEllipsisActive", e);
-			return (e.offsetWidth < e.scrollWidth);
+			window.scrollTo(0, 0);
 		}
+		
+		$scope.member_order = [
+			{ id: -1,  name: "— Show All —",      group: undefined },
+			{ id: 8,   name: "Hanayo Koizumi",    group: "µ's" },
+			{ id: 5,   name: "Rin Hoshizora",     group: "µ's" },
+			{ id: 6,   name: "Maki Nishikino",    group: "µ's" },
+			{ id: 1,   name: "Honoka Kousaka",    group: "µ's" },
+			{ id: 3,   name: "Kotori Minami",     group: "µ's" },
+			{ id: 4,   name: "Umi Sonoda",        group: "µ's" },
+			{ id: 7,   name: "Nozomi Toujou",     group: "µ's" },
+			{ id: 2,   name: "Eli Ayase",         group: "µ's" },
+			{ id: 9,   name: "Nico Yazawa",       group: "µ's" },
+			{ id: 107, name: "Hanamaru Kunikida", group: "Aqours" },
+			{ id: 106, name: "Yoshiko Tsushima",  group: "Aqours" },
+			{ id: 109, name: "Ruby Kurosawa",     group: "Aqours" },
+			{ id: 101, name: "Chika Takami",      group: "Aqours" },
+			{ id: 102, name: "Riko Sakurauchi",   group: "Aqours" },
+			{ id: 105, name: "You Watanabe",      group: "Aqours" },
+			{ id: 103, name: "Kanan Matsuura",    group: "Aqours" },
+			{ id: 104, name: "Dia Kurosawa",      group: "Aqours" },
+			{ id: 108, name: "Mari Ohara",        group: "Aqours" },
+			{ id: 209, name: "Rina Tennouji",     group: "Nijigasaki" },
+			{ id: 202, name: "Kasumi Nakasu",     group: "Nijigasaki" },
+			{ id: 203, name: "Shizuku Ousaka",    group: "Nijigasaki" },
+			{ id: 210, name: "Shioriko Mifune",   group: "Nijigasaki" },
+			{ id: 201, name: "Ayumu Uehara",      group: "Nijigasaki" },
+			{ id: 207, name: "Setsuna Yuuki",     group: "Nijigasaki" },
+			{ id: 205, name: "Ai Miyashita",      group: "Nijigasaki" },
+			{ id: 212, name: "Lanzhu Zhong",      group: "Nijigasaki" },
+			{ id: 208, name: "Emma Verde",        group: "Nijigasaki" },
+			{ id: 206, name: "Kanata Konoe",      group: "Nijigasaki" },
+			{ id: 204, name: "Karin Asaka",       group: "Nijigasaki" },
+			{ id: 211, name: "Mia Taylor",        group: "Nijigasaki" },
+		];
+		
+		$scope.filter_index = 0;
+		$scope.filter_index_max = $scope.member_order.length - 1;
+		
+		$scope.filter_settings = {
+			filter        : -1,
+			highlight     : false,
+			featured_only : false,
+		};
+		
+		$scope.filterEventsClass = (s) =>
+		{
+			let output = [];
+			
+			if ($scope.filter_settings.highlight !== false)
+			{
+				output.push('highlight');
+			}
+			
+			if ($scope.filter_settings.filter != -1)
+			{
+				output.push('filtering-active');
+				output.push('show-idol-' + $scope.filter_settings.filter);
+				
+				if ($scope.filter_settings.featured_only)
+				{
+					output.push('featured-only');
+				}
+			}
+			
+			return output.join(' ');
+		}
+		
+		$scope.$watch('filter_settings', function(a, b)
+		{
+			for (let i = 0; i < $scope.member_order.length; i++)
+			{
+				if ($scope.member_order[i] == $scope.filter_settings.filter)
+				{
+					$scope.filter_index = i;
+					break;
+				}
+			}
+		}, true);
+		
+		$scope.$on('keydown', (_, e) =>
+		{
+			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
+			
+			document.querySelector('#filter-event-cards').blur();
+			
+			if (e.keyCode == 69) // E-key
+			{
+				$scope.filter_index += (e.shiftKey ? -1 : 1);
+				if ($scope.filter_index < 0)
+				{
+					$scope.filter_index = $scope.filter_index_max;
+				}
+				else if ($scope.filter_index > $scope.filter_index_max)
+				{
+					$scope.filter_index = 0;
+				}
+				
+				$scope.filter_settings.filter = $scope.member_order[$scope.filter_index].id;
+				return;
+			}
+			
+			if (!e.shiftKey)
+			{
+				if (e.keyCode == 70) // F-key
+				{
+					e.preventDefault();
+					$scope.filter_settings.featured_only = !$scope.filter_settings.featured_only;
+					return;
+				}
+				
+				if (e.keyCode == 72) // H-key
+				{
+					e.preventDefault();
+					$scope.filter_settings.highlight = !$scope.filter_settings.highlight;
+					return;
+				}
+				
+				if (e.keyCode == 82) // R-key
+				{
+					$scope.filter_settings.filter        = -1;
+					$scope.filter_settings.highlight     = false;
+					$scope.filter_settings.featured_only = false;
+					return;
+				}
+			}
+		});
+		
+		$rootScope.$broadcast('update-title');
+		
+		$scope.loading = false;
+	}
+);
+
+app.controller('MainController', function($rootScope, $scope, $route, $routeParams, $location)
+	{
+		$scope.loading = true;
 		
 		if ($routeParams.page === undefined)
 		{
@@ -927,6 +1048,18 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 					// $scope.$apply();
 					return;
 				}
+			}
+			
+			if (e.keyCode == 67) // C-key
+			{
+				e.preventDefault();
+				$rootScope.settings.collapsed	     = !$rootScope.settings.collapsed;
+			}
+			
+			if (e.keyCode == 72) // H-key
+			{
+				e.preventDefault();
+				$rootScope.settings.hide_empty_rows  = !$rootScope.settings.hide_empty_rows;
 			}
 		});
 		
