@@ -21,6 +21,7 @@ body
 	font-weight: 400;
 	font-size: 13pt;
 	background: #1C0943;
+	overflow-y: scroll;
 }
 
 h1, h2, h3, h4, h5, h6
