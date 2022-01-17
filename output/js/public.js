@@ -712,6 +712,69 @@ app.directive('ellipsisBullshit', function($window)
 	}
 })
 
+let toggleTooltip = function($scope, $event, visible)
+{
+	$scope.display_tooltip = visible;
+	let tooltip = document.querySelector("#card-tooltip");
+	if (!visible)
+	{
+		tooltip.style.visibility = 'hidden';
+		tooltip.style.top = '-999px';
+		tooltip.style.left = '-999px';
+		tooltip.style.right = 'auto';
+		return;
+	}
+	
+	tooltip.style.visibility = 'visible';
+	
+	let e = $event.target.closest('.tooltip-data');
+	
+	const keys = [
+		'member-id', 'member-name',
+		'card-status',
+		'card-attribute', 'card-type',
+		'card-title-normal', 'card-title-idolized',
+		'card-source', 'card-release-date',
+		'card-event',
+	];
+	
+	$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
+		return {
+			[key.replace(/-/g, '_')] : e.getAttribute('data-' + key)
+		}
+	}));
+	if (!$scope.tooltip_data.card_status)
+		$scope.tooltip_data.card_status = 1;
+	
+	let rect = e.getBoundingClientRect();
+	
+	const doc = document.documentElement;
+	const view_width = doc.clientWidth;
+	const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+	
+	const flipAnchor = (rect.x > view_width * 0.66);
+	
+	const offset = ($scope.tooltip_data.card_status == 1 ? 
+		{x: 15, y: -16} :
+		{x: 15, y: -4}
+	);
+	
+	if (flipAnchor)
+	{
+		tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
+		
+		tooltip.style.right = (view_width - rect.left + offset.x) + 'px';
+		tooltip.style.left = 'auto';
+	}
+	else
+	{
+		tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
+		
+		tooltip.style.left = (rect.right + offset.x) + 'px';
+		tooltip.style.right = 'auto';
+	}
+}
+
 app.controller('EventCardsController', function($rootScope, $scope, $route, $routeParams, $location)
 	{
 		$scope.loading = true;
@@ -847,6 +910,8 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			}
 		});
 		
+		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
+		
 		$rootScope.$broadcast('update-title');
 		
 		$scope.loading = false;
@@ -909,68 +974,7 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 			}
 		});
 		
-		$scope.toggleTooltip = function($event, show)
-		{
-			$scope.display_tooltip = show;
-			let tooltip = document.querySelector("#card-tooltip");
-			if (!show)
-			{
-				tooltip.style.visibility = 'hidden';
-				tooltip.style.top = '-999px';
-				tooltip.style.left = '-999px';
-				tooltip.style.right = 'auto';
-				return;
-			}
-			
-			tooltip.style.visibility = 'visible';
-			
-			let e = $event.target.closest('.tooltip-data');
-			
-			const keys = [
-				'member-id', 'member-name',
-				'card-status',
-				'card-attribute', 'card-type',
-				'card-title-normal', 'card-title-idolized',
-				'card-source', 'card-release-date',
-				'card-event',
-			];
-			
-			$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
-				return {
-					[key.replace(/-/g, '_')] : e.getAttribute('data-' + key)
-				}
-			}));
-			if (!$scope.tooltip_data.card_status)
-				$scope.tooltip_data.card_status = 1;
-			
-			let rect = e.getBoundingClientRect();
-			
-			const doc = document.documentElement;
-			const view_width = doc.clientWidth;
-			const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-			
-			const flipAnchor = (rect.x > view_width * 0.66);
-			
-			const offset = ($scope.tooltip_data.card_status == 1 ? 
-				{x: 15, y: -16} :
-				{x: 15, y: -4}
-			);
-			
-			if (flipAnchor)
-			{
-				tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
-				
-				tooltip.style.right = (view_width - rect.left + offset.x) + 'px';
-				tooltip.style.left = 'auto';
-			}
-			else
-			{
-				tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
-				
-				tooltip.style.left = (rect.right + offset.x) + 'px';
-				tooltip.style.right = 'auto';
-			}
-		}
+		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
 		
 		let page_subtitle = "Page " + (parseInt($scope.active_page) + 1);
 		$rootScope.$broadcast('update-title', page_subtitle);
