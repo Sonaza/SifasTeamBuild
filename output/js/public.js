@@ -787,17 +787,17 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			return output.join(' ');
 		}
 		
-		$scope.$watch('filter_settings', function(a, b)
+		$scope.$watch('filter_settings.filter', function(a, b)
 		{
 			for (let i = 0; i < $scope.member_order.length; i++)
 			{
-				if ($scope.member_order[i] == $scope.filter_settings.filter)
+				if ($scope.member_order[i].id == $scope.filter_settings.filter)
 				{
 					$scope.filter_index = i;
 					break;
 				}
 			}
-		}, true);
+		});
 		
 		$scope.$on('keydown', (_, e) =>
 		{
