@@ -1252,6 +1252,12 @@ select option
 	background: #0008 !important;
 }
 
+.event-cards-table .filtering-active.highlight :hover > .source-indicator
+{
+	background: transparent !important;
+	transition: none;
+}
+
 .event-cards-table .filtering-active.highlight.show-idol-8  .source-indicator.idol-8 { background: transparent !important; }
 .event-cards-table .filtering-active.highlight.show-idol-5  .source-indicator.idol-5 { background: transparent !important; }
 .event-cards-table .filtering-active.highlight.show-idol-6  .source-indicator.idol-6 { background: transparent !important; }
