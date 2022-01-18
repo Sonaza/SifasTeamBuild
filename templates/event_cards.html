@@ -44,7 +44,7 @@
 			<div class="st-th st-cell-event-cards">Gacha Cards</div>
 		</div>
 		
-		<div class="st-tbody reversable" id="galaxy-brain" ng-class="filterEventsClass()">
+		<div class="st-tbody reversable" ng-class="filterEventsClass()">
 			{% for event_id, event_data in events_with_cards.items() %}
 				{% set event = event_data['event'] %}
 				{% set member = event_data['free'][0].member_id %}
@@ -122,6 +122,13 @@
 								</div>
 							{% endfor %}
 						</div>
+					</div>
+				</div>
+			{% endfor %}
+			{% for member in zero_feature_members %}			
+				<div class="st-tr zero-event-row featured-idol-{{ member.value }}">
+					<div class="st-td st-cell-100">
+						{{ member.first_name }} has yet to be the featured member in an event
 					</div>
 				</div>
 			{% endfor %}

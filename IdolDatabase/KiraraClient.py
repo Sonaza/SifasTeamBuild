@@ -724,6 +724,20 @@ class KiraraClient():
 				raise KiraraClientException("An unexpected card source for event cards.")
 		
 		return events
+	
+	def get_event_features_per_member(self):
+		query = """SELECT
+		               members.id,
+		               COUNT(idols.member_id) AS "times_featured"
+		           FROM members
+		           LEFT JOIN idols ON idols.member_id = members.id AND idols.source = ? AND idols.rarity = ?
+		           LEFT JOIN event_cards ON idols.ordinal = event_cards.ordinal
+		           GROUP BY members.id
+		           ORDER BY members.id
+		        """
+		self.db.execute(query, self._get_enum_values([Source.Event, Rarity.UR]))
+		
+		return dict((Member(x['id']), x['times_featured']) for x in self.db.fetchall())
 		
 	# -------------------------------------------------------------------------------------------
 		

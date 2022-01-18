@@ -1167,9 +1167,22 @@ select option
 {
 	
 }
+
 .event-cards-table .filtering-active .st-tr.event-row
 {
 	display: none;
+}
+
+.event-cards-table .st-tr.zero-event-row
+{
+	display: none;
+	justify-content: center;
+	align-items: center;
+	font-family: 'Montserrat';
+	font-weight: 700;
+	font-size: 12pt;
+	text-align: center;
+	color: #491186;
 }
 
 .event-cards-table .filtering-active.show-idol-8:not(.featured-only)    .has-idol-8   { display: flex; }
