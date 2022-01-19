@@ -123,6 +123,7 @@ const routes = [
 		controller  : 'EventCardsController',
 		template    : 'event_cards.html',
 		exact_match : true,
+		// reloadOnSearch : true,
 	},
 	{
 		title       : 'SR Sets',
@@ -191,7 +192,7 @@ app.config(function($routeProvider, $locationProvider)
 					
 					return 'pages/' + route.template;
 				},
-				reloadOnSearch: false,
+				reloadOnSearch: route.reloadOnSearch || false,
 				redirectTo : function(route_params, location_path, location_params)
 				{
 					if (typeof route.template == "function")
@@ -404,7 +405,17 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		
 		$scope.update_search_params = () =>
 		{
-			$location.search({});
+			let allowed_keys = ['filter', 'filter_featured', 'filter_highlight'];
+			let search = $location.search();
+			for (let key in search)
+			{
+				if (allowed_keys.indexOf(key) < 0)
+				{
+					delete search[key];
+				}
+			}
+			$location.search(search);
+			
 			if ($rootScope.settings.highlight_source != '0')
 			{
 				$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]);
@@ -827,6 +838,42 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			featured_only : false,
 		};
 		
+		const url_options = $location.search();
+		if (url_options.filter !== undefined)
+		{
+			let filter_string = url_options.filter.toLowerCase().trim();
+			if (filter_string !== 'none')
+			{
+				for (let i = 0; i < $scope.member_order.length; i++)
+				{
+					if ($scope.member_order[i].id == -1)
+						continue;
+					
+					let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
+					console.log(filter_string, first_name)
+					if (first_name === filter_string)
+					{
+						$scope.filter_settings.filter = $scope.member_order[i].id;
+						break;
+					}
+				}
+			}
+		}
+		if (url_options.filter_featured !== undefined)
+		{
+			if (url_options.filter_featured == 'true' || url_options.filter_featured == '1')
+			{
+				$scope.filter_settings.featured_only = true;
+			}
+		}
+		if (url_options.filter_highlight !== undefined)
+		{
+			if (url_options.filter_highlight == 'true' ||  url_options.filter_highlight == '1')
+			{
+				$scope.filter_settings.highlight = true;
+			}
+		}
+		
 		$scope.filterEventsClass = (s) =>
 		{
 			let output = [];
@@ -850,6 +897,29 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			return output.join(' ');
 		}
 		
+		$scope.$watch('filter_settings', function(a, b)
+		{
+			console.debug("ASD", $scope.filter_settings);
+			
+			if ($scope.filter_settings.featured_only)
+			{
+				$location.search('filter_featured', 'true');
+			}
+			else
+			{
+				$location.search('filter_featured', undefined);
+			}
+			
+			if ($scope.filter_settings.highlight)
+			{
+				$location.search('filter_highlight', 'true');
+			}
+			else
+			{
+				$location.search('filter_highlight', undefined);
+			}
+		}, true)
+		
 		$scope.$watch('filter_settings.filter', function(a, b)
 		{
 			for (let i = 0; i < $scope.member_order.length; i++)
@@ -857,6 +927,17 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 				if ($scope.member_order[i].id == $scope.filter_settings.filter)
 				{
 					$scope.filter_index = i;
+					
+					if ($scope.member_order[i].id != -1)
+					{
+						let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
+						$location.search('filter', first_name);
+					}
+					else
+					{
+						$location.search('filter', undefined);
+					}
+					
 					break;
 				}
 			}

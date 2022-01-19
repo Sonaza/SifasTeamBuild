@@ -1464,7 +1464,7 @@ body.stats-hide-empty-rows .stats-table .st-tr.empty-row
 
 .stats-table .st-tbody .st-tr:nth-child(even)
 {
-	background: #ddd6;
+	background: #e4e4e466;
 }
 
 .stats-table .st-tbody .st-tr:hover
