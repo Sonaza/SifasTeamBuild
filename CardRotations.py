@@ -316,8 +316,8 @@ class CardRotations():
 			},
 			Source.Festival : {
 				Member.Shioriko : 0,
-				Member.Lanzhu   : 0,
-				Member.Mia      : 0,
+				Member.Lanzhu   : 1,
+				Member.Mia      : 1,
 			},
 			Source.Party : {
 				Member.Shioriko : 0,

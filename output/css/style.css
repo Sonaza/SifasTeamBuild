@@ -1165,7 +1165,7 @@ select option
 
 .page-settings-bar.event-card-settings select
 {
-	
+	margin-right: 0.25rem;
 }
 
 .event-cards-table .filtering-active .st-tr.event-row
