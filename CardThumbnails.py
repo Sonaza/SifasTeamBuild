@@ -24,13 +24,15 @@ class CardThumbnails():
 		return False
 				
 	def download_thumbnails(self):
+		print("Checking new thumbnails...")
+		
 		has_new_thumbnails = False
 		
 		cards = self.client.get_all_idols(with_json=True)
 		for card in cards:
 			normal_path = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_normal.png"
 			if not os.path.exists(normal_path):
-				print(normal_path, end='')
+				print("Downloading:", normal_path, end='')
 				if self._download_file(card.data["normal_appearance"]["thumbnail_asset_path"], normal_path):
 					print(" OK")
 					has_new_thumbnails = True
@@ -39,7 +41,7 @@ class CardThumbnails():
 			
 			idolized_path = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_idolized.png"
 			if not os.path.exists(idolized_path):
-				print(idolized_path, end='')
+				print("Downloading:", idolized_path, end='')
 				if self._download_file(card.data["idolized_appearance"]["thumbnail_asset_path"], idolized_path):
 					print(" OK")
 					has_new_thumbnails = True
@@ -85,7 +87,7 @@ class CardThumbnails():
 					atlas_normal.paste(missing_icon, (0, 0))
 					atlas_idolized.paste(missing_icon, (0, 0))
 					
-					for column_index, ordered_member_id in enumerate(Idols.member_order[group]):
+					for column_index, ordered_member_id in enumerate(Idols.member_order_by_group[group]):
 						for row_index, card in enumerate(cards_per_girl[ordered_member_id]):
 							target_coordinates = (thumbnail_size[0] * column_index, thumbnail_size[1] * (row_index + 1))
 							
