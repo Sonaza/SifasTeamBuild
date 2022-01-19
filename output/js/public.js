@@ -122,6 +122,7 @@ const routes = [
 		path        : '/event_cards',
 		controller  : 'EventCardsController',
 		template    : 'event_cards.html',
+		hasSubpages : true,
 		exact_match : true,
 		// reloadOnSearch : true,
 	},
@@ -414,14 +415,14 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 					delete search[key];
 				}
 			}
-			$location.search(search);
+			$location.search(search).replace();
 			
 			if ($rootScope.settings.highlight_source != '0')
 			{
-				$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]);
+				$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]).replace();
 			}
-			// $location.search('idolized', $rootScope.settings.use_idolized_thumbnails ? 'true' : 'false');
-			// $location.search('reverse', $rootScope.settings.order_reversed ? 'true' : 'false');
+			// $location.search('idolized', $rootScope.settings.use_idolized_thumbnails ? 'true' : 'false').replace();
+			// $location.search('reverse', $rootScope.settings.order_reversed ? 'true' : 'false').replace();
 		}
 		
 		$scope.$watch('$root.settings', function(bs, settings)
@@ -675,7 +676,7 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 					
 					if ($scope.isActive(basepath, route['exact_match']))
 					{
-						if (route.hasSubpages)
+						if (route.hasSubpages && sub_title !== undefined)
 						{
 							$rootScope.title = route['title'] + " / " + sub_title + " &mdash; " + site_title;
 						}
@@ -903,20 +904,20 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			
 			if ($scope.filter_settings.featured_only)
 			{
-				$location.search('filter_featured', 'true');
+				$location.search('filter_featured', 'true').replace();
 			}
 			else
 			{
-				$location.search('filter_featured', undefined);
+				$location.search('filter_featured', undefined).replace();
 			}
 			
 			if ($scope.filter_settings.highlight)
 			{
-				$location.search('filter_highlight', 'true');
+				$location.search('filter_highlight', 'true').replace();
 			}
 			else
 			{
-				$location.search('filter_highlight', undefined);
+				$location.search('filter_highlight', undefined).replace();
 			}
 		}, true)
 		
@@ -931,17 +932,22 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 					if ($scope.member_order[i].id != -1)
 					{
 						let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
-						$location.search('filter', first_name);
+						$location.search('filter', first_name).replace();
+						
+						// $rootScope.$broadcast('update-title', $scope.member_order[i].name.split(' ')[0]);
 					}
 					else
 					{
-						$location.search('filter', undefined);
+						$location.search('filter', undefined).replace();
+						// $rootScope.$broadcast('update-title');
 					}
 					
 					break;
 				}
 			}
 		});
+		
+		$rootScope.$broadcast('update-title');
 		
 		$scope.$on('keydown', (_, e) =>
 		{
@@ -992,8 +998,6 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 		});
 		
 		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
-		
-		$rootScope.$broadcast('update-title');
 		
 		$scope.loading = false;
 	}
