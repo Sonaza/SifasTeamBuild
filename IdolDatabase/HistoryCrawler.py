@@ -6,6 +6,8 @@ from operator import itemgetter
 from datetime import datetime, timezone
 from collections import defaultdict
 
+from .Config import Config
+
 class HistoryCrawlerException(Exception): pass
 class HistoryCrawler:
 	endpoint_url_root = "https://allstars.kirara.ca{:s}"
@@ -109,7 +111,7 @@ class HistoryCrawler:
 		
 	def _request_page(self, url):
 		r = requests.get(url, headers={
-			'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:88.0) Gecko/20100101 Firefox/88.0',
+			'User-Agent' : Config.USER_AGENT,
 			# 'Referer'    : 'https://allstars.kirara.ca/en/history/',
 		})
 		

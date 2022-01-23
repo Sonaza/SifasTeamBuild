@@ -11,6 +11,7 @@ try:
 except Exception as e:
 	pass
 
+from .Config import Config
 from .Enums import *
 from .Idols import *
 from .HistoryCrawler import *
@@ -257,7 +258,9 @@ class KiraraClient():
 			
 			query_ordinals = ','.join([str(x) for x in ordinals])
 			url = KiraraClient.Endpoints['by_ordinal'].format(query_ordinals)
-			r = requests.get(url)
+			r = requests.get(url, headers={
+				'User-Agent' : Config.USER_AGENT,
+			})
 			print("Request result code:", r.status_code)
 			
 			time.sleep(0.5)
@@ -367,12 +370,11 @@ class KiraraClient():
 		print("Populating members...")
 		self._populate_members_and_metadata()
 		
-		print("Updating event database...")
-		self._cache_events()
-		
 		print("Updating idol database...")
 		self._cache_all_idols()
-		# exit()
+		
+		print("Updating event database...")
+		self._cache_events()
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -508,7 +510,9 @@ class KiraraClient():
 		
 	def _cache_all_idols(self):
 		url = KiraraClient.Endpoints['id_list']
-		r = requests.get(url)
+		r = requests.get(url, headers={
+			'User-Agent' : Config.USER_AGENT,
+		})
 		if r.status_code != 200:
 			raise KiraraClientException("Endpoint status not OK")
 		

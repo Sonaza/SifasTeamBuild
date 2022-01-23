@@ -592,9 +592,13 @@ class CardRotations():
 		# )
 		
 		now = datetime.now(timezone.utc)
-		self._render_and_save("main_layout.html", "index.html", {
+		self._render_and_save("main_layout.php", "content_index.php", {
 			'last_update'           : now.strftime('%d %B %Y %H:%M %Z'),
 			'last_update_timestamp' : now.isoformat(),
+		}, minify=False)
+		
+		self._render_and_save("crawler.html", "crawler.html", {
+			
 		}, minify=False)
 		
 		print("\nAll done!\n")

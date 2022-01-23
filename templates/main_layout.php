@@ -19,7 +19,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 	<base href="/">
 </head>
-<body ng-controller="BaseController" class="no-js" ng-class="[activeSettingsClass(), hiddenHeaderActive()]" ng-keydown="keydown($event)" tabindex="0" scroll="scroll($event, diff)">
+<body ng-controller="BaseController" class="no-js <?= $dark_mode_class; ?>" ng-class="[activeSettingsClass(), hiddenHeaderActive()]" ng-keydown="keydown($event)" tabindex="0" scroll="scroll($event, diff)">
 	<div id="header">
 		<div id="header-inner">
 			<div class="desktop-header">

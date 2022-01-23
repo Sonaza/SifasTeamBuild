@@ -2,7 +2,7 @@
 *.sqlite
 wanha/
 res/
-output/index.html
+output/content_index.php
 history.json
 
 # Byte-compiled / optimized / DLL files
