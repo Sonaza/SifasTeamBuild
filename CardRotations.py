@@ -169,6 +169,8 @@ class CardRotations():
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
 			self.thumbnails.make_atlas()
 		
+		self.rendered_pages = []
+		
 	def _sort_rotation(self, group, rotation, order):
 		output = []
 		for ordered_member_id in order:
@@ -196,6 +198,8 @@ class CardRotations():
 			f.close()
 		
 		print("Done")
+		
+		self.rendered_pages.append(output_filename)
 		return output_filename
 	
 	def get_attribute_type_array(self, group : Group):
@@ -514,85 +518,76 @@ class CardRotations():
 		return events, zero_feature_members
 	
 	def generate_pages(self):
-		files_to_delete = set([x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))])
+		self.rendered_pages = []
+		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		
 		idol_arrays = [(group, *self.get_attribute_type_array(group)) for group in Group]
 		for data in idol_arrays:
 			output_file = self._render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
 				'idol_arrays'        : [ data ],
 			}, minify=not self.args.dev)
-			files_to_delete.remove(output_file)
 		
 		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
-		output_file = self._render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
+		self._render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
 			'grouped_rotations'  : ur_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
 			'page_description'   : 'Rotations for all UR cards.',
 		}, minify=not self.args.dev)
-		files_to_delete.remove(output_file)
 		
 		festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
-		output_file = self._render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
+		self._render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
 			'grouped_rotations'  : festival_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Festival UR Rotations',
 			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
 		}, minify=not self.args.dev)
-		files_to_delete.remove(output_file)
 		
 		party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
-		output_file = self._render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
+		self._render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
 			'grouped_rotations'  : party_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Party UR Rotations',
 			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
 		}, minify=not self.args.dev)
-		files_to_delete.remove(output_file)
 		
 		event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
-		output_file = self._render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
+		self._render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
 			'grouped_rotations'  : event_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Event UR Rotations',
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
 		}, minify=not self.args.dev)
-		files_to_delete.remove(output_file)
 		
 		events_with_cards, zero_feature_members = self.get_events_with_cards()
-		output_file = self._render_and_save("event_cards.html", "pages/event_cards.html", {
+		self._render_and_save("event_cards.html", "pages/event_cards.html", {
 			'events_with_cards'    : events_with_cards,
 			'zero_feature_members' : zero_feature_members,
 		})
-		files_to_delete.remove(output_file)
 		
 		sr_sets = [(group, self.get_general_rotation(group, Rarity.SR)) for group in Group]
-		output_file = self._render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
+		self._render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
 			'grouped_rotations'  : sr_sets,
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
 			'page_description'   : 'Rotations for SR sets. SR release order seems highly variable (mainly the new girls not fitting in neat cycles) so this page may or may not break.',
 		})
-		files_to_delete.remove(output_file)
 		
 		general_stats = self.get_general_stats()
-		output_file = self._render_and_save("stats.html", "pages/stats.html", {
+		self._render_and_save("stats.html", "pages/stats.html", {
 			'category_tag'   : 'general',
 			'general_stats'  : general_stats,
 		}, minify=not self.args.dev)
-		files_to_delete.remove(output_file)
 		
 		card_stats, category_info = self.get_card_stats()
 		for category_tag in card_stats.keys():
-			output_file = self._render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
+			self._render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
 				'category_tag'   : category_tag,
 				'category_data'  : card_stats[category_tag],
 				'category_info'  : category_info[category_tag],
 			}, minify=not self.args.dev)
-			files_to_delete.remove(output_file)
 		
-		output_file = self._render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
-		files_to_delete.remove(output_file)
+		self._render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
 		# self._minify_css(
 		# 	[
@@ -615,7 +610,9 @@ class CardRotations():
 		}, minify=False)
 		
 		for file in files_to_delete:
-			print("Removing outdated file", file)
+			if file in self.rendered_pages: continue
+			
+			print(f"Removing outdated file  {file}")
 			os.remove(file)
 		
 		print("\nAll done!\n")
