@@ -1,13 +1,6 @@
-<IfModule mod_headers.c>
-	Header set Feature-Policy "vibrate 'none'; geolocation 'none'; microphone 'none' "
-	Header set Permissions-Policy "vibrate=(), geolocation=(), microphone=(), interest-cohort=()"
-	
-	Header set Expect-CT "max-age=0"
-</IfModule>
 
-<IfModule mod_headers.c>
-	Header set Access-Control-Allow-Origin "*"
-</IfModule>
+Options -MultiViews -Indexes
+FileETag None
 
 <IfModule mod_setenvif.c>
 	<IfModule mod_headers.c>
@@ -19,41 +12,36 @@
 </IfModule>
 
 <IfModule mod_headers.c>
+	Header set Access-Control-Allow-Origin "*"
+	
+	Header set Feature-Policy "vibrate 'none'; geolocation 'none'; microphone 'none' "
+	Header set Permissions-Policy "vibrate=(), geolocation=(), microphone=(), interest-cohort=()"
+	
+	Header set Expect-CT "max-age=0"
+	Header set X-UA-Compatible "IE=edge"
+	
+	
 	<FilesMatch "\.(eot|otf|tt[cf]|woff2?)$">
 		Header set Access-Control-Allow-Origin "*"
 	</FilesMatch>
-</IfModule>
-
-Options -MultiViews
-
-<IfModule mod_headers.c>
-	Header set X-UA-Compatible "IE=edge"
+	
 	<FilesMatch "\.(appcache|atom|bbaw|bmp|br|crx|css|cur|eot|f4[abpv]|flv|geojson|gif|gz|htc|ic[os]|jpe?g|m?js|json(ld)?|m4[av]|manifest|map|markdown|md|mp4|oex|og[agv]|opus|otf|pdf|png|rdf|rss|safariextz|svgz?|swf|topojson|tt[cf]|txt|vcard|vcf|vtt|wasm|webapp|web[mp]|webmanifest|woff2?|xloc|xml|xpi)$">
 		Header unset X-UA-Compatible
 	</FilesMatch>
-</IfModule>
-
-<IfModule mod_headers.c>
+	
 	Header set X-Content-Type-Options "nosniff"
-</IfModule>
-
-<IfModule mod_headers.c>
+	Header add X-Robots-Tag "noindex" 
+	
 	Header set Referrer-Policy "no-referrer-when-downgrade"
 	<FilesMatch "\.(appcache|atom|bbaw|bmp|br|crx|css|cur|eot|f4[abpv]|flv|geojson|gif|gz|htc|ic[os]|jpe?g|m?js|json(ld)?|m4[av]|manifest|map|markdown|md|mp4|oex|og[agv]|opus|otf|pdf|png|rdf|rss|safariextz|svgz?|swf|topojson|tt[cf]|txt|vcard|vcf|vtt|wasm|webapp|web[mp]|webmanifest|woff2?|xloc|xml|xpi)$">
 		Header unset Referrer-Policy
 	</FilesMatch>
-</IfModule>
-
-<IfModule mod_headers.c>
+	
 	Header unset X-Powered-By
+	Header unset ETag
+	
 	Header set X-Best-Girl "Nozomi"
 </IfModule>
-
-<IfModule mod_headers.c>
-	Header unset ETag
-</IfModule>
-
-FileETag None
 
 <IfModule mod_rewrite.c>
 	RewriteEngine On
@@ -189,3 +177,15 @@ FileETag None
 	ExpiresByType text/x-cross-domain-policy            "access plus 1 week"
 
 </IfModule>
+
+Redirect 302 /wordpress https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /wp https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /wp-admin https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /wp-login.php https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /wp-content https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /_ignition https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /admin https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /vendor https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /phpinfo https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /phpinfo.php https://www.youtube.com/watch?v=dQw4w9WgXcQ
+Redirect 302 /laravel https://www.youtube.com/watch?v=dQw4w9WgXcQ
