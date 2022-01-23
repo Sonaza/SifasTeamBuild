@@ -55,7 +55,7 @@ Redirect 301 /index.html /
 	RewriteRule ^(img/thumbnails)/(.+)\.([a-z0-9]{6})\.(bmp|css|cur|gif|ico|jpe?g|m?js|png|svgz?|webp|webmanifest)$ $1/$2.$4 [L]
 	
 	RewriteCond %{THE_REQUEST} ^GET.*index\.php [NC]
-	RewriteRule (.*?)index\.php/*(.*) /$1$2 [R=302,NE,L]
+	RewriteRule (.*?)index\.php/*(.*) /$1$2 [R=301,NE,L]
 </IfModule>
 
 <IfModule mod_authz_core.c>
