@@ -50,7 +50,7 @@ class AccessoryBase():
 class Accessory():
 	LevelIncrements = [0, 5, 10, 15, 20, 30]
 	
-	def __init__(self, accessory_type, attribute, rarity, accessory, limit_break, accessory_level, skill_level):
+	def __init__(self, accessory_type, effect_type, attribute, rarity, accessory, limit_break, accessory_level, skill_level):
 		assert limit_break >= 0 and limit_break <= 5
 		
 		if skill_level == None: skill_level = (rarity.value // 2 + limit_break)
@@ -61,6 +61,7 @@ class Accessory():
 		assert accessory_level >= 1 and accessory_level <= max_level
 		
 		self.type = accessory_type
+		self.effect_type = effect_type
 		self.attribute = attribute
 		
 		self.rarity = rarity
@@ -74,7 +75,13 @@ class Accessory():
 		s  = f"{self.type.name} ({self.rarity.name} {self.attribute.name}) (Level {self.accessory_level}/{self.get_max_accessory_level()})\n"
 		s += f"  Parameters      : Appeal {appeal} / Stamina {stamina} / Technique {technique}\n"
 		s += f"  Accessory Skill : {self.skill_level}/{self.get_max_skill_level()}\n"
-		s += f"  Skill Effect    : {self.get_skill_value():0.1f}%\n"
+		
+		if self.effect_type == AccessoryEffectType.Percentage:
+			s += f"  Skill Effect    : {self.get_skill_value():0.1f}%\n"
+			
+		elif self.effect_type == AccessoryEffectType.Absolute:
+			s += f"  Skill Effect    : {self.get_skill_value():0.1f}\n"
+			
 		return s
 	
 	def get_max_accessory_level(self):
@@ -121,7 +128,7 @@ class AccessoryFactory():
 		return self.accessories[rarity]
 
 	def get(self, attribute = Attribute.Unset, rarity = Rarity.UR, limit_break = 5, level = None, skill = None):
-		return Accessory(self.type, attribute, rarity, self.accessories[rarity], limit_break, level, skill)
+		return Accessory(self.type, self.effect_type, attribute, rarity, self.accessories[rarity], limit_break, level, skill)
 		
 class Accessories():
 	BaselineParameters = [
@@ -154,5 +161,6 @@ class Accessories():
 
 ## TEST CODE
 if __name__ == "__main__":
-	print(Accessories.Bracelet.get(limit_break=5, skill=1))
-	print(Accessories.Belt.get(Attribute.Cool, Rarity.UR, limit_break=0, skill=15))
+	# print(Accessories.Bracelet.get(limit_break=5, skill=1))
+	print(Accessories.Belt.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=15))
+	print(Accessories.Ribbon.get(Attribute.Cool, Rarity.UR, limit_break=0, skill=15))
