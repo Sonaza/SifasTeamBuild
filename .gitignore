@@ -5,7 +5,6 @@ res/
 
 history.json
 
-public/content_index.php
 public/crawler.html
 public/.well-known/
 views/content_index.php
