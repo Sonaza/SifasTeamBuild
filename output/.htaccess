@@ -48,6 +48,14 @@ Redirect 301 /index.html /
 	RewriteCond %{SCRIPT_FILENAME} -d [OR]
 	RewriteCond %{SCRIPT_FILENAME} -f
 	RewriteRule "(^|/)\." - [F]
+	
+	# Removes cache busting token from resource files
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteRule ^(css|js)/(.+)\.([a-z0-9]{6})\.(bmp|css|cur|gif|ico|jpe?g|m?js|png|svgz?|webp|webmanifest)$ $1/$2.$4 [L]
+	RewriteRule ^(img/thumbnails)/(.+)\.([a-z0-9]{6})\.(bmp|css|cur|gif|ico|jpe?g|m?js|png|svgz?|webp|webmanifest)$ $1/$2.$4 [L]
+	
+	RewriteCond %{THE_REQUEST} ^GET.*index\.php [NC]
+	RewriteRule (.*?)index\.php/*(.*) /$1$2 [R=302,NE,L]
 </IfModule>
 
 <IfModule mod_authz_core.c>
@@ -60,14 +68,6 @@ Redirect 301 /index.html /
 	<FilesMatch "\.(html?|txt|css|js|php|pl)$">
 		SetOutputFilter DEFLATE
 	</FilesMatch>
-</IfModule>
-
-# Removes cache busting token from resource files
-<IfModule mod_rewrite.c>
-	RewriteEngine On
-	RewriteCond %{REQUEST_FILENAME} !-f
-	RewriteRule ^(css|js)/(.+)\.([a-z0-9]{6})\.(bmp|css|cur|gif|ico|jpe?g|m?js|png|svgz?|webp|webmanifest)$ $1/$2.$4 [L]
-	RewriteRule ^(img/thumbnails)/(.+)\.([a-z0-9]{6})\.(bmp|css|cur|gif|ico|jpe?g|m?js|png|svgz?|webp|webmanifest)$ $1/$2.$4 [L]
 </IfModule>
 
 <IfModule mod_expires.c>

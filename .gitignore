@@ -3,7 +3,9 @@
 wanha/
 res/
 output/content_index.php
+output/crawler.html
 history.json
+.well-known/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
