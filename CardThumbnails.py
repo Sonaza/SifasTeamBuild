@@ -120,8 +120,9 @@ class CardThumbnails():
 			for group in Group:
 				groups.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_normal.{atlas_hash}.png') no-repeat; }}")
 				groups.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_idolized.{atlas_hash}.png') no-repeat; }}")
-				
-		with open("output/css/atlas.css", "w", encoding="utf8") as f:
+		
+		atlas_css = os.path.join(self.output_directory, "css/atlas.css")
+		with open(atlas_css, "w", encoding="utf8") as f:
 			print("Writing css... ")
 			
 			for line in groups:
