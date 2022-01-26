@@ -11,7 +11,8 @@ from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
-import htmlmin, cssmin
+import htmlmin
+import csscompressor
 
 class CardNonExtant(): pass
 class CardMissing(): pass
@@ -589,15 +590,16 @@ class CardRotations():
 		
 		self._render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
-		# self._minify_css(
-		# 	[
-		# 		"fonts.css",
-		# 		"atlas.css",
-		# 		"idols.css",
-		# 		"style.css",
-		# 	],
-		# 	"public.css"
-		# )
+		self._minify_css(
+			[
+				"fonts.css",
+				"atlas.css",
+				"idols.css",
+				"style.css",
+				"style-mobile.css",
+			],
+			"public.min.css"
+		)
 		
 		now = datetime.now(timezone.utc)
 		self._render_and_save("main_layout.php", "views/content_index.php", {
@@ -605,9 +607,7 @@ class CardRotations():
 			'last_update_timestamp' : now.isoformat(),
 		}, minify=False, output_basepath='')
 		
-		self._render_and_save("crawler.html", "crawler.html", {
-			
-		}, minify=False)
+		self._render_and_save("crawler.html", "crawler.html", {}, minify=False)
 		
 		for file in files_to_delete:
 			if file in self.rendered_pages: continue
@@ -618,19 +618,35 @@ class CardRotations():
 		print("\nAll done!\n")
 	
 	def _minify_css(self, source, destination):
-		code = ""
+		code = []
+		unminified_size = 0
+		minified_size = 0
 		
 		for file in source:
 			path = os.path.join(CardRotations.OutputDirectory, "css", file)
-			code += open(path, "r", encoding="utf8").read() + "\n"
+			
+			try:
+				unminified = open(path, "r", encoding="utf8").read()
+			except:
+				print("FAILED TO OPEN", path)
+				continue
+				
+			unminified_size += len(unminified)
+			
+			minified = csscompressor.compress(unminified, max_linelen=20480)
+			minified_size += len(minified)
+			
+			code.append((path, minified))
 		
-		minified = cssmin.cssmin(code)
-		
-		print(f"CSS Minify reduced size from {len(code) / 1024:.2f} KB to {len(minified) / 1024:.2f} KB. Yay!")
+		print(f"CSS Minify reduced size from {unminified_size / 1024:.2f} KB to {minified_size / 1024:.2f} KB. Yay!")
 		
 		output_path = os.path.join(CardRotations.OutputDirectory, "css", destination)
 		with open(output_path, "w", encoding="utf8") as f:
-			f.write(minified)
+			for source_path, minified in code:
+				f.write(f"/* {os.path.basename(source_path)} */\n")
+				f.write(minified)
+				f.write("\n")
+			
 			f.close()
 		
 
