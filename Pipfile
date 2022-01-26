@@ -12,8 +12,6 @@ python-dateutil = "==2.8.2"
 requests = "==2.25.1"
 Jinja2 = "==3.0.3"
 Pillow = "==8.1.2"
+backports-datetime-fromisoformat = "==1.0.0"
 
 [dev-packages]
-
-[requires]
-python_version = "3.7"
