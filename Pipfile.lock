@@ -1,10 +1,12 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "3572c509ae477e7f4a16d5c64585419395809350813f089bfcaf0b31d2c8358c"
+            "sha256": "5bf503955004357c6e7f176db92d9a25e80dae70a02fa3c856faa56756a08585"
         },
         "pipfile-spec": 6,
-        "requires": {},
+        "requires": {
+            "python_version": "3.7"
+        },
         "sources": [
             {
                 "name": "pypi",
@@ -22,13 +24,6 @@
             ],
             "index": "pypi",
             "version": "==3.1.5"
-        },
-        "backports-datetime-fromisoformat": {
-            "hashes": [
-                "sha256:9577a2a9486cd7383a5f58b23bb8e81cf0821dbbc0eb7c87d3fa198c1df40f5c"
-            ],
-            "index": "pypi",
-            "version": "==1.0.0"
         },
         "beautifulsoup4": {
             "hashes": [
@@ -218,7 +213,7 @@
                 "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926",
                 "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2'",
             "version": "==1.16.0"
         },
         "soupsieve": {
