@@ -250,8 +250,9 @@ class CardRotations():
 		set_title_overrides = {
 			Rarity.SR : {
 				Group.Nijigasaki : dict([
-					(0, "1st Nijigasaki Solo"),
-					(5, "3rd Nijigasaki Solo"),
+					(0,  "1st Nijigasaki Solo"),
+					(5,  "3rd Nijigasaki Solo"),
+					(10, "Rainbow Waltz"),
 				])
 			}
 		}
