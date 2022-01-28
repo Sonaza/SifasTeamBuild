@@ -1,6 +1,7 @@
 from IdolDatabase import *
 from CardThumbnails import CardThumbnails
 
+import platform
 import argparse
 import os
 import time
@@ -114,13 +115,15 @@ class CardRotations():
 			print("------ BUILDING IN DEV MODE ------")
 		else:
 			print("------ BUILDING IN PROD MODE ------")
-		print()
+		print("Python version", platform.python_version())
 		
 		try:
 			print("Current user id", os.getuid())
 		except:
 			pass
 		print("Current Working Directory", os.getcwd())
+		
+		print()
 		
 		self.client = KiraraClient()
 		self.client.update_database(forced=self.args.force)

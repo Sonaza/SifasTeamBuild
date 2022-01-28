@@ -10,7 +10,7 @@
 		{
 			"name": "Python Build Current File",
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "python -u \"$file\"",
+			"shell_cmd": "pipenv run python -u \"$file\"",
 
 			"env": {"PYTHONIOENCODING": "utf-8"},
 
@@ -20,7 +20,7 @@
 		{
 			"name": "Python Dev Build",
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "python -u \"$project_path\\CardRotations.py\" -dev",
+			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev",
 
 			"env": {"PYTHONIOENCODING": "utf-8"},
 
@@ -30,7 +30,7 @@
 		{
 			"name": "Python Dev Build Force Update",
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "python -u \"$project_path\\CardRotations.py\" -dev -f",
+			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -f",
 
 			"env": {"PYTHONIOENCODING": "utf-8"},
 
@@ -40,7 +40,7 @@
 		{
 			"name": "Python Dev Build Rebuild Atlas",
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "python -u \"$project_path\\CardRotations.py\" -dev -ra",
+			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -ra",
 
 			"env": {"PYTHONIOENCODING": "utf-8"},
 
