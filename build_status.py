@@ -39,10 +39,11 @@ print(f"Forced           : {status['forced']}")
 print()
 print(status['message'])
 
-status_file.seek(0)
-status_file.truncate()
-json.dump(status, status_file)
-status_file.close()
+if not already_handled:
+	status_file.seek(0)
+	status_file.truncate()
+	json.dump(status, status_file)
+	status_file.close()
 
 if status['success'] == True or already_handled or not status['auto']:
 	exit(0)
