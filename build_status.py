@@ -45,7 +45,7 @@ if not already_handled:
 	json.dump(status, status_file)
 	status_file.close()
 
-if status['success'] == True or already_handled or not status['auto']:
+if status['success'] == True: # or already_handled or not status['auto']:
 	exit(0)
 
 else:
