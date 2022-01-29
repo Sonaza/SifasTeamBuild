@@ -163,7 +163,11 @@ class HistoryCrawler:
 		
 		output = []
 		for event_en, event_jp in zip(events_per_locale["en"], events_per_locale["jp"]):
+			if event_en['title'] in known_events or event_jp['title'] in known_events:
+				continue
+			
 			if not all(x == y for x, y in zip(sorted(event_en['cards']), sorted(event_jp['cards']))):
+				# print(event_en, event_jp)
 				raise HistoryCrawlerException("Event cards do not match between the two locales!")
 			
 			event = {
