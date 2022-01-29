@@ -657,12 +657,25 @@ class CardRotations():
 ##################################
 
 if __name__ == "__main__":
+	buildstatus = open("build.status", "w")
+	
+	timestamp = datetime.now(timezone.utc).isoformat()
+	buildstatus.write(timestamp + "\n")
+	
 	cr = CardRotations()
 	
 	try:
 		cr.generate_pages()
+		buildstatus.write("success\n")
+		
 	except Exception as e:
-		print(e)
+		buildstatus.write("failed\n")
+		
+		import traceback
+		traceback.print_exc(file=buildstatus)
+		
 		raise e
+	
+	buildstatus.close()
 
 	print()

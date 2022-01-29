@@ -3,6 +3,8 @@
 wanha/
 res/
 
+build.status
+
 history.json
 
 public/crawler.html
