@@ -375,6 +375,8 @@ class KiraraClient():
 		
 		print("Updating event database...")
 		self._cache_events()
+			
+		self.refresh_last_update_time()
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -534,8 +536,6 @@ class KiraraClient():
 		for ordinals_chunk in chunked(missing_ordinals, 20):
 			print("Querying chunk: ", ordinals_chunk)
 			self._query_idol_data_by_ordinal(ordinals_chunk)
-			
-		self.refresh_last_update_time()
 	
 	# -------------------------------------------------------------------------------------------
 	

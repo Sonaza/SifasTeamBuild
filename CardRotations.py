@@ -644,7 +644,7 @@ class CardRotations():
 		
 		print(f"CSS Minify reduced size from {unminified_size / 1024:.2f} KB to {minified_size / 1024:.2f} KB. Yay!")
 		
-		output_path = os.path.join(CardRotations.OutputDirectory, "css", destination)
+		output_path = os.pathjoin(CardRotations.OutputDirectory, "css", destination)
 		with open(output_path, "w", encoding="utf8") as f:
 			for source_path, minified in code:
 				f.write(f"/* {os.path.basename(source_path)} */\n")
@@ -657,25 +657,36 @@ class CardRotations():
 ##################################
 
 if __name__ == "__main__":
-	buildstatus = open("build.status", "w")
-	
-	timestamp = datetime.now(timezone.utc).isoformat()
-	buildstatus.write(timestamp + "\n")
-	
 	cr = CardRotations()
+	
+	buildstatus = {
+		"timestamp" : datetime.now(timezone.utc).isoformat(),
+		"handled"   : None,
+		"auto"      : cr.args.auto,
+		"forced"    : cr.args.force,
+		"success"   : None,
+		"message"   : "",
+	}
+	build_exception = None
 	
 	try:
 		cr.generate_pages()
-		buildstatus.write("success\n")
+		buildstatus['success'] = True
+		buildstatus['message'] = "All OK!"
 		
 	except Exception as e:
-		buildstatus.write("failed\n")
+		buildstatus['success'] = False
 		
 		import traceback
-		traceback.print_exc(file=buildstatus)
+		buildstatus['message'] = traceback.format_exc()
 		
-		raise e
+		build_exception = e
 	
-	buildstatus.close()
-
+	output_file = open("build.status", "w")
+	json.dump(buildstatus, output_file)
+	output_file.close()
+	
+	if not buildstatus['success']:
+		raise build_exception
+	
 	print()
