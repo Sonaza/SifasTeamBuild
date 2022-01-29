@@ -26,6 +26,8 @@ if status['handled'] != None:
 
 status['handled'] = datetime.now(timezone.utc).isoformat()
 
+print()
+
 if status['success'] == True:
 	print("-------------- BUILD SUCCESSFUL! --------------")
 else:
