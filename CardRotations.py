@@ -644,7 +644,7 @@ class CardRotations():
 		
 		print(f"CSS Minify reduced size from {unminified_size / 1024:.2f} KB to {minified_size / 1024:.2f} KB. Yay!")
 		
-		output_path = os.pathjoin(CardRotations.OutputDirectory, "css", destination)
+		output_path = os.path.join(CardRotations.OutputDirectory, "css", destination)
 		with open(output_path, "w", encoding="utf8") as f:
 			for source_path, minified in code:
 				f.write(f"/* {os.path.basename(source_path)} */\n")
