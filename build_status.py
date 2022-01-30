@@ -17,8 +17,12 @@ try:
 except json.decoder.JSONDecodeError:
 	print("Build status file corrupted/not valid json.")
 	exit(-1337)
-	
+
+time_threshold = datetime.now(timezone.utc).replace(hour=6, minute=6, second=0)
+
 timestamp = datetime.fromisoformat(status['timestamp'])
+
+has_built_today = timestamp > time_threshold
 
 already_handled = False
 if status['handled'] != None:
@@ -27,6 +31,23 @@ if status['handled'] != None:
 status['handled'] = datetime.now(timezone.utc).isoformat()
 
 print()
+
+if not has_built_today:
+	print("--------- WARNING! BUILD NOT RUN YET! ---------")
+	print("Today's build should have run by now.")
+	print()
+	
+	print("------------------ CRON LOG! ------------------\n")
+	try:
+		cron_log = open("cron-update.log", "r")
+		print(cron_log.read())
+	except:
+		print("Unable to read cron update log...")
+	print("-----------------------------------------------")
+	
+	print()
+	print("Below are the details for most recent build.")
+	print()
 
 if status['success'] == True:
 	print("-------------- BUILD SUCCESSFUL! --------------")
@@ -44,8 +65,11 @@ if not already_handled:
 	status_file.truncate()
 	json.dump(status, status_file)
 	status_file.close()
+	
+if not has_built_today:
+	exit(2)
 
-if status['success'] == True or not status['auto']:
+elif status['success'] == True or not status['auto']:
 	exit(0)
 
 else:
