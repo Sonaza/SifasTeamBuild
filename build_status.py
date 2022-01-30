@@ -58,6 +58,17 @@ print(f"Build date       : {timestamp.strftime('%Y-%m-%d %H:%M:%S')}")
 print(f"Automatic        : {status['auto']}")
 print(f"Forced           : {status['forced']}")
 print()
+
+if not status['success'] and status['auto']:
+	print("------------------ CRON LOG! ------------------\n")
+	try:
+		cron_log = open("cron-update.log", "r")
+		print(cron_log.read())
+	except:
+		print("Unable to read cron update log...")
+	print("-----------------------------------------------")
+	print()
+
 print(status['message'])
 
 if not already_handled:
