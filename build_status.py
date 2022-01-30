@@ -4,7 +4,7 @@ import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 try:
 	status_file = open("build.status", "r+")
@@ -17,12 +17,12 @@ try:
 except json.decoder.JSONDecodeError:
 	print("Build status file corrupted/not valid json.")
 	exit(-1337)
-
-time_threshold = datetime.now(timezone.utc).replace(hour=6, minute=6, second=0)
-
+	
+today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
 timestamp = datetime.fromisoformat(status['timestamp'])
 
-has_built_today = timestamp > time_threshold
+delta = timedelta(hours=6, minutes=6)
+has_built_today = (today.day == (timestamp - delta).day)
 
 already_handled = False
 if status['handled'] != None:
