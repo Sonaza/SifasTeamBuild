@@ -5,13 +5,16 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
- 	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css">{#
-	<link rel="stylesheet" href="{{ cache_buster('/css/fonts.css') }}">
-	<link rel="stylesheet" href="{{ cache_buster('/css/idols.css') }}">
-	<link rel="stylesheet" href="{{ cache_buster('/css/atlas.css') }}">
-	<link rel="stylesheet" href="{{ cache_buster('/css/style.css') }}">
-	<link rel="stylesheet" href="{{ cache_buster('/css/style-mobile.css') }}"> #}
-	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
+ 	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css">
+ 	{# {% if cmd_args.dev %}
+		<link rel="stylesheet" href="{{ cache_buster('/css/fonts.css') }}">
+		<link rel="stylesheet" href="{{ cache_buster('/css/idols.css') }}">
+		<link rel="stylesheet" href="{{ cache_buster('/css/atlas.css') }}">
+		<link rel="stylesheet" href="{{ cache_buster('/css/style.css') }}">
+		<link rel="stylesheet" href="{{ cache_buster('/css/style-mobile.css') }}"> 
+	{% else %} #}
+		<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
+	{# {% endif %} #}
 	<meta property="og:url" content="https://sifas-cards.sonaza.com/">
 	<meta property="og:title" content="SIFAS Card Rotations">
 	<meta property="og:description" content="View card rotations and related statistics.">
@@ -137,6 +140,7 @@
 			</div>
 		</div>
 	</footer>
+	<script type="text/ng-template" id="pages/home.html">{{ include_page('public/pages/home.html', minify=True) }}</script>
 	{% if cmd_args.dev %}
 		<script src="/js/vendor/angular/angular.js"></script>
 		<script src="/js/vendor/angular/angular-route.js"></script>

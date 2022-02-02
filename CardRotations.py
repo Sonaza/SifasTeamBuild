@@ -14,6 +14,7 @@ from dateutil.relativedelta import relativedelta
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 import htmlmin
 import csscompressor
+from scss import Compiler
 
 class CardNonExtant(): pass
 class CardMissing(): pass
@@ -79,11 +80,14 @@ class CardRotations():
 		return f"{name}.{hashvalue:06x}{ext}"
 		
 	@staticmethod
-	def include_page(filepath):
+	def include_page(filepath, minify=False):
 		# filepath = os.path.join(CardRotations.OutputDirectory, filepath)
 		if not os.path.exists(filepath): return f"<h1>Error: {filepath} does not exist.</h1>"
 		with open(filepath, encoding="utf8") as f:
-			return f.read()
+			data = f.read()
+			if minify:
+				data = htmlmin.minify(data, remove_empty_space=True)
+			return data
 		return f"<h1>Error: Failed to open {filepath}.</h1>"
 		
 	@staticmethod
@@ -594,15 +598,16 @@ class CardRotations():
 		
 		self._render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
-		self._minify_css(
+		self._compile_css(
 			[
 				"fonts.css",
 				"atlas.css",
 				"idols.css",
-				"style.css",
+				"style.scss",
 				"style-mobile.css",
 			],
-			"public.min.css"
+			"public.min.css",
+			minify=False,
 		)
 		
 		now = datetime.now(timezone.utc)
@@ -621,8 +626,27 @@ class CardRotations():
 		
 		print("\nAll done!\n")
 	
-	def _minify_css(self, source, destination):
-		code = []
+	def _fix_scss_bullshit(self, code):
+		def parse_hex(hexcode):
+			divide = lambda s, d: list(map(''.join, zip(*[iter(s)]*d)))
+			return [int(c * (3 - len(c)), 16) for c in divide(hexcode, len(hexcode) // 3)]
+		
+		def repl(m):
+			c = parse_hex(m.group(1))
+			if len(c) == 4:
+				r, g, b, a = c
+				return f"rgba({r}, {g}, {b}, {(a / 255):0.3f})"
+				
+			else:
+				return "#" + m.group(1)
+		
+		pattern = re.compile(r'(?<=[^0-9a-f])#([0-9a-f]{3,8})(?=[^0-9a-f])', re.MULTILINE | re.IGNORECASE)
+		return pattern.sub(repl, code)
+	
+	def _compile_css(self, source, destination, minify=True):
+		scss_compiler = Compiler()
+
+		compiled_code = []
 		unminified_size = 0
 		minified_size = 0
 		
@@ -630,23 +654,30 @@ class CardRotations():
 			path = os.path.join(CardRotations.OutputDirectory, "css", file)
 			
 			try:
-				unminified = open(path, "r", encoding="utf8").read()
+				css_code = open(path, "r", encoding="utf8").read()
 			except:
 				print("FAILED TO OPEN", path)
 				continue
 				
-			unminified_size += len(unminified)
+			if '.scss' in file:
+				print(f"Compiling SCSS file: {file}")
+				css_code = self._fix_scss_bullshit(css_code)
+				css_code = scss_compiler.compile_string(css_code)
 			
-			minified = csscompressor.compress(unminified, max_linelen=20480)
-			minified_size += len(minified)
+			if minify:
+				print(f"Minifying file: {file}")
+				unminified_size += len(css_code)
+				css_code = csscompressor.compress(css_code, max_linelen=20480)
+				minified_size += len(css_code)
 			
-			code.append((path, minified))
+			compiled_code.append((path, css_code))
 		
-		print(f"CSS Minify reduced size from {unminified_size / 1024:.2f} KB to {minified_size / 1024:.2f} KB. Yay!")
+		if minify:
+			print(f"CSS Minify reduced size from {unminified_size / 1024:.2f} KB to {minified_size / 1024:.2f} KB. Yay!")
 		
 		output_path = os.path.join(CardRotations.OutputDirectory, "css", destination)
 		with open(output_path, "w", encoding="utf8") as f:
-			for source_path, minified in code:
+			for source_path, minified in compiled_code:
 				f.write(f"/* {os.path.basename(source_path)} */\n")
 				f.write(minified)
 				f.write("\n")

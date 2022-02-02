@@ -561,7 +561,7 @@ select option
 	flex-flow: row nowrap;
 	
 	margin: 0 4vw 0 4vw;
-	padding: 20px 0 0 0;
+	padding: 0 0 0 0;
 	
 	width: auto;
 	min-width: 1000px;
@@ -587,7 +587,7 @@ select option
 	background: #fffb;
 	/*background: #222b;*/
 	/*color: #fff;*/
-	padding: 1.2rem;
+	padding: 1.5rem 1.2rem 1.2rem 1.2rem;
 	border-radius: 3px;
 }
 
