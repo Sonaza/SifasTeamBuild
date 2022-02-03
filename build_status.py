@@ -17,12 +17,15 @@ try:
 except json.decoder.JSONDecodeError:
 	print("Build status file corrupted/not valid json.")
 	exit(-1337)
-	
-timestamp = datetime.fromisoformat(status['timestamp'])
-now = datetime.now(timezone.utc)
-today = now - timedelta(hours=6, minutes=6)
 
-has_built_today = (timestamp.hour >= 6 and timestamp.day == today.day) or (timestamp.day >= today.day and not status['auto'])
+now = datetime.now(timezone.utc)
+delta = timedelta(hours=6, minutes=6)
+
+timestamp = datetime.fromisoformat(status['timestamp']) - delta
+today = now - delta
+
+# has_built_today = (timestamp.hour >= 6 and timestamp.day == today.day) or (timestamp.day >= today.day and not status['auto'])
+has_built_today = (timestamp.day == today.day)
 
 already_handled = False
 if status['handled'] != None:
