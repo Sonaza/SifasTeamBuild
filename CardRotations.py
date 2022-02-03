@@ -1,5 +1,9 @@
 from IdolDatabase import *
 from CardThumbnails import CardThumbnails
+from CardValidity import *
+
+from ResourceProcessor import *
+from PageRenderer import *
 
 import platform
 import argparse
@@ -11,92 +15,14 @@ from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 
-from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
-import htmlmin
-import csscompressor
-from scss import Compiler
-
-class CardNonExtant(): pass
-class CardMissing(): pass
+class dotdict(dict):
+    """dot.notation access to dictionary attributes"""
+    __getattr__ = dict.get
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
 
 class CardRotations():
 	OutputDirectory = "public"
-	
-	@staticmethod
-	def is_valid_card(value):     return isinstance(value, KiraraIdol)
-	@staticmethod
-	def is_missing_card(value):   return isinstance(value, CardMissing)
-	@staticmethod
-	def is_nonextant_card(value): return isinstance(value, CardNonExtant)
-
-	@staticmethod
-	def ordinalize(n):
-		n = int(n)
-		if 11 <= (n % 100) <= 13:
-			suffix = 'th'
-		else:
-			suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
-		return str(n) + suffix
-		
-	@staticmethod
-	def pluralize(value, singular, plural):
-		if abs(value) == 1:
-			return f"{abs(value)} {singular}"
-		else:
-			return f"{abs(value)} {plural}"
-
-	@staticmethod
-	def format_days(value):
-		if value > 0:
-			return f"{CardRotations.pluralize(value, 'day', 'days')} ago"
-		elif value == 0:
-			return "Today"
-		else:
-			return f"In {CardRotations.pluralize(value, 'day', 'days')}"
-		
-	@staticmethod
-	def conditional_css(class_names, condition):
-		assert isinstance(class_names, str) or isinstance(class_names, list) or isinstance(class_names, tuple)
-		assert isinstance(condition, bool)
-		
-		if isinstance(class_names, str): class_names = [class_names, '']
-		elif len(class_names) == 1:      class_names = [class_names[0], '']
-			
-		if condition:
-			return class_names[0]
-		else:
-			return class_names[1]
-			
-	@staticmethod
-	def cache_buster(filename):
-		full_path = os.path.normpath(CardRotations.OutputDirectory + '/' + filename)
-		if not os.path.exists(full_path):
-			print(f"Cache busting path {full_path} does not exist!")
-			return filename
-			
-		modify_time = os.stat(full_path).st_mtime
-		name, ext = os.path.splitext(filename)
-		hashvalue = hash(modify_time) % 16711425
-		return f"{name}.{hashvalue:06x}{ext}"
-		
-	@staticmethod
-	def include_page(filepath, minify=False):
-		# filepath = os.path.join(CardRotations.OutputDirectory, filepath)
-		if not os.path.exists(filepath): return f"<h1>Error: {filepath} does not exist.</h1>"
-		with open(filepath, encoding="utf8") as f:
-			data = f.read()
-			if minify:
-				data = htmlmin.minify(data, remove_empty_space=True)
-			return data
-		return f"<h1>Error: Failed to open {filepath}.</h1>"
-		
-	@staticmethod
-	def get_card_source_label(card):
-		if card.source == Source.Gacha:
-			if card.event_title != None:
-				return 'Event Gacha'
-			
-		return card.source.display_name
 	
 	def __init__(self):
 		self.parser = argparse.ArgumentParser(description='Make some card rotations.')
@@ -113,7 +39,32 @@ class CardRotations():
 		self.parser.add_argument("-dev", help="Flags it as developing build.",
 							action="store_true")
 		
+		self.parser.add_argument("-w", "--watch", help="Instead of building anything start watching for asset changes and rebuild if things are modified.",
+							action="store_true")
+		
 		self.args = self.parser.parse_args()
+		
+		self.css_settings = dotdict({
+			'watch_directory' : "assets/",
+			'watched_files'   : [
+				"assets/css/*.scss",
+			],
+			'input_files'     : [
+				"public/css/fonts.css",
+				"assets/css/atlas.css",
+				"assets/css/idols.css",
+				"assets/css/style.scss",
+				"assets/css/style-mobile.scss",
+			],
+			'output_file'     : os.path.join(self.OutputDirectory, "css/public.min.css"),
+		})
+		self.processor = ResourceProcessor(self)
+		
+		self.renderer = PageRenderer(self)
+		
+		if self.args.watch:
+			self.processor.watch_changes()
+			exit()
 		
 		if self.args.dev:
 			print("------ BUILDING IN DEV MODE ------")
@@ -126,58 +77,18 @@ class CardRotations():
 		except:
 			pass
 		print("Current Working Directory", os.getcwd())
-		
 		print()
 		
 		self.client = KiraraClient()
 		self.client.update_database(forced=self.args.force)
 		
-		self.jinja = Environment(
-			# loader=FileSystemLoader(os.path.dirname(os.path.abspath(__file__)), encoding='utf-8'),
-			loader=PackageLoader("CardRotations", encoding='utf-8'),
-			# autoescape=select_autoescape()
-		)
-		
-		self.jinja.filters.update({
-			'format_days'     : CardRotations.format_days,
-			'pluralize'       : CardRotations.pluralize,
-			'ordinalize'      : CardRotations.ordinalize,
-			
-			'conditional_css' : CardRotations.conditional_css,
-		})
-		
-		self.jinja.globals.update({
-			# Python built in functions
-			'reversed'    : reversed,
-			
-			# Application related variables
-			'cmd_args'      : self.args,
-			
-			# Application related global enums
-			'Idols'     : Idols,
-			'Member'    : Member,
-			'Groups'    : Group,
-			'Attribute' : Attribute.get_valid(),
-			'Type'      : Type.get_valid(),
-			
-			# Page specific functions
-			'is_valid_card'     : CardRotations.is_valid_card,
-			'is_missing_card'   : CardRotations.is_missing_card,
-			'is_nonextant_card' : CardRotations.is_nonextant_card,
-			
-			'include_page' : CardRotations.include_page,
-			
-			# Systems stuff
-			'cache_buster'      : CardRotations.cache_buster,
-			
-			'get_card_source_label' : CardRotations.get_card_source_label,
-		})
+		if not os.path.exists("assets/css/atlas.css"):
+			print("Atlas CSS file does not exist and must be regenerated!")
+			self.args.remake_atlas = True
 		
 		self.thumbnails = CardThumbnails(self.client, CardRotations.OutputDirectory)
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
 			self.thumbnails.make_atlas()
-		
-		self.rendered_pages = []
 		
 	def _sort_rotation(self, group, rotation, order):
 		output = []
@@ -186,29 +97,6 @@ class CardRotations():
 				output.append((ordered_member_id, rotation[ordered_member_id]))
 		
 		return output
-		
-	def _render_and_save(self, template_filename, output_filename, data, minify=True, output_basepath=None):
-		if output_basepath == None:
-			output_basepath = CardRotations.OutputDirectory
-		
-		output_filename = os.path.normpath(os.path.join(output_basepath, output_filename)).replace("\\", "/")
-		print(f"{f'Rendering  {template_filename:<30}  ->  {output_filename}':<90} ...  ", end='')
-		
-		# template = self.jinja.get_template(os.path.join("templates", template_filename).replace("\\","/"))
-		template = self.jinja.get_template(template_filename)
-		rendered_output = template.render(data)
-		
-		if minify:
-			rendered_output = htmlmin.minify(rendered_output, remove_empty_space=True)
-		
-		with open(output_filename, "w", encoding="utf8") as f:
-			f.write(rendered_output)
-			f.close()
-		
-		print("Done")
-		
-		self.rendered_pages.append(output_filename)
-		return output_filename
 	
 	def get_attribute_type_array(self, group : Group):
 		cards_per_girl = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
@@ -307,7 +195,7 @@ class CardRotations():
 					if rotation_index < len(cards):
 						current_rotation[idol.member_id] = cards[rotation_index]
 						
-						if set_title == None and rarity == Rarity.SR and CardRotations.is_valid_card(cards[rotation_index]):
+						if set_title == None and rarity == Rarity.SR and is_valid_card(cards[rotation_index]):
 							t = cards[rotation_index].get_card_name(True)
 							titles[t] += 1
 					else:
@@ -499,11 +387,11 @@ class CardRotations():
 		}
 		today = datetime.today()
 		while sbl_reference_point['date'].month != today.month:
-			 if (sbl_reference_point['event_id'] + 1) not in events:
-			 	break
-			 	
-			 sbl_reference_point['event_id'] += 1
-			 sbl_reference_point['date'] += relativedelta(months=1)
+			if (sbl_reference_point['event_id'] + 1) not in events:
+				break
+
+			sbl_reference_point['event_id'] += 1
+			sbl_reference_point['date'] += relativedelta(months=1)
 		
 		for event_id, data in events.items():
 			# strftime('%d %B %Y %H:%M %Z')
@@ -527,17 +415,16 @@ class CardRotations():
 		return events, zero_feature_members
 	
 	def generate_pages(self):
-		self.rendered_pages = []
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		
 		idol_arrays = [(group, *self.get_attribute_type_array(group)) for group in Group]
 		for data in idol_arrays:
-			output_file = self._render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
+			output_file = self.renderer.render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
 				'idol_arrays'        : [ data ],
 			}, minify=not self.args.dev)
 		
 		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
-		self._render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
+		self.renderer.render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
 			'grouped_rotations'  : ur_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
@@ -545,7 +432,7 @@ class CardRotations():
 		}, minify=not self.args.dev)
 		
 		festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
-		self._render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
+		self.renderer.render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
 			'grouped_rotations'  : festival_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Festival UR Rotations',
@@ -553,7 +440,7 @@ class CardRotations():
 		}, minify=not self.args.dev)
 		
 		party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
-		self._render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
+		self.renderer.render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
 			'grouped_rotations'  : party_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Party UR Rotations',
@@ -561,7 +448,7 @@ class CardRotations():
 		}, minify=not self.args.dev)
 		
 		event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
-		self._render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
+		self.renderer.render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
 			'grouped_rotations'  : event_rotations,
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Event UR Rotations',
@@ -569,13 +456,13 @@ class CardRotations():
 		}, minify=not self.args.dev)
 		
 		events_with_cards, zero_feature_members = self.get_events_with_cards()
-		self._render_and_save("event_cards.html", "pages/event_cards.html", {
+		self.renderer.render_and_save("event_cards.html", "pages/event_cards.html", {
 			'events_with_cards'    : events_with_cards,
 			'zero_feature_members' : zero_feature_members,
 		})
 		
 		sr_sets = [(group, self.get_general_rotation(group, Rarity.SR)) for group in Group]
-		self._render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
+		self.renderer.render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
 			'grouped_rotations'  : sr_sets,
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
@@ -583,107 +470,42 @@ class CardRotations():
 		})
 		
 		general_stats = self.get_general_stats()
-		self._render_and_save("stats.html", "pages/stats.html", {
+		self.renderer.render_and_save("stats.html", "pages/stats.html", {
 			'category_tag'   : 'general',
 			'general_stats'  : general_stats,
 		}, minify=not self.args.dev)
 		
 		card_stats, category_info = self.get_card_stats()
 		for category_tag in card_stats.keys():
-			self._render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
+			self.renderer.render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
 				'category_tag'   : category_tag,
 				'category_data'  : card_stats[category_tag],
 				'category_info'  : category_info[category_tag],
 			}, minify=not self.args.dev)
 		
-		self._render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
+		self.renderer.render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
-		self._compile_css(
-			[
-				"fonts.css",
-				"atlas.css",
-				"idols.css",
-				"style.scss",
-				"style-mobile.css",
-			],
-			"public.min.css",
-			minify=False,
+		self.processor.compile_css(
+			input_files = self.css_settings.input_files,
+			output_file = self.css_settings.output_file,
+			minify=True,
 		)
 		
 		now = datetime.now(timezone.utc)
-		self._render_and_save("main_layout.php", "views/content_index.php", {
+		self.renderer.render_and_save("main_layout.php", "views/content_index.php", {
 			'last_update'           : now.strftime('%d %B %Y %H:%M %Z'),
 			'last_update_timestamp' : now.isoformat(),
 		}, minify=False, output_basepath='')
 		
-		self._render_and_save("crawler.html", "crawler.html", {}, minify=False)
+		self.renderer.render_and_save("crawler.html", "crawler.html", {}, minify=True)
 		
 		for file in files_to_delete:
-			if file in self.rendered_pages: continue
+			if file in self.renderer.rendered_pages: continue
 			
 			print(f"Removing outdated file  {file}")
 			os.remove(file)
 		
 		print("\nAll done!\n")
-	
-	def _fix_scss_bullshit(self, code):
-		def parse_hex(hexcode):
-			divide = lambda s, d: list(map(''.join, zip(*[iter(s)]*d)))
-			return [int(c * (3 - len(c)), 16) for c in divide(hexcode, len(hexcode) // 3)]
-		
-		def repl(m):
-			c = parse_hex(m.group(1))
-			if len(c) == 4:
-				r, g, b, a = c
-				return f"rgba({r}, {g}, {b}, {(a / 255):0.3f})"
-				
-			else:
-				return "#" + m.group(1)
-		
-		pattern = re.compile(r'(?<=[^0-9a-f])#([0-9a-f]{3,8})(?=[^0-9a-f])', re.MULTILINE | re.IGNORECASE)
-		return pattern.sub(repl, code)
-	
-	def _compile_css(self, source, destination, minify=True):
-		scss_compiler = Compiler()
-
-		compiled_code = []
-		unminified_size = 0
-		minified_size = 0
-		
-		for file in source:
-			path = os.path.join(CardRotations.OutputDirectory, "css", file)
-			
-			try:
-				css_code = open(path, "r", encoding="utf8").read()
-			except:
-				print("FAILED TO OPEN", path)
-				continue
-				
-			if '.scss' in file:
-				print(f"Compiling SCSS file: {file}")
-				css_code = self._fix_scss_bullshit(css_code)
-				css_code = scss_compiler.compile_string(css_code)
-			
-			if minify:
-				print(f"Minifying file: {file}")
-				unminified_size += len(css_code)
-				css_code = csscompressor.compress(css_code, max_linelen=20480)
-				minified_size += len(css_code)
-			
-			compiled_code.append((path, css_code))
-		
-		if minify:
-			print(f"CSS Minify reduced size from {unminified_size / 1024:.2f} KB to {minified_size / 1024:.2f} KB. Yay!")
-		
-		output_path = os.path.join(CardRotations.OutputDirectory, "css", destination)
-		with open(output_path, "w", encoding="utf8") as f:
-			for source_path, minified in compiled_code:
-				f.write(f"/* {os.path.basename(source_path)} */\n")
-				f.write(minified)
-				f.write("\n")
-			
-			f.close()
-		
 
 ##################################
 

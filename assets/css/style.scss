@@ -32,35 +32,12 @@ h1, h2, h3, h4, h5, h6
 	padding: 0 0 0.6rem 0;
 }
 
-h1
-{
-	font-size: 25pt;
-}
-
-h2
-{
-	font-size: 22pt;
-}
-
-h3
-{
-	font-size: 19pt;
-}
-
-h4
-{
-	font-size: 16pt;
-}
-
-h5
-{
-	font-size: 13pt;
-}
-
-h6
-{
-	font-size: 10pt;
-}
+h1 { font-size: 25pt; }
+h2 { font-size: 22pt; }
+h3 { font-size: 19pt; }
+h4 { font-size: 16pt; }
+h5 { font-size: 13pt; }
+h6 { font-size: 10pt; }
 
 p
 {
@@ -72,11 +49,11 @@ ul
 {
 	margin: 0;
 	padding: 0 0 1rem 1rem;
-}
-
-li
-{
-	margin: 4px 0;
+	
+	li
+	{
+		margin: 4px 0;
+	}
 }
 
 ul.settings-keybinds
@@ -98,12 +75,12 @@ ul.settings-keybinds
 		background: #481E9F;
 		color: #fff;
 		border-radius: 3px;
+	
+		&:first-child
+		{
+			margin-right: 0.4rem;
+		}
 	}
-}
-
-.settings-keybinds b:first-child
-{
-	margin-right: 0.4rem;
 }
 
 ul.settings-keybinds li
@@ -123,6 +100,22 @@ ul.settings-keybinds li
 	{
 		padding-top: 0;
 	}
+}
+
+.new-tag
+{
+	float: right;
+	color: #fff;
+	font-size: 9pt;
+	text-shadow: 0 0 2px #000,
+	             0 0 2px #000,
+	             0 0 1px #000,
+	             0 0 2px #000,
+	             0 0 4px #000,
+	             0 0 2px #000,
+	             0 0 2px #000,
+	             0 0 2px #000,
+	             0 0 2px #000;
 }
 
 b
@@ -299,59 +292,59 @@ a
 	text-shadow: 0 2px 0 #1C0747;
 	color: #A69CBD;
 	font-size: 10pt;
-}
-
-#footer-top
-{
-	padding: 1rem 1.5rem;
-	margin: 0;
-	font-family: 'Montserrat', sans-serif;
-	font-weight: 700;
-	font-size: 12pt;
-	text-align: center;
-	color: #fff;
-	background: #502B9B;
-
-	.footer-top-inner
+	
+	#footer-top
 	{
-		max-width: 60vw;
-		margin: 0 auto;
-		display: flex;
-	}
-}
+		padding: 1rem 1.5rem;
+		margin: 0;
+		font-family: 'Montserrat', sans-serif;
+		font-weight: 700;
+		font-size: 12pt;
+		text-align: center;
+		color: #fff;
+		background: #502B9B;
 
-#footer-bottom
-{
-	margin: 0;
-	text-align: center;
-	padding: 0.75rem 0;
-
-	.details, .disclaimer
-	{
-		padding: 0.25rem 0;
+		.footer-top-inner
+		{
+			max-width: 60vw;
+			margin: 0 auto;
+			display: flex;
+		}
 	}
 
-	.details .time-since-update
+	#footer-bottom
 	{
-		display: inline-block;
-		padding-left: 0.4rem;
-	}
-}
+		margin: 0;
+		text-align: center;
+		padding: 0.75rem 0;
 
-#footer a
-{
-	&:link, &:visited
-	{
-		color: #DACCF8;
-		text-decoration: underline;
+		.details, .disclaimer
+		{
+			padding: 0.25rem 0;
+		}
+
+		.details .time-since-update
+		{
+			display: inline-block;
+			padding-left: 0.4rem;
+		}
 	}
 
-	&:hover, &:active
+	a
 	{
-		color: #EFE7FF;
-		text-decoration: none;
-		background: #9E75F0a0;
-		text-shadow: none !important;
+		&:link, &:visited
+		{
+			color: #DACCF8;
+			text-decoration: underline;
+		}
+
+		&:hover, &:active
+		{
+			color: #EFE7FF;
+			text-decoration: none;
+			background: #9E75F0a0;
+			text-shadow: none !important;
+		}
 	}
 }
 
@@ -566,47 +559,46 @@ select
 #main-outer-wrapper
 {
 	min-height: calc(100vh - 150px - 60px);
-
 	/*margin-top: 60px;*/
 	padding-top: 60px;
 	background: url('/img/background.jpg') no-repeat center center fixed;
 	background-size: cover;
-}
-
-#main-wrapper
-{
-	min-height: calc(100vh - 150px - 60px);
-	display: flex;
-	flex-flow: row nowrap;
-	margin: 0 4vw 0 4vw;
-	padding: 0 0 0 0;
-	width: auto;
-	min-width: 1000px;
-	color: #0c0c0c !important;
-	box-shadow: 0 0px 10px rgba(0, 0, 0, 0.6);
-	background: #f5f5f5cc;
 	
-	#main
+	#main-wrapper
 	{
-		width: calc(100% - 220px);
+		min-height: calc(100vh - 150px - 60px);
+		display: flex;
+		flex-flow: row nowrap;
+		margin: 0 4vw 0 4vw;
+		padding: 0 0 0 0;
+		width: auto;
+		min-width: 1000px;
+		color: #0c0c0c !important;
+		box-shadow: 0 0px 10px rgba(0, 0, 0, 0.6);
+		background: #f5f5f5cc;
 		
-		#main-inner
+		#main
 		{
-			padding: 0 1.5rem 0 1.5rem;
+			width: calc(100% - 220px);
 			
-			.main-content
+			#main-inner
 			{
-				background: #fffb;
-				/*background: #222b;*/
-				/*color: #fff;*/
-				padding: 1.5rem 1.2rem 1.2rem 1.2rem;
-				border-radius: 3px;
+				padding: 0 1.5rem 0 1.5rem;
 				
-				.main-content-inner
+				.main-content
 				{
-					max-width: 800px;
-					line-height: 1.6em;
-					text-align: justify;
+					background: #fffb;
+					/*background: #222b;*/
+					/*color: #fff;*/
+					padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+					border-radius: 3px;
+					
+					.main-content-inner
+					{
+						max-width: 800px;
+						line-height: 1.6em;
+						text-align: justify;
+					}
 				}
 			}
 		}
@@ -641,39 +633,7 @@ select
 	background: #222;
 	border-top-left-radius: 3px;
 	border-top-right-radius: 3px;
-}
-
-.alt-view
-{
-	.rotation-column-wrapper
-	{
-		flex-flow: column wrap;
-
-		.rotation-column
-		{
-			flex-flow: row wrap;
-		}
-	}
-
-	.rotation-group
-	{
-		margin: 0 1.5rem 1.5rem 0;
-	}
-
-	&.order-reversed .rotation-column-wrapper .rotation-column
-	{
-		flex-flow: row-reverse wrap-reverse;
-		justify-content: left;
-
-		.rotation-group:first-child
-		{
-			/*margin-right: 25%;*/
-		}
-	}
-}
-
-.rotation-group
-{
+	
 	&.nijigasaki
 	{
 		width: calc(64px * 4 + 2px);
@@ -729,6 +689,35 @@ select
 		background: #f1c232;
 		color: #352905;
 		border-color: #352905;
+	}
+}
+
+.alt-view
+{
+	.rotation-column-wrapper
+	{
+		flex-flow: column wrap;
+
+		.rotation-column
+		{
+			flex-flow: row wrap;
+		}
+	}
+
+	.rotation-group
+	{
+		margin: 0 1.5rem 1.5rem 0;
+	}
+
+	&.order-reversed .rotation-column-wrapper .rotation-column
+	{
+		flex-flow: row-reverse wrap-reverse;
+		justify-content: left;
+
+		.rotation-group:first-child
+		{
+			/*margin-right: 25%;*/
+		}
 	}
 }
 
@@ -931,14 +920,24 @@ select
 	transition: background linear 60ms;
 }
 
-.source-highlight-0 .source-indicator, .source-highlight-1 .source-indicator.source-1, .source-highlight-2 .source-indicator.source-2, .source-highlight-3 .source-indicator.source-3, .source-highlight-5 .source-indicator.source-5, .source-highlight-6 .source-indicator.source-6, .source-highlight-7 .source-indicator.source-7
+.source-highlight-0 .source-indicator,
+.source-highlight-1 .source-indicator.source-1,
+.source-highlight-2 .source-indicator.source-2,
+.source-highlight-3 .source-indicator.source-3,
+.source-highlight-5 .source-indicator.source-5,
+.source-highlight-6 .source-indicator.source-6,
+.source-highlight-7 .source-indicator.source-7
 {
 	background: transparent !important;
 }
 
 .source-highlight-gacha .source-indicator
 {
-	&.source-1, &.source-3, &.source-5, &.source-6, &.source-7
+	&.source-1,
+	&.source-3,
+	&.source-5,
+	&.source-6,
+	&.source-7
 	{
 		background: transparent !important;
 	}
@@ -946,13 +945,17 @@ select
 
 .source-highlight-limited .source-indicator
 {
-	&.source-6, &.source-7
+	&.source-6,
+	&.source-7
 	{
 		background: transparent !important;
 	}
 }
 
-.source-highlight-muse .source-indicator.group-1, .source-highlight-aqours .source-indicator.group-2, .source-highlight-nijigasaki .source-indicator.group-3, .no-js .source-indicator
+.source-highlight-muse       .source-indicator.group-1,
+.source-highlight-aqours     .source-indicator.group-2,
+.source-highlight-nijigasaki .source-indicator.group-3,
+.no-js .source-indicator
 {
 	background: transparent !important;
 }
@@ -1127,15 +1130,15 @@ select
 
 .card-array-header-cell
 {
+	display: block;
+	width: 64px;
+	height: 64px;
+	
 	div
 	{
 		border-top-left-radius: 3px;
 		border-top-right-radius: 3px;
 	}
-
-	display: block;
-	width: 64px;
-	height: 64px;
 }
 
 .card-array-cell
@@ -1146,7 +1149,6 @@ select
 }
 
 /*.rotation-group .grid-icon,*/
-
 .card-array .card-array-cell .grid-icon
 {
 	box-shadow: inset 1px 0 0 1px #aaa4 !important;
@@ -1223,7 +1225,66 @@ select
 
 	.filtering-active
 	{
-		&.show-idol-8:not(.featured-only) .has-idol-8, &.show-idol-5:not(.featured-only) .has-idol-5, &.show-idol-6:not(.featured-only) .has-idol-6, &.show-idol-1:not(.featured-only) .has-idol-1, &.show-idol-3:not(.featured-only) .has-idol-3, &.show-idol-4:not(.featured-only) .has-idol-4, &.show-idol-7:not(.featured-only) .has-idol-7, &.show-idol-2:not(.featured-only) .has-idol-2, &.show-idol-9:not(.featured-only) .has-idol-9, &.show-idol-107:not(.featured-only) .has-idol-107, &.show-idol-106:not(.featured-only) .has-idol-106, &.show-idol-109:not(.featured-only) .has-idol-109, &.show-idol-101:not(.featured-only) .has-idol-101, &.show-idol-102:not(.featured-only) .has-idol-102, &.show-idol-105:not(.featured-only) .has-idol-105, &.show-idol-103:not(.featured-only) .has-idol-103, &.show-idol-104:not(.featured-only) .has-idol-104, &.show-idol-108:not(.featured-only) .has-idol-108, &.show-idol-209:not(.featured-only) .has-idol-209, &.show-idol-202:not(.featured-only) .has-idol-202, &.show-idol-203:not(.featured-only) .has-idol-203, &.show-idol-210:not(.featured-only) .has-idol-210, &.show-idol-201:not(.featured-only) .has-idol-201, &.show-idol-207:not(.featured-only) .has-idol-207, &.show-idol-205:not(.featured-only) .has-idol-205, &.show-idol-212:not(.featured-only) .has-idol-212, &.show-idol-208:not(.featured-only) .has-idol-208, &.show-idol-206:not(.featured-only) .has-idol-206, &.show-idol-204:not(.featured-only) .has-idol-204, &.show-idol-211:not(.featured-only) .has-idol-211, &.show-idol-8.featured-only .featured-idol-8, &.show-idol-5.featured-only .featured-idol-5, &.show-idol-6.featured-only .featured-idol-6, &.show-idol-1.featured-only .featured-idol-1, &.show-idol-3.featured-only .featured-idol-3, &.show-idol-4.featured-only .featured-idol-4, &.show-idol-7.featured-only .featured-idol-7, &.show-idol-2.featured-only .featured-idol-2, &.show-idol-9.featured-only .featured-idol-9, &.show-idol-107.featured-only .featured-idol-107, &.show-idol-106.featured-only .featured-idol-106, &.show-idol-109.featured-only .featured-idol-109, &.show-idol-101.featured-only .featured-idol-101, &.show-idol-102.featured-only .featured-idol-102, &.show-idol-105.featured-only .featured-idol-105, &.show-idol-103.featured-only .featured-idol-103, &.show-idol-104.featured-only .featured-idol-104, &.show-idol-108.featured-only .featured-idol-108, &.show-idol-209.featured-only .featured-idol-209, &.show-idol-202.featured-only .featured-idol-202, &.show-idol-203.featured-only .featured-idol-203, &.show-idol-210.featured-only .featured-idol-210, &.show-idol-201.featured-only .featured-idol-201, &.show-idol-207.featured-only .featured-idol-207, &.show-idol-205.featured-only .featured-idol-205, &.show-idol-212.featured-only .featured-idol-212, &.show-idol-208.featured-only .featured-idol-208, &.show-idol-206.featured-only .featured-idol-206, &.show-idol-204.featured-only .featured-idol-204, &.show-idol-211.featured-only .featured-idol-211
+		&.show-idol-8:not(.featured-only)   .has-idol-8,
+		&.show-idol-5:not(.featured-only)   .has-idol-5,
+		&.show-idol-6:not(.featured-only)   .has-idol-6,
+		&.show-idol-1:not(.featured-only)   .has-idol-1,
+		&.show-idol-3:not(.featured-only)   .has-idol-3,
+		&.show-idol-4:not(.featured-only)   .has-idol-4,
+		&.show-idol-7:not(.featured-only)   .has-idol-7,
+		&.show-idol-2:not(.featured-only)   .has-idol-2,
+		&.show-idol-9:not(.featured-only)   .has-idol-9,
+		&.show-idol-107:not(.featured-only) .has-idol-107,
+		&.show-idol-106:not(.featured-only) .has-idol-106,
+		&.show-idol-109:not(.featured-only) .has-idol-109,
+		&.show-idol-101:not(.featured-only) .has-idol-101,
+		&.show-idol-102:not(.featured-only) .has-idol-102,
+		&.show-idol-105:not(.featured-only) .has-idol-105,
+		&.show-idol-103:not(.featured-only) .has-idol-103,
+		&.show-idol-104:not(.featured-only) .has-idol-104,
+		&.show-idol-108:not(.featured-only) .has-idol-108,
+		&.show-idol-209:not(.featured-only) .has-idol-209,
+		&.show-idol-202:not(.featured-only) .has-idol-202,
+		&.show-idol-203:not(.featured-only) .has-idol-203,
+		&.show-idol-210:not(.featured-only) .has-idol-210,
+		&.show-idol-201:not(.featured-only) .has-idol-201,
+		&.show-idol-207:not(.featured-only) .has-idol-207,
+		&.show-idol-205:not(.featured-only) .has-idol-205,
+		&.show-idol-212:not(.featured-only) .has-idol-212,
+		&.show-idol-208:not(.featured-only) .has-idol-208,
+		&.show-idol-206:not(.featured-only) .has-idol-206,
+		&.show-idol-204:not(.featured-only) .has-idol-204,
+		&.show-idol-211:not(.featured-only) .has-idol-211,
+		&.show-idol-8.featured-only   .featured-idol-8,
+		&.show-idol-5.featured-only   .featured-idol-5,
+		&.show-idol-6.featured-only   .featured-idol-6,
+		&.show-idol-1.featured-only   .featured-idol-1,
+		&.show-idol-3.featured-only   .featured-idol-3,
+		&.show-idol-4.featured-only   .featured-idol-4,
+		&.show-idol-7.featured-only   .featured-idol-7,
+		&.show-idol-2.featured-only   .featured-idol-2,
+		&.show-idol-9.featured-only   .featured-idol-9,
+		&.show-idol-107.featured-only .featured-idol-107,
+		&.show-idol-106.featured-only .featured-idol-106,
+		&.show-idol-109.featured-only .featured-idol-109,
+		&.show-idol-101.featured-only .featured-idol-101,
+		&.show-idol-102.featured-only .featured-idol-102,
+		&.show-idol-105.featured-only .featured-idol-105,
+		&.show-idol-103.featured-only .featured-idol-103,
+		&.show-idol-104.featured-only .featured-idol-104,
+		&.show-idol-108.featured-only .featured-idol-108,
+		&.show-idol-209.featured-only .featured-idol-209,
+		&.show-idol-202.featured-only .featured-idol-202,
+		&.show-idol-203.featured-only .featured-idol-203,
+		&.show-idol-210.featured-only .featured-idol-210,
+		&.show-idol-201.featured-only .featured-idol-201,
+		&.show-idol-207.featured-only .featured-idol-207,
+		&.show-idol-205.featured-only .featured-idol-205,
+		&.show-idol-212.featured-only .featured-idol-212,
+		&.show-idol-208.featured-only .featured-idol-208,
+		&.show-idol-206.featured-only .featured-idol-206,
+		&.show-idol-204.featured-only .featured-idol-204,
+		&.show-idol-211.featured-only .featured-idol-211
 		{
 			display: flex;
 		}
@@ -1241,7 +1302,36 @@ select
 				transition: none;
 			}
 
-			&.show-idol-8 .source-indicator.idol-8, &.show-idol-5 .source-indicator.idol-5, &.show-idol-6 .source-indicator.idol-6, &.show-idol-1 .source-indicator.idol-1, &.show-idol-3 .source-indicator.idol-3, &.show-idol-4 .source-indicator.idol-4, &.show-idol-7 .source-indicator.idol-7, &.show-idol-2 .source-indicator.idol-2, &.show-idol-9 .source-indicator.idol-9, &.show-idol-107 .source-indicator.idol-107, &.show-idol-106 .source-indicator.idol-106, &.show-idol-109 .source-indicator.idol-109, &.show-idol-101 .source-indicator.idol-101, &.show-idol-102 .source-indicator.idol-102, &.show-idol-105 .source-indicator.idol-105, &.show-idol-103 .source-indicator.idol-103, &.show-idol-104 .source-indicator.idol-104, &.show-idol-108 .source-indicator.idol-108, &.show-idol-209 .source-indicator.idol-209, &.show-idol-202 .source-indicator.idol-202, &.show-idol-203 .source-indicator.idol-203, &.show-idol-210 .source-indicator.idol-210, &.show-idol-201 .source-indicator.idol-201, &.show-idol-207 .source-indicator.idol-207, &.show-idol-205 .source-indicator.idol-205, &.show-idol-212 .source-indicator.idol-212, &.show-idol-208 .source-indicator.idol-208, &.show-idol-206 .source-indicator.idol-206, &.show-idol-204 .source-indicator.idol-204, &.show-idol-211 .source-indicator.idol-211
+			&.show-idol-8 .source-indicator.idol-8,
+			&.show-idol-5 .source-indicator.idol-5,
+			&.show-idol-6 .source-indicator.idol-6,
+			&.show-idol-1 .source-indicator.idol-1,
+			&.show-idol-3 .source-indicator.idol-3,
+			&.show-idol-4 .source-indicator.idol-4,
+			&.show-idol-7 .source-indicator.idol-7,
+			&.show-idol-2 .source-indicator.idol-2,
+			&.show-idol-9 .source-indicator.idol-9,
+			&.show-idol-107 .source-indicator.idol-107,
+			&.show-idol-106 .source-indicator.idol-106,
+			&.show-idol-109 .source-indicator.idol-109,
+			&.show-idol-101 .source-indicator.idol-101,
+			&.show-idol-102 .source-indicator.idol-102,
+			&.show-idol-105 .source-indicator.idol-105,
+			&.show-idol-103 .source-indicator.idol-103,
+			&.show-idol-104 .source-indicator.idol-104,
+			&.show-idol-108 .source-indicator.idol-108,
+			&.show-idol-209 .source-indicator.idol-209,
+			&.show-idol-202 .source-indicator.idol-202,
+			&.show-idol-203 .source-indicator.idol-203,
+			&.show-idol-210 .source-indicator.idol-210,
+			&.show-idol-201 .source-indicator.idol-201,
+			&.show-idol-207 .source-indicator.idol-207,
+			&.show-idol-205 .source-indicator.idol-205,
+			&.show-idol-212 .source-indicator.idol-212,
+			&.show-idol-208 .source-indicator.idol-208,
+			&.show-idol-206 .source-indicator.idol-206,
+			&.show-idol-204 .source-indicator.idol-204,
+			&.show-idol-211 .source-indicator.idol-211
 			{
 				background: transparent !important;
 			}

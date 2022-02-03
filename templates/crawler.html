@@ -7,12 +7,18 @@
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
  	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css">
 	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
+	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://sifas-cards.sonaza.com/">
 	<meta property="og:title" content="SIFAS Card Rotations">
+	<meta property="og:site_name" content="SIFAS Card Rotations">
 	<meta property="og:description" content="View card rotations and related statistics.">
 	<meta property="og:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
-	<link rel="shortcut icon" href="/favicon.ico">
-	<base href="/">
+	<link rel="icon" href="/favicon.ico">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_180.png">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_256.png" sizes="256x256">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_512.png" sizes="512x512">
+	<link rel="shortcut icon" href="/img/favicon_tile_192.png">
+</head>
 </head>
 <body>
 	<div id="header">
@@ -30,7 +36,7 @@
 				<div class="side-nav-inner">
 					<div class="nav-wrapper unfocus-target" ng-class="sidebarToggleActive(navigation_visible)">
 						<ul ng-controller="NavController">
-							<li><a href="#/">&laquo; Back to Home</a></li>
+							<li><a href="/">&laquo; Back to Home</a></li>
 						</ul>
 					</div>
 				</div>

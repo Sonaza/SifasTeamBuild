@@ -6,21 +6,23 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
  	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css">
- 	{# {% if cmd_args.dev %}
-		<link rel="stylesheet" href="{{ cache_buster('/css/fonts.css') }}">
-		<link rel="stylesheet" href="{{ cache_buster('/css/idols.css') }}">
-		<link rel="stylesheet" href="{{ cache_buster('/css/atlas.css') }}">
-		<link rel="stylesheet" href="{{ cache_buster('/css/style.css') }}">
-		<link rel="stylesheet" href="{{ cache_buster('/css/style-mobile.css') }}"> 
-	{% else %} #}
-		<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
-	{# {% endif %} #}
+	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
+	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://sifas-cards.sonaza.com/">
 	<meta property="og:title" content="SIFAS Card Rotations">
+	<meta property="og:site_name" content="SIFAS Card Rotations">
 	<meta property="og:description" content="View card rotations and related statistics.">
 	<meta property="og:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
-	<link rel="shortcut icon" href="/favicon.ico">
-	<base href="/">
+	<meta name="mobile-web-app-capable" content="yes">
+  	<meta name="apple-mobile-web-app-capable" content="yes">
+  	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+  	<meta name="apple-mobile-web-app-title" content="SIFAS Card Rotations">
+	<link rel="icon" href="/favicon.ico">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_180.png">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_256.png" sizes="256x256">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_512.png" sizes="512x512">
+	<link rel="shortcut icon" href="/img/favicon_tile_192.png">
+	<link rel="manifest" href="/manifest.json">
 </head>
 <body ng-controller="BaseController" class="no-js <?= $dark_mode_class; ?>" ng-class="[activeSettingsClass(), hiddenHeaderActive()]" ng-keydown="keydown($event)" tabindex="0" scroll="scroll($event, diff)">
 	<div id="header">
@@ -69,7 +71,7 @@
 							<li><a href="#/aqours"       ng-class="classActive('/aqours')">Aqours Cards</a></li>
 							<li><a href="#/nijigasaki"   ng-class="classActive('/nijigasaki')">Nijigasaki Cards</a></li>
 							<li class="spacer"></li>
-							<li><a href="#/event_cards"  ng-class="classActive('/event_cards', true)">Event Cards <span style="float:right;font-size: 9pt; color:#fff; text-shadow: 0 0 2px #000, 0 0 2px #000, 0 0 1px #000, 0 0 2px #000, 0 0 4px #000, 0 0 2px #000, 0 0 2px #000, 0 0 2px #000, 0 0 2px #000;">[NEW]</span></a></li>
+							<li><a href="#/event_cards"  ng-class="classActive('/event_cards', true)">Event Cards</a></li>
 							<li><a href="#/stats"        ng-class="classActive('/stats')">Card Stats</a></li>
 						</ul>
 					</div>
