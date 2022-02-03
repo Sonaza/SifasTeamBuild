@@ -19,9 +19,10 @@ except json.decoder.JSONDecodeError:
 	exit(-1337)
 	
 timestamp = datetime.fromisoformat(status['timestamp'])
-today = datetime.now(timezone.utc) - timedelta(hours=6, minutes=6)
+now = datetime.now(timezone.utc)
+today = now - timedelta(hours=6, minutes=6)
 
-has_built_today = (today.day == timestamp.day)
+has_built_today = (timestamp.hour >= 6 and timestamp.day == today.day) or (timestamp.day >= today.day and not status['auto'])
 
 already_handled = False
 if status['handled'] != None:
