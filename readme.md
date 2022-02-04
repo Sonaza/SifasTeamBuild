@@ -30,5 +30,5 @@ https://packaging.python.org/en/latest/tutorials/managing-dependencies/
 
 ```
 pipenv install
-pipenv run python CardRotations.py
+pipenv run python3 CardRotations.py
 ```
