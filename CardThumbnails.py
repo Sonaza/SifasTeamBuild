@@ -52,11 +52,13 @@ class CardThumbnails():
 			print("  New thumbnails downloaded, remaking atlas is required.")
 		else:
 			print("  No new thumbnails downloaded.")
+			
+		print()
 		
 		return has_new_thumbnails
 	
 	def make_atlas(self):
-		print("Compiling atlas images...")
+		print("Compiling thumbnail atlas planes...")
 		
 		atlas_by_ordinal = {}
 		atlas_identifiers = []
@@ -68,7 +70,7 @@ class CardThumbnails():
 		
 		for rarity in rarities:
 			for group in Group:
-				print(f"  Processing {group.name} {rarity.name} thumbnails...")
+				print(f"  Processing atlas   {group.name} {rarity.name}...")
 				
 				cards = self.client.get_idols_by_group(group, rarity)
 				cards_per_girl = defaultdict(list)

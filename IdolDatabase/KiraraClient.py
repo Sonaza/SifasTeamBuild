@@ -233,10 +233,12 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 		
-	def _query_idol_data_by_ordinal(self, ordinals):
+	def _query_idol_data_by_ordinal(self, requested_ordinals):
+		assert isinstance(requested_ordinals, list)
+		
 		query = f"""SELECT * FROM idols_json
-		            WHERE ordinal IN ({self._make_where_placeholders(ordinals)})"""
-		self.db.execute(query, ordinals)
+		            WHERE ordinal IN ({self._make_where_placeholders(requested_ordinals)})"""
+		self.db.execute(query, requested_ordinals)
 		
 		idols_data = []
 		
@@ -244,29 +246,26 @@ class KiraraClient():
 		for ordinal, json_data in self.db.fetchall():
 			existing_ordinals.append(ordinal)
 			idols_data.append(json.loads(json_data))
-			ordinals.remove(ordinal)
+			requested_ordinals.remove(ordinal)
 		
-		print("existing_ordinals", existing_ordinals)
+		# print("existing_ordinals", existing_ordinals)
 		if existing_ordinals:
-			if ordinals:
-				print("Some idols were already present in database json archive.")
+			if requested_ordinals:
+				print("  Some idols were already present in database json archive.")
 			else:
-				print("All idols were already present in database json archive. No need to query Kirara database.")
+				print("  All idols were already present in database json archive. No need to query Kirara database.")
 		
-		if ordinals:
-			print("Requesting data from Kirara database...")
+		if requested_ordinals:
+			print("  Requesting data from Kirara database...")
 			
-			query_ordinals = ','.join([str(x) for x in ordinals])
-			url = KiraraClient.Endpoints['by_ordinal'].format(query_ordinals)
+			url = KiraraClient.Endpoints['by_ordinal'].format(','.join([str(x) for x in requested_ordinals]))
 			r = requests.get(url, headers={
 				'User-Agent' : Config.USER_AGENT,
 			})
-			print("Request result code:", r.status_code)
-			
-			time.sleep(0.5)
+			# print("Request result code:", r.status_code)
 			
 			if r.status_code == 404:
-				raise KiraraClientNotFound(f"No result with given ordinals: {list(ordinals)}")
+				raise KiraraClientNotFound(f"No result with given ordinals: {list(requested_ordinals)}")
 			
 			if r.status_code != 200:
 				raise KiraraClientException("Endpoint status not OK")
@@ -281,11 +280,17 @@ class KiraraClient():
 			for card in idols_data:
 				result_ordinals.add(card['ordinal'])
 			
-			if not all(x in result_ordinals for x in ordinals):
-				partial_result = [x for x in ordinals if x in result_ordinals]
+			if not all(x in result_ordinals for x in requested_ordinals):
+				partial_result = [x for x in requested_ordinals if x in result_ordinals]
 				raise KiraraClientPartialResult(f"Partial result with given ordinals. Missing: {partial_result}")
+			
+			time.sleep(0.5)
 		
+		print()
+		print("Processing query results...")
 		for card in sorted(idols_data, key=itemgetter('ordinal')):
+			print(f"  {card['ordinal']:<4} ", end='')
+			
 			idol_info = Idols.by_member_id[card['member']]
 			
 			if card['ordinal'] not in existing_ordinals:
@@ -310,6 +315,9 @@ class KiraraClient():
 			}
 			query = self._make_insert_query('idols', serialized)
 			self.db.execute(query, serialized)
+		
+		print()
+		print("  OK!")
 		
 		
 		# for card in sorted(data['result'], key=itemgetter('ordinal')):
@@ -357,6 +365,7 @@ class KiraraClient():
 		# query_data = []
 		
 		self.dbcon.commit()
+		print("Processing complete!")
 		
 		return True
 	
@@ -370,9 +379,11 @@ class KiraraClient():
 		print("Populating members...")
 		self._populate_members_and_metadata()
 		
+		print()
 		print("Updating idol database...")
 		self._cache_all_idols()
 		
+		print()
 		print("Updating event database...")
 		self._cache_events()
 			
@@ -470,7 +481,7 @@ class KiraraClient():
 		hc = HistoryCrawler()
 		crawled_events_data = hc.crawl_events(known_events)
 		if not crawled_events_data:
-			print("Found no event data. Nothing to do...")
+			print("Found no new event data. Nothing to do...")
 			return
 		
 		# with open("history.json", "w", encoding="utf-8") as f:
@@ -531,10 +542,10 @@ class KiraraClient():
 			if card['ordinal'] not in existing_ordinals:
 				missing_ordinals.append(card['ordinal'])
 		
-		print(f"Missing {len(missing_ordinals)} in the local database.")
+		print(f"Missing {len(missing_ordinals)} idols in the local database.")
 				
 		for ordinals_chunk in chunked(missing_ordinals, 20):
-			print("Querying chunk: ", ordinals_chunk)
+			print("Querying ordinals: ", ', '.join([str(x) for x in ordinals_chunk]))
 			self._query_idol_data_by_ordinal(ordinals_chunk)
 	
 	# -------------------------------------------------------------------------------------------

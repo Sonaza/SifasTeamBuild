@@ -56,15 +56,15 @@ class CardRotations():
 				"assets/css/style.scss",
 				"assets/css/style-mobile.scss",
 			],
-			'output_file'     : os.path.join(self.OutputDirectory, "css/public.min.css"),
+			'output_file'     : os.path.join(self.OutputDirectory, "css/public.min.css").replace('\\', '/'),
 		})
+		
 		self.processor = ResourceProcessor(self)
-		
-		self.renderer = PageRenderer(self)
-		
 		if self.args.watch:
 			self.processor.watch_changes()
 			exit()
+			
+		self.renderer = PageRenderer(self)
 		
 		if self.args.dev:
 			print("------ BUILDING IN DEV MODE ------")
@@ -84,6 +84,9 @@ class CardRotations():
 		
 		print()
 		
+		if not os.path.exists("assets/css/idols.css"):
+			raise Exception("Generated idols.css does not exist! Run tools/generate_idols_css.py")
+		
 		if not os.path.exists("assets/css/atlas.css"):
 			print("Atlas CSS file does not exist and must be regenerated!")
 			self.args.remake_atlas = True
@@ -92,6 +95,8 @@ class CardRotations():
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
 			self.thumbnails.make_atlas()
 		
+	# -------------------------------------------------------------------------------------------
+	
 	def _sort_rotation(self, group, rotation, order):
 		output = []
 		for ordered_member_id in order:
@@ -99,6 +104,8 @@ class CardRotations():
 				output.append((ordered_member_id, rotation[ordered_member_id]))
 		
 		return output
+	
+	# -------------------------------------------------------------------------------------------
 	
 	def get_attribute_type_array(self, group : Group):
 		cards_per_girl = defaultdict(lambda: defaultdict(lambda: defaultdict(list)))
@@ -215,6 +222,8 @@ class CardRotations():
 		
 		return rotations
 	
+	# -------------------------------------------------------------------------------------------
+	
 	def get_source_rotation(self, group : Group, source : Source):
 		member_delays = {
 			Source.Event : {
@@ -273,6 +282,8 @@ class CardRotations():
 		
 		return rotations
 		
+	# -------------------------------------------------------------------------------------------
+	
 	def _make_general_stats(self, group : Group):
 		categories = ['SRs', 'URs', 'event', 'festival', 'party', 'gacha', ]
 		stats = defaultdict(lambda: defaultdict(int))
@@ -315,6 +326,8 @@ class CardRotations():
 			stats[group] = self._make_general_stats(group=group)
 			
 		return stats
+	
+	# -------------------------------------------------------------------------------------------
 	
 	def _time_since_last(self, idols, group=None):
 		now = datetime.now(timezone.utc)
@@ -375,6 +388,8 @@ class CardRotations():
 		
 		return (category_data, category_info)
 	
+	# -------------------------------------------------------------------------------------------
+	
 	def get_events_with_cards(self):
 		events = self.client.get_events_with_cards()
 		features = self.client.get_event_features_per_member()
@@ -415,6 +430,8 @@ class CardRotations():
 			data['sbl'] = estimated_addition.strftime('%b %Y')
 		
 		return events, zero_feature_members
+	
+	# -------------------------------------------------------------------------------------------
 	
 	def generate_pages(self):
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
@@ -509,7 +526,7 @@ class CardRotations():
 		
 		print("\nAll done!\n")
 
-##################################
+# -------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
 	cr = CardRotations()

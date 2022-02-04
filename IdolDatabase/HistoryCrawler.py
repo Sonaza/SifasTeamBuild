@@ -27,9 +27,9 @@ class HistoryCrawler:
 		next_page = soup.select_one('.page-item:last-child a.page-link')
 		if next_page and ('Next' in next_page.decode_contents()):
 			next_page_url = HistoryCrawler.endpoint_url_root.format(next_page['href'])
-			print("Found next page url", next_page_url)
+			print("  Found next page url", next_page_url)
 		else:
-			print("Could not find next page url, this must be the last page.")
+			print("  Could not find next page url, this must be the last page.")
 			
 		news = soup.select('div.kars-list-alternate')
 		for p in news:
@@ -54,7 +54,7 @@ class HistoryCrawler:
 					event_info = re.findall(r"(.*) Event: (.*)", item_title)
 					
 					if not event_info or len(event_info[0]) != 2:
-						print("Could not parse event info", item_title)
+						print("  Could not parse event info", item_title)
 						continue
 						
 					event_type = event_info[0][0]
@@ -80,7 +80,7 @@ class HistoryCrawler:
 					end_ts = int(float(timestamps[1]['data-ts']))
 					end = datetime.utcfromtimestamp(end_ts)
 				except:
-					print("Could not parse event timestamps")
+					print("  Could not parse event timestamps")
 					continue
 				
 				found = True
@@ -89,12 +89,12 @@ class HistoryCrawler:
 			
 			cards_link = p.select_one('div.kars-card-brief-list > a.btn-primary')
 			if not cards_link:
-				print("Could not find cards link!")
+				print("  Could not find cards link!")
 				continue
 				
 			card_ordinals = re.findall(r'(\d{1,})', cards_link['href'])
 			if not card_ordinals:
-				print("Could not find any card ordinals!", cards_link)
+				print("  Could not find any card ordinals!", cards_link)
 				continue
 			
 			card_ordinals = [int(x) for x in card_ordinals]
@@ -139,7 +139,7 @@ class HistoryCrawler:
 			
 			next_page_url = HistoryCrawler.endpoint_url_page.format(1).format(locale)
 			while True:
-				print("Crawling page url", next_page_url)
+				print("Crawling event history page", next_page_url)
 				
 				html_data = self._request_page(next_page_url)
 				
@@ -150,7 +150,7 @@ class HistoryCrawler:
 				events.extend(event_data)
 				
 				if any(x['title'] in known_events for x in event_data):
-					print("Found a known event in the list, no need to continue crawling")
+					print("  Found a known event in the list, no need to continue crawling!")
 					break
 				
 				if next_page_url == False:
