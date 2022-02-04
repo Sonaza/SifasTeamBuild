@@ -32,3 +32,5 @@ https://packaging.python.org/en/latest/tutorials/managing-dependencies/
 pipenv install
 pipenv run python3 CardRotations.py
 ```
+
+:penguin: :penguin: :penguin: :penguin: :penguin: 
