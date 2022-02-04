@@ -68,6 +68,8 @@ def _get_card_source_label(card):
 			return 'Event Gacha'
 		
 	return card.source.display_name
+		
+# -------------------------------------------------------------------------------------------
 
 class PageRenderer():	
 	def __init__(self, parent):
@@ -115,7 +117,8 @@ class PageRenderer():
 		})
 		
 		self.rendered_pages = []
-
+		
+	# -------------------------------------------------------------------------------------------
 		
 	def render_and_save(self, template_filename, output_filename, data, minify=True, output_basepath=None):
 		if output_basepath == None:
