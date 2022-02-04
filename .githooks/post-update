@@ -7,7 +7,11 @@
 
 # exec git update-server-info
 
+echo "GIT HOOK SAYS THIS $(whoami)"
+
 if [ "$(whoami)" != "sonaza.com" ]; then
 	echo "Setting file owners to sonaza.com."
 	chown -R sonaza.com:sonaza.com /var/www/sonaza.com/sifas-cards.subdomain
+else
+	echo "No need to update file owners."
 fi
