@@ -48,23 +48,27 @@ class CardThumbnails():
 				else:
 					print(" FAIL!")
 		
-		# return True
+		if has_new_thumbnails:
+			print("  New thumbnails downloaded, remaking atlas is required.")
+		else:
+			print("  No new thumbnails downloaded.")
+		
 		return has_new_thumbnails
 	
 	def make_atlas(self):
-		print("Making atlas...")
+		print("Compiling atlas images...")
 		
 		atlas_by_ordinal = {}
+		atlas_identifiers = []
+		
 		sizes = [80]
 		rarities = [Rarity.SR, Rarity.UR]
 		
 		atlas_hash = self._make_random_string()
 		
 		for rarity in rarities:
-			print(rarity.name)
-			
 			for group in Group:
-				print(group.name)
+				print(f"  Processing {group.name} {rarity.name} thumbnails...")
 				
 				cards = self.client.get_idols_by_group(group, rarity)
 				cards_per_girl = defaultdict(list)
@@ -106,32 +110,39 @@ class CardThumbnails():
 							im_normal.close()
 							im_idolized.close()
 					
-					atlas_normal_path = os.path.join(self.output_directory, f'img/thumbnails/atlas_{group.value}_{rarity.value}_0_normal.png')
+					# TODO: Split atlases into multiple planes if image size grows too large
+					atlas_plane = 0
+					
+					atlas_identifier = f"atlas_{group.value}_{rarity.value}_{atlas_plane}"
+					atlas_identifiers.append((group, rarity, atlas_plane))
+					
+					atlas_normal_path = os.path.join(self.output_directory, f'img/thumbnails/{atlas_identifier}_normal.png').replace('\\', '/')
 					atlas_normal.save(atlas_normal_path, 'PNG')
-					print(f'Saved {atlas_normal_path}')
+					print(f'    Saved normal atlas   : {atlas_normal_path}')
 					
-					atlas_idolized_path = os.path.join(self.output_directory, f'img/thumbnails/atlas_{group.value}_{rarity.value}_0_idolized.png')
+					atlas_idolized_path = os.path.join(self.output_directory, f'img/thumbnails/{atlas_identifier}_idolized.png').replace('\\', '/')
 					atlas_idolized.save(atlas_idolized_path, 'PNG')
-					print(f'Saved {atlas_idolized_path}')
+					print(f'    Saved idolized atlas : {atlas_idolized_path}')
 					
-				
+		
+		print("Writing atlas css... ", end='')
+		
 		groups = []
-		for rarity in rarities:
-			for group in Group:
-				groups.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_normal.{atlas_hash}.png') no-repeat; }}")
-				groups.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/atlas_{group.value}_{rarity.value}_0_idolized.{atlas_hash}.png') no-repeat; }}")
+		for group, rarity, atlas_plane in atlas_identifiers:
+			atlas_identifier = f"atlas_{group.value}_{rarity.value}_{atlas_plane}"
+			groups.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/{atlas_identifier}_normal.{atlas_hash}.png') no-repeat; }}")
+			groups.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/{atlas_identifier}_idolized.{atlas_hash}.png') no-repeat; }}")
 		
 		atlas_css = os.path.join("assets/css/atlas.css")
-		with open(atlas_css, "w", encoding="utf8") as f:
-			print("Writing css... ")
-			
+		with open(atlas_css, "w", encoding="utf8") as output_file:
 			for line in groups:
-				f.write(line + "\n")
+				output_file.write(line + "\n")
 			
 			for ordinal, (group, rarity, atlas_index, coordinates) in atlas_by_ordinal.items():
 				line = f".card-thumbnail.card-{ordinal} {{ background-position: {-coordinates[0]}px {-coordinates[1]}px !important; }}"
-				f.write(line + "\n")
+				output_file.write(line + "\n")
 			
-			f.close()
-			
-			print("Done")
+		print("Done")
+		
+		print("Atlas processing complete!")
+		print()

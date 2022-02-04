@@ -82,6 +82,8 @@ class CardRotations():
 		self.client = KiraraClient()
 		self.client.update_database(forced=self.args.force)
 		
+		print()
+		
 		if not os.path.exists("assets/css/atlas.css"):
 			print("Atlas CSS file does not exist and must be regenerated!")
 			self.args.remake_atlas = True
