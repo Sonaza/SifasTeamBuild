@@ -1,0 +1,13 @@
+#!/bin/sh
+#
+# An example hook script to prepare a packed repository for use over
+# dumb transports.
+#
+# To enable this hook, rename this file to "post-update".
+
+# exec git update-server-info
+
+if [ "$(whoami)" != "sonaza.com" ]; then
+	echo "Setting file owners to sonaza.com."
+	chown -R sonaza.com:sonaza.com /var/www/sonaza.com/sifas-cards.subdomain
+fi
