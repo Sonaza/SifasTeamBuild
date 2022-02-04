@@ -29,7 +29,7 @@ today = now - timedelta(hours=6, minutes=6)
 # print(timestamp.day, today.day)
 
 # has_built_today = (timestamp.hour >= 6 and timestamp.day == today.day) or (timestamp.day >= today.day and not status['auto'])
-disable_built_check = (now.hour >= 6 and (now.minute >= 0 and now.minute <= 10))
+disable_built_check = (now.hour == 6 and (now.minute >= 0 and now.minute <= 12))
 has_built_today = not disable_built_check or (timestamp.day == today.day)
 
 already_handled = False
