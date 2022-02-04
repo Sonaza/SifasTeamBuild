@@ -8,7 +8,7 @@ Maybe even suggest teams eventually...
 
 ## Git Hooks
 
-`.githooks` directory contains some hooks. To enable them use
+`.githooks/` directory contains some hooks. To enable them use:
 
 ```
 git config --local core.hooksPath .githooks/
@@ -20,7 +20,9 @@ Card rotation nonsense yay!
 
 ### Installation
 
-Python dependency is managed by pipenv:
+Requires Python version >=3.7.
+
+Python dependencies are managed by pipenv:
 
 https://packaging.python.org/en/latest/tutorials/managing-dependencies/
 
@@ -28,5 +30,5 @@ https://packaging.python.org/en/latest/tutorials/managing-dependencies/
 
 ```
 pipenv install
-pipenv run python3 CardRotations.py
+pipenv run python CardRotations.py
 ```
