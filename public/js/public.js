@@ -264,11 +264,15 @@ const highlight_reverse_map = {
 let getStorage = (key, default_value) =>
 {
 	if (!storageAvailable('localStorage'))
+	{
 		return default_value;
+	}
 	
 	let value = window.localStorage.getItem(key);
 	if (value === null || value === "null")
+	{
 		return default_value;
+	}
 	
 	return {
 		'boolean'   : (v) => v == 'true',
@@ -295,8 +299,7 @@ app.run(($rootScope) =>
 			show_tooltips           : getStorage('show_tooltips', true),
 			collapsed               : getStorage('collapsed', false),
 			hide_empty_rows         : getStorage('hide_empty_rows', false),
-			
-			alt           : true,
+			// alt           : true,
 		}
 	}
 )
@@ -349,6 +352,11 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			}
 		}
 		
+		if (!($rootScope.settings.highlight_source in highlight_reverse_map))
+		{
+			$rootScope.settings.highlight_source = '0';
+		}
+		
 		//////////////////////////////////////////////////
 		
 		$scope.highlight_options = highlight_options;
@@ -387,13 +395,13 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			}
 			
 			output.push('source-highlight-' + $rootScope.settings.highlight_source);
-			if ($rootScope.settings.highlight_source == 0)
-			{
-				output.push('source-highlighting-inactive');
-			}
-			else if ($rootScope.settings.highlight_source != 0)
+			if ($rootScope.settings.highlight_source != '0')
 			{
 				output.push('source-highlighting-active');
+			}
+			else
+			{
+				output.push('source-highlighting-inactive');
 			}
 			
 			if ($scope.navigation_visible || $scope.settings_visible)
