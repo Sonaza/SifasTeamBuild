@@ -19,6 +19,7 @@ except json.decoder.JSONDecodeError:
 	exit(-1337)
 
 now = datetime.now(timezone.utc)
+disable_built_check = (now.hour == 6 and (now.minute >= 0 and now.minute <= 10)) or (now.hour == 5 and now.minute >= 55)
 
 timestamp = datetime.fromisoformat(status['timestamp'])
 
@@ -30,8 +31,7 @@ today_adjusted = now - timedelta(hours=6, minutes=2)
 # print("today", today)
 # print(timestamp.day, today.day)
 
-disable_built_check = (now.hour == 6 and (now.minute >= 0 and now.minute <= 10))
-has_built_today = not disable_built_check or (timestamp_adjusted.day == today_adjusted.day)
+has_built_today = (timestamp_adjusted.day == today_adjusted.day)
 
 already_handled = False
 if status['handled'] != None:
@@ -41,7 +41,7 @@ status['handled'] = datetime.now(timezone.utc).isoformat()
 
 print()
 
-if not has_built_today:
+if not disable_built_check and not has_built_today:
 	print("--------- WARNING! BUILD NOT RUN YET! ---------")
 	print("Today's build should have run by now.")
 	print()
@@ -86,7 +86,7 @@ if not already_handled:
 	json.dump(status, status_file)
 	status_file.close()
 	
-if not has_built_today:
+if not disable_built_check and not has_built_today:
 	exit(2)
 
 elif status['success'] == True or not status['auto']:
