@@ -38,17 +38,21 @@ def _conditional_css(class_names, condition):
 		return class_names[0]
 	else:
 		return class_names[1]
-		
+
+def get_file_modifyhash(filepath):
+	modify_time = os.stat(filepath).st_mtime
+	hashvalue = hash(modify_time) % 16711425
+	return f"{hashvalue:06x}"
+
 def _cache_buster(output_directory, filename):
 	full_path = os.path.normpath(output_directory + '/' + filename)
 	if not os.path.exists(full_path):
 		print(f"Cache busting path {full_path} does not exist!")
 		return filename
 		
-	modify_time = os.stat(full_path).st_mtime
 	name, ext = os.path.splitext(filename)
-	hashvalue = hash(modify_time) % 16711425
-	return f"{name}.{hashvalue:06x}{ext}"
+	buster = get_file_modifyhash(full_path)
+	return f"{name}.{buster}{ext}"
 	
 def _include_page(filepath, minify=False):
 	if not os.path.exists(filepath):
@@ -120,7 +124,7 @@ class PageRenderer():
 		
 	# -------------------------------------------------------------------------------------------
 		
-	def render_and_save(self, template_filename, output_filename, data, minify=True, output_basepath=None):
+	def render_and_save(self, template_filename, output_filename, data, minify=True, output_basepath=None, generated_note=False):
 		if output_basepath == None:
 			output_basepath = self.parent.OutputDirectory
 		
@@ -135,6 +139,11 @@ class PageRenderer():
 			rendered_output = htmlmin.minify(rendered_output, remove_empty_space=True)
 		
 		with open(output_filename, "w", encoding="utf8") as f:
+			if generated_note:
+				f.write(f"# ------------------------------------------------------------\n")
+				f.write(f"# DO NOT MODIFY THIS FILE DIRECTLY\n")
+				f.write(f"# This file was auto generated from {template_filename}\n")
+				f.write(f"# ------------------------------------------------------------\n")
 			f.write(rendered_output)
 			f.close()
 		

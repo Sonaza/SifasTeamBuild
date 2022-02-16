@@ -433,6 +433,36 @@ class CardRotations():
 	
 	# -------------------------------------------------------------------------------------------
 	
+	def _get_preload_assets(self):
+		preload_assets = []
+		preload_asset_files = [
+			self.css_settings.output_file,
+			os.path.join(CardRotations.OutputDirectory, "js/public.js"),
+		]
+		preload_asset_files.extend(glob(os.path.join(CardRotations.OutputDirectory, "img/thumbnails/*.png")))
+		
+		ext_types = {
+			'.css' : 'style',
+			'.png' : 'image',
+			'.js'  : 'script',
+		}
+		
+		for filepath in preload_asset_files:
+			filepath = filepath.replace('\\', '/')
+			basename = os.path.basename(filepath)
+			
+			filehash = get_file_modifyhash(filepath)
+			
+			relative_path = filepath.replace('public/', '')
+			base, ext = os.path.splitext(relative_path)
+			
+			preload_assets.append({
+				'path'   : f"/{base}.{filehash}{ext}",
+				'type'   : ext_types[ext],
+			})
+		
+		return preload_assets
+	
 	def generate_pages(self):
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		
@@ -510,13 +540,20 @@ class CardRotations():
 			minify=True,
 		)
 		
+		preload_assets = self._get_preload_assets()
+		
 		now = datetime.now(timezone.utc)
 		self.renderer.render_and_save("main_layout.php", "views/content_index.php", {
 			'last_update'           : now.strftime('%d %B %Y %H:%M %Z'),
 			'last_update_timestamp' : now.isoformat(),
+			'preloads' : preload_assets
 		}, minify=False, output_basepath='')
 		
 		self.renderer.render_and_save("crawler.html", "crawler.html", {}, minify=True)
+		
+		self.renderer.render_and_save("template.htaccess", ".htaccess", {
+			'preloads' : preload_assets
+		}, minify=False, generated_note=True)
 		
 		for file in files_to_delete:
 			if file in self.renderer.rendered_pages: continue

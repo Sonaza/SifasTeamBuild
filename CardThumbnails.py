@@ -3,6 +3,8 @@ from PIL import Image
 import requests
 import os
 
+from PageRenderer import get_file_modifyhash
+
 class CardThumbnails():
 	def __init__(self, client, output_directory):
 		self.client = client
@@ -66,8 +68,6 @@ class CardThumbnails():
 		sizes = [80]
 		rarities = [Rarity.SR, Rarity.UR]
 		
-		atlas_hash = self._make_random_string()
-		
 		for rarity in rarities:
 			for group in Group:
 				print(f"  Processing atlas   {group.name} {rarity.name}...")
@@ -116,7 +116,6 @@ class CardThumbnails():
 					atlas_plane = 0
 					
 					atlas_identifier = f"atlas_{group.value}_{rarity.value}_{atlas_plane}"
-					atlas_identifiers.append((group, rarity, atlas_plane))
 					
 					atlas_normal_path = os.path.join(self.output_directory, f'img/thumbnails/{atlas_identifier}_normal.png').replace('\\', '/')
 					atlas_normal.save(atlas_normal_path, 'PNG')
@@ -126,14 +125,19 @@ class CardThumbnails():
 					atlas_idolized.save(atlas_idolized_path, 'PNG')
 					print(f'    Saved idolized atlas : {atlas_idolized_path}')
 					
+					filehashes = (
+						get_file_modifyhash(atlas_normal_path),
+						get_file_modifyhash(atlas_idolized_path),
+					)
+					atlas_identifiers.append((group, rarity, atlas_plane, filehashes))
 		
 		print("Writing atlas css... ", end='')
 		
 		groups = []
-		for group, rarity, atlas_plane in atlas_identifiers:
+		for group, rarity, atlas_plane, (hash_normal, hash_idolized) in atlas_identifiers:
 			atlas_identifier = f"atlas_{group.value}_{rarity.value}_{atlas_plane}"
-			groups.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/{atlas_identifier}_normal.{atlas_hash}.png') no-repeat; }}")
-			groups.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/{atlas_identifier}_idolized.{atlas_hash}.png') no-repeat; }}")
+			groups.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/{atlas_identifier}_normal.{hash_normal}.png') no-repeat; }}")
+			groups.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value} {{ background: url('/img/thumbnails/{atlas_identifier}_idolized.{hash_idolized}.png') no-repeat; }}")
 		
 		atlas_css = os.path.join("assets/css/atlas.css")
 		with open(atlas_css, "w", encoding="utf8") as output_file:

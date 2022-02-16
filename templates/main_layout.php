@@ -5,6 +5,13 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
+{% for item in preloads %}
+	<link rel="preload" href="{{ item['path'] }}" as="{{ item['type'] }}">{% endfor %}
+	<link rel="preload" href="/js/vendor/angular/angular.combined.min.js" as="script">
+	<link rel="preload" href="/css/fonts/Roboto-Regular-Latin.woff2" as="font">
+	<link rel="preload" href="/css/fonts/Roboto-Bold-Latin.woff2" as="font">
+	<link rel="preload" href="/css/fonts/Montserrat-Regular-Latin.woff2" as="font">
+	<link rel="preload" href="/css/fonts/Montserrat-Bold-Latin.woff2" as="font">
  	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css">
 	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
 	<meta property="og:type" content="website">
@@ -148,9 +155,10 @@
 		<script src="/js/vendor/angular/angular-route.js"></script>
 		<script src="/js/vendor/angular/angular-sanitize.js"></script>
 	{% else %}
-		<script src="/js/vendor/angular/angular.min.js"></script>
+		{# <script src="/js/vendor/angular/angular.min.js"></script>
 		<script src="/js/vendor/angular/angular-route.min.js"></script>
-		<script src="/js/vendor/angular/angular-sanitize.min.js"></script>
+		<script src="/js/vendor/angular/angular-sanitize.min.js"></script> #}
+		<script src="/js/vendor/angular/angular.combined.min.js"></script>
 	{% endif %}
 	<script src="{{ cache_buster('/js/public.js') }}"></script>
 </body>
