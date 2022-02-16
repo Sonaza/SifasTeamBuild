@@ -3,6 +3,7 @@ from PIL import Image
 import requests
 import os
 
+from IdolDatabase.Config import Config
 from PageRenderer import get_file_modifyhash
 
 class CardThumbnails():
@@ -15,7 +16,9 @@ class CardThumbnails():
 		return f"{hashvalue:06x}"
 	
 	def _download_file(self, url, target_path):
-		r = requests.get(url)
+		r = requests.get(url, headers={
+			'User-Agent' : Config.USER_AGENT,
+		})
 		if r.status_code == 200:
 			with open(target_path, "wb") as f:
 				f.write(r.content)
