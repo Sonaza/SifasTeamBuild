@@ -17,6 +17,25 @@ Redirect 301 /index.html /
 </IfModule>
 
 <IfModule mod_headers.c>
+	Header add Link "</css/public.min.css>;rel=preload;as=style"
+
+	# Header add Link "</css/fonts/Roboto-Regular-Latin.woff2>;rel=preload, </css/fonts/Roboto-Bold-Latin.woff2>;rel=preload"
+	Header add Link "</css/fonts/Roboto-Regular-Latin.woff2>;rel=preload;as=font, </css/fonts/Roboto-Bold-Latin.woff2>;rel=preload;as=font"
+
+	# Header add Link "</css/public.min.css>;rel=preload, </assets/scripts.css>;rel=preload"
+	# Header add Link "</img/icons/32/attribute-1.png>;rel=preload;as=image,</img/icons/32/attribute-2.png>;rel=preload;as=image,</img/icons/32/attribute-3.png>;rel=preload;as=image,</img/icons/32/attribute-4.png>;rel=preload;as=image,</img/icons/32/attribute-5.png>;rel=preload;as=image,</img/icons/32/attribute-6.png>;rel=preload;as=image,</img/icons/32/icon-1-border.png>;rel=preload;as=image,</img/icons/32/icon-1.png>;rel=preload;as=image,</img/icons/32/icon-101-border.png>;rel=preload;as=image,</img/icons/32/icon-101.png>;rel=preload;as=image,</img/icons/32/icon-102-border.png>;rel=preload;as=image,</img/icons/32/icon-102.png>;rel=preload;as=image,</img/icons/32/icon-103-border.png>;rel=preload;as=image,</img/icons/32/icon-103.png>;rel=preload;as=image,</img/icons/32/icon-104-border.png>;rel=preload;as=image,</img/icons/32/icon-104.png>;rel=preload;as=image,</img/icons/32/icon-105-border.png>;rel=preload;as=image,</img/icons/32/icon-105.png>;rel=preload;as=image,</img/icons/32/icon-106-border.png>;rel=preload;as=image,</img/icons/32/icon-106.png>;rel=preload;as=image,</img/icons/32/icon-107-border.png>;rel=preload;as=image,</img/icons/32/icon-107.png>;rel=preload;as=image,</img/icons/32/icon-108-border.png>;rel=preload;as=image,</img/icons/32/icon-108.png>;rel=preload;as=image,</img/icons/32/icon-109-border.png>;rel=preload;as=image,</img/icons/32/icon-109.png>;rel=preload;as=image,</img/icons/32/icon-2-border.png>;rel=preload;as=image,</img/icons/32/icon-2.png>;rel=preload;as=image,</img/icons/32/icon-201-border.png>;rel=preload;as=image,</img/icons/32/icon-201.png>;rel=preload;as=image,</img/icons/32/icon-202-border.png>;rel=preload;as=image,</img/icons/32/icon-202.png>;rel=preload;as=image,</img/icons/32/icon-203-border.png>;rel=preload;as=image,</img/icons/32/icon-203.png>;rel=preload;as=image,</img/icons/32/icon-204-border.png>;rel=preload;as=image,</img/icons/32/icon-204.png>;rel=preload;as=image,</img/icons/32/icon-205-border.png>;rel=preload;as=image,</img/icons/32/icon-205.png>;rel=preload;as=image,</img/icons/32/icon-206-border.png>;rel=preload;as=image,</img/icons/32/icon-206.png>;rel=preload;as=image,</img/icons/32/icon-207-border.png>;rel=preload;as=image,</img/icons/32/icon-207.png>;rel=preload;as=image,</img/icons/32/icon-208-border.png>;rel=preload;as=image,</img/icons/32/icon-208.png>;rel=preload;as=image,</img/icons/32/icon-209-border.png>;rel=preload;as=image,</img/icons/32/icon-209.png>;rel=preload;as=image,</img/icons/32/icon-210-border.png>;rel=preload;as=image,</img/icons/32/icon-210.png>;rel=preload;as=image,</img/icons/32/icon-211-border.png>;rel=preload;as=image,</img/icons/32/icon-211.png>;rel=preload;as=image,</img/icons/32/icon-212-border.png>;rel=preload;as=image,</img/icons/32/icon-212.png>;rel=preload;as=image,</img/icons/32/icon-3-border.png>;rel=preload;as=image,</img/icons/32/icon-3.png>;rel=preload;as=image,</img/icons/32/icon-301-border.png>;rel=preload;as=image,</img/icons/32/icon-301.png>;rel=preload;as=image,</img/icons/32/icon-302-border.png>;rel=preload;as=image,</img/icons/32/icon-302.png>;rel=preload;as=image,</img/icons/32/icon-303-border.png>;rel=preload;as=image,</img/icons/32/icon-303.png>;rel=preload;as=image,</img/icons/32/icon-304-border.png>;rel=preload;as=image,</img/icons/32/icon-304.png>;rel=preload;as=image,</img/icons/32/icon-305-border.png>;rel=preload;as=image,</img/icons/32/icon-305.png>;rel=preload;as=image,</img/icons/32/icon-4-border.png>;rel=preload;as=image,</img/icons/32/icon-4.png>;rel=preload;as=image,</img/icons/32/icon-5-border.png>;rel=preload;as=image,</img/icons/32/icon-5.png>;rel=preload;as=image,</img/icons/32/icon-6-border.png>;rel=preload;as=image,</img/icons/32/icon-6.png>;rel=preload;as=image,</img/icons/32/icon-7-border.png>;rel=preload;as=image,</img/icons/32/icon-7.png>;rel=preload;as=image,</img/icons/32/icon-8-border.png>;rel=preload;as=image,</img/icons/32/icon-8.png>;rel=preload;as=image,</img/icons/32/icon-9-border.png>;rel=preload;as=image,</img/icons/32/icon-9.png>;rel=preload;as=image,</img/icons/32/rarity-10.png>;rel=preload;as=image,</img/icons/32/rarity-20.png>;rel=preload;as=image,</img/icons/32/rarity-30.png>;rel=preload;as=image,</img/icons/32/type-1.png>;rel=preload;as=image,</img/icons/32/type-2.png>;rel=preload;as=image,</img/icons/32/type-3.png>;rel=preload;as=image,</img/icons/32/type-4.png>;rel=preload;as=image"
+
+	# Header add Link "</img/thumbnails/atlas_1_30_0_idolized.png>;rel=preload;as=image;media=screen and (min-width: 1101px)"
+	# Header add Link "</img/thumbnails/atlas_1_30_0_normal.png>;rel=preload;as=image;media=screen and (min-width: 1101px)"
+	# Header add Link "</img/thumbnails/atlas_2_30_0_idolized.png>;rel=preload;as=image;media=screen and (min-width: 1101px)"
+	# Header add Link "</img/thumbnails/atlas_2_30_0_normal.png>;rel=preload;as=image;media=screen and (min-width: 1101px)"
+	# Header add Link "</img/thumbnails/atlas_3_30_0_idolized.png>;rel=preload;as=image;media=screen and (min-width: 1101px)"
+	# Header add Link "</img/thumbnails/atlas_3_30_0_normal.png>;rel=preload;as=image;media=screen and (min-width: 1101px)"
+
+	Header add Link "</img/background.jpg>;rel=preload;as=image;media=screen and (min-width: 1101px)"
+	Header add Link "</img/background-mobile.jpg>;rel=preload;as=image;media=screen and (max-width: 1100px)"
+
+
 	Header set X-Best-Girl "Nozomi"
 	
 	Header set Access-Control-Allow-Origin "*"
@@ -176,15 +195,3 @@ Redirect 301 /index.html /
 	ExpiresByType text/x-cross-domain-policy            "access plus 1 week"
 
 </IfModule>
-
-Redirect 302 /wordpress https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /wp https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /wp-admin https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /wp-login.php https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /wp-content https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /_ignition https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /admin https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /vendor https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /phpinfo https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /phpinfo.php https://www.youtube.com/watch?v=dQw4w9WgXcQ
-Redirect 302 /laravel https://www.youtube.com/watch?v=dQw4w9WgXcQ
