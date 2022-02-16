@@ -158,7 +158,7 @@
 		{# <script src="/js/vendor/angular/angular.min.js"></script>
 		<script src="/js/vendor/angular/angular-route.min.js"></script>
 		<script src="/js/vendor/angular/angular-sanitize.min.js"></script> #}
-		<script src="/js/vendor/angular/angular.combined.min.js"></script>
+		<script src="/js/vendor/angular/angular-combined.min.js"></script>
 	{% endif %}
 	<script src="{{ cache_buster('/js/public.js') }}"></script>
 </body>

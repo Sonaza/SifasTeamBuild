@@ -3,6 +3,8 @@
 wanha/
 res/
 
+public/.htaccess
+
 build.status
 
 history.json
