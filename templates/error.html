@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>Crawler Info &mdash; SIFAS Card Rotations</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+ 	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css">
+	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://sifas-cards.sonaza.com/">
+	<meta property="og:title" content="SIFAS Card Rotations">
+	<meta property="og:site_name" content="SIFAS Card Rotations">
+	<meta property="og:description" content="View card rotations and related statistics.">
+	<meta property="og:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
+	<link rel="icon" href="/favicon.ico">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_180.png">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_256.png" sizes="256x256">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_512.png" sizes="512x512">
+	<link rel="shortcut icon" href="/img/favicon_tile_192.png">
+</head>
+</head>
+<body>
+	<div id="header">
+		<div id="header-inner">
+			<div>
+				<h2>
+					SIFAS Card Rotations &mdash; {{ error_status }}
+				</h2>
+			</div>
+		</div>
+	</div>
+	<div id="main-outer-wrapper">
+		<div id="main-wrapper" class="error-wrapper">
+			<div id="error-container">
+				<h1>{{ error_code }} &mdash; {{ error_status }}</h1>
+				<p>
+					{{ error_text }}
+				</p>
+				<p>
+					<a href="/">&laquo; Go back to safety</a>
+				</p>
+			</div>
+		</div>
+	</div>
+	<footer id="footer">
+		<div id="footer-top">
+			<div class="footer-top-inner">
+				<div style="width:25%">
+					Website created by Sonaza
+				</div>
+				<div style="width:50%">
+					For use with <a href="https://lovelive-as-global.com/" target="_blank" rel="noreferrer noopener">Love Live School Idol Festival All Stars</a>
+				</div>
+				<div style="width:25%">
+					<a href="https://forms.gle/sMK7KSmXDsgmHrvH9" target="_blank" rel="noreferrer noopener">Send Feedback</a>
+				</div>
+			</div>
+		</div>
+		<div id="footer-bottom">
+			<div class="details">
+				Data is retrieved from <a href="https://allstars.kirara.ca/" target="_blank">Kirara All Stars Card Database</a>
+			</div>
+			<div class="disclaimer">
+				This website is not affiliated with Love Live!, Mynet Inc., SUNRISE Inc., Bushiroad Inc. or any other associated company.
+			</div>
+		</div>
+	</footer>
+</body>
+</html>

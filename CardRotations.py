@@ -466,11 +466,17 @@ class CardRotations():
 	def generate_pages(self):
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		
+		# -------------------------------------------------------
+		# Per school UR attribute-type arrays
+		
 		idol_arrays = [(group, *self.get_attribute_type_array(group)) for group in Group]
 		for data in idol_arrays:
 			output_file = self.renderer.render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
 				'idol_arrays'        : [ data ],
 			}, minify=not self.args.dev)
+		
+		# -------------------------------------------------------
+		# General UR rotations
 		
 		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
 		self.renderer.render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
@@ -480,6 +486,9 @@ class CardRotations():
 			'page_description'   : 'Rotations for all UR cards.',
 		}, minify=not self.args.dev)
 		
+		# -------------------------------------------------------
+		# Festival UR rotations
+		
 		festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
 		self.renderer.render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
 			'grouped_rotations'  : festival_rotations,
@@ -487,6 +496,9 @@ class CardRotations():
 			'page_title'         : 'Festival UR Rotations',
 			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
 		}, minify=not self.args.dev)
+		
+		# -------------------------------------------------------
+		# Party UR rotations
 		
 		party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
 		self.renderer.render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
@@ -496,6 +508,9 @@ class CardRotations():
 			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
 		}, minify=not self.args.dev)
 		
+		# -------------------------------------------------------
+		# Event UR rotations
+		
 		event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
 		self.renderer.render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
 			'grouped_rotations'  : event_rotations,
@@ -504,11 +519,17 @@ class CardRotations():
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
 		}, minify=not self.args.dev)
 		
+		# -------------------------------------------------------
+		# Event cards info
+		
 		events_with_cards, zero_feature_members = self.get_events_with_cards()
 		self.renderer.render_and_save("event_cards.html", "pages/event_cards.html", {
 			'events_with_cards'    : events_with_cards,
 			'zero_feature_members' : zero_feature_members,
 		})
+		
+		# -------------------------------------------------------
+		# SR Sets
 		
 		sr_sets = [(group, self.get_general_rotation(group, Rarity.SR)) for group in Group]
 		self.renderer.render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
@@ -517,6 +538,9 @@ class CardRotations():
 			'page_title'         : 'SR Sets',
 			'page_description'   : 'Rotations for SR sets. SR release order seems highly variable (mainly the new girls not fitting in neat cycles) so this page may or may not break.',
 		})
+		
+		# -------------------------------------------------------
+		# Card stats
 		
 		general_stats = self.get_general_stats()
 		self.renderer.render_and_save("stats.html", "pages/stats.html", {
@@ -532,13 +556,22 @@ class CardRotations():
 				'category_info'  : category_info[category_tag],
 			}, minify=not self.args.dev)
 		
+		# -------------------------------------------------------
+		# Index page
+		
 		self.renderer.render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
+		
+		# -------------------------------------------------------
+		# Compile and minify CSS
 		
 		self.processor.compile_css(
 			input_files = self.css_settings.input_files,
 			output_file = self.css_settings.output_file,
 			minify=True,
 		)
+		
+		# -------------------------------------------------------
+		# Main index and layout
 		
 		preload_assets = self._get_preload_assets()
 		
@@ -549,11 +582,59 @@ class CardRotations():
 			'preloads' : preload_assets
 		}, minify=False, output_basepath='')
 		
+		# -------------------------------------------------------
+		# Error Pages
+		
+		self.renderer.render_and_save("error.html", "error/400.html", {
+			'error_code'   : 400,
+			'error_status' : 'Bad Request',
+			'error_text'   : "The server is unable to handle the malformed request made by your browser.",
+		}, minify=True)
+		
+		self.renderer.render_and_save("error.html", "error/403.html", {
+			'error_code'   : 403,
+			'error_status' : 'Forbidden',
+			'error_text'   : "You are not permitted to access this resource. Move along, citizen.",
+		}, minify=True)
+		
+		self.renderer.render_and_save("error.html", "error/404.html", {
+			'error_code'   : 404,
+			'error_status' : 'Not Found',
+			'error_text'   : "Whoopsie! Whatever it is you're looking for at this URL does not exist.<br><br>If a page links here directly or you think something should have been here please send feedback.",
+		}, minify=True)
+		
+		self.renderer.render_and_save("error.html", "error/410.html", {
+			'error_code'   : 410,
+			'error_status' : 'Gone',
+			'error_text'   : "Whoopsie! Whatever it is you're looking for at this URL is permanently gone.",
+		}, minify=True)
+		
+		self.renderer.render_and_save("error.html", "error/500.html", {
+			'error_code'   : 500,
+			'error_status' : 'Server Error',
+			'error_text'   : "The server encountered an unrecoverable error while processing your request.<br><br>Please try again later.",
+		}, minify=True)
+		
+		self.renderer.render_and_save("error.html", "error/503.html", {
+			'error_code'   : 503,
+			'error_status' : 'Unavailable',
+			'error_text'   : "Service is temporarily unavailable. Please try again later.",
+		}, minify=True)
+		
+		# -------------------------------------------------------
+		# Crawler Info
+		
 		self.renderer.render_and_save("crawler.html", "crawler.html", {}, minify=True)
+		
+		# -------------------------------------------------------
+		# .htaccess
 		
 		self.renderer.render_and_save("template.htaccess", ".htaccess", {
 			'preloads' : preload_assets
 		}, minify=False, generated_note=True)
+		
+		# -------------------------------------------------------
+		# File cleanup
 		
 		for file in files_to_delete:
 			if file in self.renderer.rendered_pages: continue
