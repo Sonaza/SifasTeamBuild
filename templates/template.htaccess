@@ -17,7 +17,7 @@ Redirect 301 /index.html /
 </IfModule>
 
 <IfModule mod_headers.c>
-	Header add Link "</js/vendor/angular/angular.combined.min.js>;rel=preload;as=script"
+	Header add Link "</js/vendor/angular/angular-combined.min.js>;rel=preload;as=script"
 {% for item in preloads %}
 	Header add Link "<{{ item['path'] }}>;rel=preload;as={{ item['type'] }}"{% endfor %}
 	

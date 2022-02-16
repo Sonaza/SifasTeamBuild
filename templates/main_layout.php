@@ -7,7 +7,7 @@
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
 {% for item in preloads %}
 	<link rel="preload" href="{{ item['path'] }}" as="{{ item['type'] }}">{% endfor %}
-	<link rel="preload" href="/js/vendor/angular/angular.combined.min.js" as="script">
+	<link rel="preload" href="/js/vendor/angular/angular-combined.min.js" as="script">
 	<link rel="preload" href="/css/fonts/Roboto-Regular-Latin.woff2" as="font">
 	<link rel="preload" href="/css/fonts/Roboto-Bold-Latin.woff2" as="font">
 	<link rel="preload" href="/css/fonts/Montserrat-Regular-Latin.woff2" as="font">
