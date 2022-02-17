@@ -560,10 +560,11 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		$scope.handle_expiry = function(next_url)
 		{
 			let now = new Date();
-			let now_utc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+			let now_utc = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()));
+			
 			if ($scope.page_loaded === undefined)
 			{
-				$scope.page_loaded = new Date(now_utc);
+				$scope.page_loaded = now_utc;
 				
 				let expiry_dates = [
 					new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),     6, 3, 0)),
@@ -582,7 +583,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 				console.info("This page will expire on", $scope.page_expires);
 			}
 			
-			if (new Date(now_utc) >= $scope.page_expires)
+			if (now_utc >= $scope.page_expires)
 			{
 				location.href = next_url;
 				location.reload();
