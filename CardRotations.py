@@ -448,6 +448,11 @@ class CardRotations():
 		}
 		
 		for filepath in preload_asset_files:
+			rel = 'preload'
+			
+			# if 'atlas_' in filepath:
+			# 	rel = "prefetch"
+			
 			filepath = filepath.replace('\\', '/')
 			basename = os.path.basename(filepath)
 			
@@ -459,6 +464,7 @@ class CardRotations():
 			preload_assets.append({
 				'path'   : f"/{base}.{filehash}{ext}",
 				'type'   : ext_types[ext],
+				'rel'    : rel,
 			})
 		
 		return preload_assets

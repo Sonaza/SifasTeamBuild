@@ -27,13 +27,13 @@ ErrorDocument 503 /error/503.html
 	Header add Link "</js/vendor/angular/angular-combined.min.js>;rel=preload;as=script"
 	
 {% for item in preloads %}
-	Header add Link "<{{ item['path'] }}>;rel=preload;as={{ item['type'] }}"{% endfor %}
+	Header add Link "<{{ item['path'] }}>;rel={{ item['rel'] }};as={{ item['type'] }}"{% endfor %}
 	
 	Header add Link "</css/fonts/Roboto-Regular-Latin.woff2>;rel=preload;as=font;crossorigin, </css/fonts/Roboto-Bold-Latin.woff2>;rel=preload;as=font;crossorigin"
 	Header add Link "</css/fonts/Montserrat-Regular-latin.woff2>;rel=preload;as=font;crossorigin, </css/fonts/Montserrat-SemiBold-latin.woff2>;rel=preload;as=font;crossorigin, </css/fonts/Montserrat-Bold-latin.woff2>;rel=preload;as=font;crossorigin"
 
-	Header add Link "</img/background.jpg>;rel=preload;as=image;media=(min-width: 1101px)"
-	Header add Link "</img/background-mobile.jpg>;rel=preload;as=image;media=(max-width: 1100px)"
+	Header add Link "</img/background.jpg>;rel=prefetch;as=image;media=(min-width: 1101px)"
+	Header add Link "</img/background-mobile.jpg>;rel=prefetch;as=image;media=(max-width: 1100px)"
 	
 	# FontAwesome only used on mobile
 	Header add Link "</css/vendor/font-awesome/font-awesome.min.css>;rel=preload;as=style;media=(max-width: 1100px)"
