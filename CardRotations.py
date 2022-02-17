@@ -490,7 +490,7 @@ class CardRotations():
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
 			'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
-			                          order and manual per-rotation exceptions are not planned on this page. That is to say, Shioriko gets her 8th and 9th rotation URs when she does.''',
+			                          order and manual per-rotation exceptions are not planned for this page. That is to say, Shioriko gets her 8th and 9th rotation URs when she does.''',
 		}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
@@ -543,7 +543,8 @@ class CardRotations():
 			'grouped_rotations'  : sr_sets,
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
-			'page_description'   : 'Rotations for SR sets. SR release order seems highly variable (mainly the new girls not fitting in neat cycles) so this page may or may not break.',
+			'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; mainly the new girls not fitting in neat cycles &mdash;
+			                          so this page may or may not break in the future.''',
 		})
 		
 		# -------------------------------------------------------
