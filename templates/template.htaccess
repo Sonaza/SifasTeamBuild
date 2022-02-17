@@ -46,7 +46,7 @@ ErrorDocument 503 /error/503.html
 	Header set Access-Control-Allow-Origin "*"
 	
 	Header set Expect-CT "max-age=0"
-	Header set Feature-Policy geolocation 'none'; microphone 'none' "
+	Header set Feature-Policy "geolocation 'none'; microphone 'none' "
 	Header set Permissions-Policy "geolocation=(), microphone=()"
 	
 	Header set X-Content-Type-Options "nosniff"
