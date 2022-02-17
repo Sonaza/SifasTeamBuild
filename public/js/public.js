@@ -578,7 +578,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 					break;
 				}
 				
-				console.info("This was initially loaded on", $scope.page_loaded);
+				console.info("This page was initially loaded on", $scope.page_loaded);
 				console.info("This page will expire on", $scope.page_expires);
 			}
 			
