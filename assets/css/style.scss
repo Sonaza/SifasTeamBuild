@@ -631,6 +631,17 @@ select
 	}
 }
 
+.rotation-description
+{
+	max-width: 800px;
+	line-height: 1.6rem;
+	
+	br
+	{
+		margin-bottom: 0.5rem;
+	}
+}
+
 .rotation-column-wrapper
 {
 	display: flex;
