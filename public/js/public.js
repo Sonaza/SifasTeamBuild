@@ -557,8 +557,42 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			}
 		}
 		
+		$scope.handle_expiry = function(next_url)
+		{
+			let now = new Date();
+			let now_utc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+			if ($scope.page_loaded === undefined)
+			{
+				$scope.page_loaded = new Date(now_utc);
+				
+				let expiry_dates = [
+					new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),     6, 3, 0)),
+					new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 6, 3, 0)),
+				];
+				for (const expiry of expiry_dates)
+				{
+					if (expiry < $scope.page_loaded)
+						continue;
+					
+					$scope.page_expires = expiry;
+					break;
+				}
+				
+				console.info("This was initially loaded on", $scope.page_loaded);
+				console.info("This page will expire on", $scope.page_expires);
+			}
+			
+			if (new Date(now_utc) >= $scope.page_expires)
+			{
+				location.href = next_url;
+				location.reload();
+			}
+		}
+		
 		$rootScope.$on("$locationChangeStart", function(event, next, current)
 		{ 
+			$scope.handle_expiry(next);
+			
 			$scope.unfocus();
 			$scope.update_search_params();
 		});
