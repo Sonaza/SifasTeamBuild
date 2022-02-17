@@ -12,7 +12,7 @@
 	<link rel="preload" href="/css/fonts/Roboto-Bold-Latin.woff2" as="font" crossorigin="anonymous">
 	<link rel="preload" href="/css/fonts/Montserrat-Regular-latin.woff2" as="font" crossorigin="anonymous">
 	<link rel="preload" href="/css/fonts/Montserrat-Bold-latin.woff2" as="font" crossorigin="anonymous"> #}
- 	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css">
+ 	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css" media="(max-width: 1100px)">
 	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://sifas-cards.sonaza.com/">
