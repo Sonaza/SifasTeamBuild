@@ -400,16 +400,17 @@ class CardRotations():
 		
 		sbl_reference_point = {
 			'event_id' : 24,
-			'date'     : datetime(2022, 1, 1),
+			'date'     : datetime(year=2022, month=1, day=1),
 		}
 		today = datetime.today()
-		while sbl_reference_point['date'].month != today.month:
+		while sbl_reference_point['date'].month != today.month or sbl_reference_point['date'].year != today.year:
 			if (sbl_reference_point['event_id'] + 1) not in events:
 				break
 
 			sbl_reference_point['event_id'] += 1
 			sbl_reference_point['date'] += relativedelta(months=1)
 		
+		events_per_month = 1
 		for event_id, data in events.items():
 			# strftime('%d %B %Y %H:%M %Z')
 			data['event']['start'] = data['event']['start'].strftime('%d %b %Y')
@@ -425,7 +426,7 @@ class CardRotations():
 			if event_id <= sbl_reference_point['event_id']:
 				continue
 			
-			diff = event_id - sbl_reference_point['event_id']
+			diff = ((event_id - sbl_reference_point['event_id']) - 1) // events_per_month + 1    # Two events per month
 			estimated_addition = sbl_reference_point['date'] + relativedelta(months=diff)
 			data['sbl'] = estimated_addition.strftime('%b %Y')
 		

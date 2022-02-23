@@ -162,5 +162,7 @@ class Accessories():
 ## TEST CODE
 if __name__ == "__main__":
 	# print(Accessories.Bracelet.get(limit_break=5, skill=1))
+	print(Accessories.Necklace.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=10))
+	
 	print(Accessories.Belt.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=15))
 	print(Accessories.Ribbon.get(Attribute.Cool, Rarity.UR, limit_break=0, skill=15))
