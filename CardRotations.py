@@ -426,7 +426,7 @@ class CardRotations():
 			if event_id <= sbl_reference_point['event_id']:
 				continue
 			
-			diff = ((event_id - sbl_reference_point['event_id']) - 1) // events_per_month + 1    # Two events per month
+			diff = ((event_id - sbl_reference_point['event_id']) - 1) // events_per_month + 1
 			estimated_addition = sbl_reference_point['date'] + relativedelta(months=diff)
 			data['sbl'] = estimated_addition.strftime('%b %Y')
 		
