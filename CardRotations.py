@@ -357,8 +357,8 @@ class CardRotations():
 			'party'      : (Rarity.UR, [Source.Party], ),
 			'limited'    : (Rarity.UR, [Source.Festival, Source.Party], ),
 			'spotlight'  : (Rarity.UR, [Source.Spotlight, Source.Party], ),
-			'gacha'      : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight, Source.Festival, Source.Party], ),
 			'nonlimited' : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight,], ),
+			'gacha'      : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight, Source.Festival, Source.Party], ),
 			'ur'         : (Rarity.UR, None, ),
 			'sr'         : (Rarity.SR, None, ),
 		}
@@ -368,8 +368,8 @@ class CardRotations():
 			'party'      : ( "Party URs",            "Party limited URs scouted exclusively from Party Scouting banners." ),
 			'limited'    : ( "Limited URs",          "The most recent Festival and Party limited URs. Due to their higher average power level and limited nature, the same member is unlikely to receive two in quick succession." ),
 			'spotlight'  : ( "Party + Spotlight",    "Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),
-			'gacha'      : ( "Any Gacha UR",         "Any UR scouted from banners using Star Gems." ),
 			'nonlimited' : ( "Non-Limited Gacha UR", "Any non-limited UR scouted from banners using Star Gems." ),
+			'gacha'      : ( "Any Gacha UR",         "Any UR scouted from banners using Star Gems." ),
 			'ur'         : ( "Any UR",               "Any most recent UR, free or otherwise." ),
 			'sr'         : ( "Any SR",               "Any most recent SR, free or otherwise" ),
 		}

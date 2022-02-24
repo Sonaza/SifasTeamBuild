@@ -64,8 +64,8 @@ const stats_subpages = {
 	'party'      : "Party URs",
 	'limited'    : "Limited URs",
 	'spotlight'  : "Party + Spotlight",
-	'gacha'      : "Any Gacha UR",
 	'nonlimited' : "Non-Limited Gacha UR",
+	'gacha'      : "Any Gacha UR",
 	'ur'         : "Any UR",
 	'sr'         : "Any SR",
 };
