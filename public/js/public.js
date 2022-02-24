@@ -62,10 +62,10 @@ const stats_subpages = {
 	'event'      : "Event URs",
 	'festival'   : "Festival URs",
 	'party'      : "Party URs",
-	'limited'    : "Festival + Party",
+	'limited'    : "Limited URs",
 	'spotlight'  : "Party + Spotlight",
 	'gacha'      : "Any Gacha UR",
-	'nonlimited' : "Non-limited Gacha UR",
+	'nonlimited' : "Non-Limited Gacha UR",
 	'ur'         : "Any UR",
 	'sr'         : "Any SR",
 };
