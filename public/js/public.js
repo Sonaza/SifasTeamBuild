@@ -58,15 +58,16 @@ let format_seconds = function(seconds_param)
 const site_title = "SIFAS Card Rotations";
 
 const stats_subpages = {
-	'general'   : "General",
-	'event'     : "Event URs",
-	'festival'  : "Festival URs",
-	'party'     : "Party URs",
-	'limited'   : "Festival + Party",
-	'spotlight' : "Party + Spotlight",
-	'gacha'     : "Any Gacha UR",
-	'ur'        : "Any UR",
-	'sr'        : "Any SR",
+	'general'    : "General",
+	'event'      : "Event URs",
+	'festival'   : "Festival URs",
+	'party'      : "Party URs",
+	'limited'    : "Festival + Party",
+	'spotlight'  : "Party + Spotlight",
+	'gacha'      : "Any Gacha UR",
+	'nonlimited' : "Non-limited Gacha UR",
+	'ur'         : "Any UR",
+	'sr'         : "Any SR",
 };
 
 const routes = [

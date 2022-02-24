@@ -352,24 +352,26 @@ class CardRotations():
 	
 	def get_card_stats(self):
 		categories = {
-			'event'     : (Rarity.UR, [Source.Event], ),
-			'festival'  : (Rarity.UR, [Source.Festival], ),
-			'party'     : (Rarity.UR, [Source.Party], ),
-			'spotlight' : (Rarity.UR, [Source.Spotlight, Source.Party], ),
-			'limited'   : (Rarity.UR, [Source.Festival, Source.Party], ),
-			'gacha'     : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight, Source.Festival, Source.Party], ),
-			'ur'        : (Rarity.UR, None, ),
-			'sr'        : (Rarity.SR, None, ),
+			'event'      : (Rarity.UR, [Source.Event], ),
+			'festival'   : (Rarity.UR, [Source.Festival], ),
+			'party'      : (Rarity.UR, [Source.Party], ),
+			'spotlight'  : (Rarity.UR, [Source.Spotlight, Source.Party], ),
+			'limited'    : (Rarity.UR, [Source.Festival, Source.Party], ),
+			'gacha'      : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight, Source.Festival, Source.Party], ),
+			'nonlimited' : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight,], ),
+			'ur'         : (Rarity.UR, None, ),
+			'sr'         : (Rarity.SR, None, ),
 		}
 		category_info = {
-			'event'      : ( "Event URs",         "Event URs awarded in item exchange and story events." ),
-			'festival'   : ( "Festival URs",      "Festival limited URs scouted exclusively from All Stars Festival banners." ),
-			'party'      : ( "Party URs",         "Party limited URs scouted exclusively from Party Scouting banners." ),
-			'spotlight'  : ( "Party + Spotlight", "Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),
-			'limited'    : ( "Festival + Party",  "The most recent Festival and Party limited URs. Due to their higher average power level and limited nature, the same member is unlikely to receive two in quick succession." ),
-			'gacha'      : ( "Any Gacha UR",      "Any UR scouted from banners using Star Gems." ),
-			'ur'         : ( "Any UR",            "Any most recent UR, free or otherwise." ),
-			'sr'         : ( "Any SR",            "Any most recent SR, free or otherwise" ),
+			'event'      : ( "Event URs",            "Event URs awarded in item exchange and story events." ),
+			'festival'   : ( "Festival URs",         "Festival limited URs scouted exclusively from All Stars Festival banners." ),
+			'party'      : ( "Party URs",            "Party limited URs scouted exclusively from Party Scouting banners." ),
+			'spotlight'  : ( "Party + Spotlight",    "Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),
+			'limited'    : ( "Festival + Party",     "The most recent Festival and Party limited URs. Due to their higher average power level and limited nature, the same member is unlikely to receive two in quick succession." ),
+			'gacha'      : ( "Any Gacha UR",         "Any UR scouted from banners using Star Gems." ),
+			'nonlimited' : ( "Non-limited Gacha UR", "Any non-limited UR scouted from banners using Star Gems." ),
+			'ur'         : ( "Any UR",               "Any most recent UR, free or otherwise." ),
+			'sr'         : ( "Any SR",               "Any most recent SR, free or otherwise" ),
 		}
 		
 		category_data = defaultdict(dict)
