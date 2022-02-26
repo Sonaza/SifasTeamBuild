@@ -384,8 +384,8 @@ class KiraraClient():
 		self._cache_all_idols()
 		
 		print()
-		print("Updating event database...")
-		self._cache_events()
+		print("Updating events and banners database...")
+		self._cache_history_data()
 			
 		self.refresh_last_update_time()
 	
@@ -469,35 +469,84 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _cache_events(self):
+	def _cards_hash(self, ordinals_list):
+		return hash(','.join([str(ordinal) for ordinal in ordinals_list]))
+	
+	def _cache_history_data(self):
 		query = "SELECT title_en, title_jp FROM events"
 		self.db.execute(query)
-		
 		known_events = [y for x in self.db.fetchall() for y in (x['title_en'], x['title_jp'])]
 		
+		query = "SELECT * FROM banner_cards ORDER BY ordinal ASC"
+		self.db.execute(query)
+		
+		known_banners_dict = defaultdict(list)
+		for data in self.db.fetchall():
+			known_banners_dict[data['banner_id']].append(data['ordinal'])
+		
+		# known_banners = []
+		known_banners_hashes = []
+		for banner_id, cards in known_banners_dict.items():
+			cards_hash = self._cards_hash(cards)
+			# known_banners.append({
+			# 	'id'    : banner_id,
+			# 	'cards' : cards,
+			# 	'hash'  : cards_hash,
+			# })
+			known_banners_hashes.append(cards_hash)
+		
 		# with open("history.json", "r", encoding="utf-8") as f:
-		# 	crawled_events_data = json.load(fp=f)
+		# 	history_result = json.load(fp=f)
 		
 		hc = HistoryCrawler()
-		crawled_events_data = hc.crawl_events(known_events)
-		if not crawled_events_data:
+		history_result = hc.crawl_history(
+			known_events=known_events,
+			known_banners_hashes=known_banners_hashes)
+		
+		if not history_result:
 			print("Found no new event data. Nothing to do...")
 			return
 		
 		# with open("history.json", "w", encoding="utf-8") as f:
-		# 	json.dump(crawled_events_data, fp=f)
-			
+		# 	json.dump(history_result, fp=f)
+					
 		event_data = []
-		for data in crawled_events_data:
-			if data['title_en'] in known_events or data['title_jp'] in known_events: continue
-			# data['start_jp'] = data['start_jp'].isoformat()
-			# data['end_jp'] = data['end_jp'].isoformat()
+		for data in history_result['events']:
+			if data['title_en'] in known_events or data['title_jp'] in known_events:
+				continue
 			data['type'] = EventType.from_string(data['type']).value
 			event_data.append(data)
+		
+		banner_data = []
+		for data in history_result['banners']:
+			cards_hash = self._cards_hash(data['cards'])
+			if cards_hash in known_banners_hashes:
+				continue
 			
-		if len(event_data) == 0:
+			banner_start = datetime.fromisoformat(data['start_jp'])
+			banner_start = banner_start.replace(tzinfo=timezone.utc)
+			
+			card_data = self.get_idols_by_ordinal(data['cards'])
+			
+			is_rerun_banner = False
+			for card in card_data:
+				delta = banner_start - card.release_date
+				if delta.days > 0 or delta.seconds > 0:
+					is_rerun_banner = True
+					break
+			
+			if is_rerun_banner:
+				continue
+				
+			data['type'] = BannerType.from_string(data['type']).value
+			banner_data.append(data)
+				
+		if len(event_data) == 0 and len(banner_data) == 0:
 			print("Found data but everything is up to date.")
 			return
+		
+		# ------------------------
+		# Add events
 		
 		num_cards = 0	
 		for data in event_data:
@@ -516,6 +565,26 @@ class KiraraClient():
 			# print(f"Added event '{data['title_en']}' with {len(cards)} associated cards to database.")
 		
 		print(f"Added {len(event_data)} events with {num_cards} associated cards to database.")
+		
+		# ------------------------
+		# Add banners
+		
+		num_cards = 0	
+		for data in banner_data:
+			ordinals = data['cards']
+			del data['cards']
+			
+			event_query = self._make_insert_query('banners', data)
+			self.db.execute(event_query, data)
+			
+			cards = [{'banner_id': self.db.lastrowid, 'ordinal': ordinal} for ordinal in ordinals]
+			
+			event_card_query = self._make_insert_query('banner_cards', cards[0])
+			self.db.executemany(event_card_query, cards)
+			
+			num_cards += len(cards)
+		
+		print(f"Added {len(banner_data)} banners with {num_cards} associated cards to database.")
 			
 		self.dbcon.commit()
 	
@@ -715,8 +784,7 @@ class KiraraClient():
 			if not data['event_id']:
 				continue
 			
-			event_id = data['event_id'];
-			
+			event_id = data['event_id']
 			if not events[event_id]['event']:
 				events[event_id]['event'] = {
 					'title' : data['event_title'],
@@ -729,11 +797,11 @@ class KiraraClient():
 			
 			if card.source == Source.Event:
 				events[event_id]['free'].append(card)
-				events[event_id]['free'] = list(sorted(events[event_id]['free'], key=lambda x: (-x.rarity.value, x.ordinal) ))
+				events[event_id]['free'].sort(key=lambda x: (-x.rarity.value, x.ordinal))
 				
 			elif card.source == Source.Gacha:
 				events[event_id]['gacha'].append(card)
-				events[event_id]['gacha'] = list(sorted(events[event_id]['gacha'], key=lambda x: (-x.rarity.value, x.ordinal) ))
+				events[event_id]['gacha'].sort(key=lambda x: (-x.rarity.value, x.ordinal))
 			
 			else:
 				raise KiraraClientException("An unexpected card source for event cards.")
@@ -753,6 +821,56 @@ class KiraraClient():
 		self.db.execute(query, self._get_enum_values([Source.Event, Rarity.UR]))
 		
 		return dict((Member(x['id']), x['times_featured']) for x in self.db.fetchall())
+	
+	# -------------------------------------------------------------------------------------------
+	
+	def _get_card_member_index(self, ordinal):
+		query = '''SELECT member_id, rarity, source FROM idols
+		           WHERE ordinal = ?'''
+		self.db.execute(query, [ordinal])
+		
+		card = self.db.fetchone()
+		
+		query = '''SELECT ordinal FROM v_idols
+		           WHERE v_idols.member_id = ? AND v_idols.rarity = ? AND v_idols.source = ?
+		           ORDER BY v_idols.ordinal'''
+		           
+		self.db.execute(query, [card['member_id'], card['rarity'], card['source']])
+		
+		for index, filtered_card in enumerate(self.db.fetchall()):
+			if filtered_card['ordinal'] == ordinal:
+				return index
+		
+		return None
+	
+	def get_banners_with_cards(self):
+		query = """SELECT * FROM v_idols_with_banner_info"""
+		self.db.execute(query)
+		
+		banners = defaultdict(lambda: { 'banner' : None, 'cards': [], 'index': -1 })
+		for data in self.db.fetchall():
+			if not data['banner_id']:
+				continue
+			
+			banner_id = data['banner_id']
+			if not banners[banner_id]['banner']:
+				banners[banner_id]['banner'] = {
+					'title' : data['banner_title'],
+					'type'  : BannerType(data['banner_type']),
+					'start' : datetime.fromisoformat(data['banner_start']),
+					'end'   : datetime.fromisoformat(data['banner_end']),
+				}
+			
+			card = KiraraIdol(self, data)
+			
+			banners[banner_id]['cards'].append(card)
+			banners[banner_id]['cards'].sort(key=lambda x: (-x.rarity.value, x.ordinal))
+			
+			if card.rarity == Rarity.UR:
+				index = self._get_card_member_index(card.ordinal)
+				banners[banner_id]['index'] = max(banners[banner_id]['index'], index)
+		
+		return banners
 		
 	# -------------------------------------------------------------------------------------------
 		
@@ -795,12 +913,12 @@ class KiraraClient():
 			ordinals = [ordinals]
 		
 		if with_json:
-			query = f"""SELECT idols.*, idols_json.json FROM idols
-			            LEFT JOIN idols_json ON idols.ordinal = idols_json.ordinal
-			            WHERE idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
+			query = f"""SELECT v_idols.*, idols_json.json FROM v_idols
+			            LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
+			            WHERE v_idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
 		else:
-			query = f"""SELECT * FROM idols
-			            WHERE idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
+			query = f"""SELECT * FROM v_idols
+			            WHERE v_idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
 		self.db.execute(query, ordinals)
 		
 		return self.convert_to_idol_object(self.db.fetchall())

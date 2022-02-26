@@ -128,6 +128,15 @@ const routes = [
 		// reloadOnSearch : true,
 	},
 	{
+		title       : 'Banners',
+		path        : '/banners',
+		controller  : 'BannersController',
+		template    : 'banners.html',
+		hasSubpages : true,
+		exact_match : true,
+		// reloadOnSearch : true,
+	},
+	{
 		title       : 'SR Sets',
 		path        : '/sr-sets',
 		controller  : 'MainController',
@@ -1036,6 +1045,279 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 					$scope.filter_settings.filter        = -1;
 					$scope.filter_settings.highlight     = false;
 					$scope.filter_settings.featured_only = false;
+					return;
+				}
+			}
+		});
+		
+		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
+		
+		$scope.loading = false;
+	}
+);
+
+app.controller('BannersController', function($rootScope, $scope, $route, $routeParams, $location)
+	{
+		$scope.loading = true;
+		
+		if ($routeParams.page === undefined)
+		{
+			window.scrollTo(0, 0);
+		}
+		
+		$scope.member_order = [
+			{ id: -1,  name: "— Show All —",      group: undefined },
+			{ id: 8,   name: "Hanayo Koizumi",    group: "µ's" },
+			{ id: 5,   name: "Rin Hoshizora",     group: "µ's" },
+			{ id: 6,   name: "Maki Nishikino",    group: "µ's" },
+			{ id: 1,   name: "Honoka Kousaka",    group: "µ's" },
+			{ id: 3,   name: "Kotori Minami",     group: "µ's" },
+			{ id: 4,   name: "Umi Sonoda",        group: "µ's" },
+			{ id: 7,   name: "Nozomi Toujou",     group: "µ's" },
+			{ id: 2,   name: "Eli Ayase",         group: "µ's" },
+			{ id: 9,   name: "Nico Yazawa",       group: "µ's" },
+			{ id: 107, name: "Hanamaru Kunikida", group: "Aqours" },
+			{ id: 106, name: "Yoshiko Tsushima",  group: "Aqours" },
+			{ id: 109, name: "Ruby Kurosawa",     group: "Aqours" },
+			{ id: 101, name: "Chika Takami",      group: "Aqours" },
+			{ id: 102, name: "Riko Sakurauchi",   group: "Aqours" },
+			{ id: 105, name: "You Watanabe",      group: "Aqours" },
+			{ id: 103, name: "Kanan Matsuura",    group: "Aqours" },
+			{ id: 104, name: "Dia Kurosawa",      group: "Aqours" },
+			{ id: 108, name: "Mari Ohara",        group: "Aqours" },
+			{ id: 209, name: "Rina Tennouji",     group: "Nijigasaki" },
+			{ id: 202, name: "Kasumi Nakasu",     group: "Nijigasaki" },
+			{ id: 203, name: "Shizuku Ousaka",    group: "Nijigasaki" },
+			{ id: 210, name: "Shioriko Mifune",   group: "Nijigasaki" },
+			{ id: 201, name: "Ayumu Uehara",      group: "Nijigasaki" },
+			{ id: 207, name: "Setsuna Yuuki",     group: "Nijigasaki" },
+			{ id: 205, name: "Ai Miyashita",      group: "Nijigasaki" },
+			{ id: 212, name: "Lanzhu Zhong",      group: "Nijigasaki" },
+			{ id: 208, name: "Emma Verde",        group: "Nijigasaki" },
+			{ id: 206, name: "Kanata Konoe",      group: "Nijigasaki" },
+			{ id: 204, name: "Karin Asaka",       group: "Nijigasaki" },
+			{ id: 211, name: "Mia Taylor",        group: "Nijigasaki" },
+		];
+		
+		$scope.filter_index = 0;
+		$scope.filter_index_max = $scope.member_order.length - 1;
+		
+		$scope.banner_types = [
+			{ id: -1, title: '— Show All —' },
+			{ id: 1,  title: 'Spotlight' },
+			{ id: 2,  title: 'Festival'  },
+			{ id: 3,  title: 'Party'     },
+			{ id: 4,  title: 'Other'     },
+		];
+		
+		$scope.banner_index = 0;
+		$scope.banner_index_max = $scope.banner_types.length - 1;
+		
+		$scope.filter_settings = {
+			filter        : -1,
+			banner        : -1,
+			highlight     : false,
+		};
+		
+		const url_options = $location.search();
+		if (url_options.filter !== undefined)
+		{
+			let filter_string = url_options.filter.toLowerCase().trim();
+			if (filter_string !== 'none')
+			{
+				for (let i = 0; i < $scope.member_order.length; i++)
+				{
+					if ($scope.member_order[i].id == -1)
+						continue;
+					
+					let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
+					console.log(filter_string, first_name)
+					if (first_name === filter_string)
+					{
+						$scope.filter_settings.filter = $scope.member_order[i].id;
+						break;
+					}
+				}
+			}
+		}
+		if (url_options.banner !== undefined)
+		{
+			let filter_string = url_options.banner.toLowerCase().trim();
+			if (filter_string !== 'none')
+			{
+				for (let i = 0; i < $scope.banner_types.length; i++)
+				{
+					if ($scope.banner_types[i].id == -1)
+						continue;
+					
+					let type_title = $scope.banner_types[i].title.toLowerCase();
+					console.log(filter_string, type_title)
+					if (type_title === filter_string)
+					{
+						$scope.filter_settings.banner = $scope.banner_types[i].id;
+						break;
+					}
+				}
+			}
+		}
+		
+		if (url_options.filter_highlight !== undefined)
+		{
+			if (url_options.filter_highlight == 'true' ||  url_options.filter_highlight == '1')
+			{
+				$scope.filter_settings.highlight = true;
+			}
+		}
+		
+		$scope.filterBannersClass = (s) =>
+		{
+			let output = [];
+			
+			if ($scope.filter_settings.highlight !== false)
+			{
+				output.push('highlight');
+			}
+			
+			if ($scope.filter_settings.filter != -1)
+			{
+				output.push('filtering-active');
+				// output.push('filtering-by-idol');
+				output.push('show-idol-' + $scope.filter_settings.filter);
+			}
+			
+			if ($scope.filter_settings.banner != -1)
+			{
+				output.push('filtering-active');
+				// output.push('filtering-by-banner');
+				output.push('show-banner-' + $scope.filter_settings.banner);
+			}
+			
+			return output.join(' ');
+		}
+		
+		$scope.$watch('filter_settings', function(a, b)
+		{
+			console.log('filter_settings', $scope.filter_settings);
+			
+			if ($scope.filter_settings.highlight)
+			{
+				$location.search('filter_highlight', 'true').replace();
+			}
+			else
+			{
+				$location.search('filter_highlight', undefined).replace();
+			}
+		}, true)
+		
+		$scope.$watch('filter_settings.filter', function(a, b)
+		{
+			for (let i = 0; i < $scope.member_order.length; i++)
+			{
+				if ($scope.member_order[i].id == $scope.filter_settings.filter)
+				{
+					$scope.filter_index = i;
+					
+					if ($scope.member_order[i].id != -1)
+					{
+						let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
+						$location.search('filter', first_name).replace();
+					}
+					else
+					{
+						$location.search('filter', undefined).replace();
+					}
+					
+					break;
+				}
+			}
+		});
+		
+		$scope.$watch('filter_settings.banner', function(a, b)
+		{
+			console.log('filter_settings.banner', $scope.filter_settings);
+			
+			for (let i = 0; i < $scope.banner_types.length; i++)
+			{
+				if ($scope.banner_types[i].id == $scope.filter_settings.banner)
+				{
+					$scope.banner_index = i;
+					
+					if ($scope.banner_types[i].id != -1)
+					{
+						let type_title = $scope.banner_types[i].title.toLowerCase();
+						$location.search('banner', type_title).replace();
+					}
+					else
+					{
+						$location.search('banner', undefined).replace();
+					}
+					
+					break;
+				}
+			}
+		});
+		
+		$rootScope.$broadcast('update-title');
+		
+		$scope.$on('keydown', (_, e) =>
+		{
+			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
+			
+			document.querySelector('#filter-event-cards').blur();
+			
+			if (e.keyCode == 69) // E-key
+			{
+				$scope.filter_index += (e.shiftKey ? -1 : 1);
+				if ($scope.filter_index < 0)
+				{
+					$scope.filter_index = $scope.filter_index_max;
+				}
+				else if ($scope.filter_index > $scope.filter_index_max)
+				{
+					$scope.filter_index = 0;
+				}
+				
+				$scope.filter_settings.filter = $scope.member_order[$scope.filter_index].id;
+				return;
+			}
+			
+			if (e.keyCode == 66) // B-key
+			{
+				$scope.banner_index += (e.shiftKey ? -1 : 1);
+				
+				console.log("shillbute", $scope.banner_index, $scope.banner_index_max);
+				
+				if ($scope.banner_index < 0)
+				{
+					$scope.banner_index = $scope.banner_index_max;
+				}
+				else if ($scope.banner_index > $scope.banner_index_max)
+				{
+					$scope.banner_index = 0;
+				}
+				
+				console.log("bullshite", $scope.banner_index, $scope.banner_index_max);
+				
+				$scope.filter_settings.banner = $scope.banner_types[$scope.banner_index].id;
+				
+				console.log("setting banna ineks", $scope.filter_settings.banner);
+				return;
+			}
+			
+			if (!e.shiftKey)
+			{
+				if (e.keyCode == 72) // H-key
+				{
+					e.preventDefault();
+					$scope.filter_settings.highlight = !$scope.filter_settings.highlight;
+					return;
+				}
+				
+				if (e.keyCode == 82) // R-key
+				{
+					$scope.filter_settings.filter     = -1;
+					$scope.filter_settings.banner     = -1;
+					$scope.filter_settings.highlight  = false;
 					return;
 				}
 			}

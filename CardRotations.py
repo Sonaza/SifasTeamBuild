@@ -436,6 +436,54 @@ class CardRotations():
 	
 	# -------------------------------------------------------------------------------------------
 	
+	def _ordinalize(self, n):
+		n = int(n)
+		if 11 <= (n % 100) <= 13:
+			suffix = 'th'
+		else:
+			suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
+		return str(n) + suffix
+	
+	def get_banners_with_cards(self):
+		banners = self.client.get_banners_with_cards()
+		
+		banner_title_overrides = dict([
+			(47, "Initial SR Mia and Lanzhu")
+		])
+		
+		events_per_month = 1
+		for banner_id, data in banners.items():
+			data['banner']['start'] = data['banner']['start'].strftime('%d %b %Y')
+			data['banner']['end']   = data['banner']['end'].strftime('%d %b %Y')
+			
+			featured_members = []
+			num_urs = sum([1 if card.rarity == Rarity.UR else 0 for card in data['cards']])
+			
+			data['idols'] = []
+			for idol in data['cards']:
+				data['idols'].append(f"has-idol-{idol.member_id.value}")
+				
+				if num_urs == 0 or idol.rarity == Rarity.UR:
+					featured_members.append(idol.member_id.first_name)
+				
+			data['idols'] = ' '.join(data['idols'])
+			
+			featured_str = ', '.join(featured_members)
+			featured_str = ' and '.join(featured_str.rsplit(', ', 1))
+			
+			if banner_id in banner_title_overrides:
+				data['banner']['title'] = banner_title_overrides[banner_id]
+			
+			else:
+				if data['banner']['type'] == BannerType.Spotlight:
+					data['banner']['title'] = f"{data['banner']['type'].name} {featured_str}"
+				else:
+					data['banner']['title'] = f"{self._ordinalize(data['index'] + 1)} {data['banner']['type'].name} {featured_str}"
+		
+		return banners
+	
+	# -------------------------------------------------------------------------------------------
+	
 	def _get_preload_assets(self):
 		preload_assets = []
 		preload_asset_files = [
@@ -537,6 +585,14 @@ class CardRotations():
 		self.renderer.render_and_save("event_cards.html", "pages/event_cards.html", {
 			'events_with_cards'    : events_with_cards,
 			'zero_feature_members' : zero_feature_members,
+		})
+		
+		# -------------------------------------------------------
+		# Banner info
+		
+		banners_with_cards = self.get_banners_with_cards()
+		self.renderer.render_and_save("banners.html", "pages/banners.html", {
+			'banners_with_cards' : banners_with_cards,
 		})
 		
 		# -------------------------------------------------------

@@ -100,6 +100,26 @@ schemas = [
 	    PRIMARY KEY(`event_id`, `ordinal`)
 	)''',
 	
+	# Banners table
+	'''CREATE TABLE `banners` (
+		`id`                INTEGER UNIQUE NOT NULL,
+	    `type`              INTEGER,
+	    `title_jp`          TEXT,
+	    `start_jp`          TEXT,
+	    `end_jp`            TEXT,
+	    PRIMARY KEY(`id` AUTOINCREMENT)
+	)''',
+	
+	# Banners related cards
+	'''CREATE TABLE `banner_cards` (
+	    `banner_id`         INTEGER NOT NULL,
+	    `ordinal`           INTEGER NOT NULL,
+	    CONSTRAINT `banner_id_ordinal` UNIQUE(`banner_id`, `ordinal`),
+	    FOREIGN KEY(`banner_id`)    REFERENCES banners(`id`)      ON DELETE CASCADE,
+	    FOREIGN KEY(`ordinal`)      REFERENCES idols(`ordinal`),
+	    PRIMARY KEY(`banner_id`, `ordinal`)
+	)''',
+	
 	# Passive skills
 	# '''CREATE TABLE `skills` (
 	# 	`skill_id`            INTEGER PRIMARY KEY,
@@ -156,7 +176,20 @@ schemas = [
 	        events.end_jp AS event_end
 	    FROM v_idols
 	    LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
-	    LEFT JOIN events      ON events.id = event_cards.event_id
+	    INNER JOIN events      ON events.id = event_cards.event_id
+	''',
+	
+	'''CREATE VIEW v_idols_with_banner_info AS
+	    SELECT
+	        v_idols.*,
+	        banners.id AS banner_id,
+	        banners.type AS banner_type,
+	        banners.title_jp AS banner_title,
+	        banners.start_jp AS banner_start,
+	        banners.end_jp AS banner_end
+	    FROM v_idols
+	    LEFT JOIN banner_cards ON banner_cards.ordinal = v_idols.ordinal
+	    INNER JOIN banners      ON banners.id = banner_cards.banner_id
 	''',
 	
 ]

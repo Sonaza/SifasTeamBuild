@@ -176,3 +176,28 @@ class EventType(Enum):
 		
 		return EventType.Unset
 	
+class BannerType(Enum):
+	_init_ = 'value valid'
+	
+	Unset     = 0, False
+	Spotlight = 1, True
+	Festival  = 2, True
+	Party     = 3, True
+	Other     = 4, True
+	
+	@classmethod
+	def from_string(cls, name):
+		for e in cls:
+			if e.name == name:
+				return e
+		
+		return BannerType.Unset
+	
+	@classmethod
+	def get_valid(cls):
+		ret = []
+		for e in cls:
+			if e.valid:
+				ret.append(e)
+		return ret
+	

@@ -104,8 +104,11 @@ class PageRenderer():
 			'Idols'                 : Idols,
 			'Member'                : Member,
 			'Groups'                : Group,
+			'Rarity'                : Rarity,
 			'Attribute'             : Attribute.get_valid(),
 			'Type'                  : Type.get_valid(),
+			
+			'BannerType'            : BannerType.get_valid(),
 			
 			# Page specific functions
 			'is_valid_card'         : is_valid_card,

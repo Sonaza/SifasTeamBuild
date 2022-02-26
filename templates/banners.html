@@ -1,0 +1,115 @@
+<h2>Banners</h2>
+<p>
+	List of non-event banners with the original event runtime (JP) with associated cards.
+	For event banners check <a href="/#/event_cards">the event cards page</a>.
+</p>
+
+<p class="show-mobile show-narrow-1400"><b>Hint:</b> You can scroll the table horizontally if it doesn't fit on screen.</p>
+
+<div class="page-settings-bar event-card-settings banner-settings">
+	<label for="filter-event-cards">
+		Filter Banners <span>(E)</span>
+	</label>
+	<select id="filter-event-cards" ng-model="filter_settings.filter">
+		<option ng-value="-1">&mdash; Show All &mdash;</option>
+		{# <optgroup label="Groups">
+			{% for group in Groups %}
+				<option ng-value="['group', group.value]">{{ group.display_name }}</option>
+			{% endfor %}
+		</optgroup> #}
+		{% for group in Groups %}
+			<optgroup label="{{ group.display_name }}">
+				{% for idol in Idols.by_group[group] %}
+					<option ng-value="{{ idol.member_id.value }}">{{ idol.member_id.full_name }}</option>
+				{% endfor %}
+			</optgroup>
+		{% endfor %}
+	</select>
+{# 	<label for="filter-banner-types">
+		By Type <span>(B)</span>
+	</label>
+	<select id="filter-banner-types" ng-model="filter_settings.banner">
+		<option ng-value="-1">&mdash; Show All &mdash;</option>
+		{% for banner_type in BannerType %}
+			<option ng-value="{{ banner_type.value }}">{{ banner_type.name }}</option>
+		{% endfor %}
+	</select> #}
+	<div pill-button model="filter_settings.highlight" keybind="H">
+		Highlight selected member
+	</div>
+</div>
+
+<div class="event-cards-group">
+	<div class="stats-table event-cards-table banners-table">
+		<div class="st-tr st-thead">
+			<div class="st-th st-cell-banner-title">Banner</div>
+			{# <div class="st-th st-cell-event-featured">Featured</div> #}
+			<div class="st-th st-cell-banner-cards">Cards</div>
+		</div>
+		
+		<div class="st-tbody reversable" ng-class="filterBannersClass()">
+			{% for banner_id, banner_data in banners_with_cards.items() %}
+				{% set banner = banner_data['banner'] %}
+				<div class="st-tr event-row {{ banner_data['idols'] }} banner-type-{{ banner['type'].value }}">
+					<div class="st-td st-cell-banner-title event-details">
+						<div class="event-title">
+							<span class="banner-title-label" title="{{ banner['title'] }}">
+								<span>{{ loop.index }}.</span>
+								{{ banner['title'] }}
+							</span>
+							{# <span class="banner-title-type">
+								{{ banner['type'].name }}
+							</span> #}
+						</div>
+						<div class="event-runtime">
+							<span class="event-runtime-label">
+								{{ banner['start'] }} &mdash; {{ banner['end'] }}
+							</span>
+							{# <span class="sbl-addition">
+								{{ banner['type'].name }}
+							</span> #}
+						</div>
+					</div>
+					{# <div class="st-td st-cell-event-featured event-featured">
+						<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
+						<div class="idol-name">
+							{{ banner['featured_members'] }}
+						</div>
+					</div> #}
+					<div class="st-td st-cell-banner-cards card-details">
+						<div class="flex-wrapper">
+							{% for card in banner_data['cards']: %}
+								<div class="thumbnail tooltip-data"
+										data-member-id="{{ card.member_id.value }}"
+										data-member-name="{{ card.member_id.full_name }}"
+										data-card-status="1"
+										data-card-attribute="{{ card.attribute.value }}"
+										data-card-type="{{ card.type.value }}"
+										data-card-title-normal="{{ card.get_card_name(False) | e }}"
+										data-card-title-idolized="{{ card.get_card_name(True) | e }}"
+										data-card-source="{{ get_card_source_label(card) }}"
+										data-card-release-date="{{ card.release_date.strftime('%d %B %Y') }}"
+										ng-mouseover="toggleTooltip($event, true)"
+										ng-mouseleave="toggleTooltip($event, false)">
+									<div class="thumbnail-wrapper">
+										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+											<span class="source-indicator idol-{{ card.member_id.value }} source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+										</a>
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			{% endfor %}
+			{% for member in zero_feature_members %}			
+				<div class="st-tr zero-event-row featured-idol-{{ member.value }}">
+					<div class="st-td st-cell-100">
+						{{ member.first_name }} has yet to be the featured member in an event
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+<div id="card-tooltip" data-card-tooltip="tooltip_data"></div>
