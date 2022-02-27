@@ -1,6 +1,6 @@
-<h2>Banners</h2>
+<h2>Gacha Banners</h2>
 <p>
-	List of non-event banners (reruns excluded) with the original event runtime (JP) and the featured cards.
+	List of gacha banners, excluding events and reruns, with the original event runtime (JP) and the featured cards.
 	For event banners check <a href="/#/event_cards">the event cards page</a>.
 </p>
 <p>
@@ -101,6 +101,11 @@
 									</div>
 								</div>
 							{% endfor %}
+							{% if banner_data['num_others'] > 0: %}
+								<div class="num-others" title="{{ banner_data['num_others'] }} other cards on this banner weren't new.">
+									+ {{ banner_data['num_others'] }} more
+								</div>
+							{% endif %}
 						</div>
 					</div>
 				</div>

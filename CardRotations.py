@@ -448,7 +448,8 @@ class CardRotations():
 		banners = self.client.get_banners_with_cards()
 		
 		banner_title_overrides = dict([
-			(47, "Initial SR Mia and Lanzhu")
+			(21, "Initial SR Shioriko (Nijigasaki Festival)"),
+			(48, "Initial SR Mia and Lanzhu"),
 		])
 		
 		events_per_month = 1

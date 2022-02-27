@@ -128,7 +128,7 @@ const routes = [
 		// reloadOnSearch : true,
 	},
 	{
-		title       : 'Banners',
+		title       : 'Gacha Banners',
 		path        : '/banners',
 		controller  : 'BannersController',
 		template    : 'banners.html',

@@ -372,16 +372,16 @@ class KiraraClient():
 	# -------------------------------------------------------------------------------------------
 	
 	def update_database(self, forced=False):
-		if not forced and not self.database_needs_update():
-			print("No need to update database right now.")
-			return
+		# if not forced and not self.database_needs_update():
+		# 	print("No need to update database right now.")
+		# 	return
 		
-		print("Populating members...")
-		self._populate_members_and_metadata()
+		# print("Populating members...")
+		# self._populate_members_and_metadata()
 		
-		print()
-		print("Updating idol database...")
-		self._cache_all_idols()
+		# print()
+		# print("Updating idol database...")
+		# self._cache_all_idols()
 		
 		print()
 		print("Updating events and banners database...")
@@ -495,13 +495,13 @@ class KiraraClient():
 			# })
 			known_banners_hashes.append(cards_hash)
 		
-		# with open("history.json", "r", encoding="utf-8") as f:
-		# 	history_result = json.load(fp=f)
+		with open("history.json", "r", encoding="utf-8") as f:
+			history_result = json.load(fp=f)
 		
-		hc = HistoryCrawler()
-		history_result = hc.crawl_history(
-			known_events=known_events,
-			known_banners_hashes=known_banners_hashes)
+		# hc = HistoryCrawler()
+		# history_result = hc.crawl_history(
+		# 	known_events=known_events,
+		# 	known_banners_hashes=known_banners_hashes)
 		
 		if not history_result:
 			print("Found no new event data. Nothing to do...")
@@ -528,15 +528,22 @@ class KiraraClient():
 			
 			card_data = self.get_idols_by_ordinal(data['cards'])
 			
-			is_rerun_banner = False
+			accepted_cards = []
 			for card in card_data:
 				delta = banner_start - card.release_date
 				if delta.days > 0 or delta.seconds > 0:
-					is_rerun_banner = True
-					break
-			
-			if is_rerun_banner:
+					continue
+				accepted_cards.append(card.ordinal)
+			if not accepted_cards:
 				continue
+			
+			data['original_num_cards'] = len(data['cards'])
+			
+			if len(data['cards']) != len(accepted_cards):
+				data['cards'] = accepted_cards
+				cards_hash = self._cards_hash(data['cards'])
+				if cards_hash in known_banners_hashes:
+					continue
 				
 			data['type'] = BannerType.from_string(data['type']).value
 			banner_data.append(data)
@@ -548,7 +555,7 @@ class KiraraClient():
 		# ------------------------
 		# Add events
 		
-		num_cards = 0	
+		num_cards = 0
 		for data in event_data:
 			ordinals = data['cards']
 			del data['cards']
@@ -847,7 +854,7 @@ class KiraraClient():
 		query = """SELECT * FROM v_idols_with_banner_info"""
 		self.db.execute(query)
 		
-		banners = defaultdict(lambda: { 'banner' : None, 'cards': [], 'index': -1 })
+		banners = defaultdict(lambda: { 'banner' : None, 'cards': [], 'num_others' : None, 'index': -1 })
 		for data in self.db.fetchall():
 			if not data['banner_id']:
 				continue
@@ -866,9 +873,12 @@ class KiraraClient():
 			banners[banner_id]['cards'].append(card)
 			banners[banner_id]['cards'].sort(key=lambda x: (-x.rarity.value, x.ordinal))
 			
+			banners[banner_id]['num_others'] = data['banner_num_cards'] - len(banners[banner_id]['cards'])
+			
 			if card.rarity == Rarity.UR:
 				index = self._get_card_member_index(card.ordinal)
 				banners[banner_id]['index'] = max(banners[banner_id]['index'], index)
+			
 		
 		return banners
 		

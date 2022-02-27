@@ -102,11 +102,12 @@ schemas = [
 	
 	# Banners table
 	'''CREATE TABLE `banners` (
-		`id`                INTEGER UNIQUE NOT NULL,
-	    `type`              INTEGER,
-	    `title_jp`          TEXT,
-	    `start_jp`          TEXT,
-	    `end_jp`            TEXT,
+		`id`                 INTEGER UNIQUE NOT NULL,
+	    `type`               INTEGER,
+	    `title_jp`           TEXT,
+	    `start_jp`           TEXT,
+	    `end_jp`             TEXT,
+	    `original_num_cards` INTEGER,
 	    PRIMARY KEY(`id` AUTOINCREMENT)
 	)''',
 	
@@ -186,7 +187,8 @@ schemas = [
 	        banners.type AS banner_type,
 	        banners.title_jp AS banner_title,
 	        banners.start_jp AS banner_start,
-	        banners.end_jp AS banner_end
+	        banners.end_jp AS banner_end,
+	        banners.original_num_cards AS banner_num_cards
 	    FROM v_idols
 	    LEFT JOIN banner_cards ON banner_cards.ordinal = v_idols.ordinal
 	    INNER JOIN banners      ON banners.id = banner_cards.banner_id
