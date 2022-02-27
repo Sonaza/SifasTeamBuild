@@ -372,16 +372,16 @@ class KiraraClient():
 	# -------------------------------------------------------------------------------------------
 	
 	def update_database(self, forced=False):
-		# if not forced and not self.database_needs_update():
-		# 	print("No need to update database right now.")
-		# 	return
+		if not forced and not self.database_needs_update():
+			print("No need to update database right now.")
+			return
 		
-		# print("Populating members...")
-		# self._populate_members_and_metadata()
+		print("Populating members...")
+		self._populate_members_and_metadata()
 		
-		# print()
-		# print("Updating idol database...")
-		# self._cache_all_idols()
+		print()
+		print("Updating idol database...")
+		self._cache_all_idols()
 		
 		print()
 		print("Updating events and banners database...")
@@ -495,13 +495,13 @@ class KiraraClient():
 			# })
 			known_banners_hashes.append(cards_hash)
 		
-		with open("history.json", "r", encoding="utf-8") as f:
-			history_result = json.load(fp=f)
+		# with open("history.json", "r", encoding="utf-8") as f:
+		# 	history_result = json.load(fp=f)
 		
-		# hc = HistoryCrawler()
-		# history_result = hc.crawl_history(
-		# 	known_events=known_events,
-		# 	known_banners_hashes=known_banners_hashes)
+		hc = HistoryCrawler()
+		history_result = hc.crawl_history(
+			known_events=known_events,
+			known_banners_hashes=known_banners_hashes)
 		
 		if not history_result:
 			print("Found no new event data. Nothing to do...")
