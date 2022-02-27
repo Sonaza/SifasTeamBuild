@@ -227,18 +227,18 @@ class CardRotations():
 	def get_sr_sets(self, group : Group):
 		skipped_sets = {
 			Group.Nijigasaki : {
-				Member.Rina     : [11,],
-				Member.Kasumi   : [11,],
-				Member.Shizuku  : [11,],
-				Member.Ayumu    : [11,],
-				Member.Setsuna  : [11,],
-				Member.Ai       : [11,],
-				Member.Emma     : [11,],
-				Member.Kanata   : [11,],
-				Member.Karin    : [11,],
-				Member.Shioriko : [1, 2, 3, 5, 6, ],
-				Member.Lanzhu   : [1, 2, 3, 4, 5, 6, 7, 8, 11,],
-				Member.Mia      : [1, 2, 3, 4, 5, 6, 7, 8, 11,],
+				Member.Rina     : [],
+				Member.Kasumi   : [],
+				Member.Shizuku  : [],
+				Member.Ayumu    : [],
+				Member.Setsuna  : [],
+				Member.Ai       : [],
+				Member.Emma     : [],
+				Member.Kanata   : [],
+				Member.Karin    : [],
+				Member.Shioriko : [1, 2, 3, 6, ],
+				Member.Lanzhu   : [1, 2, 3, 4, 5, 6, 7, 8, ],
+				Member.Mia      : [1, 2, 3, 4, 5, 6, 7, 8, ],
 			}
 		}
 		try:
@@ -265,7 +265,7 @@ class CardRotations():
 				
 				'Exciting Animal' : ['Excited Animal'],
 				
-				# '2nd Nijigasaki Solo': [
+				# '2nd Niji Solo': [
 				# 	'Kaika Sengen',
 				# 	'\u2606Wonderland\u2606',
 				# 	'Audrey',
@@ -280,7 +280,7 @@ class CardRotations():
 				# 	'Ye Mingzhu',
 				# ],
 				
-				'3rd Nijigasaki Solo': [
+				'3rd Nijigasaki Solo + Aoi&nbsp;Canaria': [
 					'Aion no Uta',
 					'Marchen Star',
 					'Say Good-Bye Namida',
@@ -290,10 +290,11 @@ class CardRotations():
 					'Tanoshii no Tensai',
 					'Fire Bird',
 					'LIKE IT! LOVE IT!',
-					'Concentrate!',
+					# 'Concentrate!',
+					'Aoi Canaria',
 				],
 				
-				'4th Nijigasaki Solo': [
+				'4th Niji Solo': [
 					'Break The System',
 					'TO BE YOURSELF',
 					'Eieisa',
@@ -311,20 +312,11 @@ class CardRotations():
 		except:
 			idolized_same_set = {}
 		
-		set_title_overrides = {
-			Group.Nijigasaki : dict([
-				(0,  "1st Nijigasaki Solo"),
-				(5,  "3rd Nijigasaki Solo"),
-				(10, "Rainbow Waltz"),
-			])
-		}
-		
-		idols = self.client.get_idols_by_group(group, Rarity.SR)
-	
 		current_set_index = 0
 		set_indexes = []
-		
 		idol_sets = defaultdict(dict)
+		
+		idols = self.client.get_idols_by_group(group, Rarity.SR)
 		for idol in idols:
 			title = idol.get_card_name(True)
 			try:
@@ -342,12 +334,15 @@ class CardRotations():
 			current_rotation = {}
 			for member in Idols.member_order_by_group[group]:
 				if member in idol_sets[set_title]:
+					# Card found, add to rotation
 					current_rotation[member] = idol_sets[set_title][member]
-				
+					
 				elif member in skipped_sets and index in skipped_sets[member]:
+					# Card is explicitly skipped
 					current_rotation[member] = CardNonExtant()
 					
 				else:
+					# Card not yet added to the game
 					current_rotation[member] = CardMissing()
 			
 			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order_by_group[group]), set_title ))
@@ -737,8 +732,8 @@ class CardRotations():
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
 			'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; this page may or may not break in the future.<br>
-			                          Shioriko's Aoi Canaria SR is a very exceptional case. Unless they release more 2nd Nijigasaki Solo costumes
-			                          (or any other fitting collection) she may get a set of her own permanently.''',
+			                          Shioriko's Aoi Canaria SR is a very exceptional case. For now she is with other 3rd Niji Solos but that may change
+			                          depending on future additions.''',
 		})
 		
 		# -------------------------------------------------------
