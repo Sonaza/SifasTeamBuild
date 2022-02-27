@@ -137,9 +137,9 @@ class CardRotations():
 	def get_general_rotation(self, group : Group, rarity : Rarity):
 		member_delays = {
 			Rarity.SR : {
-				Member.Shioriko : [0, 3, 2],
-				Member.Lanzhu   : [0, 8],
-				Member.Mia      : [0, 8],
+				Member.Shioriko : [0, 3, 2, ],
+				Member.Lanzhu   : [0, 8, ],
+				Member.Mia      : [0, 8, ],
 			},
 			Rarity.UR : {
 				Member.Shioriko : 3,
@@ -219,6 +219,138 @@ class CardRotations():
 		
 			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order_by_group[group]), set_title ))
 			rotation_index += 1
+		
+		return rotations
+	
+	# -------------------------------------------------------------------------------------------
+	
+	def get_sr_sets(self, group : Group):
+		skipped_sets = {
+			Group.Nijigasaki : {
+				Member.Rina     : [11,],
+				Member.Kasumi   : [11,],
+				Member.Shizuku  : [11,],
+				Member.Ayumu    : [11,],
+				Member.Setsuna  : [11,],
+				Member.Ai       : [11,],
+				Member.Emma     : [11,],
+				Member.Kanata   : [11,],
+				Member.Karin    : [11,],
+				Member.Shioriko : [1, 2, 3, 5, 6, ],
+				Member.Lanzhu   : [1, 2, 3, 4, 5, 6, 7, 8, 11,],
+				Member.Mia      : [1, 2, 3, 4, 5, 6, 7, 8, 11,],
+			}
+		}
+		try:
+			skipped_sets = skipped_sets[group]
+		except:
+			skipped_sets = {}
+		
+		idolized_same_set = {
+			Group.Nijigasaki : {
+				'1st Nijigasaki Solo' : [
+					'Yume e no Ippo',
+					'Diamond',
+					'Anata no Risou no Heroine',
+					'Starlight',
+					'Meccha Going!!',
+					'Nemureru Mori ni Ikitai na',
+					'CHASE!',
+					'Evergreen',
+					'Dokipipo\u2606Emotion',
+					'Ketsui no Hikari',
+					'I\'m Still...',
+					'Queendom',
+				],
+				
+				'Exciting Animal' : ['Excited Animal'],
+				
+				# '2nd Nijigasaki Solo': [
+				# 	'Kaika Sengen',
+				# 	'\u2606Wonderland\u2606',
+				# 	'Audrey',
+				# 	'Wish',
+				# 	'You & I',
+				# 	'My Own Fairy-Tale',
+				# 	'MELODY',
+				# 	'Koe Tsunagou yo',
+				# 	'Tele Telepathy',
+				# 	'Aoi Canaria',
+				# 	'Toy Doll!',
+				# 	'Ye Mingzhu',
+				# ],
+				
+				'3rd Nijigasaki Solo': [
+					'Aion no Uta',
+					'Marchen Star',
+					'Say Good-Bye Namida',
+					'Yagate Hitotsu no Monogatari',
+					'Margaret',
+					'Analog Heart',
+					'Tanoshii no Tensai',
+					'Fire Bird',
+					'LIKE IT! LOVE IT!',
+					'Concentrate!',
+				],
+				
+				'4th Nijigasaki Solo': [
+					'Break The System',
+					'TO BE YOURSELF',
+					'Eieisa',
+					'Turn it Up!',
+					'Diabolic mulier',
+					'Silent Blaze',
+					'Yada!',
+					'Itsu datte for you!',
+					'First Love Again',
+				],
+			}
+		}
+		try:
+			idolized_same_set = dict([(title, set_title) for set_title, idolized_titles in idolized_same_set[group].items() for title in idolized_titles])
+		except:
+			idolized_same_set = {}
+		
+		set_title_overrides = {
+			Group.Nijigasaki : dict([
+				(0,  "1st Nijigasaki Solo"),
+				(5,  "3rd Nijigasaki Solo"),
+				(10, "Rainbow Waltz"),
+			])
+		}
+		
+		idols = self.client.get_idols_by_group(group, Rarity.SR)
+	
+		current_set_index = 0
+		set_indexes = []
+		
+		idol_sets = defaultdict(dict)
+		for idol in idols:
+			title = idol.get_card_name(True)
+			try:
+				title = idolized_same_set[title]
+			except: pass
+			
+			if title not in idol_sets:
+				set_indexes.append((current_set_index, title))
+				current_set_index += 1
+			
+			idol_sets[title][idol.member_id] = idol
+		
+		rotations = []
+		for index, set_title in set_indexes:
+			current_rotation = {}
+			for member in Idols.member_order_by_group[group]:
+				if member in idol_sets[set_title]:
+					current_rotation[member] = idol_sets[set_title][member]
+				
+				elif member in skipped_sets and index in skipped_sets[member]:
+					current_rotation[member] = CardNonExtant()
+					
+				else:
+					current_rotation[member] = CardMissing()
+			
+			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order_by_group[group]), set_title ))
 		
 		return rotations
 	
@@ -522,7 +654,7 @@ class CardRotations():
 		return preload_assets
 	
 	def generate_pages(self):
-		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
+		files_to_delete = [] #[x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		
 		# -------------------------------------------------------
 		# Per school UR attribute-type arrays
@@ -599,13 +731,14 @@ class CardRotations():
 		# -------------------------------------------------------
 		# SR Sets
 		
-		sr_sets = [(group, self.get_general_rotation(group, Rarity.SR)) for group in Group]
+		sr_sets = [(group, self.get_sr_sets(group)) for group in Group]
 		self.renderer.render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
 			'grouped_rotations'  : sr_sets,
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
-			'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; mainly the new girls not fitting in neat cycles &mdash;
-			                          so this page may or may not break in the future.''',
+			'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; this page may or may not break in the future.<br>
+			                          Shioriko's Aoi Canaria SR is a very exceptional case. Unless they release more 2nd Nijigasaki Solo costumes
+			                          (or any other fitting collection) she may get a set of her own permanently.''',
 		})
 		
 		# -------------------------------------------------------

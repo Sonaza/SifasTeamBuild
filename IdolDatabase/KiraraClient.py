@@ -495,13 +495,16 @@ class KiraraClient():
 			# })
 			known_banners_hashes.append(cards_hash)
 		
-		# with open("history.json", "r", encoding="utf-8") as f:
-		# 	history_result = json.load(fp=f)
+		load_json = 1
 		
-		hc = HistoryCrawler()
-		history_result = hc.crawl_history(
-			known_events=known_events,
-			known_banners_hashes=known_banners_hashes)
+		if not load_json:
+			hc = HistoryCrawler()
+			history_result = hc.crawl_history(
+				known_events=known_events,
+				known_banners_hashes=known_banners_hashes)
+		else:
+			with open("history.json", "r", encoding="utf-8") as f:
+				history_result = json.load(fp=f)
 		
 		if not history_result:
 			print("Found no new event data. Nothing to do...")
