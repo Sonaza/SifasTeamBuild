@@ -495,7 +495,7 @@ class KiraraClient():
 			# })
 			known_banners_hashes.append(cards_hash)
 		
-		load_json = 1
+		load_json = 0
 		
 		if not load_json:
 			hc = HistoryCrawler()
