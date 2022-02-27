@@ -236,7 +236,7 @@ class CardRotations():
 				Member.Emma     : [],
 				Member.Kanata   : [],
 				Member.Karin    : [],
-				Member.Shioriko : [1, 2, 3, 6, ],
+				Member.Shioriko : [1, 2, 3, 5, 6, ],
 				Member.Lanzhu   : [1, 2, 3, 4, 5, 6, 7, 8, ],
 				Member.Mia      : [1, 2, 3, 4, 5, 6, 7, 8, ],
 			}
@@ -294,7 +294,7 @@ class CardRotations():
 					'Aoi Canaria',
 				],
 				
-				'4th Niji Solo': [
+				'4th Nijigasaki Solo': [
 					'Break The System',
 					'TO BE YOURSELF',
 					'Eieisa',
