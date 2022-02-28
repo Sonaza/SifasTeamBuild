@@ -579,8 +579,12 @@ class CardRotations():
 			(48, "Initial SR Mia and Lanzhu"),
 		])
 		
+		now = datetime.now(timezone.utc)
+		
 		events_per_month = 1
 		for banner_id, data in banners.items():
+			data['banner']['age'] = now - data['banner']['start']
+			
 			data['banner']['start'] = data['banner']['start'].strftime('%d %b %Y')
 			data['banner']['end']   = data['banner']['end'].strftime('%d %b %Y')
 			

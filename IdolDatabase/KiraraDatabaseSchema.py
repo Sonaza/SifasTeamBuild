@@ -194,4 +194,26 @@ schemas = [
 	    INNER JOIN banners      ON banners.id = banner_cards.banner_id
 	''',
 	
+	'''CREATE VIEW v_idols_with_events_and_banner_info AS
+	    SELECT
+			v_idols.*,
+			events.id AS event_id,
+			events.type AS event_type,
+			events.title_en AS event_title,
+			events.start_jp AS event_start,
+			events.end_jp AS event_end,
+			banners.id AS banner_id,
+			banners.type AS banner_type,
+			banners.title_jp AS banner_title,
+			banners.start_jp AS banner_start,
+			banners.end_jp AS banner_end,
+			banners.original_num_cards AS banner_num_cards
+		FROM v_idols
+		LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
+		LEFT JOIN events      ON events.id = event_cards.event_id
+		LEFT JOIN banner_cards ON banner_cards.ordinal = v_idols.ordinal
+		LEFT JOIN banners      ON banners.id = banner_cards.banner_id
+		WHERE (events.id not null OR banners.id not null)
+	''',
+	
 ]

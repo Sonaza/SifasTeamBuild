@@ -63,10 +63,10 @@ class HistoryCrawler:
 				
 				try:
 					start_ts = int(float(timestamps[0]['data-ts']))
-					start = datetime.utcfromtimestamp(start_ts)
+					start = datetime.utcfromtimestamp(start_ts).replace(tzinfo=timezone.utc)
 					
 					end_ts = int(float(timestamps[1]['data-ts']))
-					end = datetime.utcfromtimestamp(end_ts)
+					end = datetime.utcfromtimestamp(end_ts).replace(tzinfo=timezone.utc)
 				except:
 					print("  Could not parse banner timestamps")
 					continue
@@ -148,10 +148,10 @@ class HistoryCrawler:
 				
 				try:
 					start_ts = int(float(timestamps[0]['data-ts']))
-					start = datetime.utcfromtimestamp(start_ts)
+					start = datetime.utcfromtimestamp(start_ts).replace(tzinfo=timezone.utc)
 					
 					end_ts = int(float(timestamps[1]['data-ts']))
-					end = datetime.utcfromtimestamp(end_ts)
+					end = datetime.utcfromtimestamp(end_ts).replace(tzinfo=timezone.utc)
 				except:
 					print("  Could not parse event timestamps")
 					continue

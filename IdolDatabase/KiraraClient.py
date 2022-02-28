@@ -527,7 +527,6 @@ class KiraraClient():
 				continue
 			
 			banner_start = datetime.fromisoformat(data['start_jp'])
-			banner_start = banner_start.replace(tzinfo=timezone.utc)
 			
 			card_data = self.get_idols_by_ordinal(data['cards'])
 			
