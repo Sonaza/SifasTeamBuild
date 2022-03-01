@@ -1,3 +1,9 @@
+.icon-16.attribute-1 { background-image: url('/img/icons/16/attribute-1.png') !important; }
+.icon-16.attribute-2 { background-image: url('/img/icons/16/attribute-2.png') !important; }
+.icon-16.attribute-3 { background-image: url('/img/icons/16/attribute-3.png') !important; }
+.icon-16.attribute-4 { background-image: url('/img/icons/16/attribute-4.png') !important; }
+.icon-16.attribute-5 { background-image: url('/img/icons/16/attribute-5.png') !important; }
+.icon-16.attribute-6 { background-image: url('/img/icons/16/attribute-6.png') !important; }
 .icon-32.attribute-1 { background-image: url('/img/icons/32/attribute-1.png') !important; }
 .icon-32.attribute-2 { background-image: url('/img/icons/32/attribute-2.png') !important; }
 .icon-32.attribute-3 { background-image: url('/img/icons/32/attribute-3.png') !important; }
@@ -46,6 +52,10 @@
 .attribute-6.attribute-bg-color-dim  { background-color: #5d386d !important; }
 .attribute-6.attribute-bg-color-dark { background-color: #35203e !important; }
 .st-tr:hover .attribute-6.attribute-bg-color-dim  { background-color: #714484 !important; }
+.icon-16.type-1 { background-image: url('/img/icons/16/type-1.png') !important; }
+.icon-16.type-2 { background-image: url('/img/icons/16/type-2.png') !important; }
+.icon-16.type-3 { background-image: url('/img/icons/16/type-3.png') !important; }
+.icon-16.type-4 { background-image: url('/img/icons/16/type-4.png') !important; }
 .icon-32.type-1 { background-image: url('/img/icons/32/type-1.png') !important; }
 .icon-32.type-2 { background-image: url('/img/icons/32/type-2.png') !important; }
 .icon-32.type-3 { background-image: url('/img/icons/32/type-3.png') !important; }
@@ -78,6 +88,9 @@
 .type-4.type-bg-color-dim  { background-color: #9e7f2e !important; }
 .type-4.type-bg-color-dark { background-color: #5a481a !important; }
 .st-tr:hover .type-4.type-bg-color-dim  { background-color: #c09a38 !important; }
+.icon-16.rarity-10 { background-image: url('/img/icons/16/rarity-10.png') !important; }
+.icon-16.rarity-20 { background-image: url('/img/icons/16/rarity-20.png') !important; }
+.icon-16.rarity-30 { background-image: url('/img/icons/16/rarity-30.png') !important; }
 .icon-32.rarity-10 { background-image: url('/img/icons/32/rarity-10.png') !important; }
 .icon-32.rarity-20 { background-image: url('/img/icons/32/rarity-20.png') !important; }
 .icon-32.rarity-30 { background-image: url('/img/icons/32/rarity-30.png') !important; }
@@ -90,6 +103,42 @@
 .icon-128.rarity-10 { background-image: url('/img/icons/128/rarity-10.png') !important; }
 .icon-128.rarity-20 { background-image: url('/img/icons/128/rarity-20.png') !important; }
 .icon-128.rarity-30 { background-image: url('/img/icons/128/rarity-30.png') !important; }
+
+.idol-1   .idol-icon-16        { background-image: url('/img/icons/16/icon-1.png') !important; }
+.idol-2   .idol-icon-16        { background-image: url('/img/icons/16/icon-2.png') !important; }
+.idol-3   .idol-icon-16        { background-image: url('/img/icons/16/icon-3.png') !important; }
+.idol-4   .idol-icon-16        { background-image: url('/img/icons/16/icon-4.png') !important; }
+.idol-5   .idol-icon-16        { background-image: url('/img/icons/16/icon-5.png') !important; }
+.idol-6   .idol-icon-16        { background-image: url('/img/icons/16/icon-6.png') !important; }
+.idol-7   .idol-icon-16        { background-image: url('/img/icons/16/icon-7.png') !important; }
+.idol-8   .idol-icon-16        { background-image: url('/img/icons/16/icon-8.png') !important; }
+.idol-9   .idol-icon-16        { background-image: url('/img/icons/16/icon-9.png') !important; }
+.idol-101 .idol-icon-16        { background-image: url('/img/icons/16/icon-101.png') !important; }
+.idol-102 .idol-icon-16        { background-image: url('/img/icons/16/icon-102.png') !important; }
+.idol-103 .idol-icon-16        { background-image: url('/img/icons/16/icon-103.png') !important; }
+.idol-104 .idol-icon-16        { background-image: url('/img/icons/16/icon-104.png') !important; }
+.idol-105 .idol-icon-16        { background-image: url('/img/icons/16/icon-105.png') !important; }
+.idol-106 .idol-icon-16        { background-image: url('/img/icons/16/icon-106.png') !important; }
+.idol-107 .idol-icon-16        { background-image: url('/img/icons/16/icon-107.png') !important; }
+.idol-108 .idol-icon-16        { background-image: url('/img/icons/16/icon-108.png') !important; }
+.idol-109 .idol-icon-16        { background-image: url('/img/icons/16/icon-109.png') !important; }
+.idol-201 .idol-icon-16        { background-image: url('/img/icons/16/icon-201.png') !important; }
+.idol-202 .idol-icon-16        { background-image: url('/img/icons/16/icon-202.png') !important; }
+.idol-203 .idol-icon-16        { background-image: url('/img/icons/16/icon-203.png') !important; }
+.idol-204 .idol-icon-16        { background-image: url('/img/icons/16/icon-204.png') !important; }
+.idol-205 .idol-icon-16        { background-image: url('/img/icons/16/icon-205.png') !important; }
+.idol-206 .idol-icon-16        { background-image: url('/img/icons/16/icon-206.png') !important; }
+.idol-207 .idol-icon-16        { background-image: url('/img/icons/16/icon-207.png') !important; }
+.idol-208 .idol-icon-16        { background-image: url('/img/icons/16/icon-208.png') !important; }
+.idol-209 .idol-icon-16        { background-image: url('/img/icons/16/icon-209.png') !important; }
+.idol-210 .idol-icon-16        { background-image: url('/img/icons/16/icon-210.png') !important; }
+.idol-211 .idol-icon-16        { background-image: url('/img/icons/16/icon-211.png') !important; }
+.idol-212 .idol-icon-16        { background-image: url('/img/icons/16/icon-212.png') !important; }
+.idol-301 .idol-icon-16        { background-image: url('/img/icons/16/icon-301.png') !important; }
+.idol-302 .idol-icon-16        { background-image: url('/img/icons/16/icon-302.png') !important; }
+.idol-303 .idol-icon-16        { background-image: url('/img/icons/16/icon-303.png') !important; }
+.idol-304 .idol-icon-16        { background-image: url('/img/icons/16/icon-304.png') !important; }
+.idol-305 .idol-icon-16        { background-image: url('/img/icons/16/icon-305.png') !important; }
 
 .idol-1   .idol-icon-32        { background-image: url('/img/icons/32/icon-1.png') !important; }
 .idol-2   .idol-icon-32        { background-image: url('/img/icons/32/icon-2.png') !important; }
@@ -234,6 +283,42 @@
 .idol-303 .idol-icon-128        { background-image: url('/img/icons/128/icon-303.png') !important; }
 .idol-304 .idol-icon-128        { background-image: url('/img/icons/128/icon-304.png') !important; }
 .idol-305 .idol-icon-128        { background-image: url('/img/icons/128/icon-305.png') !important; }
+
+.idol-1   .idol-icon-16-border { background-image: url('/img/icons/16/icon-1-border.png') !important; }
+.idol-2   .idol-icon-16-border { background-image: url('/img/icons/16/icon-2-border.png') !important; }
+.idol-3   .idol-icon-16-border { background-image: url('/img/icons/16/icon-3-border.png') !important; }
+.idol-4   .idol-icon-16-border { background-image: url('/img/icons/16/icon-4-border.png') !important; }
+.idol-5   .idol-icon-16-border { background-image: url('/img/icons/16/icon-5-border.png') !important; }
+.idol-6   .idol-icon-16-border { background-image: url('/img/icons/16/icon-6-border.png') !important; }
+.idol-7   .idol-icon-16-border { background-image: url('/img/icons/16/icon-7-border.png') !important; }
+.idol-8   .idol-icon-16-border { background-image: url('/img/icons/16/icon-8-border.png') !important; }
+.idol-9   .idol-icon-16-border { background-image: url('/img/icons/16/icon-9-border.png') !important; }
+.idol-101 .idol-icon-16-border { background-image: url('/img/icons/16/icon-101-border.png') !important; }
+.idol-102 .idol-icon-16-border { background-image: url('/img/icons/16/icon-102-border.png') !important; }
+.idol-103 .idol-icon-16-border { background-image: url('/img/icons/16/icon-103-border.png') !important; }
+.idol-104 .idol-icon-16-border { background-image: url('/img/icons/16/icon-104-border.png') !important; }
+.idol-105 .idol-icon-16-border { background-image: url('/img/icons/16/icon-105-border.png') !important; }
+.idol-106 .idol-icon-16-border { background-image: url('/img/icons/16/icon-106-border.png') !important; }
+.idol-107 .idol-icon-16-border { background-image: url('/img/icons/16/icon-107-border.png') !important; }
+.idol-108 .idol-icon-16-border { background-image: url('/img/icons/16/icon-108-border.png') !important; }
+.idol-109 .idol-icon-16-border { background-image: url('/img/icons/16/icon-109-border.png') !important; }
+.idol-201 .idol-icon-16-border { background-image: url('/img/icons/16/icon-201-border.png') !important; }
+.idol-202 .idol-icon-16-border { background-image: url('/img/icons/16/icon-202-border.png') !important; }
+.idol-203 .idol-icon-16-border { background-image: url('/img/icons/16/icon-203-border.png') !important; }
+.idol-204 .idol-icon-16-border { background-image: url('/img/icons/16/icon-204-border.png') !important; }
+.idol-205 .idol-icon-16-border { background-image: url('/img/icons/16/icon-205-border.png') !important; }
+.idol-206 .idol-icon-16-border { background-image: url('/img/icons/16/icon-206-border.png') !important; }
+.idol-207 .idol-icon-16-border { background-image: url('/img/icons/16/icon-207-border.png') !important; }
+.idol-208 .idol-icon-16-border { background-image: url('/img/icons/16/icon-208-border.png') !important; }
+.idol-209 .idol-icon-16-border { background-image: url('/img/icons/16/icon-209-border.png') !important; }
+.idol-210 .idol-icon-16-border { background-image: url('/img/icons/16/icon-210-border.png') !important; }
+.idol-211 .idol-icon-16-border { background-image: url('/img/icons/16/icon-211-border.png') !important; }
+.idol-212 .idol-icon-16-border { background-image: url('/img/icons/16/icon-212-border.png') !important; }
+.idol-301 .idol-icon-16-border { background-image: url('/img/icons/16/icon-301-border.png') !important; }
+.idol-302 .idol-icon-16-border { background-image: url('/img/icons/16/icon-302-border.png') !important; }
+.idol-303 .idol-icon-16-border { background-image: url('/img/icons/16/icon-303-border.png') !important; }
+.idol-304 .idol-icon-16-border { background-image: url('/img/icons/16/icon-304-border.png') !important; }
+.idol-305 .idol-icon-16-border { background-image: url('/img/icons/16/icon-305-border.png') !important; }
 
 .idol-1   .idol-icon-32-border { background-image: url('/img/icons/32/icon-1-border.png') !important; }
 .idol-2   .idol-icon-32-border { background-image: url('/img/icons/32/icon-2-border.png') !important; }

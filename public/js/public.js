@@ -892,6 +892,94 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			featured_only : false,
 		};
 		
+		$scope.filter_idol = $scope.member_order[0];
+		$scope.select_box_options_opened = false;
+		
+		$scope.last_toggled = 0;
+		$scope.toggleSelectBox = ($event) =>
+		{
+			let t = new Date().getTime();
+			if ((t - $scope.last_toggled) < 50) return;
+			$scope.last_toggled = t;
+			
+			$scope.select_box_options_opened = !$scope.select_box_options_opened;
+			if ($scope.select_box_options_opened)
+			{
+				// Lol wtf
+				setTimeout($scope.keepSelectBoxOnScreen, 50);
+				setTimeout($scope.keepSelectBoxOnScreen, 100);
+				setTimeout($scope.keepSelectBoxOnScreen, 150);
+			}
+		}
+		
+		$scope.optionSelectedClass = (member_id) =>
+		{
+			if (member_id === -1 && $scope.filter_index == 0)
+			{
+				return 'selected';
+			}
+			
+			if ($scope.member_order[$scope.filter_index].id === member_id)
+			{
+				return 'selected';
+			}
+			return '';
+		}
+		
+		$scope.selectBoxOptionsClass = () =>
+		{
+			if ($scope.select_box_options_opened)
+			{
+				return 'opened'
+			}
+			else
+			{
+				return 'hidden';
+			}
+		}
+		
+		$scope.chooseSelectOption = ($event, member_id) =>
+		{
+			if (member_id === -1)
+			{
+				$scope.filter_settings.filter = -1;
+			}
+			else
+			{
+				for (let i = 0; i < $scope.member_order.length; i++)
+				{
+					if ($scope.member_order[i].id == -1)
+						continue;
+					
+					if ($scope.member_order[i].id === member_id)
+					{
+						$scope.filter_settings.filter = $scope.member_order[i].id;
+						break;
+					}
+				}
+			}
+			
+			$scope.toggleSelectBox($event);
+		}
+		
+		$scope.keepSelectBoxOnScreen = (event) =>
+		{
+			let e = document.querySelector('.select-box-options');
+			if (!e) return;
+			
+			let rect = e.getBoundingClientRect();
+			
+			const view_width = document.documentElement.clientWidth;
+			
+			var style = e.currentStyle || window.getComputedStyle(e);
+			let current_margin = parseFloat(style.marginLeft);
+			
+			let margin = Math.min((view_width - rect.right) - 20 + current_margin, 0);
+			angular.element(e).css('margin-left', margin + "px");
+		}
+		angular.element($window).on('resize scroll', $scope.keepSelectBoxOnScreen);
+		$scope.keepSelectBoxOnScreen();
+		
 		const url_options = $location.search();
 		if (url_options.filter !== undefined)
 		{
@@ -904,7 +992,6 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 						continue;
 					
 					let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
-					console.log(filter_string, first_name)
 					if (first_name === filter_string)
 					{
 						$scope.filter_settings.filter = $scope.member_order[i].id;
@@ -953,8 +1040,6 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 		
 		$scope.$watch('filter_settings', function(a, b)
 		{
-			console.debug("ASD", $scope.filter_settings);
-			
 			if ($scope.filter_settings.featured_only)
 			{
 				$location.search('filter_featured', 'true').replace();
@@ -981,6 +1066,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 				if ($scope.member_order[i].id == $scope.filter_settings.filter)
 				{
 					$scope.filter_index = i;
+					$scope.filter_idol = $scope.member_order[i];
 					
 					if ($scope.member_order[i].id != -1)
 					{
@@ -1056,7 +1142,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 	}
 );
 
-app.controller('BannersController', function($rootScope, $scope, $route, $routeParams, $location)
+app.controller('BannersController', function($rootScope, $scope, $route, $routeParams, $location, $window)
 	{
 		$scope.loading = true;
 		
@@ -1119,6 +1205,94 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			highlight     : false,
 		};
 		
+		$scope.filter_idol = $scope.member_order[0];
+		$scope.select_box_options_opened = false;
+		
+		$scope.last_toggled = 0;
+		$scope.toggleSelectBox = ($event) =>
+		{
+			let t = new Date().getTime();
+			if ((t - $scope.last_toggled) < 50) return;
+			$scope.last_toggled = t;
+			
+			$scope.select_box_options_opened = !$scope.select_box_options_opened;
+			if ($scope.select_box_options_opened)
+			{
+				// Lol wtf
+				setTimeout($scope.keepSelectBoxOnScreen, 50);
+				setTimeout($scope.keepSelectBoxOnScreen, 100);
+				setTimeout($scope.keepSelectBoxOnScreen, 150);
+			}
+		}
+		
+		$scope.optionSelectedClass = (member_id) =>
+		{
+			if (member_id === -1 && $scope.filter_index == 0)
+			{
+				return 'selected';
+			}
+			
+			if ($scope.member_order[$scope.filter_index].id === member_id)
+			{
+				return 'selected';
+			}
+			return '';
+		}
+		
+		$scope.selectBoxOptionsClass = () =>
+		{
+			if ($scope.select_box_options_opened)
+			{
+				return 'opened'
+			}
+			else
+			{
+				return 'hidden';
+			}
+		}
+		
+		$scope.chooseSelectOption = ($event, member_id) =>
+		{
+			if (member_id === -1)
+			{
+				$scope.filter_settings.filter = -1;
+			}
+			else
+			{
+				for (let i = 0; i < $scope.member_order.length; i++)
+				{
+					if ($scope.member_order[i].id == -1)
+						continue;
+					
+					if ($scope.member_order[i].id === member_id)
+					{
+						$scope.filter_settings.filter = $scope.member_order[i].id;
+						break;
+					}
+				}
+			}
+			
+			$scope.toggleSelectBox($event);
+		}
+		
+		$scope.keepSelectBoxOnScreen = (event) =>
+		{
+			let e = document.querySelector('.select-box-options');
+			if (!e) return;
+			
+			let rect = e.getBoundingClientRect();
+			
+			const view_width = document.documentElement.clientWidth;
+			
+			var style = e.currentStyle || window.getComputedStyle(e);
+			let current_margin = parseFloat(style.marginLeft);
+			
+			let margin = Math.min((view_width - rect.right) - 20 + current_margin, 0);
+			angular.element(e).css('margin-left', margin + "px");
+		}
+		angular.element($window).on('resize scroll', $scope.keepSelectBoxOnScreen);
+		$scope.keepSelectBoxOnScreen();
+		
 		const url_options = $location.search();
 		if (url_options.filter !== undefined)
 		{
@@ -1131,7 +1305,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 						continue;
 					
 					let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
-					console.log(filter_string, first_name)
 					if (first_name === filter_string)
 					{
 						$scope.filter_settings.filter = $scope.member_order[i].id;
@@ -1151,7 +1324,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 						continue;
 					
 					let type_title = $scope.banner_types[i].title.toLowerCase();
-					console.log(filter_string, type_title)
 					if (type_title === filter_string)
 					{
 						$scope.filter_settings.banner = $scope.banner_types[i].id;
@@ -1197,8 +1369,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		
 		$scope.$watch('filter_settings', function(a, b)
 		{
-			console.log('filter_settings', $scope.filter_settings);
-			
 			if ($scope.filter_settings.highlight)
 			{
 				$location.search('filter_highlight', 'true').replace();
@@ -1216,6 +1386,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 				if ($scope.member_order[i].id == $scope.filter_settings.filter)
 				{
 					$scope.filter_index = i;
+					$scope.filter_idol = $scope.member_order[i];
 					
 					if ($scope.member_order[i].id != -1)
 					{
@@ -1234,8 +1405,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		
 		$scope.$watch('filter_settings.banner', function(a, b)
 		{
-			console.log('filter_settings.banner', $scope.filter_settings);
-			
 			for (let i = 0; i < $scope.banner_types.length; i++)
 			{
 				if ($scope.banner_types[i].id == $scope.filter_settings.banner)
@@ -1285,8 +1454,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			{
 				$scope.banner_index += (e.shiftKey ? -1 : 1);
 				
-				console.log("shillbute", $scope.banner_index, $scope.banner_index_max);
-				
 				if ($scope.banner_index < 0)
 				{
 					$scope.banner_index = $scope.banner_index_max;
@@ -1296,11 +1463,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 					$scope.banner_index = 0;
 				}
 				
-				console.log("bullshite", $scope.banner_index, $scope.banner_index_max);
-				
 				$scope.filter_settings.banner = $scope.banner_types[$scope.banner_index].id;
-				
-				console.log("setting banna ineks", $scope.filter_settings.banner);
 				return;
 			}
 			

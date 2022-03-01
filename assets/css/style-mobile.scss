@@ -12,7 +12,7 @@
 
 @media screen and (max-width: 1100px)
 {
-	
+
 #side-nav
 {
 	/*width: 200px;*/
@@ -72,6 +72,17 @@ body
 
 @media screen and (max-width: 900px)
 {
+	
+
+.select-box-mobile-only
+{
+	display: block;
+}
+
+.select-box-desktop-only
+{
+	display: none;
+}
 	
 h1 { font-size: 18pt; }
 h2 { font-size: 16pt; }

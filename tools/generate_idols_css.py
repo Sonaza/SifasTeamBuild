@@ -23,7 +23,7 @@ def generate_idols_css(output_file):
 
 	rarities = [10, 20, 30]
 
-	icon_sizes = [32, 48, 64, 128]
+	icon_sizes = [16, 32, 48, 64, 128]
 
 	def darken(hex, m):
 		r = int(int(hex[0:2], 16) * m)

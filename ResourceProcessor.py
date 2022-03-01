@@ -10,6 +10,7 @@ with warnings.catch_warnings():
 	# stfu about stuff I didn't write
 	warnings.simplefilter(action='ignore', category=FutureWarning)
 	from scss import Compiler
+	import scss.errors
 
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -50,8 +51,17 @@ class ResourceProcessor():
 				
 			if '.scss' in filepath:
 				print("  Compiling SCSS...", end='')
-				css_code = self._fix_scss_bullshit(css_code)
-				css_code = scss_compiler.compile_string(css_code)
+				try:
+					css_code = self._fix_scss_bullshit(css_code)
+					css_code = scss_compiler.compile_string(css_code)
+				except Exception as e:
+					print(f"  Failed! ({type(e).__name__})")
+					print()
+					print("----------------------------------------------------------------------------------------------")
+					print(str(e))
+					print("----------------------------------------------------------------------------------------------")
+					print()
+					return False
 			
 			if minify:
 				print("  Minifying...", end='')
