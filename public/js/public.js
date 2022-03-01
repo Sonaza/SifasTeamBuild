@@ -311,6 +311,16 @@ app.run(($rootScope) =>
 			hide_empty_rows         : getStorage('hide_empty_rows', false),
 			// alt           : true,
 		}
+		
+		$rootScope.disable_scrolling = false;
+		$rootScope.scrollDisabler = () =>
+		{
+			if ($rootScope.disable_scrolling)
+			{
+				return 'scrolling-disabled';
+			}
+			return '';
+		}
 	}
 )
 
@@ -910,6 +920,8 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 				setTimeout($scope.keepSelectBoxOnScreen, 100);
 				setTimeout($scope.keepSelectBoxOnScreen, 150);
 			}
+			
+			$rootScope.disable_scrolling = $scope.select_box_options_opened;
 		}
 		
 		$scope.optionSelectedClass = (member_id) =>
@@ -967,9 +979,13 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			let e = document.querySelector('.select-box-options');
 			if (!e) return;
 			
-			let rect = e.getBoundingClientRect();
-			
 			const view_width = document.documentElement.clientWidth;
+			if (view_width < 900)
+			{
+				angular.element(e).css('margin-left', '0');
+				return;
+			}
+			let rect = e.getBoundingClientRect();
 			
 			var style = e.currentStyle || window.getComputedStyle(e);
 			let current_margin = parseFloat(style.marginLeft);
@@ -1223,6 +1239,8 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 				setTimeout($scope.keepSelectBoxOnScreen, 100);
 				setTimeout($scope.keepSelectBoxOnScreen, 150);
 			}
+			
+			$rootScope.disable_scrolling = $scope.select_box_options_opened;
 		}
 		
 		$scope.optionSelectedClass = (member_id) =>
@@ -1280,9 +1298,14 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			let e = document.querySelector('.select-box-options');
 			if (!e) return;
 			
-			let rect = e.getBoundingClientRect();
-			
 			const view_width = document.documentElement.clientWidth;
+			if (view_width < 900)
+			{
+				angular.element(e).css('margin-left', '0');
+				return;
+			}
+			
+			let rect = e.getBoundingClientRect();
 			
 			var style = e.currentStyle || window.getComputedStyle(e);
 			let current_margin = parseFloat(style.marginLeft);

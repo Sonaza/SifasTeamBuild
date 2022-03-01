@@ -72,18 +72,7 @@ body
 
 @media screen and (max-width: 900px)
 {
-	
 
-.select-box-mobile-only
-{
-	display: block;
-}
-
-.select-box-desktop-only
-{
-	display: none;
-}
-	
 h1 { font-size: 18pt; }
 h2 { font-size: 16pt; }
 h3 { font-size: 14pt; }
@@ -494,6 +483,85 @@ body.sidebar-open
 		font-size: 8pt;
 	}
 }
+
+/*****************************************************************/
+
+body.scrolling-disabled
+{
+	overflow: hidden;
+}
+
+.settings-select-box
+{
+	.select-box-backdrop
+	{
+		z-index: 99999999999;
+		background: #0009;
+	}
+	
+	.select-box-options
+	{
+		position: fixed;
+		top: 30px;
+		left: 30px;
+		right: 30px;
+		bottom: 30px;
+		height: calc(100% - 60px);
+		overflow-y: scroll;
+		
+		padding: 1rem;
+		margin: 0px;
+		
+		z-index: 999999999999;
+		
+		ul
+		{
+			flex-flow: column nowrap;
+			
+			li.select-box-group
+			{
+				padding: 0 0 1rem 0;
+				
+				span.group-title
+				{
+					font-size: 15pt;
+					margin: 0.4rem;
+					padding: 0.6rem;
+					background: #E5E5E5;
+				}
+			}
+		}	
+		
+		.select-box-option
+		{
+			padding: 0.8rem 1.2rem;
+			margin: 5px 0;
+			
+			font-size: 14pt;
+			
+			&.default-option
+			{
+				position: sticky;
+				padding: 1.2rem;
+				top: 0;
+			}
+		}
+	}
+}
+
+
+/*****************************************************************/
+
+
+// .select-box-mobile-only
+// {
+// 	display: block;
+// }
+
+// .select-box-desktop-only
+// {
+// 	display: none;
+// }
 
 .show-mobile
 {
