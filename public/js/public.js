@@ -840,7 +840,7 @@ let toggleTooltip = function($scope, $event, visible)
 	}
 }
 
-app.controller('EventCardsController', function($rootScope, $scope, $route, $routeParams, $location)
+app.controller('EventCardsController', function($rootScope, $scope, $route, $routeParams, $location, $window)
 	{
 		$scope.loading = true;
 		
