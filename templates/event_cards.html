@@ -9,16 +9,11 @@
 <p class="show-mobile show-narrow-1400"><b>Hint:</b> You can scroll the table horizontally if it doesn't fit on screen.</p>
 
 <div class="page-settings-bar event-card-settings">
-	<label for="filter-event-cards">
+	<label>
 		Filter Events <span class="hide-mobile">(E)</span>
 	</label>
-	<select id="filter-event-cards" ng-model="filter_settings.filter" class="select-box-mobile-only">
+	<select ng-model="filter_settings.filter" class="select-box-hidden">
 		<option ng-value="-1">&mdash; Show All &mdash;</option>
-		{# <optgroup label="Groups">
-			{% for group in Groups %}
-				<option ng-value="['group', group.value]">{{ group.display_name }}</option>
-			{% endfor %}
-		</optgroup> #}
 		{% for group in Groups %}
 			<optgroup label="{{ group.display_name }}">
 				{% for idol in Idols.by_group[group] %}
@@ -129,7 +124,7 @@
 										data-card-title-idolized="{{ card.get_card_name(True) | e }}"
 										data-card-source="{{ get_card_source_label(card) }}"
 										data-card-release-date="{{ card.release_date.strftime('%d %B %Y') }}"
-										{# data-card-event="{{ card.event_title or '' | e }}" #}
+										{# data-card-event="{{ card.event_title or '' | e }}"
 										ng-mouseover="toggleTooltip($event, true)"
 										ng-mouseleave="toggleTooltip($event, false)">
 									<div class="thumbnail-wrapper">

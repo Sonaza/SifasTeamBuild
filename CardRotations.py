@@ -673,8 +673,7 @@ class CardRotations():
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
 			'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
-			                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.
-			                          That is to say, Shioriko gets her 8th and 9th rotation URs when she does.''',
+			                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.''',
 		}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------

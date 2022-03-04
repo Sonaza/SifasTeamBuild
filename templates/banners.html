@@ -10,10 +10,10 @@
 <p class="show-mobile show-narrow-1400"><b>Hint:</b> You can scroll the table horizontally if it doesn't fit on screen.</p>
 
 <div class="page-settings-bar event-card-settings banner-settings">
-	<label for="filter-event-cards">
+	<label>
 		Filter Banners <span class="hide-mobile">(E)</span>
 	</label>
-	<select id="filter-event-cards" ng-model="filter_settings.filter" class="select-box-mobile-only">
+{# 	<select ng-model="filter_settings.filter" class="select-box-hidden">
 		<option ng-value="-1">&mdash; Show All &mdash;</option>
 		{% for group in Groups %}
 			<optgroup label="{{ group.display_name }}">
@@ -22,8 +22,8 @@
 				{% endfor %}
 			</optgroup>
 		{% endfor %}
-	</select>
-	<div class="settings-select-box select-box-desktop-only">
+	</select> #}
+	<div class="settings-select-box">
 		<div class="select-box-backdrop" ng-click="toggleSelectBox($event)" ng-if="select_box_options_opened"></div>
 		<div class="select-box-current" ng-click="toggleSelectBox($event)">
 			<div class="idol-details" ng-if="filter_idol.id === -1">

@@ -850,6 +850,40 @@ let toggleTooltip = function($scope, $event, visible)
 	}
 }
 
+const MEMBERS_ORDERED = [
+	{ id: -1,  name: "— Show All —",      group: undefined },
+	{ id: 8,   name: "Hanayo Koizumi",    group: "µ's" },
+	{ id: 5,   name: "Rin Hoshizora",     group: "µ's" },
+	{ id: 6,   name: "Maki Nishikino",    group: "µ's" },
+	{ id: 1,   name: "Honoka Kousaka",    group: "µ's" },
+	{ id: 3,   name: "Kotori Minami",     group: "µ's" },
+	{ id: 4,   name: "Umi Sonoda",        group: "µ's" },
+	{ id: 7,   name: "Nozomi Toujou",     group: "µ's" },
+	{ id: 2,   name: "Eli Ayase",         group: "µ's" },
+	{ id: 9,   name: "Nico Yazawa",       group: "µ's" },
+	{ id: 107, name: "Hanamaru Kunikida", group: "Aqours" },
+	{ id: 106, name: "Yoshiko Tsushima",  group: "Aqours" },
+	{ id: 109, name: "Ruby Kurosawa",     group: "Aqours" },
+	{ id: 101, name: "Chika Takami",      group: "Aqours" },
+	{ id: 102, name: "Riko Sakurauchi",   group: "Aqours" },
+	{ id: 105, name: "You Watanabe",      group: "Aqours" },
+	{ id: 103, name: "Kanan Matsuura",    group: "Aqours" },
+	{ id: 104, name: "Dia Kurosawa",      group: "Aqours" },
+	{ id: 108, name: "Mari Ohara",        group: "Aqours" },
+	{ id: 209, name: "Rina Tennouji",     group: "Nijigasaki" },
+	{ id: 202, name: "Kasumi Nakasu",     group: "Nijigasaki" },
+	{ id: 203, name: "Shizuku Ousaka",    group: "Nijigasaki" },
+	{ id: 210, name: "Shioriko Mifune",   group: "Nijigasaki" },
+	{ id: 201, name: "Ayumu Uehara",      group: "Nijigasaki" },
+	{ id: 207, name: "Setsuna Yuuki",     group: "Nijigasaki" },
+	{ id: 205, name: "Ai Miyashita",      group: "Nijigasaki" },
+	{ id: 212, name: "Lanzhu Zhong",      group: "Nijigasaki" },
+	{ id: 208, name: "Emma Verde",        group: "Nijigasaki" },
+	{ id: 206, name: "Kanata Konoe",      group: "Nijigasaki" },
+	{ id: 204, name: "Karin Asaka",       group: "Nijigasaki" },
+	{ id: 211, name: "Mia Taylor",        group: "Nijigasaki" },
+];
+
 app.controller('EventCardsController', function($rootScope, $scope, $route, $routeParams, $location, $window)
 	{
 		$scope.loading = true;
@@ -859,42 +893,8 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			window.scrollTo(0, 0);
 		}
 		
-		$scope.member_order = [
-			{ id: -1,  name: "— Show All —",      group: undefined },
-			{ id: 8,   name: "Hanayo Koizumi",    group: "µ's" },
-			{ id: 5,   name: "Rin Hoshizora",     group: "µ's" },
-			{ id: 6,   name: "Maki Nishikino",    group: "µ's" },
-			{ id: 1,   name: "Honoka Kousaka",    group: "µ's" },
-			{ id: 3,   name: "Kotori Minami",     group: "µ's" },
-			{ id: 4,   name: "Umi Sonoda",        group: "µ's" },
-			{ id: 7,   name: "Nozomi Toujou",     group: "µ's" },
-			{ id: 2,   name: "Eli Ayase",         group: "µ's" },
-			{ id: 9,   name: "Nico Yazawa",       group: "µ's" },
-			{ id: 107, name: "Hanamaru Kunikida", group: "Aqours" },
-			{ id: 106, name: "Yoshiko Tsushima",  group: "Aqours" },
-			{ id: 109, name: "Ruby Kurosawa",     group: "Aqours" },
-			{ id: 101, name: "Chika Takami",      group: "Aqours" },
-			{ id: 102, name: "Riko Sakurauchi",   group: "Aqours" },
-			{ id: 105, name: "You Watanabe",      group: "Aqours" },
-			{ id: 103, name: "Kanan Matsuura",    group: "Aqours" },
-			{ id: 104, name: "Dia Kurosawa",      group: "Aqours" },
-			{ id: 108, name: "Mari Ohara",        group: "Aqours" },
-			{ id: 209, name: "Rina Tennouji",     group: "Nijigasaki" },
-			{ id: 202, name: "Kasumi Nakasu",     group: "Nijigasaki" },
-			{ id: 203, name: "Shizuku Ousaka",    group: "Nijigasaki" },
-			{ id: 210, name: "Shioriko Mifune",   group: "Nijigasaki" },
-			{ id: 201, name: "Ayumu Uehara",      group: "Nijigasaki" },
-			{ id: 207, name: "Setsuna Yuuki",     group: "Nijigasaki" },
-			{ id: 205, name: "Ai Miyashita",      group: "Nijigasaki" },
-			{ id: 212, name: "Lanzhu Zhong",      group: "Nijigasaki" },
-			{ id: 208, name: "Emma Verde",        group: "Nijigasaki" },
-			{ id: 206, name: "Kanata Konoe",      group: "Nijigasaki" },
-			{ id: 204, name: "Karin Asaka",       group: "Nijigasaki" },
-			{ id: 211, name: "Mia Taylor",        group: "Nijigasaki" },
-		];
-		
 		$scope.filter_index = 0;
-		$scope.filter_index_max = $scope.member_order.length - 1;
+		$scope.filter_index_max = MEMBERS_ORDERED.length - 1;
 		
 		$scope.filter_settings = {
 			filter        : -1,
@@ -902,7 +902,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			featured_only : false,
 		};
 		
-		$scope.filter_idol = $scope.member_order[0];
+		$scope.filter_idol = MEMBERS_ORDERED[0];
 		$scope.select_box_options_opened = false;
 		
 		$scope.last_toggled = 0;
@@ -931,7 +931,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 				return 'selected';
 			}
 			
-			if ($scope.member_order[$scope.filter_index].id === member_id)
+			if (MEMBERS_ORDERED[$scope.filter_index].id === member_id)
 			{
 				return 'selected';
 			}
@@ -958,14 +958,14 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			}
 			else
 			{
-				for (let i = 0; i < $scope.member_order.length; i++)
+				for (let i = 0; i < MEMBERS_ORDERED.length; i++)
 				{
-					if ($scope.member_order[i].id == -1)
+					if (MEMBERS_ORDERED[i].id == -1)
 						continue;
 					
-					if ($scope.member_order[i].id === member_id)
+					if (MEMBERS_ORDERED[i].id === member_id)
 					{
-						$scope.filter_settings.filter = $scope.member_order[i].id;
+						$scope.filter_settings.filter = MEMBERS_ORDERED[i].id;
 						break;
 					}
 				}
@@ -1002,15 +1002,15 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			let filter_string = url_options.filter.toLowerCase().trim();
 			if (filter_string !== 'none')
 			{
-				for (let i = 0; i < $scope.member_order.length; i++)
+				for (let i = 0; i < MEMBERS_ORDERED.length; i++)
 				{
-					if ($scope.member_order[i].id == -1)
+					if (MEMBERS_ORDERED[i].id == -1)
 						continue;
 					
-					let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
+					let first_name = MEMBERS_ORDERED[i].name.split(' ')[0].toLowerCase();
 					if (first_name === filter_string)
 					{
-						$scope.filter_settings.filter = $scope.member_order[i].id;
+						$scope.filter_settings.filter = MEMBERS_ORDERED[i].id;
 						break;
 					}
 				}
@@ -1077,19 +1077,19 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 		
 		$scope.$watch('filter_settings.filter', function(a, b)
 		{
-			for (let i = 0; i < $scope.member_order.length; i++)
+			for (let i = 0; i < MEMBERS_ORDERED.length; i++)
 			{
-				if ($scope.member_order[i].id == $scope.filter_settings.filter)
+				if (MEMBERS_ORDERED[i].id == $scope.filter_settings.filter)
 				{
 					$scope.filter_index = i;
-					$scope.filter_idol = $scope.member_order[i];
+					$scope.filter_idol = MEMBERS_ORDERED[i];
 					
-					if ($scope.member_order[i].id != -1)
+					if (MEMBERS_ORDERED[i].id != -1)
 					{
-						let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
+						let first_name = MEMBERS_ORDERED[i].name.split(' ')[0].toLowerCase();
 						$location.search('filter', first_name).replace();
 						
-						// $rootScope.$broadcast('update-title', $scope.member_order[i].name.split(' ')[0]);
+						// $rootScope.$broadcast('update-title', MEMBERS_ORDERED[i].name.split(' ')[0]);
 					}
 					else
 					{
@@ -1108,7 +1108,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 		{
 			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
 			
-			document.querySelector('#filter-event-cards').blur();
+			// document.querySelector('#filter-event-cards').blur();
 			
 			if (e.keyCode == 69) // E-key
 			{
@@ -1122,7 +1122,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 					$scope.filter_index = 0;
 				}
 				
-				$scope.filter_settings.filter = $scope.member_order[$scope.filter_index].id;
+				$scope.filter_settings.filter = MEMBERS_ORDERED[$scope.filter_index].id;
 				return;
 			}
 			
@@ -1167,42 +1167,8 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			window.scrollTo(0, 0);
 		}
 		
-		$scope.member_order = [
-			{ id: -1,  name: "— Show All —",      group: undefined },
-			{ id: 8,   name: "Hanayo Koizumi",    group: "µ's" },
-			{ id: 5,   name: "Rin Hoshizora",     group: "µ's" },
-			{ id: 6,   name: "Maki Nishikino",    group: "µ's" },
-			{ id: 1,   name: "Honoka Kousaka",    group: "µ's" },
-			{ id: 3,   name: "Kotori Minami",     group: "µ's" },
-			{ id: 4,   name: "Umi Sonoda",        group: "µ's" },
-			{ id: 7,   name: "Nozomi Toujou",     group: "µ's" },
-			{ id: 2,   name: "Eli Ayase",         group: "µ's" },
-			{ id: 9,   name: "Nico Yazawa",       group: "µ's" },
-			{ id: 107, name: "Hanamaru Kunikida", group: "Aqours" },
-			{ id: 106, name: "Yoshiko Tsushima",  group: "Aqours" },
-			{ id: 109, name: "Ruby Kurosawa",     group: "Aqours" },
-			{ id: 101, name: "Chika Takami",      group: "Aqours" },
-			{ id: 102, name: "Riko Sakurauchi",   group: "Aqours" },
-			{ id: 105, name: "You Watanabe",      group: "Aqours" },
-			{ id: 103, name: "Kanan Matsuura",    group: "Aqours" },
-			{ id: 104, name: "Dia Kurosawa",      group: "Aqours" },
-			{ id: 108, name: "Mari Ohara",        group: "Aqours" },
-			{ id: 209, name: "Rina Tennouji",     group: "Nijigasaki" },
-			{ id: 202, name: "Kasumi Nakasu",     group: "Nijigasaki" },
-			{ id: 203, name: "Shizuku Ousaka",    group: "Nijigasaki" },
-			{ id: 210, name: "Shioriko Mifune",   group: "Nijigasaki" },
-			{ id: 201, name: "Ayumu Uehara",      group: "Nijigasaki" },
-			{ id: 207, name: "Setsuna Yuuki",     group: "Nijigasaki" },
-			{ id: 205, name: "Ai Miyashita",      group: "Nijigasaki" },
-			{ id: 212, name: "Lanzhu Zhong",      group: "Nijigasaki" },
-			{ id: 208, name: "Emma Verde",        group: "Nijigasaki" },
-			{ id: 206, name: "Kanata Konoe",      group: "Nijigasaki" },
-			{ id: 204, name: "Karin Asaka",       group: "Nijigasaki" },
-			{ id: 211, name: "Mia Taylor",        group: "Nijigasaki" },
-		];
-		
 		$scope.filter_index = 0;
-		$scope.filter_index_max = $scope.member_order.length - 1;
+		$scope.filter_index_max = MEMBERS_ORDERED.length - 1;
 		
 		$scope.banner_types = [
 			{ id: -1, title: '— Show All —' },
@@ -1221,7 +1187,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			highlight     : false,
 		};
 		
-		$scope.filter_idol = $scope.member_order[0];
+		$scope.filter_idol = MEMBERS_ORDERED[0];
 		$scope.select_box_options_opened = false;
 		
 		$scope.last_toggled = 0;
@@ -1230,7 +1196,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			let t = new Date().getTime();
 			if ((t - $scope.last_toggled) < 50) return;
 			$scope.last_toggled = t;
-			
+		
 			$scope.select_box_options_opened = !$scope.select_box_options_opened;
 			if ($scope.select_box_options_opened)
 			{
@@ -1250,7 +1216,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 				return 'selected';
 			}
 			
-			if ($scope.member_order[$scope.filter_index].id === member_id)
+			if (MEMBERS_ORDERED[$scope.filter_index].id === member_id)
 			{
 				return 'selected';
 			}
@@ -1277,14 +1243,14 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			}
 			else
 			{
-				for (let i = 0; i < $scope.member_order.length; i++)
+				for (let i = 0; i < MEMBERS_ORDERED.length; i++)
 				{
-					if ($scope.member_order[i].id == -1)
+					if (MEMBERS_ORDERED[i].id == -1)
 						continue;
 					
-					if ($scope.member_order[i].id === member_id)
+					if (MEMBERS_ORDERED[i].id === member_id)
 					{
-						$scope.filter_settings.filter = $scope.member_order[i].id;
+						$scope.filter_settings.filter = MEMBERS_ORDERED[i].id;
 						break;
 					}
 				}
@@ -1322,15 +1288,15 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			let filter_string = url_options.filter.toLowerCase().trim();
 			if (filter_string !== 'none')
 			{
-				for (let i = 0; i < $scope.member_order.length; i++)
+				for (let i = 0; i < MEMBERS_ORDERED.length; i++)
 				{
-					if ($scope.member_order[i].id == -1)
+					if (MEMBERS_ORDERED[i].id == -1)
 						continue;
 					
-					let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
+					let first_name = MEMBERS_ORDERED[i].name.split(' ')[0].toLowerCase();
 					if (first_name === filter_string)
 					{
-						$scope.filter_settings.filter = $scope.member_order[i].id;
+						$scope.filter_settings.filter = MEMBERS_ORDERED[i].id;
 						break;
 					}
 				}
@@ -1404,16 +1370,16 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		
 		$scope.$watch('filter_settings.filter', function(a, b)
 		{
-			for (let i = 0; i < $scope.member_order.length; i++)
+			for (let i = 0; i < MEMBERS_ORDERED.length; i++)
 			{
-				if ($scope.member_order[i].id == $scope.filter_settings.filter)
+				if (MEMBERS_ORDERED[i].id == $scope.filter_settings.filter)
 				{
 					$scope.filter_index = i;
-					$scope.filter_idol = $scope.member_order[i];
+					$scope.filter_idol = MEMBERS_ORDERED[i];
 					
-					if ($scope.member_order[i].id != -1)
+					if (MEMBERS_ORDERED[i].id != -1)
 					{
-						let first_name = $scope.member_order[i].name.split(' ')[0].toLowerCase();
+						let first_name = MEMBERS_ORDERED[i].name.split(' ')[0].toLowerCase();
 						$location.search('filter', first_name).replace();
 					}
 					else
@@ -1455,7 +1421,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		{
 			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
 			
-			document.querySelector('#filter-event-cards').blur();
+			// document.querySelector('#filter-event-cards').blur();
 			
 			if (e.keyCode == 69) // E-key
 			{
@@ -1469,7 +1435,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 					$scope.filter_index = 0;
 				}
 				
-				$scope.filter_settings.filter = $scope.member_order[$scope.filter_index].id;
+				$scope.filter_settings.filter = MEMBERS_ORDERED[$scope.filter_index].id;
 				return;
 			}
 			
