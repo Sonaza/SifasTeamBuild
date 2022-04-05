@@ -58,7 +58,7 @@ class Idol(IdolBase):
 
 #########################################################
 
-number_of_bangles = 2
+number_of_bangles = 0
 crit_power = 1.8 * (1 + number_of_bangles * 0.2)
 
 idols = [
@@ -125,6 +125,7 @@ idols = [
 	Idol(375, Idols.Kasumi,    "Fes2",            crit_power,  5.2,          0.0),
 	
 	Idol(522, Idols.Shizuku,   "Fes2",            crit_power,  15.0,         0.0),
+	Idol(637, Idols.Shizuku,   "Fes3",            crit_power,  5.2,          0.0),
 	
 	Idol(477, Idols.Shioriko,  "Party",           crit_power,  8.4,          4.2),
 	
@@ -151,10 +152,10 @@ print("Card | Effective Appeal (incl. self buffs) | Crit Rate")
 print("-- | -- | --")
 
 # for idol in sorted(idols, reverse = True):
-# 	idol.set_song_modifiers(Attribute.Cool, modifiers=(1.2, 0.8))
+# 	idol.set_song_modifiers(Attribute.Natural, modifiers=(1.2, 0.8))
 
 for idol in sorted(idols, reverse = True):
-	if idol.data.type != Type.Sk:
+	if idol.data.type != Type.Sp:
 		continue
 		
 	print(idol)
