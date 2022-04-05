@@ -79,8 +79,9 @@
 							<li><a href="#/nijigasaki"   ng-class="classActive('/nijigasaki')">Nijigasaki Cards</a></li>
 							<li class="spacer"></li>
 							<li><a href="#/event_cards"  ng-class="classActive('/event_cards', true)">Event Cards</a></li>
-							<li><a href="#/banners"      ng-class="classActive('/banners', true)">Gacha Banners <span class="new-tag">[NEW]</span></a></li>
+							<li><a href="#/banners"      ng-class="classActive('/banners', true)">Gacha Banners</a></li>
 							<li><a href="#/stats"        ng-class="classActive('/stats')">Card Stats</a></li>
+							<?php /* <span class="new-tag">[NEW]</span> */ ?>
 						</ul>
 					</div>
 					<div class="settings-wrapper unfocus-target" ng-class="sidebarToggleActive(settings_visible)">
