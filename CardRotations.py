@@ -247,6 +247,13 @@ class CardRotations():
 			skipped_sets = {}
 		
 		idolized_same_set = {
+			Group.Muse : {
+				'A song for You! You? You!!': [
+					'A Song for You! You? You!',
+					'A song for You! You? You!!',
+				],
+			},
+			
 			Group.Nijigasaki : {
 				'1st Nijigasaki Solo' : [
 					'Yume e no Ippo',
@@ -305,6 +312,18 @@ class CardRotations():
 					'Itsu datte for you!',
 					'First Love Again',
 				],
+				
+				'4th Nijigasaki Solo': [
+					'Break The System',
+					'TO BE YOURSELF',
+					'Eieisa',
+					'Turn it Up!',
+					'Diabolic mulier',
+					'Silent Blaze',
+					'Yada!',
+					'Itsu datte for you!',
+					'First Love Again',
+				],
 			}
 		}
 		try:
@@ -321,7 +340,8 @@ class CardRotations():
 			title = idol.get_card_name(True)
 			try:
 				title = idolized_same_set[title]
-			except: pass
+			except:
+				pass
 			
 			if title not in idol_sets:
 				set_indexes.append((current_set_index, title))
