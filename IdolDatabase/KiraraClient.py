@@ -232,7 +232,7 @@ class KiraraClient():
 		return ', '.join(['?'] * len(data))
 	
 	# -------------------------------------------------------------------------------------------
-		
+	
 	def _query_idol_data_by_ordinal(self, requested_ordinals):
 		assert isinstance(requested_ordinals, list)
 		
@@ -301,6 +301,22 @@ class KiraraClient():
 				query = self._make_insert_query('idols_json', serialized)
 				self.db.execute(query, serialized)
 			
+			ordinal_str = str(card['ordinal']);
+			
+			if 'source' in card:
+				source = card['source']
+			elif ordinal_str in self.cards_fallback:
+				source = self.cards_fallback[ordinal_str]['source']
+			else:
+				raise KiraraClientException(f"Card source not determined for ordinal {ordinal_str} in remote data and no fallback found")
+			
+			if 'release_dates' in card and 'jp' in card['release_dates']:
+				release_date = card['release_dates']['jp']
+			elif ordinal_str in self.cards_fallback:
+				release_date = self.cards_fallback[ordinal_str]['release_date']
+			else:
+				raise KiraraClientException(f"Card release date not determined for ordinal {ordinal_str} in remote data and no fallback found")
+			
 			serialized = {
 				'id'                : card['id'],
 				'ordinal'           : card['ordinal'],
@@ -310,15 +326,14 @@ class KiraraClient():
 				'attribute'         : card['attribute'],
 				'type'              : card['role'],
 				'rarity'            : card['rarity'],
-				'source'            : card['source'],
-				'release_date'      : card['release_dates']['jp'],
+				'source'            : source,
+				'release_date'      : release_date,
 			}
 			query = self._make_insert_query('idols', serialized)
 			self.db.execute(query, serialized)
 		
 		print()
 		print("  OK!")
-		
 		
 		# for card in sorted(data['result'], key=itemgetter('ordinal')):
 		
@@ -380,15 +395,30 @@ class KiraraClient():
 		self._populate_members_and_metadata()
 		
 		print()
+		print("Retrieving events and banners data...")
+		history_data = self._retrieve_history_data()
+		
+		self.cards_fallback = self._load_cards_data_fallback()
+		
+		print()
 		print("Updating idol database...")
 		self._cache_all_idols()
 		
-		print()
-		print("Updating events and banners database...")
-		self._cache_history_data()
+		if history_data:
+			print()
+			print("Updating events and banners database...")
+			self._update_history_database(history_data)
 			
 		self.refresh_last_update_time()
-	
+		
+	def _load_cards_data_fallback(self):
+		try:
+			with open(Config.CARD_DATA_FALLBACK, "r", encoding="utf-8") as f:
+				return json.load(fp=f)
+		except Exception as e:
+			print("Failed to load sources fallback file. ", e)
+			return {}
+			
 	# -------------------------------------------------------------------------------------------
 	
 	def _populate_members_and_metadata(self):
@@ -472,7 +502,7 @@ class KiraraClient():
 	def _cards_hash(self, ordinals_list):
 		return hash(','.join([str(ordinal) for ordinal in ordinals_list]))
 	
-	def _cache_history_data(self):
+	def _retrieve_history_data(self):
 		query = "SELECT title_en, title_jp FROM events"
 		self.db.execute(query)
 		known_events = [y for x in self.db.fetchall() for y in (x['title_en'], x['title_jp'])]
@@ -508,11 +538,23 @@ class KiraraClient():
 		
 		if not history_result:
 			print("Found no new event data. Nothing to do...")
-			return
+			return None
 		
 		# with open("history.json", "w", encoding="utf-8") as f:
 		# 	json.dump(history_result, fp=f)
-					
+		
+		output_data = {
+			'known_events'         : known_events,
+			'known_banners_hashes' : known_banners_hashes,
+			'history_result'       : history_result,
+		}
+		return output_data
+	
+	def _update_history_database(self, data):
+		known_events         = data['known_events']
+		known_banners_hashes = data['known_banners_hashes']
+		history_result       = data['history_result']
+		
 		event_data = []
 		for data in history_result['events']:
 			if data['title_en'] in known_events or data['title_jp'] in known_events:

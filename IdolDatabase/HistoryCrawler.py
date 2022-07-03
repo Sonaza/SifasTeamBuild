@@ -1,12 +1,14 @@
 import re
 import requests
 import time
+import json
 from bs4 import BeautifulSoup
 from operator import itemgetter
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from collections import defaultdict
 
 from .Config import Config
+from .Enums import *
 
 class HistoryCrawlerException(Exception): pass
 class HistoryCrawler:
@@ -33,7 +35,16 @@ class HistoryCrawler:
 	
 	def _parse_banners(self, soup):
 		banners_data = []
+		
 		banner_types = ['Spotlight', 'Festival', 'Party', 'Other']
+		source_types = {
+			'Spotlight' : Source.Spotlight,
+			'Festival'  : Source.Festival,
+			'Party'     : Source.Party,
+			'Other'     : Source.Unspecified,
+		}
+		
+		new_cards = {}
 		
 		news = soup.select('div.kars-list-alternate')
 		for p in news:
@@ -89,6 +100,16 @@ class HistoryCrawler:
 			card_ordinals = [int(x) for x in card_ordinals]
 			card_ordinals.sort()
 			
+			source_type = Source.Unspecified
+			if banner_type in source_types:
+				source_type = source_types[banner_type]
+				
+			for ordinal in card_ordinals:
+				new_cards[ordinal] = {
+					'source'       : source_type.value,
+					'release_date' : start.isoformat(),
+				}
+			
 			data = {
 				'title' : banner_title,
 				'type'  : banner_type,
@@ -96,7 +117,10 @@ class HistoryCrawler:
 				'end'   : end,
 				'cards' : card_ordinals,
 			}
+			
 			banners_data.append(data)
+		
+		self._append_cards_data_fallback(new_cards)
 			
 		return banners_data
 		
@@ -104,6 +128,9 @@ class HistoryCrawler:
 	
 	def _parse_events(self, soup):
 		events_data = []
+		
+		new_cards = {}
+		
 		news = soup.select('div.kars-list-alternate')
 		for p in news:
 			found = False
@@ -157,10 +184,45 @@ class HistoryCrawler:
 					continue
 				
 				found = True
-			
+				
 			if not found:
 				continue
 			
+			gacha_release_date = (start - timedelta(hours=72)).isoformat()
+			event_release_date = start.isoformat()
+			
+			for g in p.select('div.grouped-card-icon-list > .group'):
+				label = g.select_one('div.label')
+				if not label:
+					continue
+				
+				cards = []
+				for card in g.select('a.card-icon'):
+					ordinal = re.findall(r"(\d{1,})", card['href'])
+					if ordinal:
+						cards.append(int(ordinal[0]))
+					else:
+						raise HistoryCrawlerException("Could not parse card ordinal from link")
+				
+				label = label.decode_contents().strip()
+				if label == 'Scouting' or label == 'Part 1' or label == 'Part 2':
+					for ordinal in cards:
+						new_cards[ordinal] = {
+							'source'       : Source.Gacha.value,
+							'release_date' : gacha_release_date,
+						}
+					
+				elif label == 'Event':
+					for ordinal in cards:
+						new_cards[ordinal] = {
+							'source'       : Source.Event.value,
+							'release_date' : event_release_date,
+						}
+					
+				else:
+					print(label)
+					raise HistoryCrawlerException("Unexpected card label")
+				
 			cards_link = p.select_one('div.kars-card-brief-list > a.btn-primary')
 			if not cards_link:
 				print("  Could not find cards link!")
@@ -175,14 +237,16 @@ class HistoryCrawler:
 			card_ordinals.sort()
 			
 			data = {
-				'title' : event_title,
-				'type'  : event_type,
-				'start' : start,
-				'end'   : end,
-				'cards' : card_ordinals,
+				'title'       : event_title,
+				'type'        : event_type,
+				'start'       : start,
+				'end'         : end,
+				'cards'       : card_ordinals,
 			}
 			events_data.append(data)
-			
+		
+		self._append_cards_data_fallback(new_cards)
+		
 		return events_data
 		
 	# ------------------------------------------------------------------------------------
@@ -200,6 +264,25 @@ class HistoryCrawler:
 		
 		return r.content
 		
+	# ------------------------------------------------------------------------------------
+	
+	def _append_cards_data_fallback(self, new_data):
+		try:
+			with open(Config.CARD_DATA_FALLBACK, "r", encoding="utf-8") as f:
+				cards_data = json.load(fp=f)
+				f.close()
+		except Exception as e:
+			print("Couldn't load original data", e)
+			cards_data = {}
+		
+		cards_data.update(new_data)
+		
+		try:
+			with open(Config.CARD_DATA_FALLBACK, "w", encoding="utf-8") as f:
+				json.dump(cards_data, fp=f)
+		except Exception as e:
+			print("Failed to append to sources fallback file. ", e)
+			
 	# ------------------------------------------------------------------------------------
 	
 	def _cards_hash(self, ordinals_list):

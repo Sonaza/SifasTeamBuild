@@ -119,6 +119,7 @@ idols = [
 	## Nijigasaki
 	
 	Idol(487, Idols.Rina,      "Fes2",            crit_power,  4.2,          0.0),
+	Idol(710, Idols.Rina,      "Fes3",            crit_power,  5.2,          2.6),
 	Idol(454, Idols.Rina,      "Kindergarten",    crit_power,  5.2,          0.0),
 	
 	Idol(320, Idols.Kasumi,    "Fes1",            crit_power,  5.2,          0.0),
@@ -128,6 +129,8 @@ idols = [
 	Idol(637, Idols.Shizuku,   "Fes3",            crit_power,  5.2,          0.0),
 	
 	Idol(477, Idols.Shioriko,  "Party",           crit_power,  8.4,          4.2),
+	
+	Idol(601, Idols.Ayumu,     "Fes2",            crit_power,  7.0,          3.5),
 	
 	Idol(308, Idols.Setsuna,   "Rebel",           crit_power,  8.356,        0.0),
 	Idol(146, Idols.Setsuna,   "Fes1",            crit_power,  7.0,          0.0),
@@ -155,7 +158,7 @@ print("-- | -- | --")
 # 	idol.set_song_modifiers(Attribute.Natural, modifiers=(1.2, 0.8))
 
 for idol in sorted(idols, reverse = True):
-	if idol.data.type != Type.Sp:
+	if idol.data.type != Type.Vo:
 		continue
 		
 	print(idol)

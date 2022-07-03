@@ -2,6 +2,7 @@
 *.sqlite
 wanha/
 res/
+data_fallback.json
 
 public/.htaccess
 
