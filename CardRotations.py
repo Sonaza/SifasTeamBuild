@@ -287,7 +287,12 @@ class CardRotations():
 				# 	'Ye Mingzhu',
 				# ],
 				
-				'3rd Nijigasaki Solo + Aoi&nbsp;Canaria': [
+				'Rainbow Waltz + Aoi Canaria': [
+					'Rainbow Waltz',
+					'Aoi Canaria',
+				],
+				
+				'3rd Nijigasaki Solo': [
 					'Aion no Uta',
 					'Marchen Star',
 					'Say Good-Bye Namida',
@@ -297,8 +302,7 @@ class CardRotations():
 					'Tanoshii no Tensai',
 					'Fire Bird',
 					'LIKE IT! LOVE IT!',
-					# 'Concentrate!',
-					'Aoi Canaria',
+					'Concentrate!',
 				],
 				
 				'4th Nijigasaki Solo': [
@@ -755,8 +759,8 @@ class CardRotations():
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
 			'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; this page may or may not break in the future.<br>
-			                          Shioriko's Aoi Canaria SR is a very exceptional case. For now she is with other 3rd Niji Solos but that may change
-			                          depending on future additions.''',
+			                          Shioriko's Aoi Canaria SR is a very exceptional case but looks like she really isn\'t going to get a Rainbow Waltz card
+			                          of her own so there she goes.''',
 		})
 		
 		# -------------------------------------------------------

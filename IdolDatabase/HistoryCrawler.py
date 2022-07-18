@@ -33,7 +33,7 @@ class HistoryCrawler:
 		
 	# ------------------------------------------------------------------------------------
 	
-	def _parse_banners(self, soup):
+	def _parse_banners(self, soup, update_fallback):
 		banners_data = []
 		
 		banner_types = ['Spotlight', 'Festival', 'Party', 'Other']
@@ -100,15 +100,16 @@ class HistoryCrawler:
 			card_ordinals = [int(x) for x in card_ordinals]
 			card_ordinals.sort()
 			
-			source_type = Source.Unspecified
-			if banner_type in source_types:
-				source_type = source_types[banner_type]
-				
-			for ordinal in card_ordinals:
-				new_cards[ordinal] = {
-					'source'       : source_type.value,
-					'release_date' : start.isoformat(),
-				}
+			if update_fallback:
+				source_type = Source.Unspecified
+				if banner_type in source_types:
+					source_type = source_types[banner_type]
+					
+				for ordinal in card_ordinals:
+					new_cards[ordinal] = {
+						'source'       : source_type.value,
+						'release_date' : start.isoformat(),
+					}
 			
 			data = {
 				'title' : banner_title,
@@ -120,13 +121,14 @@ class HistoryCrawler:
 			
 			banners_data.append(data)
 		
-		self._append_cards_data_fallback(new_cards)
+		if update_fallback:
+			self._append_cards_data_fallback(new_cards)
 			
 		return banners_data
 		
 	# ------------------------------------------------------------------------------------
 	
-	def _parse_events(self, soup):
+	def _parse_events(self, soup, update_fallback):
 		events_data = []
 		
 		new_cards = {}
@@ -188,40 +190,41 @@ class HistoryCrawler:
 			if not found:
 				continue
 			
-			gacha_release_date = (start - timedelta(hours=72)).isoformat()
-			event_release_date = start.isoformat()
-			
-			for g in p.select('div.grouped-card-icon-list > .group'):
-				label = g.select_one('div.label')
-				if not label:
-					continue
+			if update_fallback:
+				gacha_release_date = (start - timedelta(hours=72)).isoformat()
+				event_release_date = start.isoformat()
 				
-				cards = []
-				for card in g.select('a.card-icon'):
-					ordinal = re.findall(r"(\d{1,})", card['href'])
-					if ordinal:
-						cards.append(int(ordinal[0]))
+				for g in p.select('div.grouped-card-icon-list > .group'):
+					label = g.select_one('div.label')
+					if not label:
+						continue
+					
+					cards = []
+					for card in g.select('a.card-icon'):
+						ordinal = re.findall(r"(\d{1,})", card['href'])
+						if ordinal:
+							cards.append(int(ordinal[0]))
+						else:
+							raise HistoryCrawlerException("Could not parse card ordinal from link")
+					
+					label = label.decode_contents().strip()
+					if label == 'Scouting' or label == 'Part 1' or label == 'Part 2':
+						for ordinal in cards:
+							new_cards[ordinal] = {
+								'source'       : Source.Gacha.value,
+								'release_date' : gacha_release_date,
+							}
+						
+					elif label == 'Event':
+						for ordinal in cards:
+							new_cards[ordinal] = {
+								'source'       : Source.Event.value,
+								'release_date' : event_release_date,
+							}
+						
 					else:
-						raise HistoryCrawlerException("Could not parse card ordinal from link")
-				
-				label = label.decode_contents().strip()
-				if label == 'Scouting' or label == 'Part 1' or label == 'Part 2':
-					for ordinal in cards:
-						new_cards[ordinal] = {
-							'source'       : Source.Gacha.value,
-							'release_date' : gacha_release_date,
-						}
-					
-				elif label == 'Event':
-					for ordinal in cards:
-						new_cards[ordinal] = {
-							'source'       : Source.Event.value,
-							'release_date' : event_release_date,
-						}
-					
-				else:
-					print(label)
-					raise HistoryCrawlerException("Unexpected card label")
+						print(label)
+						raise HistoryCrawlerException("Unexpected card label")
 				
 			cards_link = p.select_one('div.kars-card-brief-list > a.btn-primary')
 			if not cards_link:
@@ -245,7 +248,8 @@ class HistoryCrawler:
 			}
 			events_data.append(data)
 		
-		self._append_cards_data_fallback(new_cards)
+		if update_fallback:
+			self._append_cards_data_fallback(new_cards)
 		
 		return events_data
 		
@@ -323,7 +327,7 @@ class HistoryCrawler:
 				next_page_url = self._try_find_next_page(html_soup)
 				
 				if crawling_banners:
-					banner_data = self._parse_banners(html_soup)
+					banner_data = self._parse_banners(html_soup, locale == 'jp')
 					if banner_data == False:
 						raise HistoryCrawlerException("Failed to parse page banners")
 					
@@ -337,7 +341,7 @@ class HistoryCrawler:
 							break
 				
 				if crawling_events:
-					event_data = self._parse_events(html_soup)
+					event_data = self._parse_events(html_soup, locale == 'jp')
 					if event_data == False:
 						raise HistoryCrawlerException("Failed to parse page events")
 					
