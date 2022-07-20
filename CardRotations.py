@@ -756,7 +756,7 @@ class CardRotations():
 			'page_title'         : 'SR Sets',
 			'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; this page may or may not break in the future.<br>
 			                          Shioriko is getting Rainbow Waltz SR after all. Mia and Lanzhu will also be receiving SRs for their 2nd solos
-			                          (Toy Doll and Ye Mingzhu) so I\'ll group them together with Aoi Canaria for now.''',
+			                          (Toy Doll and Ye Mingzhu) so I\'ll group them together with Shioriko's 2nd solo Aoi Canaria.''',
 		})
 		
 		# -------------------------------------------------------
