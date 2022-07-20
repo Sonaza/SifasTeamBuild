@@ -227,15 +227,15 @@ class CardRotations():
 	def get_sr_sets(self, group : Group):
 		skipped_sets = {
 			Group.Nijigasaki : {
-				Member.Rina     : [],
-				Member.Kasumi   : [],
-				Member.Shizuku  : [],
-				Member.Ayumu    : [],
-				Member.Setsuna  : [],
-				Member.Ai       : [],
-				Member.Emma     : [],
-				Member.Kanata   : [],
-				Member.Karin    : [],
+				Member.Rina     : [11, ],
+				Member.Kasumi   : [11, ],
+				Member.Shizuku  : [11, ],
+				Member.Ayumu    : [11, ],
+				Member.Setsuna  : [11, ],
+				Member.Ai       : [11, ],
+				Member.Emma     : [11, ],
+				Member.Kanata   : [11, ],
+				Member.Karin    : [11, ],
 				Member.Shioriko : [1, 2, 3, 5, 6, ],
 				Member.Lanzhu   : [1, 2, 3, 4, 5, 6, 7, 8, ],
 				Member.Mia      : [1, 2, 3, 4, 5, 6, 7, 8, ],
@@ -273,23 +273,19 @@ class CardRotations():
 				'Exciting Animal' : ['Excited Animal'],
 				
 				# '2nd Niji Solo': [
-				# 	'Kaika Sengen',
-				# 	'\u2606Wonderland\u2606',
-				# 	'Audrey',
-				# 	'Wish',
-				# 	'You & I',
-				# 	'My Own Fairy-Tale',
-				# 	'MELODY',
-				# 	'Koe Tsunagou yo',
-				# 	'Tele Telepathy',
-				# 	'Aoi Canaria',
-				# 	'Toy Doll!',
-				# 	'Ye Mingzhu',
-				# ],
-				
-				'Rainbow Waltz + Aoi Canaria': [
-					'Rainbow Waltz',
+				'R3BIRTH 2nd Solo': [
+					'Kaika Sengen',
+					'\u2606Wonderland\u2606',
+					'Audrey',
+					'Wish',
+					'You & I',
+					'My Own Fairy-Tale',
+					'MELODY',
+					'Koe Tsunagou yo',
+					'Tele Telepathy',
 					'Aoi Canaria',
+					'Toy Doll!',
+					'Ye Mingzhu',
 				],
 				
 				'3rd Nijigasaki Solo': [
@@ -759,8 +755,8 @@ class CardRotations():
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
 			'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; this page may or may not break in the future.<br>
-			                          Shioriko's Aoi Canaria SR is a very exceptional case but looks like she really isn\'t going to get a Rainbow Waltz card
-			                          of her own so there she goes.''',
+			                          Shioriko is getting Rainbow Waltz SR after all. Mia and Lanzhu will also be receiving SRs for their 2nd solos
+			                          (Toy Doll and Ye Mingzhu) so I\'ll group them together for now.''',
 		})
 		
 		# -------------------------------------------------------
