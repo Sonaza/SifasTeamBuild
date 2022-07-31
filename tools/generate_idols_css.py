@@ -6,13 +6,13 @@ def generate_idols_css(output_file):
 		1, 2, 3, 4, 5, 6, 7, 8, 9,                                   # Muse
 		101, 102, 103, 104, 105, 106, 107, 108, 109,                 # Aqours
 		201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212,  # Nijigasaki
-		301, 302, 303, 304, 305,                                     # Liella
+		301, 302, 303, 304, 305, 306, 307, 308, 309,                 # Liella
 	]
 	idol_colors = list(zip(idols, [
 		'f39801', '1eb8ec', 'abadac', '2c72b7', 'fef102', 'e93421', '925da3', '23ac3a', 'ec6f9b', 
 		'f28100', 'f39c95', '63c0ad', 'e70014', '67aadf', '9f9f9f', 'fee202', '6458a4', 'ee6da6', 
 		'f0939e', 'f7f064', '81c6ef', '034099', 'eb6001', 'ba8ec1', 'da363f', '6cbd61', 'a8aaa9', '2c9e7e', 'd6d5ca', 'f8c8c4', 
-		'ff7f27', 'a0fff9', 'ff6e90', '74f466', '0000a0', 
+		'ff7f27', 'a0fff9', 'ff6e90', '74f466', '0000a0', 'fff442', 'ff3535', 'b2ffdd', 'ff51c4',
 	]))
 
 	attributes = [1, 2, 3, 4, 5, 6]
@@ -123,4 +123,4 @@ def generate_idols_css(output_file):
 # -------------------------------------------------
 
 if __name__ == "__main__":
-	generate_idols_css("assets/css/idols.css")
+	generate_idols_css("../assets/css/idols.css")

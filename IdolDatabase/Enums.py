@@ -120,11 +120,16 @@ class Member(Enum):
 	Mia      = 211, "Mia Taylor",         Group.Nijigasaki, Year.Third, Subunit.Rebirth
 
 	# ------------ Liella ------------
-#	Kanon    = 300, "Kanon Shibuya",      Group.Liella, Year.First, Subunit.Liella
-#	Keke     = 301, "Keke Tang",          Group.Liella, Year.First, Subunit.Liella
-#	Chisato  = 302, "Chisato Arashi",     Group.Liella, Year.First, Subunit.Liella
-#	Sumire   = 303, "Sumire Heanna",      Group.Liella, Year.First, Subunit.Liella
-#	Ren      = 304, "Ren Hazuki",         Group.Liella, Year.First, Subunit.Liella
+#	Kanon    = 301, "Kanon Shibuya",      Group.Liella, Year.Second, Subunit.Liella
+#	Keke     = 302, "Keke Tang",          Group.Liella, Year.Second, Subunit.Liella
+#	Chisato  = 303, "Chisato Arashi",     Group.Liella, Year.Second, Subunit.Liella
+#	Sumire   = 304, "Sumire Heanna",      Group.Liella, Year.Second, Subunit.Liella
+#	Ren      = 305, "Ren Hazuki",         Group.Liella, Year.Second, Subunit.Liella
+
+#	Kinako   = 306, "Kinako Sakurakoji",  Group.Liella, Year.First, Subunit.Liella
+#	Mei      = 307, "Yoneme Mei",         Group.Liella, Year.First, Subunit.Liella
+#	Shiki    = 308, "Wakana Shiki",       Group.Liella, Year.First, Subunit.Liella
+#	Natsumi  = 309, "Onitsuka Natsumi",   Group.Liella, Year.First, Subunit.Liella
 	
 	def __getattr__(self, attr):
 		if attr == "first_name":
