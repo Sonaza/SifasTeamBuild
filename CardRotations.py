@@ -236,9 +236,9 @@ class CardRotations():
 				Member.Emma     : [11, ],
 				Member.Kanata   : [11, ],
 				Member.Karin    : [11, ],
-				Member.Shioriko : [1, 2, 3, 5, 6, ],
-				Member.Lanzhu   : [1, 2, 3, 4, 5, 6, 7, 8, ],
-				Member.Mia      : [1, 2, 3, 4, 5, 6, 7, 8, ],
+				Member.Shioriko : [1, 2, 3, 5, 6, 13, ],
+				Member.Lanzhu   : [1, 2, 3, 4, 5, 6, 7, 8, 13, ],
+				Member.Mia      : [1, 2, 3, 4, 5, 6, 7, 8, 13, ],
 			}
 		}
 		try:
