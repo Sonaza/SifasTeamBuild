@@ -9,6 +9,7 @@
 	<li><a href="#/stats/gacha"      ng-class="pageActive('gacha')">Any Gacha</a></li>
 	<li><a href="#/stats/ur"         ng-class="pageActive('ur')">Any UR</a></li>
 	<li><a href="#/stats/sr"         ng-class="pageActive('sr')">Any SR</a></li>
+	<li><a href="#/stats/all"        ng-class="pageActive('all')">All</a></li>
 </ul>
 
 {% if category_tag == 'general' %}
@@ -130,6 +131,11 @@
 										{% if data.show_source %}
 											<div class="card-source">
 												{{ card.source.display_name }}
+											</div>
+										{% endif %}
+										{% if data.show_rarity %}
+											<div class="card-rarity icon-32 rarity-{{ card.rarity.value }}">
+												
 											</div>
 										{% endif %}
 									</div>

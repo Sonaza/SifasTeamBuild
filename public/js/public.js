@@ -68,6 +68,7 @@ const stats_subpages = {
 	'gacha'      : "Any Gacha UR",
 	'ur'         : "Any UR",
 	'sr'         : "Any SR",
+	'all'        : "All",
 };
 
 const routes = [

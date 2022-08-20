@@ -508,6 +508,7 @@ class CardRotations():
 			'gacha'      : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight, Source.Festival, Source.Party], ),
 			'ur'         : (Rarity.UR, None, ),
 			'sr'         : (Rarity.SR, None, ),
+			'all'        : ([Rarity.UR, Rarity.SR], None, ),
 		}
 		category_info = {
 			'event'      : ( "Event URs",            "Event URs awarded in item exchange and story events." ),
@@ -518,7 +519,8 @@ class CardRotations():
 			'nonlimited' : ( "Non-Limited Gacha UR", "Any non-limited UR scouted from banners using Star Gems." ),
 			'gacha'      : ( "Any Gacha UR",         "Any UR scouted from banners using Star Gems." ),
 			'ur'         : ( "Any UR",               "Any most recent UR, free or otherwise." ),
-			'sr'         : ( "Any SR",               "Any most recent SR, free or otherwise" ),
+			'sr'         : ( "Any SR",               "Any most recent SR, free or otherwise." ),
+			'all'        : ( "All",                  "Any most recent UR or SR, free or otherwise." ),
 		}
 		
 		category_data = defaultdict(dict)
@@ -528,11 +530,13 @@ class CardRotations():
 				category_data[category][group] = {
 					'cards'       : self._time_since_last(idols=self.client.get_newest_idols(group=group, rarity=rarity, source=sources), group=group),
 					'show_source' : (not isinstance(sources, list) or len(sources) > 1),
+					'show_rarity' : (isinstance(rarity, list) and len(rarity) > 1),
 				}
 			
 			category_data[category]['collapsed'] = {
 				'cards'       : self._time_since_last(idols=self.client.get_newest_idols(rarity=rarity, source=sources), group=None),
 				'show_source' : (not isinstance(sources, list) or len(sources) > 1),
+				'show_rarity' : (isinstance(rarity, list) and len(rarity) > 1),
 			}
 		
 		return (category_data, category_info)

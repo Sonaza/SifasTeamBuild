@@ -2077,6 +2077,15 @@ body
 				}
 			}
 
+			&.card-rarity
+			{
+				width: 48px;
+				height: 32px;
+				display: block;
+				margin: 0 0.4rem 0 0;
+				background-repeat: no-repeat;
+			}
+
 			&.card-source
 			{
 				display: block;
