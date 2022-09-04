@@ -252,6 +252,10 @@ class CardRotations():
 					'A Song for You! You? You!',
 					'A song for You! You? You!!',
 				],
+				
+				'Mermaid Festa Vol.1' : [
+					'Mermaid festa vol.1',
+				],
 			},
 			
 			Group.Nijigasaki : {
@@ -327,7 +331,7 @@ class CardRotations():
 			}
 		}
 		try:
-			idolized_same_set = dict([(title, set_title) for set_title, idolized_titles in idolized_same_set[group].items() for title in idolized_titles])
+			idolized_same_set = dict([(title.strip(), set_title) for set_title, idolized_titles in idolized_same_set[group].items() for title in idolized_titles])
 		except:
 			idolized_same_set = {}
 		
@@ -344,6 +348,7 @@ class CardRotations():
 				pass
 			
 			if title not in idol_sets:
+				# print(title.encode('utf-8'))
 				set_indexes.append((current_set_index, title))
 				current_set_index += 1
 			
