@@ -557,10 +557,10 @@ class CardRotations():
 		# sbl_events = [{'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Secret Party!'}, {'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Your Models are Here!'}, {'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Odd Old Town Tour'}, {'title': 'SIFAS Big Live Show Round 1', 'event': 'Refresh with a Hike!'}, {'title': 'SIFAS Big Live Show Round 2', 'event': 'Invitation to a Wonderful Place!'}, {'title': 'SIFAS Big Live Show Round 3', 'event': 'All Aboard the School Idol Train!'}, {'title': 'SIFAS Big Live Show Round 4', 'event': 'Great Battle on the High Seas'}, {'title': 'SIFAS Big Live Show Round 5', 'event': 'Come Enjoy These Special Sweets'}, {'title': 'Mega Live Show!', 'event': 'Music Made Together'}, {'title': 'SIFAS Big Live Show Round 7', 'event': "Cryptid Catchin' Crusade!"}, {'title': 'SIFAS Big Live Show Round 8', 'event': 'Catch the Mischievous Wolf!'}, {'title': 'School Idol Festival Round 1!', 'event': 'Magical Time!'}, {'title': 'SIFAS Big Live Show Round 9', 'event': 'Cooking with Vegetables!'}, {'title': 'SIFAS Big Live Show Round 10', 'event': 'Ice Skating Youth'}, {'title': 'SIFAS Big Live Show Round 11', 'event': 'Hot Spring Rhapsody'}, {'title': 'SIFAS Big Live Show Round 12', 'event': 'Save the Ramen of Joy!'}, {'title': 'SIFAS Big Live Show Round 13', 'event': 'Three Princesses'}, {'title': 'SIFAS Big Live Show Round 14', 'event': 'Singing in the Rain with You'}, {'title': 'SIFAS Big Live Show Round 15', 'event': "Yohane and Hanayo's Whodunit Caper"}, {'title': 'SIFAS Big Live Show Round 16', 'event': "Rina's Creepy Haunted House"}, {'title': '2nd Anniversary SIFAS Big Live Show', 'event': 'Grab Victory in the Sports Battle!'}, {'title': 'SIFAS Big Live Show Round 17', 'event': 'Toy Store Panic'}, {'title': 'SIFAS Big Live Show Round 18', 'event': 'Rebel-ish Makeover'}, {'title': 'SIFAS Big Live Show Round 19', 'event': 'Enjoy the Taste of Fall!'}]
 		
 		sbl_reference_point = {
-			'event_id' : 33,
-			'date'     : datetime(year=2022, month=9, day=1),
+			'event_id' : 48,
+			'date'     : datetime(year=2022, month=10, day=1),
 		}
-		today = datetime.today()
+		today = datetime.today() + relativedelta(months=1)
 		while sbl_reference_point['date'].month != today.month or sbl_reference_point['date'].year != today.year:
 			if (sbl_reference_point['event_id'] + 1) not in events:
 				break
@@ -568,12 +568,12 @@ class CardRotations():
 			sbl_reference_point['event_id'] += 1
 			sbl_reference_point['date'] += relativedelta(months=1)
 		
-		events_per_month = 15
+		events_per_month = 1
 		diff_bonus = 0
 		for event_id, data in events.items():
-			if event_id == 49:
-				events_per_month = 1
-				diff_bonus = 14
+			# if event_id == 49:
+			# 	events_per_month = 1
+			# 	diff_bonus = 14
 			
 			# strftime('%d %B %Y %H:%M %Z')
 			data['event']['start'] = data['event']['start'].strftime('%d %b %Y')
@@ -586,7 +586,7 @@ class CardRotations():
 				data['idols'].append(f"has-idol-{idol.member_id.value}")
 			data['idols'] = ' '.join(data['idols'])
 			
-			if event_id < sbl_reference_point['event_id']:
+			if event_id <= sbl_reference_point['event_id']:
 				continue
 			
 			diff = ((event_id - sbl_reference_point['event_id']) - 1) // events_per_month + 1 - diff_bonus
