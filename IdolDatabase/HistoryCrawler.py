@@ -165,7 +165,7 @@ class HistoryCrawler:
 					event_type = None
 					event_title = item_title
 				
-				# print(event_type, event_title)
+				print(event_type, event_title)
 				
 				# if not event_type:
 				# 	print("Could not retrieve event type")
@@ -374,9 +374,9 @@ class HistoryCrawler:
 			if event_en['title'] in known_events or event_jp['title'] in known_events:
 				continue
 			
-			if not all(x == y for x, y in zip(event_en['cards'], event_jp['cards'])):
+			# if not all(x == y for x, y in zip(event_en['cards'], event_jp['cards'])):
 				# print(event_en, event_jp)
-				raise HistoryCrawlerException("Event cards do not match between the two locales!")
+				# raise HistoryCrawlerException("Event cards do not match between the two locales!")
 			
 			event = {
 				'type'     : event_en['type'],
@@ -389,7 +389,7 @@ class HistoryCrawler:
 				'start_jp' : event_jp['start'].isoformat(),
 				'end_jp'   : event_jp['end'].isoformat(),
 				
-				'cards'    : event_en['cards']
+				'cards'    : event_jp['cards']
 			}
 			output['events'].append(event)
 		

@@ -303,7 +303,12 @@ class KiraraClient():
 			
 			ordinal_str = str(card['ordinal']);
 			
-			if 'source' in card:
+			if card['ordinal'] >= 775 and card['ordinal'] <= 777:
+				source = Source.Gacha.value
+			elif card['ordinal'] >= 778 and card['ordinal'] <= 780:
+				source = Source.Event.value
+				
+			elif 'source' in card:
 				source = card['source']
 			elif ordinal_str in self.cards_fallback:
 				source = self.cards_fallback[ordinal_str]['source']
