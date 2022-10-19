@@ -127,9 +127,9 @@ class Member(Enum):
 #	Ren      = 305, "Ren Hazuki",         Group.Liella, Year.Second, Subunit.Liella
 
 #	Kinako   = 306, "Kinako Sakurakoji",  Group.Liella, Year.First, Subunit.Liella
-#	Mei      = 307, "Yoneme Mei",         Group.Liella, Year.First, Subunit.Liella
-#	Shiki    = 308, "Wakana Shiki",       Group.Liella, Year.First, Subunit.Liella
-#	Natsumi  = 309, "Onitsuka Natsumi",   Group.Liella, Year.First, Subunit.Liella
+#	Mei      = 307, "Mei Yoneme",         Group.Liella, Year.First, Subunit.Liella
+#	Shiki    = 308, "Shiki Wakana",       Group.Liella, Year.First, Subunit.Liella
+#	Natsumi  = 309, "Natsumi Onitsuka",   Group.Liella, Year.First, Subunit.Liella
 	
 	def __getattr__(self, attr):
 		if attr == "first_name":
