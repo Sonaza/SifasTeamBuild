@@ -43,7 +43,7 @@ Redirect 301 /index.html /
 	Header set Permissions-Policy "geolocation=(), microphone=()"
 	
 	Header set X-Content-Type-Options "nosniff"
-	Header add X-Robots-Tag "noindex"
+	# Header add X-Robots-Tag "noindex"
 	
 	Header unset X-Powered-By
 	Header unset ETag
