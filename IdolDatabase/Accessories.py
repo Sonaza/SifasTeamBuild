@@ -1,5 +1,5 @@
 from enum import Enum
-from .Enums import *
+from Enums import *
 
 class AccessoryType(Enum):
 	Brooch     = 1
@@ -77,10 +77,10 @@ class Accessory():
 		s += f"  Accessory Skill : {self.skill_level}/{self.get_max_skill_level()}\n"
 		
 		if self.effect_type == AccessoryEffectType.Percentage:
-			s += f"  Skill Effect    : {self.get_skill_value():0.1f}%\n"
+			s += f"  Skill Effect    : {self.get_skill_value():0.2f}%\n"
 			
 		elif self.effect_type == AccessoryEffectType.Absolute:
-			s += f"  Skill Effect    : {self.get_skill_value():0.1f}\n"
+			s += f"  Skill Effect    : {self.get_skill_value():0.2f}\n"
 			
 		return s
 	
@@ -162,7 +162,7 @@ class Accessories():
 ## TEST CODE
 if __name__ == "__main__":
 	# print(Accessories.Bracelet.get(limit_break=5, skill=1))
-	print(Accessories.Necklace.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=10))
+	print(Accessories.Keychain.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=10))
 	
 	print(Accessories.Belt.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=15))
 	print(Accessories.Ribbon.get(Attribute.Cool, Rarity.UR, limit_break=0, skill=15))
