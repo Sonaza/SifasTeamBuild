@@ -1,5 +1,5 @@
 from enum import Enum
-from Enums import *
+from .Enums import *
 
 class AccessoryType(Enum):
 	Brooch     = 1
