@@ -288,7 +288,7 @@ class CardRotations():
 					'Koe Tsunagou yo',
 					'Tele Telepathy',
 					'Aoi Canaria',
-					'Toy Doll!',
+					'Toy Doll',
 					'Ye Mingzhu',
 				],
 				

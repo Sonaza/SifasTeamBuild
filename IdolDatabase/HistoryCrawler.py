@@ -165,7 +165,7 @@ class HistoryCrawler:
 					event_type = None
 					event_title = item_title
 				
-				print(event_type, event_title)
+				# print(event_type, event_title)
 				
 				# if not event_type:
 				# 	print("Could not retrieve event type")
