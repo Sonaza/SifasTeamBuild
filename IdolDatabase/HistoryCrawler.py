@@ -345,8 +345,6 @@ class HistoryCrawler:
 					if event_data == False:
 						raise HistoryCrawlerException("Failed to parse page events")
 					
-					print(event_data)
-					
 					events.extend(event_data)
 					
 					if any(x['title'] in known_events for x in event_data):
