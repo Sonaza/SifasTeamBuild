@@ -152,7 +152,7 @@ class HistoryCrawler:
 				item_title = primary_header.decode_contents().strip()
 				# print(item_title)
 				
-				if 'Event' in item_title:
+				if 'Event:' in item_title:
 					event_info = re.findall(r"(.*) Event: (.*)", item_title)
 					
 					if not event_info or len(event_info[0]) != 2:
@@ -345,6 +345,8 @@ class HistoryCrawler:
 					if event_data == False:
 						raise HistoryCrawlerException("Failed to parse page events")
 					
+					print(event_data)
+					
 					events.extend(event_data)
 					
 					if any(x['title'] in known_events for x in event_data):
@@ -370,13 +372,33 @@ class HistoryCrawler:
 			'events'  : [],
 			'banners' : [],
 		}
-		for event_en, event_jp in zip(events_per_locale["en"], events_per_locale["jp"]):
-			if event_en['title'] in known_events or event_jp['title'] in known_events:
-				continue
+		
+		events_data_by_card_hash = defaultdict(dict)
+		for locale, events in events_per_locale.items():
+			for event in events:
+				if event['title'] in known_events:
+					# print(event['title'], "found in known events. Skipping...")
+					continue
+				
+				cardhash = self._cards_hash(event['cards'])
+				events_data_by_card_hash[cardhash][locale] = event
+		
+		for _, event_data_by_locale in events_data_by_card_hash.items():
+			if not ('en' in event_data_by_locale and 'jp' in event_data_by_locale):
+				print(event_data_by_locale)
+				raise HistoryCrawlerException("Missing event data for one locale!")
+			
+			event_en, event_jp = event_data_by_locale['en'], event_data_by_locale['jp']
+			
+			# print(event_en['title'], event_jp['title'])
 			
 			# if not all(x == y for x, y in zip(event_en['cards'], event_jp['cards'])):
-				# print(event_en, event_jp)
-				# raise HistoryCrawlerException("Event cards do not match between the two locales!")
+			# 	print(event_en, event_jp)
+			# 	raise HistoryCrawlerException("Event cards do not match between the two locales!")
+			
+			# if event_en['title'] in known_events or event_jp['title'] in known_events:
+			# 	print(event_en['title'], event_jp['title'], "was found in known events")
+			# 	continue
 			
 			event = {
 				'type'     : event_en['type'],
