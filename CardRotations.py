@@ -328,6 +328,10 @@ class CardRotations():
 					'Itsu datte for you!',
 					'First Love Again',
 				],
+				
+				'Eien no Isshun': [
+					'Eien no Issyun',
+				],
 			}
 		}
 		try:
