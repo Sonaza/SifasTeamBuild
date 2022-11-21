@@ -787,11 +787,16 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def get_newest_idols(self, group : Group = None, rarity : Rarity = None, source : Source = None):
+	def get_newest_idols(self, group : Group = None,   rarity : Rarity = None,
+		                       source : Source = None, members : Member = [], released_before : datetime = None):
 		fields = []
-		if group      != None: fields.append(self._make_where_condition("group_id", group))
-		if rarity     != None: fields.append(self._make_where_condition("rarity",   rarity))
-		if source     != None: fields.append(self._make_where_condition("source",   source))
+		if group      != None: fields.append(self._make_where_condition("group_id",  group))
+		if rarity     != None: fields.append(self._make_where_condition("rarity",    rarity))
+		if source     != None: fields.append(self._make_where_condition("source",    source))
+		if members:            fields.append(self._make_where_condition("member_id", members))
+		
+		if released_before != None:
+			fields.append((f"release_date <= ?", [released_before.isoformat()]))
 		
 		if fields:
 			query = f"""SELECT * FROM 'v_idols'
@@ -813,6 +818,7 @@ class KiraraClient():
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())
+		
 	
 	# -------------------------------------------------------------------------------------------
 	

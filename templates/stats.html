@@ -107,8 +107,8 @@
 					</div>
 					
 					<div class="st-tbody reversable">
-						{% for member, card, time_since in data.cards %}
-							<div class="st-tr idol-{{ member.value }} {{ 'empty-row' | conditional_css(not is_valid_card(card)) }}" data-index="{{ loop.index }}">
+						{% for member, card, time_since, highlight in data.cards %}
+							<div class="st-tr idol-{{ member.value }} {{ 'empty-row' | conditional_css(not is_valid_card(card)) }} {{ 'highlight-idol' | conditional_css(highlight) }}" data-index="{{ loop.index }}">
 								<div class="st-td st-cell-30 idol-identity">
 									<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
 									<div class="idol-name">{{ member.full_name }}</div>

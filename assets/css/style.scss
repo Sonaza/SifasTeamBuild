@@ -1897,6 +1897,19 @@ body
 		}
 	}
 
+	.st-tbody:not(.filtering-active) .st-tr.highlight-idol
+	{
+		&:nth-child(odd)
+		{
+			background: #E8C4F366;
+		}
+
+		&:nth-child(even)
+		{
+			background: #E0B5EE66;
+		}
+	}
+
 	.st-thead .st-th
 	{
 		text-align: center;

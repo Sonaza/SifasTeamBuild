@@ -488,6 +488,7 @@ class CardRotations():
 	def _time_since_last(self, idols, group=None):
 		now = datetime.now(timezone.utc)
 		
+		# Note down all idols
 		all_idols = set()
 		if group == None:
 			for idol in Idols.all_idols:
@@ -495,16 +496,52 @@ class CardRotations():
 		else:
 			for idol in Idols.by_group[group]:
 				all_idols.add(idol.member_id)
-			
-		out = []
-		for idol in idols:
-			out.append((idol.member_id, idol, now - idol.release_date))
-			all_idols.remove(idol.member_id)
 		
-		for member_id in all_idols:
-			out.insert(0, (member_id, CardNonExtant(), 0))
+		# Calculate time since stats
+		highlighted_idols = set()
+		idols_timedata = []
+		for idol in idols:
+			duplicate = not (idol.member_id in all_idols)
 			
-		return out
+			# member, card, time_since, highlight
+			idols_timedata.append((idol.member_id, idol, now - idol.release_date, duplicate))
+			
+			if duplicate and idol.member_id not in highlighted_idols:
+				highlighted_idols.add(idol.member_id)
+				
+			try:
+				all_idols.remove(idol.member_id)
+			except: pass
+		
+		# Highlight all duplicate idol entries
+		for index, idol in enumerate(idols_timedata):
+			if idol[0] in highlighted_idols:
+				idols_timedata[index] = (idol[0], idol[1], idol[2], True)
+		
+		# Add dummy entries for idols not found in the dataset
+		for member_id in all_idols:
+			idols_timedata.insert(0, (member_id, CardNonExtant(), 0, False))
+			
+		return idols_timedata
+	
+	def get_newest_idols(self, group : Group = None, rarity : Rarity = None, source : Source = None):
+		idols = self.client.get_newest_idols(group=group, rarity=rarity, source=source)
+		
+		now = datetime.now(tz=timezone.utc)
+		
+		pending_members = []
+		for idol in idols:
+			if idol.release_date > now:
+				pending_members.append(idol.member_id)
+				
+		if pending_members:
+			previous_idols = self.client.get_newest_idols(group=group, rarity=rarity, source=source,
+				members=pending_members, released_before=now)
+			idols.extend(previous_idols)
+			idols.sort(key=lambda x: x.release_date)
+			
+		return idols
+		
 	
 	def get_card_stats(self):
 		categories = {
@@ -534,16 +571,18 @@ class CardRotations():
 		
 		category_data = defaultdict(dict)
 		
+		now = datetime.now(tz=timezone.utc)
+		
 		for category, (rarity, sources) in categories.items():
 			for group in Group:
 				category_data[category][group] = {
-					'cards'       : self._time_since_last(idols=self.client.get_newest_idols(group=group, rarity=rarity, source=sources), group=group),
+					'cards'       : self._time_since_last(idols=self.get_newest_idols(group=group, rarity=rarity, source=sources), group=group),
 					'show_source' : (not isinstance(sources, list) or len(sources) > 1),
 					'show_rarity' : (isinstance(rarity, list) and len(rarity) > 1),
 				}
 			
 			category_data[category]['collapsed'] = {
-				'cards'       : self._time_since_last(idols=self.client.get_newest_idols(rarity=rarity, source=sources), group=None),
+				'cards'       : self._time_since_last(idols=self.get_newest_idols(rarity=rarity, source=sources), group=None),
 				'show_source' : (not isinstance(sources, list) or len(sources) > 1),
 				'show_rarity' : (isinstance(rarity, list) and len(rarity) > 1),
 			}
