@@ -17,6 +17,8 @@
 	
 	<meta name="description" content="Love Live SIF All Stars card rotations and related statistics.">
 
+	<meta name="og:site_name" content="SIFAS Card Rotations"></meta>
+	
 	<meta property="og:url" content="https://sifas-cards.sonaza.com">
 	<meta property="og:type" content="website">
 	<meta property="og:title" content="SIFAS Card Rotations">
