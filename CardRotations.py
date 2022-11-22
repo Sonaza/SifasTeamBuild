@@ -527,7 +527,7 @@ class CardRotations():
 	def get_newest_idols(self, group : Group = None, rarity : Rarity = None, source : Source = None):
 		idols = self.client.get_newest_idols(group=group, rarity=rarity, source=source)
 		
-		now = datetime.now(tz=timezone.utc)
+		now = datetime.now(tz=timezone.utc) - timedelta(hours=24)
 		
 		pending_members = []
 		for idol in idols:
