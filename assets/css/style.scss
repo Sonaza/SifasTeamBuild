@@ -2009,11 +2009,24 @@ body
 					font-weight: 600;
 					font-size: 9pt;
 					
+					&:first-child
+					{
+						border-top-left-radius: 5px;
+						border-bottom-left-radius: 5px;
+					}
+					
+					&:last-child
+					{
+						border-top-right-radius: 5px;
+						border-bottom-right-radius: 5px;
+					}
+					
 					&.source-6.limited-not-max // Festival
 					{
 						background: #F64D91;
 						color: #fff;
 						font-weight: 900;
+						// border-left: 2px solid #FD8CB9;
 					}
 					
 					&.source-7.limited-not-max // Party
@@ -2021,6 +2034,7 @@ body
 						background: #E5A201;
 						color: #fff;
 						font-weight: 900;
+						// border-right: 2px solid #FFD776;
 					}
 				}
 			}
