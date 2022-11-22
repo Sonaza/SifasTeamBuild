@@ -3,8 +3,30 @@
 <head>
 	<title ng-bind-html="title">SIFAS Card Rotations</title>
 	<meta charset="utf-8">
+	
+	<meta name="description" content="Love Live SIF All Stars card rotations and related statistics.">
+
+	<meta name="og:site_name" content="SIFAS Card Rotations">	
+	<meta property="og:url" content="https://sifas-cards.sonaza.com">
+	<meta property="og:type" content="website">
+	<meta property="og:title" content="SIFAS Card Rotations">
+	<meta property="og:description" content="Love Live SIF All Stars card rotations and related statistics.">
+	<meta property="og:image" itemprop="image primaryImageOfPage" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
+
+	<meta name="twitter:card" content="summary">
+	<meta property="twitter:domain" content="sifas-cards.sonaza.com">
+	<meta property="twitter:url" content="https://sifas-cards.sonaza.com">
+	<meta name="twitter:title" itemprop="name" content="SIFAS Card Rotations">
+	<meta name="twitter:description" itemprop="description" content="Love Live SIF All Stars card rotations and related statistics.">
+	<meta name="twitter:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
+	
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<meta name="mobile-web-app-capable" content="yes">
+  	<meta name="apple-mobile-web-app-capable" content="yes">
+  	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+  	<meta name="apple-mobile-web-app-title" content="SIFAS Card Rotations">
+  	
 {# {% for item in preloads %}
 	<link rel="preload" href="{{ item['path'] }}" as="{{ item['type'] }}">{% endfor %}
 	<link rel="preload" href="/js/vendor/angular/angular-combined.min.js" as="script">
@@ -15,27 +37,6 @@
  	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css" media="(max-width: 1100px)">
 	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
 	
-	<meta name="description" content="Love Live SIF All Stars card rotations and related statistics.">
-
-	<meta name="og:site_name" content="SIFAS Card Rotations"></meta>
-	
-	<meta property="og:url" content="https://sifas-cards.sonaza.com">
-	<meta property="og:type" content="website">
-	<meta property="og:title" content="SIFAS Card Rotations">
-	<meta property="og:description" content="Love Live SIF All Stars card rotations and related statistics.">
-	<meta property="og:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
-
-	<meta name="twitter:card" content="summary_large_image">
-	<meta property="twitter:domain" content="sifas-cards.sonaza.com">
-	<meta property="twitter:url" content="https://sifas-cards.sonaza.com">
-	<meta name="twitter:title" content="SIFAS Card Rotations">
-	<meta name="twitter:description" content="Love Live SIF All Stars card rotations and related statistics.">
-	<meta name="twitter:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
-	
-	<meta name="mobile-web-app-capable" content="yes">
-  	<meta name="apple-mobile-web-app-capable" content="yes">
-  	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-  	<meta name="apple-mobile-web-app-title" content="SIFAS Card Rotations">
 	<link rel="icon" href="/favicon.ico">
 	<link rel="apple-touch-icon" href="/img/favicon_tile_180.png">
 	<link rel="apple-touch-icon" href="/img/favicon_tile_256.png" sizes="256x256">
