@@ -569,6 +569,18 @@ class CardRotations():
 			'all'        : ( "All",                  "Any most recent UR or SR, free or otherwise." ),
 		}
 		
+		limited_sources = {
+			'festival'  : [Source.Festival],
+			'party'     : [Source.Party],
+			'limited'   : [Source.Festival, Source.Party],
+			'spotlight' : [Source.Party],
+		}
+		limited_max_offsets = {
+			Member.Mia    : { Source.Festival : -2, Source.Party : 0, },
+			Member.Lanzhu : { Source.Festival : -2, Source.Party : 0, },
+		}
+		limited_idols, max_per_source = self.client.get_limited_idols_by_member()
+		
 		category_data = defaultdict(dict)
 		
 		now = datetime.now(tz=timezone.utc)
@@ -576,15 +588,24 @@ class CardRotations():
 		for category, (rarity, sources) in categories.items():
 			for group in Group:
 				category_data[category][group] = {
-					'cards'       : self._time_since_last(idols=self.get_newest_idols(group=group, rarity=rarity, source=sources), group=group),
-					'show_source' : (not isinstance(sources, list) or len(sources) > 1),
-					'show_rarity' : (isinstance(rarity, list) and len(rarity) > 1),
+					'cards'           : self._time_since_last(idols=self.get_newest_idols(group=group, rarity=rarity, source=sources), group=group),
+					'show_source'     : (not isinstance(sources, list) or len(sources) > 1),
+					'show_rarity'     : (isinstance(rarity, list) and len(rarity) > 1),
+					'limited_idols'   : limited_idols,
+					'limited_sources' : (limited_sources[category] if category in limited_sources else []),
+					'max_per_source'  : max_per_source,
+					'limited_max_offsets' : limited_max_offsets,
+					
 				}
 			
 			category_data[category]['collapsed'] = {
-				'cards'       : self._time_since_last(idols=self.get_newest_idols(rarity=rarity, source=sources), group=None),
-				'show_source' : (not isinstance(sources, list) or len(sources) > 1),
-				'show_rarity' : (isinstance(rarity, list) and len(rarity) > 1),
+				'cards'           : self._time_since_last(idols=self.get_newest_idols(rarity=rarity, source=sources), group=None),
+				'show_source'     : (not isinstance(sources, list) or len(sources) > 1),
+				'show_rarity'     : (isinstance(rarity, list) and len(rarity) > 1),
+				'limited_idols'   : limited_idols,
+				'limited_sources' : (limited_sources[category] if category in limited_sources else []),
+				'max_per_source'  : max_per_source,
+				'limited_max_offsets' : limited_max_offsets,
 			}
 		
 		return (category_data, category_info)

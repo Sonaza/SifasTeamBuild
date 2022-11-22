@@ -130,7 +130,7 @@ class Member(Enum):
 #	Mei      = 307, "Mei Yoneme",         Group.Liella, Year.First, Subunit.Liella
 #	Shiki    = 308, "Shiki Wakana",       Group.Liella, Year.First, Subunit.Liella
 #	Natsumi  = 309, "Natsumi Onitsuka",   Group.Liella, Year.First, Subunit.Liella
-	
+			
 	def __getattr__(self, attr):
 		if attr == "first_name":
 			return self.full_name.split(' ', 1)[0]

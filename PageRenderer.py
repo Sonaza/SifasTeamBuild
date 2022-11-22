@@ -105,6 +105,7 @@ class PageRenderer():
 			'Member'                : Member,
 			'Groups'                : Group,
 			'Rarity'                : Rarity,
+			'Source'                : Source,
 			'Attribute'             : Attribute.get_valid(),
 			'Type'                  : Type.get_valid(),
 			
