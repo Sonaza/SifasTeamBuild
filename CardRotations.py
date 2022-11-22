@@ -518,11 +518,13 @@ class CardRotations():
 			if idol[0] in highlighted_idols:
 				idols_timedata[index] = (idol[0], idol[1], idol[2], True)
 		
+		has_empty_rows = (len(all_idols) > 0)
+		
 		# Add dummy entries for idols not found in the dataset
 		for member_id in all_idols:
 			idols_timedata.insert(0, (member_id, CardNonExtant(), 0, False))
 			
-		return idols_timedata
+		return idols_timedata, has_empty_rows
 	
 	def get_newest_idols(self, group : Group = None, rarity : Rarity = None, source : Source = None):
 		idols = self.client.get_newest_idols(group=group, rarity=rarity, source=source)
@@ -579,27 +581,32 @@ class CardRotations():
 			Member.Mia    : { Source.Festival : -2, Source.Party : 0, },
 			Member.Lanzhu : { Source.Festival : -2, Source.Party : 0, },
 		}
-		limited_idols, max_per_source = self.client.get_limited_idols_by_member()
+		limited_idols, max_per_source = self.client.get_idols_by_source_and_member([Source.Festival, Source.Party])
 		
 		category_data = defaultdict(dict)
+		category_has_empty_rows = defaultdict(bool)
 		
 		now = datetime.now(tz=timezone.utc)
 		
 		for category, (rarity, sources) in categories.items():
 			for group in Group:
+				time_since_list, has_empty_rows = self._time_since_last(idols=self.get_newest_idols(group=group, rarity=rarity, source=sources), group=group)
 				category_data[category][group] = {
-					'cards'           : self._time_since_last(idols=self.get_newest_idols(group=group, rarity=rarity, source=sources), group=group),
+					'cards'           : time_since_list,
+					'has_empty_rows'  : has_empty_rows,
 					'show_source'     : (not isinstance(sources, list) or len(sources) > 1),
 					'show_rarity'     : (isinstance(rarity, list) and len(rarity) > 1),
 					'limited_idols'   : limited_idols,
 					'limited_sources' : (limited_sources[category] if category in limited_sources else []),
 					'max_per_source'  : max_per_source,
 					'limited_max_offsets' : limited_max_offsets,
-					
 				}
-			
+				category_has_empty_rows[category] = has_empty_rows or category_has_empty_rows[category]
+				
+			time_since_list, has_empty_rows = self._time_since_last(idols=self.get_newest_idols(rarity=rarity, source=sources), group=None)
 			category_data[category]['collapsed'] = {
-				'cards'           : self._time_since_last(idols=self.get_newest_idols(rarity=rarity, source=sources), group=None),
+				'cards'           : time_since_list,
+				'has_empty_rows'  : has_empty_rows,
 				'show_source'     : (not isinstance(sources, list) or len(sources) > 1),
 				'show_rarity'     : (isinstance(rarity, list) and len(rarity) > 1),
 				'limited_idols'   : limited_idols,
@@ -607,8 +614,9 @@ class CardRotations():
 				'max_per_source'  : max_per_source,
 				'limited_max_offsets' : limited_max_offsets,
 			}
+			category_has_empty_rows[category] = has_empty_rows or category_has_empty_rows[category]
 		
-		return (category_data, category_info)
+		return (category_data, category_info, category_has_empty_rows)
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -844,12 +852,13 @@ class CardRotations():
 			'general_stats'  : general_stats,
 		}, minify=not self.args.dev)
 		
-		card_stats, category_info = self.get_card_stats()
+		card_stats, category_info, category_has_empty_rows = self.get_card_stats()
 		for category_tag in card_stats.keys():
 			self.renderer.render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
 				'category_tag'   : category_tag,
 				'category_data'  : card_stats[category_tag],
 				'category_info'  : category_info[category_tag],
+				'has_empty_rows' : category_has_empty_rows[category_tag],
 			}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------

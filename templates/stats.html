@@ -90,11 +90,12 @@
 		<h2>{{ category_info[0] }}</h2>
 		<p>{{ category_info[1] }}</p>
 		<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
+		
 		<div class="page-settings-bar stats-settings">
 			<div pill-button model="settings.collapsed" keybind="C">
 				Collapse Groups
 			</div>
-			<div pill-button model="settings.hide_empty_rows" keybind="H">
+			<div pill-button model="settings.hide_empty_rows" keybind="H" class="hide-empty-rows-toggle {{ 'has-empty-rows' | conditional_css(has_empty_rows) }}">
 				Hide Empty Rows
 			</div>
 		</div>

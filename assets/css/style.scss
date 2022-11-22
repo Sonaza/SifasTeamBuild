@@ -1455,6 +1455,11 @@ select
 	background: #B294E555;
 	border-radius: 4px;
 	border: 1px solid #C4ADEC;
+	
+	.hide-empty-rows-toggle:not(.has-empty-rows)
+	{
+		display: none !important;
+	}
 
 	&.stats-settings
 	{

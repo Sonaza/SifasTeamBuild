@@ -937,33 +937,34 @@ class KiraraClient():
 		
 		return banners
 		
-	def get_limited_idols_by_member(self):
+	def get_idols_by_source_and_member(self, sources = [], rarity : Rarity = Rarity.UR):
+		assert(sources)
 		query = f"""SELECT member_id, COUNT(ordinal) AS num_idols, GROUP_CONCAT(ordinal) AS idol_ordinals FROM idols i
 					WHERE source = ? AND rarity = ?
 					GROUP BY member_id"""
 		
 		max_per_source = dict()
-		num_limited_by_member = defaultdict(dict)
-		for source in [Source.Festival, Source.Party]:
+		num_idols_by_member = defaultdict(dict)
+		for source in sources:
 			max_per_source[source] = 0
 			
 			for member in Member:
-				num_limited_by_member[member][source] = {
+				num_idols_by_member[member][source] = {
 					'num_idols' : 0,
 					'idols'     : [],
 				}
 			
-			self.db.execute(query, [source.value, Rarity.UR.value])
+			self.db.execute(query, [source.value, rarity.value])
 			for row in self.db.fetchall():
 				member = Member(row['member_id'])
-				num_limited_by_member[member][source] = {
+				num_idols_by_member[member][source] = {
 					'num_idols' : row['num_idols'],
 					'idols'     : [int(x) for x in row['idol_ordinals'].split(',')],
 				}
 				
 				max_per_source[source] = max(row['num_idols'], max_per_source[source])
 				
-		return num_limited_by_member, max_per_source
+		return num_idols_by_member, max_per_source
 		
 	# -------------------------------------------------------------------------------------------
 		
