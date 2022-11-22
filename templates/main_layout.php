@@ -14,12 +14,22 @@
 	<link rel="preload" href="/css/fonts/Montserrat-Bold-latin.woff2" as="font" crossorigin="anonymous"> #}
  	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css" media="(max-width: 1100px)">
 	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
+	
+	<meta name="description" content="Love Live SIF All Stars card rotations and related statistics.">
+
+	<meta property="og:url" content="https://sifas-cards.sonaza.com">
 	<meta property="og:type" content="website">
-	<meta property="og:url" content="https://sifas-cards.sonaza.com/">
 	<meta property="og:title" content="SIFAS Card Rotations">
-	<meta property="og:site_name" content="SIFAS Card Rotations">
-	<meta property="og:description" content="View card rotations and related statistics.">
+	<meta property="og:description" content="Love Live SIF All Stars card rotations and related statistics.">
 	<meta property="og:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta property="twitter:domain" content="sifas-cards.sonaza.com">
+	<meta property="twitter:url" content="https://sifas-cards.sonaza.com">
+	<meta name="twitter:title" content="SIFAS Card Rotations">
+	<meta name="twitter:description" content="Love Live SIF All Stars card rotations and related statistics.">
+	<meta name="twitter:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
+	
 	<meta name="mobile-web-app-capable" content="yes">
   	<meta name="apple-mobile-web-app-capable" content="yes">
   	<meta name="apple-mobile-web-app-status-bar-style" content="black">
