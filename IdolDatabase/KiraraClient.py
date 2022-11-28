@@ -36,7 +36,31 @@ class KiraraIdolLazyLoader():
 		pass
 	
 # class KiraraIdolSkill():
+
+class KiraraNameSubstitutions():
+	normal_name = {
+		
+	}
+	idolized_name = {
+		'Mermaid festa vol.1' : 'Mermaid Festa Vol.1',
+	}
 	
+	@classmethod
+	def get_normal(cls, name):
+		try:
+			return cls.normal_name[name]
+		except:
+			return name
+			
+	@classmethod
+	def get_idolized(cls, name):
+		try:
+			return cls.idolized_name[name]
+		except:
+			return name
+
+#-----------------------------------------------------------------------------------------------------------------------
+
 class KiraraIdol():
 	def __init__(self, client, data):
 		self._client        = client
@@ -48,8 +72,8 @@ class KiraraIdol():
 		self.group_id       = Group(data['group_id'])
 		self.subunit_id     = Subunit(data['subunit_id'])
 		
-		self.normal_name    = data['normal_name']
-		self.idolized_name  = data['idolized_name']
+		self.normal_name    = KiraraNameSubstitutions.get_normal(data['normal_name'])
+		self.idolized_name  = KiraraNameSubstitutions.get_idolized(data['idolized_name'])
 		
 		self.type           = Type(data['type'])
 		self.attribute      = Attribute(data['attribute'])
