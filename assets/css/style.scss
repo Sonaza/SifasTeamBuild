@@ -1904,15 +1904,24 @@ body
 
 	.st-tbody:not(.filtering-active) .st-tr.highlight-idol
 	{
-		&:nth-child(odd)
+		background: #EBBCF955;
+		box-shadow: inset 2px 0 1px 1px #E48BFEaa;
+		
+		&.highlight-new
 		{
-			background: #E8C4F355;
+			background: #F8E29555;
+			box-shadow: inset 2px 0 1px 1px #E4BC87aa;
 		}
+		
+		// &:nth-child(odd)
+		// {
+		// 	background: #E8C4F355;
+		// }
 
-		&:nth-child(even)
-		{
-			background: #DAA9EA66;
-		}
+		// &:nth-child(even)
+		// {
+		// 	background: #DAA9EA66;
+		// }
 	}
 
 	.st-thead .st-th
