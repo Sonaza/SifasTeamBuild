@@ -1844,13 +1844,13 @@ body
 
 	.st-tbody:not(.filtering-active) .st-tr.highlight-idol
 	{
-		background: #EBBCF955;
-		box-shadow: inset 2px 0 1px 1px #E48BFEaa;
+		background: #EBBCF955 !important;
+		box-shadow: inset 2px 0 1px 1px #E48BFEaa !important;
 		
 		&.highlight-new
 		{
-			background: #F8E29555;
-			box-shadow: inset 2px 0 1px 1px #E4BC87aa;
+			background: #F8E29555 !important;
+			box-shadow: inset 2px 0 1px 1px #E4BC87aa !important;
 		}
 		
 		// &:nth-child(odd)
