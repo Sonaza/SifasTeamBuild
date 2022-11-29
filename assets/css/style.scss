@@ -1842,7 +1842,7 @@ body
 		}
 	}
 
-	.st-tbody:not(.filtering-active) .st-tr.highlight-idol
+	.st-tbody:not(.filtering-active):not(.filtering-banner-types) .st-tr.highlight-idol
 	{
 		background: #EBBCF955 !important;
 		box-shadow: inset 2px 0 1px 1px #E48BFEaa !important;
