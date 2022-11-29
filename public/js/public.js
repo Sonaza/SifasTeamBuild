@@ -1176,7 +1176,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			{ id: 1,  title: 'Spotlight' },
 			{ id: 2,  title: 'Festival'  },
 			{ id: 3,  title: 'Party'     },
-			{ id: 4,  title: 'Other'     },
+			// { id: 4,  title: 'Other'     },
 		];
 		
 		$scope.banner_index = 0;
@@ -1357,6 +1357,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 						output.push('hide-banner-' + banner_type.id);
 					}
 				}
+				output.push('hide-banner-4');
 			}
 			
 			return output.join(' ');

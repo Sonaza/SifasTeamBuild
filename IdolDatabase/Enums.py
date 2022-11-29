@@ -188,7 +188,7 @@ class BannerType(Enum):
 	Spotlight = 1, True
 	Festival  = 2, True
 	Party     = 3, True
-	Other     = 4, True
+	Other     = 4, False
 	
 	@classmethod
 	def from_string(cls, name):
