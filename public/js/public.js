@@ -435,7 +435,7 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		
 		$scope.update_search_params = () =>
 		{
-			let allowed_keys = ['filter', 'filter_featured', 'filter_highlight'];
+			let allowed_keys = ['filter', 'filter_featured', 'filter_highlight', 'banner'];
 			let search = $location.search();
 			for (let key in search)
 			{
@@ -1349,9 +1349,14 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			
 			if ($scope.filter_settings.banner != -1)
 			{
-				output.push('filtering-active');
-				// output.push('filtering-by-banner');
-				output.push('show-banner-' + $scope.filter_settings.banner);
+				output.push('filtering-banner-types');
+				for (const banner_type of $scope.banner_types)
+				{
+					if (banner_type.id != $scope.filter_settings.banner)
+					{
+						output.push('hide-banner-' + banner_type.id);
+					}
+				}
 			}
 			
 			return output.join(' ');
@@ -1395,6 +1400,8 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		
 		$scope.$watch('filter_settings.banner', function(a, b)
 		{
+			console.log("baner update");
+			
 			for (let i = 0; i < $scope.banner_types.length; i++)
 			{
 				if ($scope.banner_types[i].id == $scope.filter_settings.banner)
@@ -1404,10 +1411,14 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 					if ($scope.banner_types[i].id != -1)
 					{
 						let type_title = $scope.banner_types[i].title.toLowerCase();
+						console.log("type_title", type_title);
+						
 						$location.search('banner', type_title).replace();
 					}
 					else
 					{
+						console.log("type_title cleared");
+						
 						$location.search('banner', undefined).replace();
 					}
 					

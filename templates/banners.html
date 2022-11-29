@@ -67,7 +67,7 @@
 		</div>
 	</div>
 	
-{# 	<label for="filter-banner-types">
+	<label for="filter-banner-types">
 		By Type <span>(B)</span>
 	</label>
 	<select id="filter-banner-types" ng-model="filter_settings.banner">
@@ -75,7 +75,7 @@
 		{% for banner_type in BannerType %}
 			<option ng-value="{{ banner_type.value }}">{{ banner_type.name }}</option>
 		{% endfor %}
-	</select> #}
+	</select>
 	<div pill-button model="filter_settings.highlight" keybind="H">
 		Highlight selected member
 	</div>
@@ -85,7 +85,6 @@
 	<div class="stats-table event-cards-table banners-table">
 		<div class="st-tr st-thead">
 			<div class="st-th st-cell-banner-title">Gacha Banner</div>
-			{# <div class="st-th st-cell-event-featured">Featured</div> #}
 			<div class="st-th st-cell-banner-cards">Featured Cards</div>
 		</div>
 		
@@ -107,17 +106,8 @@
 							<span class="event-runtime-label">
 								{{ banner['start'] }} &mdash; {{ banner['end'] }}
 							</span>
-							{# <span class="sbl-addition">
-								{{ banner['type'].name }}
-							</span> #}
 						</div>
 					</div>
-					{# <div class="st-td st-cell-event-featured event-featured">
-						<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
-						<div class="idol-name">
-							{{ banner['featured_members'] }}
-						</div>
-					</div> #}
 					<div class="st-td st-cell-banner-cards card-details">
 						<div class="flex-wrapper">
 							{% for card in banner_data['cards']: %}
