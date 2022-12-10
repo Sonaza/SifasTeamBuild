@@ -144,7 +144,20 @@
 									</div>
 									<div class="st-td st-cell-50 card-details">
 										<div class="thumbnail">
-											<div class="thumbnail-wrapper">
+											<div class="thumbnail-wrapper tooltip-data"
+												data-member-id="{{ member.value }}"
+												data-member-name="{{ member.full_name }}"
+												data-card-status="1"
+												data-card-attribute="{{ card.attribute.value }}"
+												data-card-type="{{ card.type.value }}"
+												data-card-title-normal="{{ card.get_card_name(False) | e }}"
+												data-card-title-idolized="{{ card.get_card_name(True) | e }}"
+												data-card-source="{{ get_card_source_label(card) }}"
+												data-card-release-date="{{ card.release_date.strftime('%d %B %Y') }}"
+												data-card-event="{{ card.event_title or '' | e }}"
+												data-stats-tooltip="1"
+												ng-mouseover="toggleTooltip($event, true)"
+												ng-mouseleave="toggleTooltip($event, false)">
 												<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
 													<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 												</a>
@@ -179,5 +192,6 @@
 			</div>
 		{% endfor %}
 	</div>
+	<div id="card-tooltip" data-card-tooltip="tooltip_data"></div>
 	
 {% endif %}

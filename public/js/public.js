@@ -1735,6 +1735,8 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 			
 			scroller.scrollLeft = active_rect.left - (scroller_width - active_width) / 2 - scroller_rect.left;
 		});
+		
+		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
 
 		let page_subtitle = $scope.get_subtitle($scope.active_page);
 		$rootScope.$broadcast('update-title', page_subtitle);

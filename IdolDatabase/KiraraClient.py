@@ -823,7 +823,7 @@ class KiraraClient():
 			fields.append((f"release_date <= ?", [released_before.isoformat()]))
 		
 		if fields:
-			query = f"""SELECT * FROM 'v_idols'
+			query = f"""SELECT * FROM 'v_idols_with_events_and_banner_info_null_allowed'
 			            WHERE ordinal IN (
 			            	SELECT MAX(ordinal) FROM 'v_idols'
 			            	WHERE {' AND '.join([x[0] for x in fields])}
@@ -833,7 +833,7 @@ class KiraraClient():
 			# print(query)
 			self.db.execute(query, [value for x in fields for value in x[1]])
 		else:
-			query = f"""SELECT * FROM 'v_idols'
+			query = f"""SELECT * FROM 'v_idols_with_events_and_banner_info_null_allowed'
 						WHERE ordinal IN (
 							SELECT MAX(ordinal) FROM 'v_idols'
 							GROUP BY member_id
