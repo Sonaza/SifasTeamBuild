@@ -1,0 +1,112 @@
+<h2>{{ member.first_name }}'s Card History</h2>
+
+<ul class="page-selector stats-page-selector">
+	<li><a href="#/history/{{ member.first_name.lower() }}/all"        ng-class="pageActive('all')">All</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/event"      ng-class="pageActive('event')">Event URs</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/festival"   ng-class="pageActive('festival')">Festival</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/party"      ng-class="pageActive('party')">Party</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/limited"    ng-class="pageActive('limited')">Limited</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/nonlimited" ng-class="pageActive('nonlimited')">Non-Limited</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/gacha"      ng-class="pageActive('gacha')">Any Gacha</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/ur"         ng-class="pageActive('ur')">Any UR</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/sr"         ng-class="pageActive('sr')">Any SR</a></li>
+</ul>
+
+<div class="stats-category {{ category_tag }}">
+	<h2>{{ history_info[0] }}</h2>
+	<p>{{ history_info[1] }}</p>
+	<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
+	
+	{# <div class="page-settings-bar stats-settings">
+		<div pill-button model="settings.collapsed" keybind="C">
+			Collapse Groups
+		</div>
+		<div pill-button model="settings.hide_empty_rows" keybind="H" class="hide-empty-rows-toggle {{ 'has-empty-rows' | conditional_css(has_empty_rows) }}">
+			Hide Empty Rows
+		</div>
+	</div> #}
+	
+	<div class="stats-category-group">
+		<div class="stats-table {{ 'with-source' | conditional_css(history_flags.show_source) }}">
+			<div class="st-tr st-thead idol-{{ member.value }}">
+				<div class="st-th st-cell-35 idol-bg-color-dim">
+					Released
+				</div>
+				<div class="st-th st-cell-15 idol-bg-color-dim time-inbetween" title="The time between this card's release and the previous.">
+					Interval
+				</div>
+				<div class="st-th st-cell-50 idol-identity idol-bg-color-dim">
+					<div class="idol-icon idol-icon-32-border"></div>
+					<div class="idol-name">
+						<span class="hide-narrow-1400">{{ member.full_name }} Card History</span>
+						<span class="show-narrow-1400">{{ member.first_name }} Card History</span>
+					</div>
+				</div>
+			</div>
+			
+			<div class="st-tbody reversable">
+				{% for card, time_since_release, time_since_previous in history_data %}
+					<div class="st-tr idol-{{ member.value }}" data-index="{{ loop.index }}">
+						<div class="st-td st-cell-15">
+							{{ card.release_date.strftime('%d %b %Y') }}
+						</div>
+						<div class="st-td st-cell-20">
+							{{ time_since_release.days | format_years_days }}
+						</div>
+						{% if time_since_previous != None: %}
+							<div class="st-td st-cell-15 time-inbetween with-data" title="This card released {{ time_since_previous.days | format_delta_days }} after the previous.">
+								{{ time_since_previous.days | format_delta_days }}
+							</div>
+						{% else %}
+							<div class="st-td st-cell-15 time-inbetween">
+								&mdash;
+							</div>
+						{% endif %}
+						<div class="st-td st-cell-50 card-details">
+							<div class="thumbnail">
+								<div class="thumbnail-wrapper tooltip-data"
+									data-member-id="{{ member.value }}"
+									data-member-name="{{ member.full_name }}"
+									data-card-status="1"
+									data-card-attribute="{{ card.attribute.value }}"
+									data-card-type="{{ card.type.value }}"
+									data-card-title-normal="{{ card.get_card_name(False) | e }}"
+									data-card-title-idolized="{{ card.get_card_name(True) | e }}"
+									data-card-source="{{ get_card_source_label(card) }}"
+									data-card-release-date="{{ card.release_date.strftime('%d %B %Y') }}"
+									data-card-event="{{ card.event_title or '' | e }}"
+									data-stats-tooltip="1"
+									ng-mouseover="toggleTooltip($event, true)"
+									ng-mouseleave="toggleTooltip($event, false)">
+									<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+										<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+									</a>
+								</div>
+							</div>
+							<div class="card-link">
+								<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
+							</div>
+							{% if history_flags.show_source %}
+								<div class="card-source">
+									{{ card.source.display_name }}
+								</div>
+							{% endif %}
+							{% if history_flags.show_rarity %}
+								<div class="card-rarity icon-32 rarity-{{ card.rarity.value }}"></div>
+							{% endif %}
+						</div>
+					</div>
+				{% endfor %}
+				{% if len(history_data) == 0: %}
+					<div class="st-tr idol-{{ member.value }} no-results-found">
+						<div class="st-td st-cell-100">
+							{{ member.first_name }} has yet to receive cards of this type.
+						</div>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="card-tooltip" data-card-tooltip="tooltip_data"></div>

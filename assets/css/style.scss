@@ -1815,6 +1815,10 @@ body
 	
 	.st-cell-banner-title   { width: calc(100% - 448px); }
 	.st-cell-banner-cards   { width: 448px; }
+	
+	.st-cell-textleft   { text-align: left; }
+	.st-cell-textcenter { text-align: center; }
+	.st-cell-textright  { text-align: right; }
 
 	.st-tbody .st-tr
 	{
@@ -1871,6 +1875,11 @@ body
 		font-weight: 700;
 		font-size: 12pt;
 		padding-top: 0.8rem;
+		
+		&.idol-bg-color-dim
+		{
+			color: #fff;
+		}
 	}
 
 	.st-th, .st-td
@@ -1887,6 +1896,16 @@ body
 	.st-tr:last-child
 	{
 		border-bottom: none;
+	}
+	
+	.st-tr.no-results-found
+	{
+		text-align: center;
+		font-family: 'Montserrat', sans-serif;
+		font-weight: 700;
+		font-size: 12pt;
+		height: 3rem;
+		padding-top: 0.4rem;
 	}
 
 	.st-td
@@ -1988,6 +2007,80 @@ body
 				}
 			}
 		}
+		
+		&.card-release-elapsed
+		{
+			padding: 0 !important;
+			
+			a.history-link
+			{
+				display: block;
+				font-weight: 400;
+				text-decoration: none;
+				padding: 0.5rem 0.8rem;
+			}
+		}
+		
+	}
+
+	.st-th
+	{
+		&:last-child
+		{
+			border-right: none;
+		}
+
+		.flex-wrapper
+		{
+			width: 100%;
+			display: flex;
+			flex-flow: row nowrap;
+			align-items: center;
+			
+			.num-others
+			{
+				padding: 0 1rem;
+				font-family: 'Montserrat', sans-serif;
+				font-weight: 700;
+				font-size: 10pt;
+				color: #7B4DA6;
+				cursor: help;
+				text-decoration: underline dotted;
+			}
+		}
+
+		&.idol-identity
+		{
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: center;
+			align-items: center;
+			padding: 0 !important;
+
+			.idol-icon
+			{
+				display: block;
+				width: 38px;
+				min-width: 38px;
+				height: 38px;
+				min-height: 38px;
+				background-position: center center !important;
+				background-repeat: no-repeat !important;
+				margin-left: 0.5rem;
+			}
+			
+			.idol-name
+			{
+				// width: 100%;
+				padding: 0 0.5rem;
+			}
+		}
+		
+		&.time-inbetween
+		{
+			padding-left: 0;
+			padding-right: 0;
+		}
 	}
 
 	&.event-cards-table .st-td.idol-identity .idol-icon
@@ -2020,6 +2113,11 @@ body
 				height: 38px;
 				padding: 0;
 			}
+		}
+		
+		&.time-inbetween.with-data
+		{
+			text-decoration: underline dotted #aaa;
 		}
 	}
 
@@ -2291,6 +2389,158 @@ body
 		// color: #689A11 !important;
 	}
 }
+
+/**************/
+
+.history-group
+{
+	background: #fffa;
+	margin-bottom: 1rem;
+	box-shadow: 0 2px 2px #2225;
+	
+	border: 1px solid #ccc;
+	
+	h2
+	{
+		padding: 0.6rem 1rem 0.7rem 1.5rem;
+		border-bottom: 1px solid;
+	}
+	
+	&.group-muse
+	{
+		h2
+		{
+			border-color: #A13258;
+			background: #ff6d9faa;
+			color: #5c112b;
+		}
+	}
+
+	&.group-aqours
+	{
+		
+		h2
+		{
+			border-color: #3282A7;
+			background: #58bff0aa;
+			color: #062838;
+		}
+	}
+
+	&.group-nijigasaki
+	{
+		
+		h2
+		{
+			border-color: #997E2C;
+			background: #f1c232aa;
+			color: #352905;
+		}
+	}
+	
+	&.group-muse,
+	&.group-aqours
+	{
+		max-width: calc(200px * 3 - 1rem);
+		
+		.history-group-table .cell
+		{
+			width: calc(33% - 10px);
+		}
+	}
+	
+	&.group-nijigasaki
+	{
+		max-width: calc(200px * 4 - 1rem);
+		
+		.history-group-table .cell
+		{
+			width: calc(25% - 10px);
+		}
+	}
+	
+	.history-group-table
+	{
+		width: 100%;
+		padding: 0 0.5rem 0.5rem 0.5rem;
+		margin: 0.5rem 0 0 0;
+		
+		display: flex;
+		flex-flow: row wrap;
+		justify-content: center;
+		align-content: center;
+		
+		.cell
+		{
+			background: #fff;
+			margin: 5px;
+			border: 1px solid #444;
+			box-shadow: 0 2px 1px #2227;
+			
+			border-radius: 2px;
+			
+			transition: all 60ms ease-out;
+			
+			&:hover
+			{
+				border: 1px solid #888;
+				box-shadow: 0 3px 2px #2223;
+				
+				.cell-inner
+				{
+					span.idol-bg-color
+					{
+						opacity: 0.55;
+					}
+				}
+			}
+			
+			.cell-inner
+			{
+				display: block;
+				height: 3rem;
+				margin: 1px;
+				border-radius: 2px;
+				
+				color: #fff;
+				font-family: 'Montserrat', sans-serif;
+				font-weight: 700;
+				text-decoration: none;
+				
+				position: relative;
+				
+				span
+				{
+					display: block;
+					
+					padding: 0.7rem 0.5rem 0.7rem 37%;
+					position: absolute;
+					
+					left: 0;
+					top: 0;
+					right: 0;
+					bottom: 0;
+				}
+				
+				span.idol-bg-color
+				{
+					opacity: 0;
+					transition: opacity 40ms ease-out;
+					z-index: 1;
+				}
+				
+				span.idol-name
+				{
+					background-position: 17% center !important;
+					background-repeat: no-repeat !important;
+					z-index: 13423;
+				}
+			}
+		}
+	}
+	
+}
+
 
 /**************/
 

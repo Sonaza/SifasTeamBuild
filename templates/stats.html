@@ -131,8 +131,16 @@
 									{% endif %}
 								</div>
 								{% if is_valid_card(card) %}
-									<div class="st-td st-cell-20" title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
-										{{ time_since.days | format_days }}
+									<div class="st-td st-cell-20 card-release-elapsed" title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
+										{% if category_tag not in ['limited', 'nonlimited', 'ur', 'sr', 'all']: %}
+											<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[card.source] }}" class="history-link">
+												{{ time_since.days | format_days }}
+											</a>
+										{% else %}
+											<a href="#/history/{{ member.first_name.lower() }}/{{ category_tag }}" class="history-link">
+												{{ time_since.days | format_days }}
+											</a>
+										{% endif %}
 									</div>
 									<div class="st-td st-cell-50 card-details">
 										<div class="thumbnail">

@@ -543,8 +543,51 @@ class CardRotations():
 			idols.sort(key=lambda x: x.release_date)
 			
 		return idols
-		
 	
+	# ------------------------------------------------
+		
+	def get_card_history_per_member(self):
+		history_categories = {
+			'all'        : ([Rarity.UR, Rarity.SR], None, ),
+			'event'      : (Rarity.UR, [Source.Event]),
+			'festival'   : (Rarity.UR, [Source.Festival]),
+			'party'      : (Rarity.UR, [Source.Party]),
+			'limited'    : (Rarity.UR, [Source.Festival, Source.Party]),
+			'nonlimited' : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight,]),
+			'gacha'      : (Rarity.UR, [Source.Unspecified, Source.Gacha, Source.Spotlight, Source.Festival, Source.Party]),
+			'ur'         : (Rarity.UR, None),
+			'sr'         : (Rarity.SR, None),
+		}
+		category_info = {
+			'all'        : ( "All",                  "History of any card, free or otherwise." ),
+			'event'      : ( "Event UR",             "History of Event URs awarded in item exchange and story events." ),
+			'festival'   : ( "Festival UR",          "History of Festival limited URs scouted exclusively from All Stars Festival banners." ),
+			'party'      : ( "Party UR",             "History of Party limited URs scouted exclusively from Party Scouting banners." ),
+			'limited'    : ( "Limited UR",           "History of all Festival and Party limited URs." ),
+			'nonlimited' : ( "Non-Limited Gacha UR", "History of any non-limited UR scouted from banners using Star Gems." ),
+			'gacha'      : ( "Any Gacha UR",         "History of any UR scouted from banners using Star Gems." ),
+			'ur'         : ( "Any UR",               "History of any most recent UR, free or otherwise." ),
+			'sr'         : ( "Any SR",               "History of any most recent SR, free or otherwise." ),
+		}
+		
+		category_flags = {}
+		for category, (rarity, sources) in history_categories.items(): 
+			category_flags[category] = {
+				'show_source'     : (not isinstance(sources, list) or len(sources) > 1),
+				'show_rarity'     : (isinstance(rarity, list) and len(rarity) > 1),
+			}
+		
+		history_by_member = {}
+		
+		now = datetime.now(timezone.utc)
+		
+		for member in Idols.all_idols:
+			history_by_member[member.member_id] = self.client.get_idol_history(member.member_id, history_categories, now)
+		
+		return (history_by_member, category_info, category_flags)
+		
+	# ------------------------------------------------
+		
 	def get_card_stats(self):
 		categories = {
 			'event'      : (Rarity.UR, [Source.Event], ),
@@ -559,11 +602,11 @@ class CardRotations():
 			'all'        : ([Rarity.UR, Rarity.SR], None, ),
 		}
 		category_info = {
-			'event'      : ( "Event URs",            "Event URs awarded in item exchange and story events." ),
-			'festival'   : ( "Festival URs",         "Festival limited URs scouted exclusively from All Stars Festival banners." ),
-			'party'      : ( "Party URs",            "Party limited URs scouted exclusively from Party Scouting banners." ),
-			'limited'    : ( "Limited URs",          "The most recent Festival and Party limited URs. Due to their higher average power level and limited nature, the same member is unlikely to receive two in quick succession." ),
-			'spotlight'  : ( "Party + Spotlight",    "Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),
+			'event'      : ( "Event UR",             "Event URs awarded in item exchange and story events." ),
+			'festival'   : ( "Festival UR",          "Festival limited URs scouted exclusively from All Stars Festival banners." ),
+			'party'      : ( "Party UR",             "Party limited URs scouted exclusively from Party Scouting banners." ),
+			'limited'    : ( "Limited UR",           "The most recent Festival and Party limited URs. Due to their higher average power level and limited nature, the same member is unlikely to receive two in quick succession." ),
+			'spotlight'  : ( "Party + Spotlight UR", "Party banners replaced Spotlight banners upon their introduction and release order up until now has followed in its footsteps." ),
 			'nonlimited' : ( "Non-Limited Gacha UR", "Any non-limited UR scouted from banners using Star Gems." ),
 			'gacha'      : ( "Any Gacha UR",         "Any UR scouted from banners using Star Gems." ),
 			'ur'         : ( "Any UR",               "Any most recent UR, free or otherwise." ),
@@ -759,7 +802,8 @@ class CardRotations():
 		return preload_assets
 	
 	def generate_pages(self):
-		files_to_delete = [] #[x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
+		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
+		files_to_delete.extend([x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/history/*.html"))])
 		
 		# -------------------------------------------------------
 		# Per school UR attribute-type arrays
@@ -844,6 +888,21 @@ class CardRotations():
 		})
 		
 		# -------------------------------------------------------
+		# Card history
+		
+		self.renderer.render_and_save("history_frontpage.html", "pages/history.html", {}, minify=not self.args.dev)
+		
+		history_per_member, history_category_info, history_category_flags = self.get_card_history_per_member()
+		for member, history_data in history_per_member.items():
+			for category_tag, history_info in history_category_info.items():
+				self.renderer.render_and_save("history_stats.html", f"pages/history/history_{member.first_name.lower()}_{category_tag}.html", {
+					'member'         : member,
+					'history_data'   : history_data[category_tag],
+					'history_info'   : history_category_info[category_tag],
+					'history_flags'  : history_category_flags[category_tag],
+				}, minify=not self.args.dev)
+		
+		# -------------------------------------------------------
 		# Card stats
 		
 		general_stats = self.get_general_stats()
@@ -852,6 +911,15 @@ class CardRotations():
 			'general_stats'  : general_stats,
 		}, minify=not self.args.dev)
 		
+		history_category = {
+			Source.Unspecified : 'gacha',
+			Source.Event       : 'event',
+			Source.Gacha       : 'gacha',
+			Source.Spotlight   : 'gacha',
+			Source.Festival    : 'festival',
+			Source.Party       : 'party',
+		}
+		
 		card_stats, category_info, category_has_empty_rows = self.get_card_stats()
 		for category_tag in card_stats.keys():
 			self.renderer.render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
@@ -859,6 +927,7 @@ class CardRotations():
 				'category_data'  : card_stats[category_tag],
 				'category_info'  : category_info[category_tag],
 				'has_empty_rows' : category_has_empty_rows[category_tag],
+				'history_category' : history_category,
 			}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------

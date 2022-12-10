@@ -15,7 +15,7 @@
 	</label>
 {# 	<select ng-model="filter_settings.filter" class="select-box-hidden">
 		<option ng-value="-1">&mdash; Show All &mdash;</option>
-		{% for group in Groups %}
+		{% for group in Group %}
 			<optgroup label="{{ group.display_name }}">
 				{% for idol in Idols.by_group[group] %}
 					<option ng-value="{{ idol.member_id.value }}">{{ idol.member_id.full_name }}</option>
@@ -44,7 +44,7 @@
 				&mdash; Show All &mdash;
 			</div>
 			<ul>
-				{% for group in Groups %}
+				{% for group in Group %}
 					<li class="select-box-group">
 						<span class="group-title">
 							{{ group.display_name }}

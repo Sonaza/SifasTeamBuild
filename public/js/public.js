@@ -71,6 +71,56 @@ const stats_subpages = {
 	'all'        : "All",
 };
 
+const history_subpages = {
+	'all'        : "All",
+	'event'      : "Event URs",
+	'festival'   : "Festival URs",
+	'party'      : "Party URs",
+	'limited'    : "Limited URs",
+	'nonlimited' : "Non-Limited Gacha UR",
+	'gacha'      : "Any Gacha UR",
+	'ur'         : "Any UR",
+	'sr'         : "Any SR",
+};
+
+const history_idols = {
+	// µ's idols
+	'hanayo'   : 'Hanayo',
+	'rin'      : 'Rin',
+	'maki'     : 'Maki',
+	'honoka'   : 'Honoka',
+	'kotori'   : 'Kotori',
+	'umi'      : 'Umi',
+	'nozomi'   : 'Nozomi',
+	'eli'      : 'Eli',
+	'nico'     : 'Nico',
+	
+	// Aqours idols
+	'hanamaru' : 'Hanamaru',
+	'yoshiko'  : 'Yoshiko',
+	'ruby'     : 'Ruby',
+	'chika'    : 'Chika',
+	'riko'     : 'Riko',
+	'you'      : 'You',
+	'kanan'    : 'Kanan',
+	'dia'      : 'Dia',
+	'mari'     : 'Mari',
+	
+	// Nijigasaki idols
+	'rina'     : 'Rina',
+	'kasumi'   : 'Kasumi',
+	'shizuku'  : 'Shizuku',
+	'shioriko' : 'Shioriko',
+	'ayumu'    : 'Ayumu',
+	'setsuna'  : 'Setsuna',
+	'ai'       : 'Ai',
+	'lanzhu'   : 'Lanzhu',
+	'emma'     : 'Emma',
+	'kanata'   : 'Kanata',
+	'karin'    : 'Karin',
+	'mia'      : 'Mia',
+}
+
 const routes = [
 	{
 		title       : 'UR Rotations',
@@ -164,6 +214,34 @@ const routes = [
 			return false;
 		},
 		templateErrorRedirect    : '/stats',
+		hasSubpages : true,
+	},
+	{
+		title       : 'Card History',
+		path        : '/history/:idol?/:page?',
+		controller  : 'HistoryController',
+		template    : function(params)
+		{
+			if (params.idol !== undefined
+				&& params.idol in history_idols)
+			{
+				if (params.page in history_subpages)
+				{
+					return 'history/history_' + params.idol + '_' + params.page + '.html';
+				}
+				else
+				{
+					return 'history/history_' + params.idol + '_all.html';
+				}
+			}
+			else if (params.idol === undefined)
+			{	
+				return 'history.html';
+			}
+			
+			return false;
+		},
+		templateErrorRedirect    : '/history',
 		hasSubpages : true,
 	},
 ];
@@ -811,7 +889,7 @@ let toggleTooltip = function($scope, $event, visible)
 		'card-attribute', 'card-type',
 		'card-title-normal', 'card-title-idolized',
 		'card-source', 'card-release-date',
-		'card-event',
+		'card-event', 'stats-tooltip',
 	];
 	
 	$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
@@ -828,12 +906,17 @@ let toggleTooltip = function($scope, $event, visible)
 	const view_width = doc.clientWidth;
 	const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 	
-	const flipAnchor = (rect.x > view_width * 0.66);
+	const flipAnchor = (rect.x > view_width * 0.66) || $scope.tooltip_data.stats_tooltip == 1;
 	
-	const offset = ($scope.tooltip_data.card_status == 1 ? 
+	let offset = ($scope.tooltip_data.card_status == 1 ? 
 		{x: 15, y: -16} :
 		{x: 15, y: -4}
 	);
+	
+	if ($scope.tooltip_data.stats_tooltip)
+	{
+		offset = {x: 25, y: -26};
+	}
 	
 	if (flipAnchor)
 	{
@@ -1401,8 +1484,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		
 		$scope.$watch('filter_settings.banner', function(a, b)
 		{
-			console.log("baner update");
-			
 			for (let i = 0; i < $scope.banner_types.length; i++)
 			{
 				if ($scope.banner_types[i].id == $scope.filter_settings.banner)
@@ -1412,14 +1493,10 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 					if ($scope.banner_types[i].id != -1)
 					{
 						let type_title = $scope.banner_types[i].title.toLowerCase();
-						console.log("type_title", type_title);
-						
 						$location.search('banner', type_title).replace();
 					}
 					else
 					{
-						console.log("type_title cleared");
-						
 						$location.search('banner', undefined).replace();
 					}
 					
@@ -1660,6 +1737,96 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 		});
 
 		let page_subtitle = $scope.get_subtitle($scope.active_page);
+		$rootScope.$broadcast('update-title', page_subtitle);
+
+		$scope.loading = false;
+
+		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
+	}
+)
+
+app.controller('HistoryController', function($rootScope, $scope, $route, $routeParams, $location, $timeout)
+	{
+		$scope.loading = true;
+		
+		if ($routeParams.page === undefined)
+		{
+			window.scrollTo(0, 0);
+		}
+		
+		$scope.active_page = $routeParams.page;
+		if ($scope.active_page === undefined)
+		{
+			$scope.active_page = 'all';
+		}
+
+		$scope.isActive = (page) =>
+		{
+			return $scope.active_page == page;
+		}
+
+		$scope.pageActive = (page) =>
+		{
+			if ($scope.isActive(page))
+			{
+				return 'active';
+			}
+		}
+
+		$scope.get_subtitle = (idol, page) =>
+		{
+			if (idol)
+			{
+				let idol_name = history_idols[idol];
+				if (history_subpages[page])
+				{
+					return idol_name + " - " + history_subpages[page];
+				}
+			}
+			
+			return undefined;
+		}
+		
+		$scope.$on('keydown', (_, e) =>
+		{
+			if (e.repeat || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+			
+			let number = parseInt(e.key);
+			if (number !== undefined)
+			{
+				if (number == 0) number = 10;
+				let index = number - 1;
+				
+				let keys = Object.keys(history_subpages);
+				if (index < keys.length)
+				{
+					e.preventDefault();
+					$route.updateParams({'page': keys[index]});
+					// $scope.$apply();
+					return;
+				}
+			}
+		});
+		
+		setTimeout(() => {
+			const scroller = document.querySelector('.stats-page-selector');
+			const active = document.querySelector('.stats-page-selector a.active');
+			if (!scroller || !active) return;
+			
+			const scroller_rect = scroller.getBoundingClientRect();
+			const scroller_width = scroller_rect.right - scroller_rect.left;
+			
+			const element = active.closest('li');
+			
+			const active_rect = element.getBoundingClientRect();
+			const active_width = active_rect.right - active_rect.left;
+			
+			scroller.scrollLeft = active_rect.left - (scroller_width - active_width) / 2 - scroller_rect.left;
+		});
+		
+		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
+
+		let page_subtitle = $scope.get_subtitle($routeParams.idol, $scope.active_page);
 		$rootScope.$broadcast('update-title', page_subtitle);
 
 		$scope.loading = false;

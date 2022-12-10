@@ -1,4 +1,5 @@
 import os
+import math
 from IdolDatabase import *
 from CardValidity import *
 
@@ -26,6 +27,27 @@ def _format_days(value):
 		return "Today"
 	else:
 		return f"In {_pluralize(value, 'day', 'days')}"
+
+def _format_years_days(value):
+	years = math.floor(value / 365)
+	
+	if value > 0:
+		if years > 0:
+			return f"{years} y {value % 365} d ago"
+		else:
+			return f"{_pluralize(value, 'day', 'days')} ago"
+	elif value == 0:
+		return "Today"
+	else:
+		return f"In {_pluralize(value, 'day', 'days')}"
+
+def _format_delta_days(value):
+	if value > 0:
+		return f"{_pluralize(value, 'day', 'days')}"
+	elif value == 0:
+		return "0 days"
+	else:
+		return "Negative days impossible"
 	
 def _conditional_css(class_names, condition):
 	assert isinstance(class_names, str) or isinstance(class_names, list) or isinstance(class_names, tuple)
@@ -86,16 +108,19 @@ class PageRenderer():
 		)
 		
 		self.jinja.filters.update({
-			'format_days'     : _format_days,
-			'pluralize'       : _pluralize,
-			'ordinalize'      : _ordinalize,
+			'format_days'       : _format_days,
+			'format_years_days' : _format_years_days,
+			'format_delta_days' : _format_delta_days,
+			'pluralize'         : _pluralize,
+			'ordinalize'        : _ordinalize,
 			
-			'conditional_css' : _conditional_css,
+			'conditional_css'   : _conditional_css,
 		})
 		
 		self.jinja.globals.update({
 			# Python built in functions
 			'reversed'              : reversed,
+			'len'                   : len,
 			
 			# Application related variables
 			'cmd_args'              : self.parent.args,
@@ -103,7 +128,7 @@ class PageRenderer():
 			# Application related global enums
 			'Idols'                 : Idols,
 			'Member'                : Member,
-			'Groups'                : Group,
+			'Group'                 : Group,
 			'Rarity'                : Rarity,
 			'Source'                : Source,
 			'Attribute'             : Attribute.get_valid(),

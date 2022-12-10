@@ -843,6 +843,62 @@ class KiraraClient():
 			
 		return self.convert_to_idol_object(self.db.fetchall())
 		
+	# -------------------------------------------------------------------------------------------
+	
+	# Categories should be a dictionary of tuples with "category name" as the key
+	# and value being ([list of rarities], [list of sources]) or None instead of list for any.
+	def get_idol_history(self, member : Member, categories, time_now : datetime):
+		assert(member != None and isinstance(member, Member))
+		
+		fields = []
+		fields.append(self._make_where_condition("member_id", member))
+		
+		query = f"""SELECT * FROM v_idols_with_events_and_banner_info_null_allowed
+					WHERE {' AND '.join([x[0] for x in fields])}
+					ORDER BY release_date ASC"""
+		self.db.execute(query, [value for x in fields for value in x[1]])
+		
+		all_idols = self.convert_to_idol_object(self.db.fetchall())
+		
+		result = {}
+		
+		for category_name, (category_rarities, category_sources) in categories.items():
+			current_list = []
+			
+			# Conver to list if not one
+			if category_rarities != None and not isinstance(category_rarities, list):
+				category_rarities = [category_rarities]
+				
+			if category_sources != None and not isinstance(category_sources, list):
+				category_sources = [category_sources]
+			
+			previous_idol = None
+			
+			for idol in all_idols:
+				if category_sources != None and idol.source not in category_sources:
+					continue
+				if category_rarities != None and idol.rarity not in category_rarities:
+					continue
+				
+				time_since_release = time_now - idol.release_date
+				
+				if previous_idol:
+					time_since_previous = idol.release_date - previous_idol.release_date
+				else:
+					time_since_previous = None
+				
+				# current_list.append({
+				# 	'idol' : idol,
+				# 	'time_since_release'  : time_since_release,
+				# 	'time_since_previous' : time_since_previous,
+				# })
+				current_list.append((idol, time_since_release, time_since_previous))
+				
+				previous_idol = idol
+			
+			result[category_name] = current_list
+		
+		return result
 	
 	# -------------------------------------------------------------------------------------------
 	

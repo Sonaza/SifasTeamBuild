@@ -473,6 +473,21 @@ body.sidebar-open
 
 /*****************************************************************/
 
+.history-group
+{
+	.history-group-table
+	{
+		flex-flow: row wrap;
+		
+		.cell
+		{
+			width: calc(50% - 10px) !important;
+		}
+	}
+}
+
+/*****************************************************************/
+
 #footer-top .footer-top-inner
 {
 	flex-flow: column nowrap;
@@ -589,4 +604,37 @@ body.scrolling-disabled
 		white-space: nowrap;
 		overflow: hidden;
 	}
+
+}
+
+@media screen and (max-width: 500px)
+{
+	
+	.history-group
+	{
+		.history-group-table
+		{
+			flex-flow: column nowrap;
+			
+			.cell
+			{
+				width: calc(100% - 8%) !important;
+				margin: 5px 4%;
+				
+				.cell-inner
+				{
+					span
+					{
+						padding: 0.7rem 0.5rem 0.7rem 40%;
+					}
+					
+					span.idol-name
+					{
+						background-position: 24% center !important;
+					}
+				}
+			}
+		}
+	}
+
 }
