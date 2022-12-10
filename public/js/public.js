@@ -935,37 +935,37 @@ let toggleTooltip = function($scope, $event, visible)
 }
 
 const MEMBERS_ORDERED = [
-	{ id: -1,  name: "— Show All —",      group: undefined },
-	{ id: 8,   name: "Hanayo Koizumi",    group: "µ's" },
-	{ id: 5,   name: "Rin Hoshizora",     group: "µ's" },
-	{ id: 6,   name: "Maki Nishikino",    group: "µ's" },
-	{ id: 1,   name: "Honoka Kousaka",    group: "µ's" },
-	{ id: 3,   name: "Kotori Minami",     group: "µ's" },
-	{ id: 4,   name: "Umi Sonoda",        group: "µ's" },
-	{ id: 7,   name: "Nozomi Toujou",     group: "µ's" },
-	{ id: 2,   name: "Eli Ayase",         group: "µ's" },
-	{ id: 9,   name: "Nico Yazawa",       group: "µ's" },
-	{ id: 107, name: "Hanamaru Kunikida", group: "Aqours" },
-	{ id: 106, name: "Yoshiko Tsushima",  group: "Aqours" },
-	{ id: 109, name: "Ruby Kurosawa",     group: "Aqours" },
-	{ id: 101, name: "Chika Takami",      group: "Aqours" },
-	{ id: 102, name: "Riko Sakurauchi",   group: "Aqours" },
-	{ id: 105, name: "You Watanabe",      group: "Aqours" },
-	{ id: 103, name: "Kanan Matsuura",    group: "Aqours" },
-	{ id: 104, name: "Dia Kurosawa",      group: "Aqours" },
-	{ id: 108, name: "Mari Ohara",        group: "Aqours" },
-	{ id: 209, name: "Rina Tennouji",     group: "Nijigasaki" },
-	{ id: 202, name: "Kasumi Nakasu",     group: "Nijigasaki" },
-	{ id: 203, name: "Shizuku Ousaka",    group: "Nijigasaki" },
-	{ id: 210, name: "Shioriko Mifune",   group: "Nijigasaki" },
-	{ id: 201, name: "Ayumu Uehara",      group: "Nijigasaki" },
-	{ id: 207, name: "Setsuna Yuuki",     group: "Nijigasaki" },
-	{ id: 205, name: "Ai Miyashita",      group: "Nijigasaki" },
-	{ id: 212, name: "Lanzhu Zhong",      group: "Nijigasaki" },
-	{ id: 208, name: "Emma Verde",        group: "Nijigasaki" },
-	{ id: 206, name: "Kanata Konoe",      group: "Nijigasaki" },
-	{ id: 204, name: "Karin Asaka",       group: "Nijigasaki" },
-	{ id: 211, name: "Mia Taylor",        group: "Nijigasaki" },
+	{ id: -1,  name: "— Show All —",      group: undefined,    grouptag: undefined },
+	{ id: 8,   name: "Hanayo Koizumi",    group: "µ's",        grouptag: "muse" },
+	{ id: 5,   name: "Rin Hoshizora",     group: "µ's",        grouptag: "muse" },
+	{ id: 6,   name: "Maki Nishikino",    group: "µ's",        grouptag: "muse" },
+	{ id: 1,   name: "Honoka Kousaka",    group: "µ's",        grouptag: "muse" },
+	{ id: 3,   name: "Kotori Minami",     group: "µ's",        grouptag: "muse" },
+	{ id: 4,   name: "Umi Sonoda",        group: "µ's",        grouptag: "muse" },
+	{ id: 7,   name: "Nozomi Toujou",     group: "µ's",        grouptag: "muse" },
+	{ id: 2,   name: "Eli Ayase",         group: "µ's",        grouptag: "muse" },
+	{ id: 9,   name: "Nico Yazawa",       group: "µ's",        grouptag: "muse" },
+	{ id: 107, name: "Hanamaru Kunikida", group: "Aqours",     grouptag: "aqours" },
+	{ id: 106, name: "Yoshiko Tsushima",  group: "Aqours",     grouptag: "aqours" },
+	{ id: 109, name: "Ruby Kurosawa",     group: "Aqours",     grouptag: "aqours" },
+	{ id: 101, name: "Chika Takami",      group: "Aqours",     grouptag: "aqours" },
+	{ id: 102, name: "Riko Sakurauchi",   group: "Aqours",     grouptag: "aqours" },
+	{ id: 105, name: "You Watanabe",      group: "Aqours",     grouptag: "aqours" },
+	{ id: 103, name: "Kanan Matsuura",    group: "Aqours",     grouptag: "aqours" },
+	{ id: 104, name: "Dia Kurosawa",      group: "Aqours",     grouptag: "aqours" },
+	{ id: 108, name: "Mari Ohara",        group: "Aqours",     grouptag: "aqours" },
+	{ id: 209, name: "Rina Tennouji",     group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 202, name: "Kasumi Nakasu",     group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 203, name: "Shizuku Ousaka",    group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 210, name: "Shioriko Mifune",   group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 201, name: "Ayumu Uehara",      group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 207, name: "Setsuna Yuuki",     group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 205, name: "Ai Miyashita",      group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 212, name: "Lanzhu Zhong",      group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 208, name: "Emma Verde",        group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 206, name: "Kanata Konoe",      group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 204, name: "Karin Asaka",       group: "Nijigasaki", grouptag: "nijigasaki" },
+	{ id: 211, name: "Mia Taylor",        group: "Nijigasaki", grouptag: "nijigasaki" },
 ];
 
 app.controller('EventCardsController', function($rootScope, $scope, $route, $routeParams, $location, $window)
@@ -1756,6 +1756,38 @@ app.controller('HistoryController', function($rootScope, $scope, $route, $routeP
 			window.scrollTo(0, 0);
 		}
 		
+		$scope.getIdolGroup = (idol) =>
+		{
+			for (const member of MEMBERS_ORDERED)
+			{
+				if (member.id <= 0)
+					continue;
+				
+				let first_name = member.name.split(' ')[0].toLowerCase();
+				if (first_name == idol)
+				{
+					return member.grouptag;
+				}
+			}
+			return false;
+		}
+			
+		$scope.idol_navigation = {
+			'group'	     : $scope.getIdolGroup($routeParams.idol),
+			'idol'       : $routeParams.idol,
+			'idol_group' : $scope.getIdolGroup($routeParams.idol),
+		};
+		
+		$scope.setGroup = (group) => 
+		{
+			$scope.idol_navigation.group = group;
+			
+			if (group == $scope.idol_navigation.idol_group)
+			{
+				setTimeout($scope.scrollPageSelectors);
+			}
+		}
+		
 		$scope.active_page = $routeParams.page;
 		if ($scope.active_page === undefined)
 		{
@@ -1765,6 +1797,22 @@ app.controller('HistoryController', function($rootScope, $scope, $route, $routeP
 		$scope.isActive = (page) =>
 		{
 			return $scope.active_page == page;
+		}
+
+		$scope.groupActive = (group) =>
+		{
+			if ($scope.idol_navigation.group == group)
+			{
+				return 'active';
+			}
+		}
+
+		$scope.idolActive = (idol) =>
+		{
+			if ($scope.idol_navigation.idol == idol)
+			{
+				return 'active border-color-highlight bg-color-highlight';
+			}
 		}
 
 		$scope.pageActive = (page) =>
@@ -1782,7 +1830,8 @@ app.controller('HistoryController', function($rootScope, $scope, $route, $routeP
 				let idol_name = history_idols[idol];
 				if (history_subpages[page])
 				{
-					return idol_name + " - " + history_subpages[page];
+					// return idol_name + " - " + history_subpages[page];
+					return idol_name;
 				}
 			}
 			
@@ -1810,21 +1859,29 @@ app.controller('HistoryController', function($rootScope, $scope, $route, $routeP
 			}
 		});
 		
-		setTimeout(() => {
-			const scroller = document.querySelector('.stats-page-selector');
-			const active = document.querySelector('.stats-page-selector a.active');
-			if (!scroller || !active) return;
-			
-			const scroller_rect = scroller.getBoundingClientRect();
-			const scroller_width = scroller_rect.right - scroller_rect.left;
-			
-			const element = active.closest('li');
-			
-			const active_rect = element.getBoundingClientRect();
-			const active_width = active_rect.right - active_rect.left;
-			
-			scroller.scrollLeft = active_rect.left - (scroller_width - active_width) / 2 - scroller_rect.left;
-		});
+		$scope.scrollPageSelectors = () =>
+		{
+			const scrollers = document.querySelectorAll('.page-selector');
+			for (let scroller of scrollers)
+			{
+				const active = scroller.querySelector('a.active');
+				if (!scroller || !active) continue;
+				
+				scroller.scrollLeft = 0;
+				
+				const scroller_rect = scroller.getBoundingClientRect();
+				const scroller_width = scroller_rect.right - scroller_rect.left;
+				
+				const element = active.closest('li');
+				
+				const active_rect = element.getBoundingClientRect();
+				const active_width = active_rect.right - active_rect.left;
+				
+				scroller.scrollLeft = active_rect.left - (scroller_width - active_width) / 2 - scroller_rect.left;
+			}
+		}
+		
+		setTimeout($scope.scrollPageSelectors);
 		
 		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
 

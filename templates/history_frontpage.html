@@ -2,10 +2,14 @@
 
 	<h1>Card History</h1>
 	<p>
-		In this history view, you can browse cards from a specific member sorted by release date. The table shows the time elapsed since each card was released, as well as the time between the release of each card and the previous card in the same category. This can give you an idea of how regularly the member has received new cards in the past.
+		In this history view, you can browse cards from a specific idol sorted by release date. The table shows the time elapsed since each card was released, as well as the time between the release of each card and the previous card in the same category. This can give you an idea of how regularly the idol has received new cards in the past.
 		There are multiple categories to browse.
 	</p>
 	
+</div>
+
+<div class="history-group-wrapper">
+
 	{% for group in Group %}
 		<div class="history-group group-{{ group.tag }}">
 			<h2>{{ group.display_name }} Members</h2>
@@ -14,9 +18,9 @@
 				{% for member in Idols.by_group[group]: %}
 					<div class="cell idol-{{ member.member_id.value }}">
 						<a href="#/history/{{ member.first_name.lower() }}"
-							class="cell-inner idol-bg-color-dim">
-							<span class="idol-bg-color"></span>
-							<span class="idol-name idol-icon idol-icon-32-border">
+							class="idol-bg-color-dim bg-color-highlight-hover idol-bg-glow-faint">
+							<span class="idol-icon idol-icon-32-border"></span>
+							<span class="idol-name">
 								{{ member.first_name }}
 							</span>
 						</a>

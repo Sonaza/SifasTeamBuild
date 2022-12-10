@@ -7,6 +7,8 @@ class IdolBase():
 	def __init__(self, member_id : Member):
 		self.member_id = member_id
 		
+		self.id = member_id.value
+		
 		self.full_name  = member_id.full_name
 		self.first_name = member_id.first_name
 		self.last_name  = member_id.last_name
@@ -17,6 +19,8 @@ class IdolBase():
 	
 	def set(self, idol):
 		self.member_id  = idol.member_id
+		
+		self.id = idol.value
 		
 		self.full_name  = idol.full_name
 		self.first_name = idol.first_name

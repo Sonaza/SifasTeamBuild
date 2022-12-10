@@ -91,12 +91,42 @@ def generate_idols_css(output_file):
 	css.append('')
 
 	for idol, color in idol_colors:
-		line = f".idol-{idol:<3} .idol-bg-color-dim  {{ background-color: #{darken(color, 0.7)} !important; }}"
+		line = f".idol-{idol:<10} .idol-bg-color-dim  {{ background-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		line = f".idol-{idol:<10} .idol-bg-color-dim.bg-color-highlight  {{ background-color: #{darken(color, 0.9)} !important; }}"
+		css.append(line)
+		line = f".idol-{str(idol) + ':hover':<10} .idol-bg-color-dim.bg-color-highlight-hover  {{ background-color: #{darken(color, 0.9)} !important; }}"
 		css.append(line)
 	css.append('')
 
 	for idol, color in idol_colors:
-		line = f".idol-{idol:<3} .idol-bg-color-dark {{ background-color: #{darken(color, 0.4)} !important; }}"
+		line = f".idol-{idol:<10} .idol-bg-color-dark {{ background-color: #{darken(color, 0.4)} !important; }}"
+		css.append(line)
+		line = f".idol-{idol:<10} .idol-bg-color-dark.bg-color-highlight {{ background-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		line = f".idol-{str(idol) + ':hover':<10} .idol-bg-color-dark.bg-color-highlight-hover {{ background-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+	css.append('')
+
+	for idol, color in idol_colors:
+		line = f".idol-{idol:<3} .idol-border-color      {{ border-color: #{color} !important; }}"
+		css.append(line)
+	css.append('')
+
+	for idol, color in idol_colors:
+		line = f".idol-{idol:<10} .idol-border-color-dim  {{ border-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		line = f".idol-{idol:<10} .idol-border-color-dim.border-color-highlight  {{ border-color: #{darken(color, 0.9)} !important; }}"
+		css.append(line)
+		line = f".idol-{str(idol) + ':hover':<10} .idol-border-color-dim.border-color-highlight-hover  {{ border-color: #{darken(color, 0.9)} !important; }}"
+	css.append('')
+
+	for idol, color in idol_colors:
+		line = f".idol-{idol:<10} .idol-border-color-dark  {{ border-color: #{darken(color, 0.4)} !important; }}"
+		css.append(line)
+		line = f".idol-{idol:<10} .idol-border-color-dark.border-color-highlight  {{ border-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		line = f".idol-{str(idol) + ':hover':<10} .idol-border-color-dark.border-color-highlight-hover  {{ border-color: #{darken(color, 0.7)} !important; }}"
 		css.append(line)
 	css.append('')
 

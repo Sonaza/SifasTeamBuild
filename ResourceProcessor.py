@@ -117,7 +117,7 @@ class ResourceProcessor():
 			self.parent.compile_css(
 				input_files = self.input_files,
 				output_file = self.output_file,
-				minify=True,
+				minify=False,
 			)
 			self.is_dirty = False
 	

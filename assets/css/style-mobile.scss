@@ -1,3 +1,18 @@
+
+
+@media screen and (max-width: 1630px)
+{
+	
+.history-group-wrapper
+{
+	flex-flow: column nowrap;
+	justify-content: left;
+}
+	
+}
+
+/***************************************************************************************/
+
 .show-narrow-1400
 {
 	display: none !important;
@@ -19,6 +34,12 @@
 .hide-narrow-1400
 {
 	display: none !important;
+}
+
+.history-group-wrapper
+{
+	flex-flow: row wrap;
+	justify-content: left;
 }
 	
 }
@@ -387,7 +408,54 @@ body.sidebar-open
 		{
 			width: 150px !important;
 			font-size: 10pt;
-			padding: 15px 12px;
+			padding: 0.7rem 0.6rem;
+		}
+	}
+}
+
+.history-page-selector 
+{
+	.page-selector
+	{
+		flex-flow: row nowrap;
+		overflow-x: scroll;
+		
+		li
+		{
+			min-width: auto !important;
+			width: auto !important;
+			
+			// a
+			// {
+			// 	font-size: 10pt;
+			// }
+		}
+		
+		&.group-page-selector
+		{
+			justify-content: space-between;
+			gap: 4px;
+		
+			li
+			{
+				min-width: calc(33% - 4px) !important;
+				
+				a
+				{
+					width: auto;
+				}
+			}
+		}
+		
+		&.member-page-selector
+		{
+			li
+			{
+				a
+				{
+					width: 140px !important;
+				}
+			}
 		}
 	}
 }
@@ -473,15 +541,24 @@ body.sidebar-open
 
 /*****************************************************************/
 
+
+.history-group-wrapper
+{
+	justify-content: left;
+}
+
 .history-group
 {
+	$cell-margin: 12px;
+	
 	.history-group-table
 	{
 		flex-flow: row wrap;
 		
 		.cell
 		{
-			width: calc(50% - 10px) !important;
+			width: calc(50% - (#{$cell-margin} * 2)) !important;
+			margin: 5px $cell-margin;
 		}
 	}
 }
@@ -610,6 +687,8 @@ body.scrolling-disabled
 @media screen and (max-width: 500px)
 {
 	
+	$cell-margin: 10%;
+	
 	.history-group
 	{
 		.history-group-table
@@ -618,21 +697,8 @@ body.scrolling-disabled
 			
 			.cell
 			{
-				width: calc(100% - 8%) !important;
-				margin: 5px 4%;
-				
-				.cell-inner
-				{
-					span
-					{
-						padding: 0.7rem 0.5rem 0.7rem 40%;
-					}
-					
-					span.idol-name
-					{
-						background-position: 24% center !important;
-					}
-				}
+				width: calc(100% - (#{$cell-margin} * 2)) !important;
+				margin: 5px $cell-margin;
 			}
 		}
 	}

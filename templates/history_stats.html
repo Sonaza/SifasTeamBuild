@@ -1,8 +1,34 @@
-<h2>{{ member.first_name }}'s Card History</h2>
+<div class="history-page-selector">
+	
+	<ul class="page-selector group-page-selector">
+		{% for group in Group %}
+			<li class="group-{{ group.tag }}">
+				<a ng-click="setGroup('{{ group.tag }}')" ng-class="groupActive('{{ group.tag }}')">
+					{{ group.display_name }}
+				</a>
+			</li>
+		{% endfor %}
+	</ul>
+	
+	{% for group in Group %}
+		<ul class="page-selector member-page-selector group-{{ group.tag }}" ng-if="idol_navigation.group == '{{ group.tag }}'">
+			{% for member in Idols.by_group[group] %}
+				<li class="idol-{{ member.id }}">
+					<a href="#/history/{{ member.first_name.lower() }}"
+						class="idol-bg-color-dim bg-color-highlight-hover idol-border-color-dark border-color-highlight-hover"
+						ng-class="idolActive('{{ member.first_name.lower() }}')">
+						<span class="idol-icon idol-icon-16-border"></span>
+						<span class="idol-name">{{ member.first_name }}</span>
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+	{% endfor %}
+</div>
 
 <ul class="page-selector stats-page-selector">
 	<li><a href="#/history/{{ member.first_name.lower() }}/all"        ng-class="pageActive('all')">All</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/event"      ng-class="pageActive('event')">Event URs</a></li>
+	<li><a href="#/history/{{ member.first_name.lower() }}/event"      ng-class="pageActive('event')">Event UR</a></li>
 	<li><a href="#/history/{{ member.first_name.lower() }}/festival"   ng-class="pageActive('festival')">Festival</a></li>
 	<li><a href="#/history/{{ member.first_name.lower() }}/party"      ng-class="pageActive('party')">Party</a></li>
 	<li><a href="#/history/{{ member.first_name.lower() }}/limited"    ng-class="pageActive('limited')">Limited</a></li>
@@ -13,7 +39,7 @@
 </ul>
 
 <div class="stats-category {{ category_tag }}">
-	<h2>{{ history_info[0] }}</h2>
+	<h2>{{ member.first_name }} &mdash; {{ history_info[0] }}</h2>
 	<p>{{ history_info[1] }}</p>
 	<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
 	

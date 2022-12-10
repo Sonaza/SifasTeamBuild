@@ -941,7 +941,7 @@ class CardRotations():
 		self.processor.compile_css(
 			input_files = self.css_settings.input_files,
 			output_file = self.css_settings.output_file,
-			minify=True,
+			minify=not self.args.dev,
 		)
 		
 		# -------------------------------------------------------
