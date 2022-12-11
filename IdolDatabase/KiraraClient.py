@@ -187,6 +187,8 @@ class KiraraClient():
 		self.initialize()
 
 	def initialize(self):
+		self._database_updated = False
+		
 		try:
 			self.dbcon = sqlite.connect(self.database_path)
 		except:
@@ -415,10 +417,13 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
+	def was_database_updated(self):
+		return self._database_updated
+	
 	def update_database(self, forced=False):
 		if not forced and not self.database_needs_update():
 			print("No need to update database right now.")
-			return
+			return False
 		
 		print("Populating members...")
 		self._populate_members_and_metadata()
@@ -439,6 +444,9 @@ class KiraraClient():
 			self._update_history_database(history_data)
 			
 		self.refresh_last_update_time()
+		self._database_updated = True
+		
+		return True
 		
 	def _load_cards_data_fallback(self):
 		try:

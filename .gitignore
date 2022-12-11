@@ -9,6 +9,7 @@ public/.htaccess
 build.status
 
 history.json
+render_history.json
 
 public/crawler.html
 public/.well-known/

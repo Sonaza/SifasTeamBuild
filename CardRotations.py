@@ -800,140 +800,162 @@ class CardRotations():
 			})
 		
 		return preload_assets
+		
+	def due_for_rendering(self, template_filename):
+		if self.args.force or self.client.was_database_updated():
+			return True
+			
+		if self.renderer.has_template_changed(template_filename) or self.renderer.is_any_output_missing(template_filename):
+			self.renderer.reset_output(template_filename)
+			return True
+		
+		print(f"Unchanged  {template_filename:<30} ...  OK")
+		self.renderer.preserve_output(template_filename)
+		return False
 	
 	def generate_pages(self):
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		files_to_delete.extend([x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/history/*.html"))])
 		
+		render_start_time = time.perf_counter()
+		
 		# -------------------------------------------------------
 		# Per school UR attribute-type arrays
 		
-		idol_arrays = [(group, *self.get_attribute_type_array(group)) for group in Group]
-		for data in idol_arrays:
-			output_file = self.renderer.render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
-				'idol_arrays'        : [ data ],
-			}, minify=not self.args.dev)
+		if self.due_for_rendering("attribute_type_array.html"):
+			idol_arrays = [(group, *self.get_attribute_type_array(group)) for group in Group]
+			for data in idol_arrays:
+				output_file = self.renderer.render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
+					'idol_arrays'        : [ data ],
+				}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
 		# General UR rotations
 		
-		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
-		self.renderer.render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
-			'grouped_rotations'  : ur_rotations,
-			'set_label'          : 'Rotation',
-			'page_title'         : 'UR Rotations',
-			'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
-			                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.''',
-		}, minify=not self.args.dev)
+		if self.due_for_rendering("basic_rotation_template.html"):
+			ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
+			self.renderer.render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
+				'grouped_rotations'  : ur_rotations,
+				'set_label'          : 'Rotation',
+				'page_title'         : 'UR Rotations',
+				'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
+				                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.''',
+			}, minify=not self.args.dev)
 		
-		# -------------------------------------------------------
-		# Festival UR rotations
+			# -------------------------------------------------------
+			# Festival UR rotations
+			
+			festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
+			self.renderer.render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
+				'grouped_rotations'  : festival_rotations,
+				'set_label'          : 'Rotation',
+				'page_title'         : 'Festival UR Rotations',
+				'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
+			}, minify=not self.args.dev)
 		
-		festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
-		self.renderer.render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
-			'grouped_rotations'  : festival_rotations,
-			'set_label'          : 'Rotation',
-			'page_title'         : 'Festival UR Rotations',
-			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
-		}, minify=not self.args.dev)
+			# -------------------------------------------------------
+			# Party UR rotations
 		
-		# -------------------------------------------------------
-		# Party UR rotations
+			party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
+			self.renderer.render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
+				'grouped_rotations'  : party_rotations,
+				'set_label'          : 'Rotation',
+				'page_title'         : 'Party UR Rotations',
+				'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
+			}, minify=not self.args.dev)
 		
-		party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
-		self.renderer.render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
-			'grouped_rotations'  : party_rotations,
-			'set_label'          : 'Rotation',
-			'page_title'         : 'Party UR Rotations',
-			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
-		}, minify=not self.args.dev)
+			# -------------------------------------------------------
+			# Event UR rotations
 		
-		# -------------------------------------------------------
-		# Event UR rotations
+			event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
+			self.renderer.render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
+				'grouped_rotations'  : event_rotations,
+				'set_label'          : 'Rotation',
+				'page_title'         : 'Event UR Rotations',
+				'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
+			}, minify=not self.args.dev)
 		
-		event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
-		self.renderer.render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
-			'grouped_rotations'  : event_rotations,
-			'set_label'          : 'Rotation',
-			'page_title'         : 'Event UR Rotations',
-			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
-		}, minify=not self.args.dev)
+			# -------------------------------------------------------
+			# SR Sets
+		
+			sr_sets = [(group, self.get_sr_sets(group)) for group in Group]
+			self.renderer.render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
+				'grouped_rotations'  : sr_sets,
+				'set_label'          : 'Set',
+				'page_title'         : 'SR Sets',
+				'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; this page may or may not break in the future.''',
+			})
 		
 		# -------------------------------------------------------
 		# Event cards info
 		
-		events_with_cards, zero_feature_members = self.get_events_with_cards()
-		self.renderer.render_and_save("event_cards.html", "pages/event_cards.html", {
-			'events_with_cards'    : events_with_cards,
-			'zero_feature_members' : zero_feature_members,
-		})
-		
+		if self.due_for_rendering("event_cards.html"):
+			events_with_cards, zero_feature_members = self.get_events_with_cards()
+			self.renderer.render_and_save("event_cards.html", "pages/event_cards.html", {
+				'events_with_cards'    : events_with_cards,
+				'zero_feature_members' : zero_feature_members,
+			})
+			
 		# -------------------------------------------------------
 		# Banner info
 		
-		banners_with_cards = self.get_banners_with_cards()
-		self.renderer.render_and_save("banners.html", "pages/banners.html", {
-			'banners_with_cards' : banners_with_cards,
-		})
-		
-		# -------------------------------------------------------
-		# SR Sets
-		
-		sr_sets = [(group, self.get_sr_sets(group)) for group in Group]
-		self.renderer.render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
-			'grouped_rotations'  : sr_sets,
-			'set_label'          : 'Set',
-			'page_title'         : 'SR Sets',
-			'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; this page may or may not break in the future.''',
-		})
+		if self.due_for_rendering("banners.html"):
+			banners_with_cards = self.get_banners_with_cards()
+			self.renderer.render_and_save("banners.html", "pages/banners.html", {
+				'banners_with_cards' : banners_with_cards,
+			})
 		
 		# -------------------------------------------------------
 		# Card history
 		
-		self.renderer.render_and_save("history_frontpage.html", "pages/history.html", {}, minify=not self.args.dev)
+		if self.due_for_rendering("history_frontpage.html"):
+			self.renderer.render_and_save("history_frontpage.html", "pages/history.html", {}, minify=not self.args.dev)
 		
-		history_per_member, history_category_info, history_category_flags = self.get_card_history_per_member()
-		for member, history_data in history_per_member.items():
-			for category_tag, history_info in history_category_info.items():
-				self.renderer.render_and_save("history_stats.html", f"pages/history/history_{member.first_name.lower()}_{category_tag}.html", {
-					'member'         : member,
-					'history_data'   : history_data[category_tag],
-					'history_info'   : history_category_info[category_tag],
-					'history_flags'  : history_category_flags[category_tag],
-				}, minify=not self.args.dev)
-		
+		if self.due_for_rendering("history_stats.html"):
+			history_per_member, history_category_info, history_category_flags = self.get_card_history_per_member()
+			for member, history_data in history_per_member.items():
+				for category_tag, history_info in history_category_info.items():
+					self.renderer.render_and_save("history_stats.html", f"pages/history/history_{member.first_name.lower()}_{category_tag}.html", {
+						'member'         : member,
+						'history_data'   : history_data[category_tag],
+						'history_info'   : history_category_info[category_tag],
+						'history_flags'  : history_category_flags[category_tag],
+					}, minify=not self.args.dev)
+			
 		# -------------------------------------------------------
 		# Card stats
 		
-		general_stats = self.get_general_stats()
-		self.renderer.render_and_save("stats.html", "pages/stats.html", {
-			'category_tag'   : 'general',
-			'general_stats'  : general_stats,
-		}, minify=not self.args.dev)
-		
-		history_category = {
-			Source.Unspecified : 'gacha',
-			Source.Event       : 'event',
-			Source.Gacha       : 'gacha',
-			Source.Spotlight   : 'gacha',
-			Source.Festival    : 'festival',
-			Source.Party       : 'party',
-		}
-		
-		card_stats, category_info, category_has_empty_rows = self.get_card_stats()
-		for category_tag in card_stats.keys():
-			self.renderer.render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
-				'category_tag'   : category_tag,
-				'category_data'  : card_stats[category_tag],
-				'category_info'  : category_info[category_tag],
-				'has_empty_rows' : category_has_empty_rows[category_tag],
-				'history_category' : history_category,
+		if self.due_for_rendering("stats.html"):
+			general_stats = self.get_general_stats()
+			self.renderer.render_and_save("stats.html", "pages/stats.html", {
+				'category_tag'   : 'general',
+				'general_stats'  : general_stats,
 			}, minify=not self.args.dev)
+		
+			history_category = {
+				Source.Unspecified : 'gacha',
+				Source.Event       : 'event',
+				Source.Gacha       : 'gacha',
+				Source.Spotlight   : 'gacha',
+				Source.Festival    : 'festival',
+				Source.Party       : 'party',
+			}
+			
+			card_stats, category_info, category_has_empty_rows = self.get_card_stats()
+			for category_tag in card_stats.keys():
+				self.renderer.render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
+					'category_tag'   : category_tag,
+					'category_data'  : card_stats[category_tag],
+					'category_info'  : category_info[category_tag],
+					'has_empty_rows' : category_has_empty_rows[category_tag],
+					'history_category' : history_category,
+				}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
 		# Index page
 		
-		self.renderer.render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
+		if self.due_for_rendering("home.html"):
+			self.renderer.render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
 		# Compile and minify CSS
@@ -959,56 +981,61 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Error Pages
 		
-		self.renderer.render_and_save("error.html", "error/400.html", {
-			'error_code'   : 400,
-			'error_status' : 'Bad Request',
-			'error_text'   : "The server is unable to handle the malformed request made by your browser.",
-		}, minify=True)
-		
-		self.renderer.render_and_save("error.html", "error/403.html", {
-			'error_code'   : 403,
-			'error_status' : 'Forbidden',
-			'error_text'   : "You are not permitted to access this resource. Move along, citizen.",
-		}, minify=True)
-		
-		self.renderer.render_and_save("error.html", "error/404.html", {
-			'error_code'   : 404,
-			'error_status' : 'Not Found',
-			'error_text'   : "Whoopsie! Whatever it is you're looking for at this URL does not exist.<br><br>If a page links here directly or you think something should have been here please send feedback.",
-		}, minify=True)
-		
-		self.renderer.render_and_save("error.html", "error/410.html", {
-			'error_code'   : 410,
-			'error_status' : 'Gone',
-			'error_text'   : "Whoopsie! Whatever it is you're looking for at this URL is permanently gone.",
-		}, minify=True)
-		
-		self.renderer.render_and_save("error.html", "error/500.html", {
-			'error_code'   : 500,
-			'error_status' : 'Server Error',
-			'error_text'   : "The server encountered an unrecoverable error while processing your request.<br><br>Please try again later.",
-		}, minify=True)
-		
-		self.renderer.render_and_save("error.html", "error/503.html", {
-			'error_code'   : 503,
-			'error_status' : 'Unavailable',
-			'error_text'   : "Service is temporarily unavailable. Please try again later.",
-		}, minify=True)
+		if self.due_for_rendering("error.html"):
+			self.renderer.render_and_save("error.html", "error/400.html", {
+				'error_code'   : 400,
+				'error_status' : 'Bad Request',
+				'error_text'   : "The server is unable to handle the malformed request made by your browser.",
+			}, minify=True)
+			
+			self.renderer.render_and_save("error.html", "error/403.html", {
+				'error_code'   : 403,
+				'error_status' : 'Forbidden',
+				'error_text'   : "You are not permitted to access this resource. Move along, citizen.",
+			}, minify=True)
+			
+			self.renderer.render_and_save("error.html", "error/404.html", {
+				'error_code'   : 404,
+				'error_status' : 'Not Found',
+				'error_text'   : "Whoopsie! Whatever it is you're looking for at this URL does not exist.<br><br>If a page links here directly or you think something should have been here please send feedback.",
+			}, minify=True)
+			
+			self.renderer.render_and_save("error.html", "error/410.html", {
+				'error_code'   : 410,
+				'error_status' : 'Gone',
+				'error_text'   : "Whoopsie! Whatever it is you're looking for at this URL is permanently gone.",
+			}, minify=True)
+			
+			self.renderer.render_and_save("error.html", "error/500.html", {
+				'error_code'   : 500,
+				'error_status' : 'Server Error',
+				'error_text'   : "The server encountered an unrecoverable error while processing your request.<br><br>Please try again later.",
+			}, minify=True)
+			
+			self.renderer.render_and_save("error.html", "error/503.html", {
+				'error_code'   : 503,
+				'error_status' : 'Unavailable',
+				'error_text'   : "Service is temporarily unavailable. Please try again later.",
+			}, minify=True)
 		
 		# -------------------------------------------------------
 		# Crawler Info
 		
-		self.renderer.render_and_save("crawler.html", "crawler.html", {}, minify=True)
+		if self.due_for_rendering("crawler.html"):
+			self.renderer.render_and_save("crawler.html", "crawler.html", {}, minify=True)
 		
 		# -------------------------------------------------------
 		# .htaccess
 		
-		self.renderer.render_and_save("template.htaccess", ".htaccess", {
-			'preloads' : preload_assets
-		}, minify=False, generated_note=True)
+		if self.due_for_rendering("template.htaccess"):
+			self.renderer.render_and_save("template.htaccess", ".htaccess", {
+				'preloads' : preload_assets
+			}, minify=False, generated_note=True)
 		
 		# -------------------------------------------------------
 		# File cleanup
+		
+		self.renderer.save_render_history()
 		
 		for file in files_to_delete:
 			if file in self.renderer.rendered_pages: continue
@@ -1016,7 +1043,8 @@ class CardRotations():
 			print(f"Removing outdated file  {file}")
 			os.remove(file)
 		
-		print("\nAll done!\n")
+		render_time_total = time.perf_counter() - render_start_time
+		print(f"\nAll done! Rendering took {render_time_total:0.3f}s\n")
 
 # -------------------------------------------------------------------------------------------
 

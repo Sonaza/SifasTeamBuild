@@ -38,7 +38,7 @@ class ResourceProcessor():
 		unminified_size = 0
 		minified_size = 0
 		
-		print("Starting CSS compilation...")
+		print("\nStarting CSS compilation...")
 		
 		for filepath in input_files:
 			print(f"  {filepath:<37}  ", end='')

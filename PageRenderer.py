@@ -1,5 +1,6 @@
 import os
 import math
+from datetime import datetime, timezone
 from IdolDatabase import *
 from CardValidity import *
 
@@ -97,7 +98,9 @@ def _get_card_source_label(card):
 		
 # -------------------------------------------------------------------------------------------
 
-class PageRenderer():	
+class PageRenderer():
+	RENDER_HISTORY_FILE = "render_history.json"
+	
 	def __init__(self, parent):
 		self.parent = parent
 		
@@ -151,14 +154,98 @@ class PageRenderer():
 		
 		self.rendered_pages = []
 		
+		self.load_render_history()
+		
+	# -------------------------------------------------------------------------------------------
+	
+	def reset_render_history(self):
+		self.render_history = {}
+		
+	def load_render_history(self):
+		self.render_history = {}
+		if os.path.exists(PageRenderer.RENDER_HISTORY_FILE):
+			try:
+				with open(PageRenderer.RENDER_HISTORY_FILE, "r") as f:
+					self.render_history = json.load(f)
+				
+				for template, data in self.render_history.items():
+					data['last_used'] = datetime.fromisoformat(data['last_used'])
+			except:
+				self.render_history = {}
+		
+	def save_render_history(self):
+		if not isinstance(self.render_history, dict):
+			return False
+			
+		def json_serialize(obj):
+		    if isinstance(obj, (datetime)):
+		        return obj.isoformat()
+		    raise TypeError(f"Type {type(obj)} not serializable")
+		
+		with open(PageRenderer.RENDER_HISTORY_FILE, "w") as f:
+			json.dump(self.render_history, f, default=json_serialize)
+		
+		return True
+	
+	def has_template_changed(self, template_filename):
+		if template_filename not in self.render_history:
+			return True
+		if 'last_used' not in self.render_history[template_filename]:
+			return True
+		
+		template_filename_path = os.path.join("templates", template_filename)
+		file_modified_time = datetime.utcfromtimestamp(os.path.getmtime(template_filename_path)).replace(tzinfo=timezone.utc)
+		
+		if self.render_history[template_filename]['last_used'] < file_modified_time:
+			return True
+		
+		return False
+		
+	def is_any_output_missing(self, template_filename):
+		if template_filename not in self.render_history:
+			return True
+		if 'output' not in self.render_history[template_filename]:
+			return True
+		if len(self.render_history[template_filename]['output']) == 0:
+			return True
+			
+		for output_filename in self.render_history[template_filename]['output']:
+			if not os.path.exists(output_filename):
+				return True
+				
+		return False
+	
+	def reset_output(self, template_filename):
+		if template_filename not in self.render_history:
+			return False
+			
+		self.render_history[template_filename]['output'] = []
+	
+	def preserve_output(self, template_filename):
+		if template_filename not in self.render_history:
+			return False
+		if 'output' not in self.render_history[template_filename]:
+			return False
+		
+		self.rendered_pages.extend(self.render_history[template_filename]['output'])
+	
 	# -------------------------------------------------------------------------------------------
 		
 	def render_and_save(self, template_filename, output_filename, data, minify=True, output_basepath=None, generated_note=False):
+		if template_filename not in self.render_history:
+			self.render_history[template_filename] = {
+				'last_used' : None,
+				'output'    : [],
+			}
+			
 		if output_basepath == None:
 			output_basepath = self.parent.OutputDirectory
 		
 		output_filename = os.path.normpath(os.path.join(output_basepath, output_filename)).replace("\\", "/")
 		print(f"{f'Rendering  {template_filename:<30}  ->  {output_filename}':<90} ...  ", end='')
+		
+		self.render_history[template_filename]['last_used'] = datetime.now(timezone.utc)
+		self.render_history[template_filename]['output'].append(output_filename)
 		
 		# template = self.jinja.get_template(os.path.join("templates", template_filename).replace("\\","/"))
 		template = self.jinja.get_template(template_filename)
