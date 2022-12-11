@@ -241,11 +241,15 @@ class PageRenderer():
 		if output_basepath == None:
 			output_basepath = self.parent.OutputDirectory
 		
-		output_filename = os.path.normpath(os.path.join(output_basepath, output_filename)).replace("\\", "/")
-		print(f"{f'Rendering  {template_filename:<30}  ->  {output_filename}':<90} ...  ", end='')
+		full_output_filename = os.path.normpath(os.path.join(output_basepath, output_filename)).replace("\\", "/")
+		
+		num_slashes = output_filename.count('/')
+		output_space = 85 + max(0, num_slashes - 1) * 10
+		
+		print(f"{f'Rendering  {template_filename:<30}  ->  {output_filename}':<{output_space}} ...  ", end='')
 		
 		self.render_history[template_filename]['last_used'] = datetime.now(timezone.utc)
-		self.render_history[template_filename]['output'].append(output_filename)
+		self.render_history[template_filename]['output'].append(full_output_filename)
 		
 		# template = self.jinja.get_template(os.path.join("templates", template_filename).replace("\\","/"))
 		template = self.jinja.get_template(template_filename)
@@ -254,7 +258,7 @@ class PageRenderer():
 		if minify:
 			rendered_output = htmlmin.minify(rendered_output, remove_empty_space=True)
 		
-		with open(output_filename, "w", encoding="utf8") as f:
+		with open(full_output_filename, "w", encoding="utf8") as f:
 			if generated_note:
 				f.write(f"# ------------------------------------------------------------\n")
 				f.write(f"# DO NOT MODIFY THIS FILE DIRECTLY\n")
@@ -265,5 +269,5 @@ class PageRenderer():
 		
 		print("Done")
 		
-		self.rendered_pages.append(output_filename)
-		return output_filename
+		self.rendered_pages.append(full_output_filename)
+		return full_output_filename
