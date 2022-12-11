@@ -254,15 +254,24 @@ body.sidebar-open
 		float: left;
 		position: fixed;
 		overflow-y: scroll;
-		width: 80%;
+		width: 70%;
+		max-width: 350px;
 		top: 60px;
 		bottom: 0;
 		left: 0;
-		padding: 1rem;
-		background: linear-gradient(to bottom, #fffe 70%, #aaae 100%);
-		margin-left: -999px;
-		transition: margin-left ease-in-out 160ms;
-		border-right: 2px solid #481E9F;
+		
+		padding: 1rem 1rem 1rem 0;
+		
+		backdrop-filter: blur(4px);
+		-webkit-backdrop-filter: blur(4px);
+		
+		background: linear-gradient(to bottom, #CFC7E0f5 70%, #2B1E47dd 100%);
+		// background: none;
+		
+		margin-left: -500px;
+		transition: margin-left ease-in-out 100ms;
+		// border-right: 2px solid #481E9F;
+		border-right: 2px solid #473371;
 		box-shadow: 6px 0 90px 60px #0007;
 
 		&.visible
@@ -280,18 +289,37 @@ body.sidebar-open
 	{
 		float: left;
 		position: fixed;
-		overflow-y: scroll;
 		width: 80%;
+		max-width: 440px;
 		top: 60px;
 		right: 0;
-		padding: 1rem 1rem 2rem 1rem;
-		background: linear-gradient(to bottom, #fffe 70%, #aaae 100%);
-		box-shadow: -6px 0 90px 60px #0007;
-		border-left: 2px solid #481E9F;
-		border-bottom: 2px solid #481E9F;
-		border-bottom-left-radius: 20px;
+		// bottom: 0;
+		
+		// padding: 1rem 1rem 2rem 1rem;
+		// padding: 1rem 1rem 1.3rem 1rem;
+		padding: 0;
+		
+		// background: linear-gradient(to bottom, #fffe 70%, #aaae 100%);
+		// background: #2E0D71;
+		
+		// border-left: 2px solid #481E9F;
+		// border-bottom: 2px solid #481E9F;
+		// border-bottom-left-radius: 20px;
 		margin-right: -999px;
-		transition: margin-right ease-in-out 160ms;
+		
+		transition: margin-right ease-in 100ms;
+		
+		.settings
+		{
+			overflow-y: scroll;
+			margin: 0;
+			padding: 2.2rem 2rem 2.4rem 2rem;
+			box-shadow: -6px 0 90px 60px #0007;
+			border-radius: 0;
+			border-bottom-left-radius: 8px;
+			background: linear-gradient(to bottom, #361182 0%, #481E9F 10%);
+			border: 1px solid #2B0B6C;
+		}
 
 		&.visible
 		{
@@ -313,20 +341,31 @@ body.sidebar-open
 	{
 		font-size: 12pt;
 	}
-
-	li a
+	
+	ul li
 	{
-		background: #EFE6FF;
-		border: 1px solid #AD8EED;
-		border-right: 2px solid #481E9F;
-		border-top-left-radius: 7px;
-		border-bottom-left-radius: 7px;
-	}
+		a
+		{
+			// background: #EFE6FF;
+			border: 1px solid #AD8EED;
+			border-right: 4px solid #481E9F;
+			padding: 0.55rem 1rem 0.55rem 1.5rem;
+			box-shadow: 0 1px 3px #481E9F77;
+			
+			&.active
+			{
+				color: #fff;
+				background: #481E9F;
+				border-right: none;
+				border-left: 4px solid #6A3EC4;
+			}
+		}
 
-	ul li.spacer
-	{
-		margin: 6px 0;
-		border-top: 1px solid #DED3F4;
+		&.spacer
+		{
+			margin: 6px 0;
+			border-top: 1px solid #DED3F4;
+		}
 	}
 }
 

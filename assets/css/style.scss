@@ -390,7 +390,7 @@ a
 	li a
 	{
 		display: block;
-		padding: 8px 18px;
+		padding: 0.55rem 1rem;
 		font-family: 'Montserrat', sans-serif;
 		font-size: 12pt;
 		font-weight: 700;
@@ -409,6 +409,7 @@ a
 			background: #481E9F;
 			border-right: none;
 			border-left: 4px solid #6A3EC4;
+			padding-left: 1.3rem;
 		}
 
 		&.active
@@ -417,6 +418,7 @@ a
 			background: #8C65DB;
 			border-right: none;
 			border-left: 4px solid #B292F4;
+			padding-left: 1.1rem;
 
 			&:hover
 			{
@@ -436,6 +438,12 @@ a
 		border-radius: 4px;
 		background: #481E9F;
 		position: relative;
+		
+		h3
+		{
+			color: #fff;
+			text-align: center;
+		}
 
 		.pill-button
 		{

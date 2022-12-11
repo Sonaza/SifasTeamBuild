@@ -100,9 +100,10 @@
 					</div>
 					<div class="settings-wrapper unfocus-target" ng-class="sidebarToggleActive(settings_visible)">
 						<div class="settings">
+							<h3 class="show-mobile">Settings</h3>
 							{# <div class="revert-button"></div> #}
 							<div pill-button model="settings.use_idolized_thumbnails">
-								Idolized
+								Idolized Art
 							</div>
 							<div pill-button model="settings.order_reversed">
 								Newest First
@@ -119,7 +120,7 @@
 									<option selected disabled>Loading...</option>
 								</select>
 							</div>
-							<div pill-button model="settings.show_tooltips">
+							<div pill-button model="settings.show_tooltips" class="hide-mobile">
 								Tooltips
 							</div>
 						</div>
