@@ -14,7 +14,7 @@
 		<ul class="page-selector member-page-selector group-{{ group.tag }}" ng-if="idol_navigation.group == '{{ group.tag }}'">
 			{% for member in Idols.by_group[group] %}
 				<li class="idol-{{ member.id }}">
-					<a href="#/history/{{ member.first_name.lower() }}"
+					<a href="#/history/{{ member.first_name.lower() }}/[[ active_page ]]"
 						class="idol-bg-color-dim bg-color-highlight-hover idol-border-color-dark border-color-highlight-hover"
 						ng-class="idolActive('{{ member.first_name.lower() }}')">
 						<span class="idol-icon idol-icon-16-border"></span>
