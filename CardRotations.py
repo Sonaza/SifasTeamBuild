@@ -830,9 +830,10 @@ class CardRotations():
 				}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
-		# General UR rotations
+		# Basic rotations
 		
 		if self.due_for_rendering("basic_rotation_template.html"):
+			# General UR rotations
 			ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
 			self.renderer.render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
 				'grouped_rotations'  : ur_rotations,
@@ -842,9 +843,7 @@ class CardRotations():
 				                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.''',
 			}, minify=not self.args.dev)
 		
-			# -------------------------------------------------------
 			# Festival UR rotations
-			
 			festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
 			self.renderer.render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
 				'grouped_rotations'  : festival_rotations,
@@ -853,9 +852,7 @@ class CardRotations():
 				'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
 			}, minify=not self.args.dev)
 		
-			# -------------------------------------------------------
 			# Party UR rotations
-		
 			party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
 			self.renderer.render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
 				'grouped_rotations'  : party_rotations,
@@ -864,9 +861,7 @@ class CardRotations():
 				'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
 			}, minify=not self.args.dev)
 		
-			# -------------------------------------------------------
 			# Event UR rotations
-		
 			event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
 			self.renderer.render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
 				'grouped_rotations'  : event_rotations,
@@ -875,9 +870,7 @@ class CardRotations():
 				'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
 			}, minify=not self.args.dev)
 		
-			# -------------------------------------------------------
 			# SR Sets
-		
 			sr_sets = [(group, self.get_sr_sets(group)) for group in Group]
 			self.renderer.render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
 				'grouped_rotations'  : sr_sets,
