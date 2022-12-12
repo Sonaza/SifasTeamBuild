@@ -106,6 +106,110 @@ body
 
 /***************************************************************************************/
 
+@media screen and (max-width: 900px),
+       screen and (hover: none)
+{
+	
+	#card-tooltip.mobile-card-tooltip
+	{
+		visibility: visible;
+	
+		float: left;
+		position: fixed;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		
+		z-index: 1999999;
+		
+		background: #0004;
+		
+		transition: opacity linear 125ms;
+		
+		&:not(.visible)
+		{
+			opacity: 0;
+			pointer-events: none !important;
+			
+			.card-tooltip-inner
+			{
+				
+				bottom: -200px;
+			}
+		}
+		
+		&.visible
+		{
+			opacity: 1;
+			pointer-events: auto !important;
+		}
+		
+		.member-info
+		{
+			font-size: 1.3rem;
+		}
+		
+		.card-tooltip-inner
+		{
+			transition: bottom ease-in-out 125ms;
+			
+			float: left;
+			position: fixed;
+			bottom: 6vh;
+			left: 0.7rem;
+			right: 0.7rem;
+			top: auto;
+			font-size: 12pt !important;
+			
+			max-width: 600px;
+			margin: 0 auto;
+			
+			box-shadow: 6px 0 90px 60px #0007;
+			
+			.card-details
+			{
+				margin: 0.6rem 1rem 0.5rem 1rem;
+				width: 100%;
+				max-width: calc(100% - 1rem * 2);
+				
+				th
+				{
+					// width: 25vmin;
+				}
+			
+				col.card-detail-label
+				{
+					min-width: 7rem;
+				}
+				
+				col.card-detail-data
+				{
+					// min-width: 10rem;
+					text-overflow: ellipsis;
+				}
+				
+				.card-title td
+				{
+					font-size: 1.2rem;
+				}
+				
+				td
+				{
+					text-overflow: ellipsis !important;
+				}
+				
+				&.card-missing
+				{
+					text-align: center;
+					padding: 0.7rem 1rem;
+				}
+			}
+		}
+	}
+	
+}
+	
 @media screen and (max-width: 900px)
 {
 
@@ -266,7 +370,6 @@ body.sidebar-open
 		-webkit-backdrop-filter: blur(4px);
 		
 		background: linear-gradient(to bottom, #CFC7E0f5 70%, #2B1E47dd 100%);
-		// background: none;
 		
 		margin-left: -500px;
 		transition: margin-left ease-in-out 100ms;
@@ -295,18 +398,8 @@ body.sidebar-open
 		right: 0;
 		// bottom: 0;
 		
-		// padding: 1rem 1rem 2rem 1rem;
-		// padding: 1rem 1rem 1.3rem 1rem;
 		padding: 0;
-		
-		// background: linear-gradient(to bottom, #fffe 70%, #aaae 100%);
-		// background: #2E0D71;
-		
-		// border-left: 2px solid #481E9F;
-		// border-bottom: 2px solid #481E9F;
-		// border-bottom-left-radius: 20px;
 		margin-right: -999px;
-		
 		transition: margin-right ease-in 100ms;
 		
 		.settings
@@ -415,7 +508,9 @@ body.sidebar-open
 .rotation-column-wrapper
 {
 	width: 100%;
-	justify-content: center;
+	// justify-content: left;
+	flex-flow: row nowrap;
+	overflow-x: scroll;
 }
 
 .page-selector
@@ -519,11 +614,6 @@ body.sidebar-open
 .card-array-row
 {
 	flex-flow: column nowrap;
-}
-
-#card-tooltip
-{
-	display: none;
 }
 
 .source-indicator
@@ -742,4 +832,12 @@ body.scrolling-disabled
 		}
 	}
 
+}
+
+@media (prefers-reduced-motion)
+{
+	*
+	{
+		transition: none !important;
+	}
 }

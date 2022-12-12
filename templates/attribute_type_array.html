@@ -49,7 +49,7 @@
 													data-card-event="{{ card.event_title or '' | e }}"
 													ng-mouseover="toggleTooltip($event, true)"
 													ng-mouseleave="toggleTooltip($event, false)">
-													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">
+													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank">
 														<span class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
 															<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 														</span>
@@ -71,4 +71,4 @@
 		{% endfor %}	
 	{% endfor %}
 </div>
-<div id="card-tooltip" data-card-tooltip="tooltip_data"></div>
+<div id="card-tooltip" ng-class="{'mobile-card-tooltip': is_in_mobile_mode()}" ng-click="dismissMobileTooltip($event)" data-card-tooltip="tooltip_data"></div>

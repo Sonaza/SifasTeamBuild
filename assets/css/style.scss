@@ -370,6 +370,8 @@ a
 		top: 70px;
 		position: sticky;
 		padding-bottom: 1rem;
+		// height: calc(90vh - 70px);
+		// overflow-y: scroll;
 	}
 
 	ul
@@ -913,7 +915,8 @@ select
 .rotation-column-wrapper
 {
 	display: flex;
-	flex-flow: row wrap;
+	flex-flow: row nowrap;
+	overflow-x: scroll;
 
 	.rotation-column
 	{
@@ -997,35 +1000,6 @@ select
 	}
 }
 
-.alt-view
-{
-	.rotation-column-wrapper
-	{
-		flex-flow: column wrap;
-
-		.rotation-column
-		{
-			flex-flow: row wrap;
-		}
-	}
-
-	.rotation-group
-	{
-		margin: 0 1.5rem 1.5rem 0;
-	}
-
-	&.order-reversed .rotation-column-wrapper .rotation-column
-	{
-		flex-flow: row-reverse wrap-reverse;
-		justify-content: left;
-
-		.rotation-group:first-child
-		{
-			/*margin-right: 25%;*/
-		}
-	}
-}
-
 .card-grid
 {
 	display: flex;
@@ -1092,18 +1066,28 @@ select
 #card-tooltip
 {
 	visibility: hidden;
-	position: absolute;
+	
 	float: left;
+	position: absolute;
+	
 	top: -999px;
 	left: -999px;
+	
 	z-index: 199999;
-	font-size: 11pt;
-	color: #222;
-	background: #ffffffee;
-	border: 1px solid #444d;
-	border-radius: 4px;
-	box-shadow: 0 0 5px #0006;
 	pointer-events: none;
+	
+	
+	.card-tooltip-inner
+	{
+		box-shadow: 0 0 5px #0006;
+		border: 1px solid #444d;
+		border-radius: 4px;
+		
+		font-size: 11pt;
+		color: #222;
+		background: #fffe;
+	}
+	
 }
 
 .hide-tooltips #card-tooltip
@@ -1113,70 +1097,98 @@ select
 
 #card-tooltip
 {
-	.member-info
+	.card-tooltip-inner
 	{
-		display: flex;
-		flex-flow: row nowrap;
-		justify-content: center;
-		align-items: center;
-		padding: 8px 16px;
-		color: #fff;
-		font-family: 'Montserrat', sans-serif;
-		font-weight: 700;
-		white-space: nowrap;
-
-		.name
+		float: none;
+		position: static;
+			
+		.member-info
 		{
-			text-shadow: 0 -1px 1px #000a, 0 2px 1px #000a;
-		}
-
-		.card-info
-		{
-			padding: 0 8px;
-
-			.icon-32
-			{
-				display: inline-block;
-				width: 20px;
-				height: 20px;
-				margin: 0 3px;
-				background: center center no-repeat;
-				background-size: 20px;
-				filter: drop-shadow(0 1px 3px #0007);
-			}
-		}
-	}
-
-	.card-details
-	{
-		*
-		{
-			white-space: nowrap;
-		}
-
-		margin: 8px 10px;
-
-		th
-		{
-			text-align: left;
+			display: flex;
+			flex-flow: row nowrap;
+			justify-content: center;
+			align-items: center;
+			padding: 0.5em 1.1em;
+			color: #fff;
+			font-family: 'Montserrat', sans-serif;
 			font-weight: 700;
-		}
+			white-space: nowrap;
 
-		.card-title td
-		{
-			text-align: center !important;
-			padding: 0 0 6px 0;
-			border-bottom: 1px solid #ccc;
-
-			.normal, .idolized
+			.name
 			{
-				font-weight: 700;
-				padding: 0 5px;
+				text-shadow: 0 -1px 1px #000a, 0 2px 1px #000a;
 			}
 
-			.normal
+			.card-info
 			{
-				display: inline-block;
+				padding: 0 0.5rem;
+
+				.icon-32
+				{
+					display: inline-block;
+					width: 20px;
+					height: 20px;
+					margin: 0 3px;
+					background: center center no-repeat;
+					background-size: 20px;
+					filter: drop-shadow(0 1px 3px #0007);
+				}
+			}
+		}
+
+		.card-details
+		{
+			margin: 0.5rem 0.7rem;
+			
+			*
+			{
+				white-space: nowrap;
+			}
+
+			th
+			{
+				text-align: left;
+				font-weight: 700;
+			}
+			
+			col.card-detail-label
+			{
+				min-width: 9rem;
+			}
+			
+			col.card-detail-data
+			{
+				// min-width: 10rem;
+			}
+
+			.card-title td
+			{
+				text-align: center !important;
+				padding: 0 0 6px 0;
+				border-bottom: 1px solid #ccc;
+
+				.normal, .idolized
+				{
+					font-weight: 700;
+					padding: 0 5px;
+				}
+
+				.normal
+				{
+					display: inline-block;
+				}
+			}
+			
+			.card-kirara-link td
+			{
+				text-align: center;
+				padding: 1rem 0 0.9rem 0;
+				font-size: 1.3rem;
+				
+				a
+				{
+					text-decoration: none;
+				}
 			}
 		}
 	}
@@ -1204,15 +1216,10 @@ select
 			display: none;
 		}
 
-		tr:nth-child(2) > *
+		tr.spacer-top > *
 		{
 			padding: 6px 0 0 0;
 		}
-	}
-
-	.card-details-missing
-	{
-		padding: 8px 10px;
 	}
 }
 
@@ -2791,27 +2798,24 @@ $cell-margin: 5px;
 			box-shadow: 0 1px 3px #D180FF;
 		}
 		
-		p
+		div.news-entry
 		{
 			padding: 0;
 			margin: 0 0 0.5rem 0;
 			
-			&.news-entry
+			text-align: justify;
+			padding: 0.5rem 1rem;
+			background: #F6EEFB;
+			border: 1px solid #CDA5E3;
+			
+			p
 			{
-				text-align: justify;
-				padding: 0.5rem 1rem;
-				background: #F6EEFB;
-				border: 1px solid #CDA5E3;
+				padding: 0 0 0.5rem 0;
 			}
 			
-			&:first-child
+			ul
 			{
-				margin-bottom: 0;
-			}
-
-			&:last-child
-			{
-				margin-bottom: 0.25rem;
+				margin: 0;
 			}
 		}
 	}

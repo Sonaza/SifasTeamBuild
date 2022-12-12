@@ -8,8 +8,8 @@
 	</div>
 	<table class="card-details" ng-if="data.card_status == 1">
 		<colgroup>
-			<col style="min-width: 10rem">
-			<col>
+			<col class="card-detail-label">
+			<col class="card-detail-data">
 		</colgroup>
 		<tr class="card-title">
 			<td colspan="2">
@@ -19,8 +19,8 @@
 				&#12301;
 			</td>
 		</tr>
-		<tr>
-			<th>Debuted</th>
+		<tr class="spacer-top">
+			<th>Source</th>
 			<td>[[ data.card_source ]]</td>
 		</tr>
 		<tr ng-if="data.card_event">
@@ -28,14 +28,21 @@
 			<td>[[ data.card_event ]]</td>
 		</tr>
 		<tr>
-			<th>Release Date (JP)</th>
+			<th>Release Date</th>
 			<td>[[ data.card_release_date ]]</td>
 		</tr>
+		<tr class="card-kirara-link" ng-if="is_in_mobile_mode() && data.card_ordinal != undefined">
+			<td colspan="2">
+				<a href="https://allstars.kirara.ca/card/[[ data.card_ordinal ]]" target="_blank">
+					<i class="fa fa-globe"></i> View on Kirara Database &raquo;
+				</a>
+			</td>
+		</tr>
 	</table>
-	<div class="card-details" ng-if="data.card_status == 2">
+	<div class="card-details card-missing" ng-if="data.card_status == 2">
 		<b>[[ first_name ]]</b> has yet to receive a card in this cycle.
 	</div>
-	<div class="card-details" ng-if="data.card_status == 3">
+	<div class="card-details card-missing" ng-if="data.card_status == 3">
 		<b>[[ first_name ]]</b> did not receive a card in this cycle.
 	</div>
 </div>

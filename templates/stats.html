@@ -148,6 +148,7 @@
 												data-member-id="{{ member.value }}"
 												data-member-name="{{ member.full_name }}"
 												data-card-status="1"
+												data-card-ordinal="{{ card.ordinal }}"
 												data-card-attribute="{{ card.attribute.value }}"
 												data-card-type="{{ card.type.value }}"
 												data-card-title-normal="{{ card.get_card_name(False) | e }}"
@@ -158,7 +159,7 @@
 												data-stats-tooltip="1"
 												ng-mouseover="toggleTooltip($event, true)"
 												ng-mouseleave="toggleTooltip($event, false)">
-												<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+												<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
 													<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 												</a>
 											</div>
@@ -192,6 +193,6 @@
 			</div>
 		{% endfor %}
 	</div>
-	<div id="card-tooltip" data-card-tooltip="tooltip_data"></div>
+	<div id="card-tooltip" ng-class="{'mobile-card-tooltip': is_in_mobile_mode()}" ng-click="dismissMobileTooltip($event)" data-card-tooltip="tooltip_data"></div>
 	
 {% endif %}

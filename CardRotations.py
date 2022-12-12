@@ -876,7 +876,7 @@ class CardRotations():
 				'grouped_rotations'  : sr_sets,
 				'set_label'          : 'Set',
 				'page_title'         : 'SR Sets',
-				'page_description'   : '''Groupings of SR sets. SR release order seems irregular &mdash; this page may or may not break in the future.''',
+				'page_description'   : '''SR cards organised into sets by costume or other common theme.''',
 			})
 		
 		# -------------------------------------------------------

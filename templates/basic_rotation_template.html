@@ -23,6 +23,7 @@
 										data-member-id="{{ member_id.value }}"
 										data-member-name="{{ member_id.full_name }}"
 										data-card-status="1"
+										data-card-ordinal="{{ card.ordinal }}"
 										data-card-attribute="{{ card.attribute.value }}"
 										data-card-type="{{ card.type.value }}"
 										data-card-title-normal="{{ card.get_card_name(False) | e }}"
@@ -32,7 +33,7 @@
 										data-card-event="{{ card.event_title or '' | e }}"
 										ng-mouseover="toggleTooltip($event, true)"
 										ng-mouseleave="toggleTooltip($event, false)">
-										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" target="_blank">
+										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank">
 											<span class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
 												<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 											</span>
@@ -45,7 +46,7 @@
 											data-member-name="{{ member_id.full_name }}"
 											data-card-status="2"
 											ng-mouseover="toggleTooltip($event, true)"
-											ng-mouseleave="toggleTooltip($event, false)">
+											ng-mouseleave="toggleTooltip($event, false)" ng-click="openMobileTooltip($event)">
 											<span class="source-indicator"></span>
 										</div>
 									{% elif is_nonextant_card(card) %}
@@ -54,7 +55,7 @@
 											data-member-name="{{ member_id.full_name }}"
 											data-card-status="3"
 											ng-mouseover="toggleTooltip($event, true)"
-											ng-mouseleave="toggleTooltip($event, false)">
+											ng-mouseleave="toggleTooltip($event, false)" ng-click="openMobileTooltip($event)">
 											<div>N/A</div>
 										</div>
 									{% endif %}
@@ -67,4 +68,4 @@
 		</div>
 	{% endfor %}
 </div>
-<div id="card-tooltip" data-card-tooltip="tooltip_data"></div>
+<div id="card-tooltip" ng-class="{'mobile-card-tooltip': is_in_mobile_mode()}" ng-click="dismissMobileTooltip($event)" data-card-tooltip="tooltip_data"></div>

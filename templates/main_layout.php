@@ -34,7 +34,7 @@
 	<link rel="preload" href="/css/fonts/Roboto-Bold-Latin.woff2" as="font" crossorigin="anonymous">
 	<link rel="preload" href="/css/fonts/Montserrat-Regular-latin.woff2" as="font" crossorigin="anonymous">
 	<link rel="preload" href="/css/fonts/Montserrat-Bold-latin.woff2" as="font" crossorigin="anonymous"> #}
- 	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css" media="(max-width: 1100px)">
+ 	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css" media="(max-width: 1100px), (hover: none)">
 	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
 	
 	<link rel="icon" href="/favicon.ico">
@@ -77,7 +77,7 @@
 			<div id="side-nav" ng-mousedown="tap_unfocus($event)" ng-class="anySideBarToggleActive()">
 				<div class="side-nav-inner">
 					<div class="nav-wrapper unfocus-target" ng-class="sidebarToggleActive(navigation_visible)">
-						<ul ng-controller="NavController">
+						<ul class="side-nav-ul" ng-controller="NavController">
 							<li><a href="#/"             ng-class="classActive('/', true)">Home</a></li>
 							<li class="spacer"></li>
 							<li><a href="#/ur-rotations" ng-class="classActive('/ur-rotations')">UR Rotations</a></li>
@@ -101,16 +101,12 @@
 					<div class="settings-wrapper unfocus-target" ng-class="sidebarToggleActive(settings_visible)">
 						<div class="settings">
 							<h3 class="show-mobile">Settings</h3>
-							{# <div class="revert-button"></div> #}
 							<div pill-button model="settings.use_idolized_thumbnails">
 								Idolized Art
 							</div>
 							<div pill-button model="settings.order_reversed">
 								Newest First
 							</div>
-							{# <div pill-button model="settings.alt">
-								Alt
-							</div> #}
 							<div>
 								<select class="source-selector ng-cloak" ng-model="settings.highlight_source">
 									<option disabled>&mdash; Source Highlight &mdash;</option>
@@ -120,7 +116,7 @@
 									<option selected disabled>Loading...</option>
 								</select>
 							</div>
-							<div pill-button model="settings.show_tooltips" class="hide-mobile">
+							<div pill-button model="settings.show_tooltips">
 								Tooltips
 							</div>
 						</div>
