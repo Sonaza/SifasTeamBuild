@@ -386,7 +386,132 @@ let saveStorage = (values) =>
 	}
 }
 
-app.run(($rootScope) =>
+let tooltipVisible = false;
+let toggleTooltip = function($scope, $event, visible)
+{
+	// No need to do anything if tooltip is already hidden
+	if (visible === false && tooltipVisible === false)
+		return;
+	
+	if (is_in_mobile_mode())
+	{
+		// Don't accept mouse events, prevents double firing
+		if ($event.type == "mouseover" || $event.type == "mouseout")
+			return;
+		
+		if (visible === false && $event !== undefined)
+		{
+			// Prevent closing of the tooltip when clicking on the tooltip text.
+			// Only close if clicking outside or on the Kirara link
+			if (!($event.target.closest('#card-tooltip') !== null &&
+				  $event.target.closest('.card-tooltip-inner') === null))
+			{
+				return;
+			}
+		}
+	}
+	else
+	{
+		// Disable click events on desktop mode
+		if ($event.type == 'click')
+			return;
+	}
+	
+	let tooltip = document.querySelector("#card-tooltip");
+	let tooltip_element = angular.element(tooltip);
+	
+	tooltipVisible = visible;
+	
+	// Hide tooltip
+	if (visible == false)
+	{
+		if (!is_in_mobile_mode())
+		{
+			tooltip.style.visibility = 'hidden';
+			tooltip.style.top = '-999px';
+			tooltip.style.left = '-999px';
+			tooltip.style.right = 'auto';
+			tooltip.style.bottom = 'auto';
+		}
+		
+		tooltip_element.removeClass('visible');
+		return;
+	}
+	
+	// Happens when auto closing on resize
+	if ($event === undefined)
+	{
+		tooltip_element.removeClass('visible');
+		tooltip.style.inset = '';
+		return;
+	}
+	
+	tooltip_element.addClass('visible');
+	
+	tooltip.style.visibility = 'visible';
+	
+	let e = $event.target.closest('.tooltip-data');
+	
+	const keys = [
+		'member-id', 'member-name',
+		'card-status', 'card-ordinal',
+		'card-attribute', 'card-type',
+		'card-title-normal', 'card-title-idolized',
+		'card-source', 'card-release-date',
+		'card-event', 'stats-tooltip',
+	];
+	
+	$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
+		return {
+			[key.replace(/-/g, '_')] : e.getAttribute('data-' + key)
+		}
+	}));
+	
+	if (is_in_mobile_mode())
+	{
+		// tooltip_element.addClass('mobile-card-tooltip');
+		tooltip.style.inset = '';
+		return;
+	}
+	
+	if (!$scope.tooltip_data.card_status)
+		$scope.tooltip_data.card_status = 1;
+	
+	let rect = e.getBoundingClientRect();
+	
+	const doc = document.documentElement;
+	const view_width = doc.clientWidth;
+	const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+	
+	const flipAnchor = (rect.x > view_width * 0.66) || $scope.tooltip_data.stats_tooltip == 1;
+	
+	let offset = ($scope.tooltip_data.card_status == 1 ? 
+		{x: 15, y: -16} :
+		{x: 15, y: -4}
+	);
+	
+	if ($scope.tooltip_data.stats_tooltip)
+	{
+		offset = {x: 25, y: -26};
+	}
+	
+	if (flipAnchor)
+	{
+		tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
+		
+		tooltip.style.right = (view_width - rect.left + offset.x) + 'px';
+		tooltip.style.left = 'auto';
+	}
+	else
+	{
+		tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
+		
+		tooltip.style.left = (rect.right + offset.x) + 'px';
+		tooltip.style.right = 'auto';
+	}
+}
+
+app.run(($rootScope, $window) =>
 	{
 		$rootScope.settings = {
 			use_idolized_thumbnails : getStorage('use_idolized_thumbnails', true),
@@ -409,6 +534,30 @@ app.run(($rootScope) =>
 			}
 			return '';
 		}
+		
+		$rootScope.openMobileTooltip = ($event) =>
+		{
+			if (!is_in_mobile_mode() || !$rootScope.settings.show_tooltips)
+			{
+				return;
+			}
+			
+			$rootScope.toggleTooltip($event, true);
+			$event.preventDefault();
+		}
+		
+		$rootScope.dismissMobileTooltip = ($event) =>
+		{
+			if (!is_in_mobile_mode())
+			{
+				return;
+			}
+			
+			$rootScope.toggleTooltip($event, false);
+		}
+		
+		$rootScope.toggleTooltip = ($event, visible) => { toggleTooltip($rootScope, $event, visible); }
+		angular.element($window).on('resize', () => { $rootScope.toggleTooltip(undefined, false); });
 	}
 )
 
@@ -656,8 +805,6 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 		
 		$scope.tap_unfocus = ($event) =>
 		{
-			console.log("tap unfocus!", $event);
-			
 			if (!$event) return;
 			
 			if ($event.target == $event.target.closest('#header'))
@@ -883,130 +1030,6 @@ app.directive('ellipsisBullshit', function($window)
 		}
 	}
 })
-
-let tooltipVisible = false;
-let mobileTooltipOnCooldown = false;
-let toggleTooltip = function($scope, $event, visible)
-{
-	if (visible === false && tooltipVisible === false)
-	{
-		return;
-	}
-	
-	if (is_in_mobile_mode())
-	{
-		if (mobileTooltipOnCooldown)
-		{
-			return;
-		}
-		
-		mobileTooltipOnCooldown = true;
-		setTimeout(() => { mobileTooltipOnCooldown = false; }, 100);
-		
-		if ($event !== undefined)
-		{
-			// Prevent closing of the tooltip when clicking on the tooltip text.
-			// Only close if clicking outside or on the Kirara link
-			if ($event.target.closest('.card-tooltip-inner') &&
-				$event.target.closest('.card-kirara-link') === null)
-			{
-				return;
-			}
-		}
-	}
-	
-	let tooltip = document.querySelector("#card-tooltip");
-	let tooltip_element = angular.element(tooltip);
-	
-	tooltipVisible = visible;
-	
-	if (!visible)
-	{
-		if (!is_in_mobile_mode())
-		{
-			tooltip.style.visibility = 'hidden';
-			tooltip.style.top = '-999px';
-			tooltip.style.left = '-999px';
-			tooltip.style.right = 'auto';
-			tooltip.style.bottom = 'auto';
-		}
-		
-		tooltip_element.removeClass('visible');
-		return;
-	}
-	
-	// Happens when auto closing on resize
-	if ($event === undefined)
-	{
-		tooltip_element.removeClass('visible');
-		tooltip.style.inset = '';
-		return;
-	}
-	
-	tooltip_element.addClass('visible');
-	
-	tooltip.style.visibility = 'visible';
-	
-	let e = $event.target.closest('.tooltip-data');
-	
-	const keys = [
-		'member-id', 'member-name',
-		'card-status', 'card-ordinal',
-		'card-attribute', 'card-type',
-		'card-title-normal', 'card-title-idolized',
-		'card-source', 'card-release-date',
-		'card-event', 'stats-tooltip',
-	];
-	
-	$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
-		return {
-			[key.replace(/-/g, '_')] : e.getAttribute('data-' + key)
-		}
-	}));
-	
-	if (is_in_mobile_mode())
-	{
-		// tooltip_element.addClass('mobile-card-tooltip');
-		tooltip.style.inset = '';
-		return;
-	}
-	
-	if (!$scope.tooltip_data.card_status)
-		$scope.tooltip_data.card_status = 1;
-	
-	let rect = e.getBoundingClientRect();
-	
-	const doc = document.documentElement;
-	const view_width = doc.clientWidth;
-	const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
-	
-	const flipAnchor = (rect.x > view_width * 0.66) || $scope.tooltip_data.stats_tooltip == 1;
-	
-	let offset = ($scope.tooltip_data.card_status == 1 ? 
-		{x: 15, y: -16} :
-		{x: 15, y: -4}
-	);
-	
-	if ($scope.tooltip_data.stats_tooltip)
-	{
-		offset = {x: 25, y: -26};
-	}
-	
-	if (flipAnchor)
-	{
-		tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
-		
-		tooltip.style.right = (view_width - rect.left + offset.x) + 'px';
-		tooltip.style.left = 'auto';
-	}
-	else
-	{
-		tooltip.style.top = (rect.top + scroll_top + offset.y) + 'px';
-		
-		tooltip.style.left = (rect.right + offset.x) + 'px';
-		tooltip.style.right = 'auto';
-	}
-}
 
 const MEMBERS_ORDERED = [
 	{ id: -1,  name: "— Show All —",      group: undefined,    grouptag: undefined },
@@ -1309,30 +1332,6 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 				}
 			}
 		});
-		
-		$scope.openMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode() || !$rootScope.settings.show_tooltips)
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, true);
-			$event.preventDefault();
-		}
-		
-		$scope.dismissMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode())
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, false);
-		}
-		
-		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
-		angular.element($window).on('resize', () => { $scope.toggleTooltip(undefined, false); });
 		
 		$scope.loading = false;
 	}
@@ -1661,30 +1660,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			}
 		});
 		
-		$scope.openMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode() || !$rootScope.settings.show_tooltips)
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, true);
-			$event.preventDefault();
-		}
-		
-		$scope.dismissMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode())
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, false);
-		}
-		
-		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
-		angular.element($window).on('resize', () => { $scope.toggleTooltip(undefined, false); });
-		
 		$scope.loading = false;
 	}
 );
@@ -1744,30 +1719,6 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 				}
 			}
 		});
-		
-		$scope.openMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode() || !$rootScope.settings.show_tooltips)
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, true);
-			$event.preventDefault();
-		}
-		
-		$scope.dismissMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode())
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, false);
-		}
-		
-		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
-		angular.element($window).on('resize', () => { $scope.toggleTooltip(undefined, false); });
 		
 		let page_subtitle = "Page " + (parseInt($scope.active_page) + 1);
 		$rootScope.$broadcast('update-title', page_subtitle);
@@ -1875,30 +1826,6 @@ app.controller('StatsController', function($rootScope, $scope, $route, $routePar
 			
 			scroller.scrollLeft = active_rect.left - (scroller_width - active_width) / 2 - scroller_rect.left;
 		});
-		
-		$scope.openMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode() || !$rootScope.settings.show_tooltips)
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, true);
-			$event.preventDefault();
-		}
-		
-		$scope.dismissMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode())
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, false);
-		}
-		
-		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
-		angular.element($window).on('resize', () => { $scope.toggleTooltip(undefined, false); });
 
 		let page_subtitle = $scope.get_subtitle($scope.active_page);
 		$rootScope.$broadcast('update-title', page_subtitle);
@@ -2044,30 +1971,6 @@ app.controller('HistoryController', function($rootScope, $scope, $route, $routeP
 		}
 		
 		setTimeout($scope.scrollPageSelectors);
-		
-		$scope.openMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode() || !$rootScope.settings.show_tooltips)
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, true);
-			$event.preventDefault();
-		}
-		
-		$scope.dismissMobileTooltip = ($event) =>
-		{
-			if (!is_in_mobile_mode())
-			{
-				return;
-			}
-			
-			$scope.toggleTooltip($event, false);
-		}
-		
-		$scope.toggleTooltip = ($event, visible) => { toggleTooltip($scope, $event, visible); }
-		angular.element($window).on('resize', () => { $scope.toggleTooltip(undefined, false); });
 
 		let page_subtitle = $scope.get_subtitle($routeParams.idol, $scope.active_page);
 		$rootScope.$broadcast('update-title', page_subtitle);
@@ -2134,8 +2037,8 @@ app.directive('cardTooltip', function($parse)
 {
 	return {
 		restrict: 'A',
-		templateUrl: 'tooltip.html?hhgffg',
-		// template: '<div class="card-tooltip-inner" ng-class="\'idol-\' + data.member_id"><div class="member-info idol-bg-color-dark idol-bg-glow-border"><div class="name">[[ data.member_name ]]</div><div class="card-info" ng-if="data.card_status == 1"><span class="icon-32" ng-class="\'attribute-\' + data.card_attribute"></span><span class="icon-32" ng-class="\'type-\' + data.card_type"></span></div></div><table class="card-details" ng-if="data.card_status == 1"><colgroup><col style="min-width: 10rem"><col></colgroup><tr class="card-title"><td colspan="2">&#12300;<span class="normal">[[ data.card_title_normal ]]</span><span class="idolized">[[ data.card_title_idolized ]]</span>&#12301;</td></tr><tr><th>Debuted</th><td>[[ data.card_source ]]</td></tr><tr ng-if="data.card_event"><th>Related Event</th><td>[[ data.card_event ]]</td></tr><tr><th>Release Date (JP)</th><td>[[ data.card_release_date ]]</td></tr></table><div class="card-details" ng-if="data.card_status == 2"><b>[[ first_name ]]</b> has yet to receive a card in this cycle.</div><div class="card-details" ng-if="data.card_status == 3"><b>[[ first_name ]]</b> did not receive a card in this cycle.</div></div>',
+		// templateUrl: 'tooltip.html?hhgffg',
+		template: '<div class="card-tooltip-inner" ng-class="\'idol-\' + data.member_id"><div class="member-info idol-bg-color-dark idol-bg-glow-border"><div class="name">[[ data.member_name ]]</div><div class="card-info" ng-if="data.card_status == 1"><span class="icon-32" ng-class="\'attribute-\' + data.card_attribute"></span><span class="icon-32" ng-class="\'type-\' + data.card_type"></span></div></div><table class="card-details" ng-if="data.card_status == 1"><colgroup><col class="card-detail-label"><col class="card-detail-data"></colgroup><tr class="card-title"><td colspan="2">&#12300;<span class="normal">[[ data.card_title_normal ]]</span><span class="idolized">[[ data.card_title_idolized ]]</span>&#12301;</td></tr><tr class="spacer-top"><th>Source</th><td>[[ data.card_source ]]</td></tr><tr ng-if="data.card_event"><th>Related Event</th><td>[[ data.card_event ]]</td></tr><tr><th>Release Date</th><td>[[ data.card_release_date ]]</td></tr><tr class="card-kirara-link" ng-if="is_in_mobile_mode() && data.card_ordinal != undefined"><td colspan="2"><a href="https://allstars.kirara.ca/card/[[ data.card_ordinal ]]" target="_blank"><i class="fa fa-globe"></i> View on Kirara Database &raquo;</a></td></tr></table><div class="card-details card-missing" ng-if="data.card_status == 2"><b>[[ first_name ]]</b> has yet to receive a card in this cycle.</div><div class="card-details card-missing" ng-if="data.card_status == 3"><b>[[ first_name ]]</b> did not receive a card in this cycle.</div></div>',
 		link: function (scope, element, attrs)
 		{
 			scope.$watch(attrs.cardTooltip, function(value)

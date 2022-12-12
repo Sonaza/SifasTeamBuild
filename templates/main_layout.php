@@ -131,6 +131,7 @@
 						</noscript>
 					</div>
 				</div>
+				<div id="card-tooltip" ng-class="{'mobile-card-tooltip': is_in_mobile_mode()}" ng-click="dismissMobileTooltip($event)" data-card-tooltip="tooltip_data"></div>
 			</div>
 		</div>
 	</div>
