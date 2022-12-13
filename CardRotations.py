@@ -17,8 +17,6 @@ from dateutil.relativedelta import relativedelta
 
 from colorama import Fore
 from colorama import Style
-from colorama import init as colorama_init
-colorama_init(strip=True)
 
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
@@ -1046,6 +1044,10 @@ class CardRotations():
 # -------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
+	# Only strip on windows for Sublime Text, somehow it still displays in console?
+	from colorama import init as colorama_init
+	colorama_init(strip=(platform.system() == "Windows"))
+
 	cr = CardRotations()
 	
 	buildstatus = {
