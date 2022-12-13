@@ -393,28 +393,31 @@ let toggleTooltip = function($scope, $event, visible)
 	if (visible === false && tooltipVisible === false)
 		return;
 	
-	if (is_in_mobile_mode())
+	if ($event !== undefined)
 	{
-		// Don't accept mouse events, prevents double firing
-		if ($event.type == "mouseover" || $event.type == "mouseout")
-			return;
-		
-		if (visible === false && $event !== undefined)
+		if (is_in_mobile_mode())
 		{
-			// Prevent closing of the tooltip when clicking on the tooltip text.
-			// Only close if clicking outside or on the Kirara link
-			if (!($event.target.closest('#card-tooltip') !== null &&
-				  $event.target.closest('.card-tooltip-inner') === null))
-			{
+			// Don't accept mouse events, prevents double firing
+			if ($event.type == "mouseover" || $event.type == "mouseout")
 				return;
+			
+			if (visible === false)
+			{
+				// Prevent closing of the tooltip when clicking on the tooltip text.
+				// Only close if clicking outside or on the Kirara link
+				if (!($event.target.closest('#card-tooltip') !== null &&
+					  $event.target.closest('.card-tooltip-inner') === null))
+				{
+					return;
+				}
 			}
 		}
-	}
-	else
-	{
-		// Disable click events on desktop mode
-		if ($event.type == 'click')
-			return;
+		else
+		{
+			// Disable click events on desktop mode
+			if ($event.type == 'click')
+				return;
+		}
 	}
 	
 	let tooltip = document.querySelector("#card-tooltip");
@@ -437,7 +440,7 @@ let toggleTooltip = function($scope, $event, visible)
 		tooltip_element.removeClass('visible');
 		return;
 	}
-	
+		
 	// Happens when auto closing on resize
 	if ($event === undefined)
 	{
@@ -467,15 +470,15 @@ let toggleTooltip = function($scope, $event, visible)
 		}
 	}));
 	
+	if (!$scope.tooltip_data.card_status)
+		$scope.tooltip_data.card_status = 1;
+	
 	if (is_in_mobile_mode())
 	{
 		// tooltip_element.addClass('mobile-card-tooltip');
 		tooltip.style.inset = '';
 		return;
 	}
-	
-	if (!$scope.tooltip_data.card_status)
-		$scope.tooltip_data.card_status = 1;
 	
 	let rect = e.getBoundingClientRect();
 	
