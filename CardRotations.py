@@ -15,6 +15,11 @@ from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 
+from colorama import Fore
+from colorama import Style
+from colorama import init as colorama_init
+colorama_init(strip=True)
+
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
     __getattr__ = dict.get
@@ -809,7 +814,6 @@ class CardRotations():
 			self.renderer.reset_output(template_filename)
 			return True
 		
-		print(f"Unchanged  {template_filename:<30} ...  OK")
 		self.renderer.preserve_output(template_filename)
 		return False
 	

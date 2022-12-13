@@ -3,6 +3,8 @@ import math
 from datetime import datetime, timezone
 from IdolDatabase import *
 from CardValidity import *
+from colorama import Fore
+from colorama import Style
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 import htmlmin
@@ -222,11 +224,13 @@ class PageRenderer():
 		self.render_history[template_filename]['output'] = []
 	
 	def preserve_output(self, template_filename):
+		print(f"{Fore.BLACK}{Style.BRIGHT}Unchanged  {Fore.WHITE}{template_filename:<30}{Style.RESET_ALL} ...  {Fore.GREEN}{Style.BRIGHT}OK{Style.RESET_ALL}")
+		
 		if template_filename not in self.render_history:
 			return False
 		if 'output' not in self.render_history[template_filename]:
 			return False
-		
+			
 		self.rendered_pages.extend(self.render_history[template_filename]['output'])
 	
 	# -------------------------------------------------------------------------------------------
@@ -244,9 +248,9 @@ class PageRenderer():
 		full_output_filename = os.path.normpath(os.path.join(output_basepath, output_filename)).replace("\\", "/")
 		
 		num_slashes = output_filename.count('/')
-		output_space = 85 + max(0, num_slashes - 1) * 10
+		output_space = 115 + max(0, num_slashes - 1) * 10
 		
-		print(f"{f'Rendering  {template_filename:<30}  ->  {output_filename}':<{output_space}} ...  ", end='')
+		print(f"{f'{Fore.YELLOW}Rendering  {Fore.WHITE}{Style.BRIGHT}{template_filename:<30}{Style.RESET_ALL}  ->  {Fore.CYAN}{Style.BRIGHT}{output_filename}':<{output_space}}{Style.RESET_ALL} ...  ", end='')
 		
 		self.render_history[template_filename]['last_used'] = datetime.now(timezone.utc)
 		self.render_history[template_filename]['output'].append(full_output_filename)
@@ -267,7 +271,7 @@ class PageRenderer():
 			f.write(rendered_output)
 			f.close()
 		
-		print("Done")
+		print(f"{Fore.GREEN}{Style.BRIGHT}Done{Style.RESET_ALL}")
 		
 		self.rendered_pages.append(full_output_filename)
 		return full_output_filename

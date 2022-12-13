@@ -6,6 +6,8 @@ from bs4 import BeautifulSoup
 from operator import itemgetter
 from datetime import datetime, timedelta, timezone
 from collections import defaultdict
+from colorama import Fore
+from colorama import Style
 
 from .Config import Config
 from .Enums import *
@@ -24,10 +26,10 @@ class HistoryCrawler:
 		next_page = soup.select_one('.page-item:last-child a.page-link')
 		if next_page and ('Next' in next_page.decode_contents()):
 			next_page_url = HistoryCrawler.endpoint_url_root.format(next_page['href'])
-			print("  Found next page url", next_page_url)
+			# print(f"    {Fore.GREEN}{Style.BRIGHT}Found next page url  {Fore.WHITE}: {next_page_url}{Style.RESET_ALL}")
 			return next_page_url
 		else:
-			print("  Could not find next page url, this must be the last page.")
+			print(f"    {Fore.YELLOW}{Style.BRIGHT}Could not find next page url, this must be the last page.{Style.RESET_ALL}")
 			
 		return False
 		
@@ -79,7 +81,7 @@ class HistoryCrawler:
 					end_ts = int(float(timestamps[1]['data-ts']))
 					end = datetime.utcfromtimestamp(end_ts).replace(tzinfo=timezone.utc)
 				except:
-					print("  Could not parse banner timestamps")
+					print(f"    {Fore.RED}{Style.BRIGHT}Could not parse banner timestamps{Style.RESET_ALL}")
 					continue
 				
 				found = True
@@ -89,12 +91,12 @@ class HistoryCrawler:
 			
 			cards_link = p.select_one('div.kars-card-brief-list > a.btn-primary')
 			if not cards_link:
-				print("  Could not find cards link!")
+				print(f"    {Fore.RED}{Style.BRIGHT}Could not find cards link!{Style.RESET_ALL}")
 				continue
 				
 			card_ordinals = re.findall(r'(\d{1,})', cards_link['href'])
 			if not card_ordinals:
-				print("  Could not find any card ordinals!", cards_link)
+				print(f"    {Fore.RED}{Style.BRIGHT}Could not find any card ordinals!  {cards_link}{Style.RESET_ALL}")
 				continue
 			
 			card_ordinals = [int(x) for x in card_ordinals]
@@ -156,7 +158,7 @@ class HistoryCrawler:
 					event_info = re.findall(r"(.*) Event: (.*)", item_title)
 					
 					if not event_info or len(event_info[0]) != 2:
-						print("  Could not parse event info", item_title)
+						print(f"    {Fore.RED}{Style.BRIGHT}Could not parse event info:   {item_title}{Style.RESET_ALL}")
 						continue
 						
 					event_type = event_info[0][0]
@@ -182,7 +184,7 @@ class HistoryCrawler:
 					end_ts = int(float(timestamps[1]['data-ts']))
 					end = datetime.utcfromtimestamp(end_ts).replace(tzinfo=timezone.utc)
 				except:
-					print("  Could not parse event timestamps")
+					print(f"    {Fore.RED}{Style.BRIGHT}Could not parse event timestamps!{Style.RESET_ALL}")
 					continue
 				
 				found = True
@@ -228,12 +230,12 @@ class HistoryCrawler:
 				
 			cards_link = p.select_one('div.kars-card-brief-list > a.btn-primary')
 			if not cards_link:
-				print("  Could not find cards link!")
+				print(f"    {Fore.RED}{Style.BRIGHT}Could not find cards link!{Style.RESET_ALL}")
 				continue
 				
 			card_ordinals = re.findall(r'(\d{1,})', cards_link['href'])
 			if not card_ordinals:
-				print("  Could not find any card ordinals!", cards_link)
+				print(f"    {Fore.RED}{Style.BRIGHT}Could not find any card ordinals!  {cards_link}{Style.RESET_ALL}")
 				continue
 			
 			card_ordinals = [int(x) for x in card_ordinals]
@@ -262,7 +264,7 @@ class HistoryCrawler:
 		})
 		
 		if r.status_code != 200:
-			print("Request failed", r.status_code)
+			print(f"  {Fore.RED}{Style.BRIGHT}Request failed  {r.status_code}{Style.RESET_ALL}")
 			print(r.text)
 			raise HistoryCrawlerException("Request failed")
 		
@@ -276,7 +278,7 @@ class HistoryCrawler:
 				cards_data = json.load(fp=f)
 				f.close()
 		except Exception as e:
-			print("Couldn't load original data", e)
+			print("  Couldn't load original data", e)
 			cards_data = {}
 		
 		cards_data.update(new_data)
@@ -316,7 +318,7 @@ class HistoryCrawler:
 			
 			next_page_url = HistoryCrawler.endpoint_url_page.format(1).format(locale)
 			while True:
-				print("Crawling history page", next_page_url)
+				print(f"  {Fore.YELLOW}Crawling {locale.upper()} locale history  {Fore.WHITE}{Style.BRIGHT}: {next_page_url}{Style.RESET_ALL}")
 				
 				html_data = self._request_page(next_page_url)
 				
@@ -336,7 +338,7 @@ class HistoryCrawler:
 					for banner in banner_data:
 						cards_hash = self._cards_hash(banner['cards'])
 						if cards_hash in known_banners_hashes:
-							print("  Found a known banner in the list, no need to continue crawling banners!")
+							print(f"    {Fore.WHITE}{Style.BRIGHT}Found a known banner in the list. {Fore.GREEN}Done!{Style.RESET_ALL}")
 							crawling_banners = False
 							break
 				
@@ -348,11 +350,11 @@ class HistoryCrawler:
 					events.extend(event_data)
 					
 					if any(x['title'] in known_events for x in event_data):
-						print("  Found a known event in the list, no need to continue crawling events!")
+						print(f"    {Fore.WHITE}{Style.BRIGHT}Found a known event in the list. {Fore.GREEN}Done!{Style.RESET_ALL}")
 						crawling_events = False
 					
 				if not crawling_events and not crawling_banners:
-					print("Not crawling events nor banners anymore. Breaking loop...")
+					print(f"  {Fore.GREEN}{Style.BRIGHT}{locale.upper()} history crawl complete!{Style.RESET_ALL}")
 					break
 				
 				if next_page_url == False:

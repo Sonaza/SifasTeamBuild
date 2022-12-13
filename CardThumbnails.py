@@ -2,6 +2,8 @@ from IdolDatabase import *
 from PIL import Image
 import requests
 import os
+from colorama import Fore
+from colorama import Style
 
 from IdolDatabase.Config import Config
 from PageRenderer import get_file_modifyhash
@@ -25,11 +27,11 @@ class CardThumbnails():
 				f.close()
 			return True
 			
-		print(f"Return code {r.status_code}, failed to download resource: {url}")
+		print(f"{Fore.RED}Return code {r.status_code}, failed to download resource: {url}{Style.RESET_ALL}")
 		return False
 				
 	def download_thumbnails(self):
-		print("Checking new thumbnails...")
+		print(f"{Fore.BLUE}{Style.BRIGHT}Checking new thumbnails...{Style.RESET_ALL}")
 		
 		has_new_thumbnails = False
 		
@@ -37,33 +39,33 @@ class CardThumbnails():
 		for card in cards:
 			normal_path = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_normal.png"
 			if not os.path.exists(normal_path):
-				print("Downloading:", normal_path, end='')
+				print(f"  {Fore.YELLOW}{Style.BRIGHT}Downloading:   {Fore.WHITE}{normal_path}{Style.RESET_ALL}", end='')
 				if self._download_file(card.data["normal_appearance"]["thumbnail_asset_path"], normal_path):
-					print(" OK")
+					print(f" {Fore.GREEN}{Style.BRIGHT}OK{Style.RESET_ALL}")
 					has_new_thumbnails = True
 				else:
-					print(" FAIL!")
+					print(f" {Fore.RED}{Style.BRIGHT}FAIL!{Style.RESET_ALL}")
 			
 			idolized_path = f"thumbnails/single/{card.member_id.value}_{card.ordinal}_idolized.png"
 			if not os.path.exists(idolized_path):
-				print("Downloading:", idolized_path, end='')
+				print(f"  {Fore.YELLOW}{Style.BRIGHT}Downloading:   {Fore.WHITE}{idolized_path}{Style.RESET_ALL}", end='')
 				if self._download_file(card.data["idolized_appearance"]["thumbnail_asset_path"], idolized_path):
-					print(" OK")
+					print(f" {Fore.GREEN}{Style.BRIGHT}OK{Style.RESET_ALL}")
 					has_new_thumbnails = True
 				else:
-					print(" FAIL!")
+					print(f" {Fore.RED}{Style.BRIGHT}FAIL!{Style.RESET_ALL}")
 		
 		if has_new_thumbnails:
-			print("  New thumbnails downloaded, remaking atlas is required.")
+			print(f"  {Fore.MAGENTA}{Style.BRIGHT}New thumbnails downloaded, remaking atlas is required.{Style.RESET_ALL}")
 		else:
-			print("  No new thumbnails downloaded.")
+			print(f"  {Fore.BLACK}{Style.BRIGHT}No new thumbnails downloaded.{Style.RESET_ALL}")
 			
 		print()
 		
 		return has_new_thumbnails
 	
 	def make_atlas(self):
-		print("Compiling thumbnail atlas planes...")
+		print(f"{Fore.GREEN}{Style.BRIGHT}Compiling thumbnail atlas planes...")
 		
 		atlas_by_ordinal = {}
 		atlas_identifiers = []
@@ -73,7 +75,7 @@ class CardThumbnails():
 		
 		for rarity in rarities:
 			for group in Group:
-				print(f"  Processing atlas   {group.name} {rarity.name}...")
+				print(f"  {Fore.YELLOW}{Style.BRIGHT}Processing atlas   {Fore.RED}{group.name} {rarity.name}...{Style.RESET_ALL}")
 				
 				cards = self.client.get_idols_by_group(group, rarity)
 				cards_per_girl = defaultdict(list)
@@ -122,11 +124,11 @@ class CardThumbnails():
 					
 					atlas_normal_path = os.path.join(self.output_directory, f'img/thumbnails/{atlas_identifier}_normal.png').replace('\\', '/')
 					atlas_normal.save(atlas_normal_path, 'PNG')
-					print(f'    Saved normal atlas   : {atlas_normal_path}')
+					print(f'    {Fore.BLUE}{Style.BRIGHT}Saved normal atlas   {Fore.WHITE}: {atlas_normal_path}{Style.RESET_ALL}')
 					
 					atlas_idolized_path = os.path.join(self.output_directory, f'img/thumbnails/{atlas_identifier}_idolized.png').replace('\\', '/')
 					atlas_idolized.save(atlas_idolized_path, 'PNG')
-					print(f'    Saved idolized atlas : {atlas_idolized_path}')
+					print(f'    {Fore.BLUE}{Style.BRIGHT}Saved idolized atlas {Fore.WHITE}: {atlas_idolized_path}{Style.RESET_ALL}')
 					
 					filehashes = (
 						get_file_modifyhash(atlas_normal_path),
@@ -134,7 +136,7 @@ class CardThumbnails():
 					)
 					atlas_identifiers.append((group, rarity, atlas_plane, filehashes))
 		
-		print("Writing atlas css... ", end='')
+		print(f"{Fore.YELLOW}{Style.BRIGHT}Writing atlas css...{Style.RESET_ALL} ", end='')
 		
 		groups = []
 		for group, rarity, atlas_plane, (hash_normal, hash_idolized) in atlas_identifiers:
@@ -151,7 +153,5 @@ class CardThumbnails():
 				line = f".card-thumbnail.card-{ordinal} {{ background-position: {-coordinates[0]}px {-coordinates[1]}px !important; }}"
 				output_file.write(line + "\n")
 			
-		print("Done")
-		
-		print("Atlas processing complete!")
+		print(f"{Fore.GREEN}{Style.BRIGHT}Done!  {Fore.MAGENTA}{Style.BRIGHT}Atlas processing complete!{Style.RESET_ALL}")
 		print()

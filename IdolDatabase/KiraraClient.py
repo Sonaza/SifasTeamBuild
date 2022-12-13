@@ -5,6 +5,9 @@ import sqlite3 as sqlite
 from operator import itemgetter
 from datetime import datetime, timezone
 
+from colorama import Fore
+from colorama import Style
+
 try:
 	from backports.datetime_fromisoformat import MonkeyPatch
 	MonkeyPatch.patch_fromisoformat()
@@ -232,7 +235,7 @@ class KiraraClient():
 		
 		# Update database if it has been over 12 hours
 		last_update_seconds = (now - last_update).seconds
-		print(f"{last_update_seconds / 3600:0.1f} hours since the last database update.")
+		print(f"{Fore.YELLOW}{Style.BRIGHT}{last_update_seconds / 3600:0.1f} hours since the last database update.{Style.RESET_ALL}")
 		return last_update_seconds > 12 * 3600
 		
 	def refresh_last_update_time(self):
@@ -282,7 +285,7 @@ class KiraraClient():
 				print("  All idols were already present in database json archive. No need to query Kirara database.")
 		
 		if requested_ordinals:
-			print("  Requesting data from Kirara database...")
+			print(f"  {Fore.BLUE}{Style.BRIGHT}Requesting data from Kirara database...{Style.RESET_ALL}")
 			
 			url = KiraraClient.Endpoints['by_ordinal'].format(','.join([str(x) for x in requested_ordinals]))
 			r = requests.get(url, headers={
@@ -313,7 +316,7 @@ class KiraraClient():
 			time.sleep(0.5)
 		
 		print()
-		print("Processing query results...")
+		print(f"{Fore.YELLOW}{Style.BRIGHT}Processing query results...{Style.RESET_ALL}")
 		for card in sorted(idols_data, key=itemgetter('ordinal')):
 			print(f"  {card['ordinal']:<4} ", end='')
 			
@@ -422,25 +425,25 @@ class KiraraClient():
 	
 	def update_database(self, forced=False):
 		if not forced and not self.database_needs_update():
-			print("No need to update database right now.")
+			print(f"  {Fore.BLACK}{Style.BRIGHT}No need to update database right now.{Style.RESET_ALL}")
 			return False
 		
-		print("Populating members...")
+		print(f"{Fore.BLUE}{Style.BRIGHT}Populating members...{Style.RESET_ALL}")
 		self._populate_members_and_metadata()
 		
 		print()
-		print("Retrieving events and banners data...")
+		print(f"{Fore.BLUE}{Style.BRIGHT}Retrieving events and banners data...{Style.RESET_ALL}")
 		history_data = self._retrieve_history_data()
 		
 		self.cards_fallback = self._load_cards_data_fallback()
 		
 		print()
-		print("Updating idol database...")
+		print(f"{Fore.BLUE}{Style.BRIGHT}Updating idol database...{Style.RESET_ALL}")
 		self._cache_all_idols()
 		
 		if history_data:
 			print()
-			print("Updating events and banners database...")
+			print(f"{Fore.BLUE}{Style.BRIGHT}Updating events and banners database...{Style.RESET_ALL}")
 			self._update_history_database(history_data)
 			
 		self.refresh_last_update_time()
@@ -453,7 +456,7 @@ class KiraraClient():
 			with open(Config.CARD_DATA_FALLBACK, "r", encoding="utf-8") as f:
 				return json.load(fp=f)
 		except Exception as e:
-			print("Failed to load sources fallback file. ", e)
+			print(f"  {Fore.RED}Failed to load sources fallback file: {e}{Style.RESET_ALL}")
 			return {}
 			
 	# -------------------------------------------------------------------------------------------
@@ -574,7 +577,7 @@ class KiraraClient():
 				history_result = json.load(fp=f)
 		
 		if not history_result:
-			print("Found no new event data. Nothing to do...")
+			print(f"  {Fore.MAGENTA}{Style.BRIGHT}Found no new event data. Nothing to do...{Style.RESET_ALL}")
 			return None
 		
 		# with open("history.json", "w", encoding="utf-8") as f:
@@ -630,7 +633,7 @@ class KiraraClient():
 			banner_data.append(data)
 				
 		if len(event_data) == 0 and len(banner_data) == 0:
-			print("Found data but everything is up to date.")
+			print(f"  {Fore.BLACK}{Style.BRIGHT}Everything is up to date.{Style.RESET_ALL}")
 			return
 		
 		# ------------------------
@@ -652,7 +655,7 @@ class KiraraClient():
 			num_cards += len(cards)
 			# print(f"Added event '{data['title_en']}' with {len(cards)} associated cards to database.")
 		
-		print(f"Added {len(event_data)} events with {num_cards} associated cards to database.")
+		print(f"  {Fore.GREEN}{Style.BRIGHT}Added {len(event_data)} events with {num_cards} associated cards to the database.{Style.RESET_ALL}")
 		
 		# ------------------------
 		# Add banners
@@ -672,7 +675,7 @@ class KiraraClient():
 			
 			num_cards += len(cards)
 		
-		print(f"Added {len(banner_data)} banners with {num_cards} associated cards to database.")
+		print(f"  {Fore.GREEN}{Style.BRIGHT}Added {len(banner_data)} banners with {num_cards} associated cards to the database.{Style.RESET_ALL}")
 			
 		self.dbcon.commit()
 	
@@ -691,7 +694,7 @@ class KiraraClient():
 			raise KiraraClientException("Response data does not contain result")
 		
 		idols_data = response_data['result']
-		print(f"Received {len(idols_data)} ordinals from Kirara database.")
+		print(f"  {Fore.YELLOW}{Style.BRIGHT}Received {len(idols_data)} ordinals from Kirara database.")
 		
 		missing_ordinals = []
 		existing_ordinals = set([x[0] for x in self.db.execute("SELECT ordinal FROM 'idols'")])
@@ -699,7 +702,7 @@ class KiraraClient():
 			if card['ordinal'] not in existing_ordinals:
 				missing_ordinals.append(card['ordinal'])
 		
-		print(f"Missing {len(missing_ordinals)} idols in the local database.")
+		print(f"  Missing {len(missing_ordinals)} idols in the local database.{Style.RESET_ALL}")
 				
 		for ordinals_chunk in chunked(missing_ordinals, 20):
 			print("Querying ordinals: ", ', '.join([str(x) for x in ordinals_chunk]))
