@@ -45,7 +45,7 @@
 	<link rel="manifest" href="/manifest.json">
 </head>
 <body ng-controller="BaseController" class="no-js <?= $dark_mode_class; ?>" ng-class="[activeSettingsClass(), hiddenHeaderActive(), scrollDisabler()]" ng-keydown="keydown($event)" tabindex="0" scroll="scroll($event, diff)">
-	<div id="header">
+	<div id="header" class="{{ 'dev-build' | conditional_css(cmd_args.dev) }}">
 		<div id="header-inner">
 			<div class="desktop-header">
 				<h2 ng-bind-html="title">
@@ -65,11 +65,11 @@
 					<div class="innards"><i class="fa fa-times"></i></div>
 				</div>
 			</div>
-			{% if cmd_args.dev %}
+			{# {% if cmd_args.dev %}
 				<div class="dev-build">
 					DEV BUILD!
 				</div>
-			{% endif %}
+			{% endif %} #}
 		</div>
 	</div>
 	<div id="main-outer-wrapper">

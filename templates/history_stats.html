@@ -64,10 +64,10 @@
 			<div class="st-tbody reversable">
 				{% for card, time_since_release, time_since_previous in history_data %}
 					<div class="st-tr idol-{{ member.value }}" data-index="{{ loop.index }}">
-						<div class="st-td st-cell-15">
+						<div class="st-td st-cell-17-5">
 							{{ card.release_date.strftime('%d %b %Y') }}
 						</div>
-						<div class="st-td st-cell-20">
+						<div class="st-td st-cell-17-5">
 							{{ time_since_release.days | format_years_days }}
 						</div>
 						{% if time_since_previous != None: %}

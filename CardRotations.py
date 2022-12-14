@@ -15,6 +15,7 @@ from collections import defaultdict, namedtuple
 from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 
+from colorama import init as colorama_init
 from colorama import Fore
 from colorama import Style
 
@@ -45,6 +46,9 @@ class CardRotations():
 		self.parser.add_argument("-w", "--watch", help="Instead of building anything start watching for asset changes and rebuild if things are modified.",
 							action="store_true")
 		
+		self.parser.add_argument("--colored-output", help="Set log output to use colors. Values: 0 = off, 1 = on. Default: on.",
+							action="store", metavar='ENABLED', type=int, default=1)
+		
 		self.args = self.parser.parse_args()
 		
 		self.css_settings = dotdict({
@@ -61,7 +65,8 @@ class CardRotations():
 			],
 			'output_file'     : os.path.join(self.OutputDirectory, "css/public.min.css").replace('\\', '/'),
 		})
-		
+	
+	def initialize(self):
 		self.processor = ResourceProcessor(self)
 		if self.args.watch:
 			self.processor.watch_changes()
@@ -1044,11 +1049,12 @@ class CardRotations():
 # -------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
-	# Only strip on windows for Sublime Text, somehow it still displays in console?
-	from colorama import init as colorama_init
-	colorama_init(strip=(platform.system() == "Windows"))
-
 	cr = CardRotations()
+	colored_output = (cr.args.colored_output == 1)
+	# print("Using colored output", colored_output)
+	
+	# Only strip on windows for Sublime Text, somehow it still displays in console?
+	colorama_init(autoreset=True, strip=not colored_output)
 	
 	buildstatus = {
 		"timestamp" : datetime.now(timezone.utc).isoformat(),
@@ -1059,6 +1065,8 @@ if __name__ == "__main__":
 		"message"   : "",
 	}
 	build_exception = None
+	
+	cr.initialize()
 	
 	try:
 		cr.generate_pages()

@@ -999,7 +999,6 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 				}
 			}
 		})
-
 	}
 )
 
@@ -1983,6 +1982,44 @@ app.controller('HistoryController', function($rootScope, $scope, $route, $routeP
 		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}
 )
+/*
+app.directive('scrollbarIfRequired', function($window)
+{
+	console.log("IS ANYTHING HGAPPENING AT ALL!?!?!?!???!?!!");
+	
+	return {
+		restrict: 'A',
+		link: function (scope, element, attrs)
+		{
+			let update_class = () =>
+			{
+				// console.log(element[0]);
+				
+				// let side_nav = document.querySelector("#side-nav");
+				
+				let rect = element[0].getBoundingClientRect();
+				console.log(rect, $window.innerHeight - 60);
+				console.log("(window.innerHeight - 60) < rect.height", ($window.innerHeight - 60) < rect.height);
+				
+				if (($window.innerHeight - 60) < rect.height)
+				{
+					element.addClass("use-nav-scrollbar");
+				}
+				else
+				{
+					// element.removeClass("use-nav-scrollbar");
+				}
+			}
+			
+			angular.element($window).on('resize', () =>
+			{
+				update_class();
+			});
+			
+			update_class();
+		}
+	}
+});*/
 
 app.directive('pillButton', function($parse, $timeout)
 {
