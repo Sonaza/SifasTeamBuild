@@ -442,7 +442,7 @@ let toggleTooltip = function($scope, $event, visible)
 	}
 		
 	// Happens when auto closing on resize
-	if ($event === undefined)
+	if ($event === undefined || $scope === undefined)
 	{
 		tooltip_element.removeClass('visible');
 		tooltip.style.inset = '';
@@ -779,6 +779,8 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			$scope.settings_visible = false;
 			
 			variable.assign($scope, !value);
+			
+			toggleTooltip(undefined, undefined, false);
 		}
 		
 		$scope.sidebarToggleActive = (value) => 
