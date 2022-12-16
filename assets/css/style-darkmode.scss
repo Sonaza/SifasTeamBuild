@@ -333,7 +333,7 @@ $brightness-level: 85%;
 			filter: brightness($brightness-level);
 		}
 	
-		.card-array-cell .grid-icon:not(:hover)
+		.card-array-cell .grid-icon:not(:hover) a
 		{
 			filter: brightness($brightness-level);
 		}
