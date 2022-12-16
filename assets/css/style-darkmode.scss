@@ -136,12 +136,13 @@ select
 			
 			&.default-option
 			{
-				background: #312251;
-				border: 1px solid #513C7E;
+				color: #A788E9;
+				background: transparent;
+				border: 1px solid transparent;
 				
 				&:hover
 				{
-					color: #BBA2EF;
+					color: #fff;
 					background: #543F80;
 					border: 1px solid #7256AD;
 				}
@@ -460,6 +461,28 @@ $brightness-level: 85%;
 	.st-td .idol-icon
 	{
 		filter: contrast(130%) brightness(90%);
+	}
+	
+	.st-td .idol-limited
+	{
+		border-color: #663D82;
+		background: #1A171C;
+		box-shadow: 0 1px 2px #1B1B1B;
+		
+		span.limited-pill
+		{
+			&.source-6.limited-not-max // Festival
+			{
+				background: #CC276A;
+				color: #fff;
+			}
+			
+			&.source-7.limited-not-max // Party
+			{
+				background: #B57F00;
+				color: #fff;
+			}
+		}
 	}
 	
 }
