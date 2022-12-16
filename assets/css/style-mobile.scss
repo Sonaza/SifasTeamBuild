@@ -138,23 +138,23 @@
 {
 	justify-content: center;
 	margin: 0;
-}
-
-.card-array
-{
-	margin: 0 0.5rem 1rem 0.5rem;
 	
-	.card-array-inner
+	.card-array
 	{
-		width: calc(64px * 5);
+		margin: 0 0.5rem 1rem 0.5rem;
 		
-		.card-array-row
+		.card-array-inner
 		{
-			flex-flow: column nowrap;
+			width: calc(64px * 5);
+			
+			.card-array-row
+			{
+				flex-flow: column nowrap;
+			}
 		}
 	}
 }
-	
+
 }
 
 

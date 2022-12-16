@@ -458,6 +458,11 @@ a
 		background: #481E9F;
 		position: relative;
 		
+		&.ng-cloak
+		{
+			display: none !important;
+		}
+		
 		select
 		{
 			width: 100%;

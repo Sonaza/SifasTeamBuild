@@ -969,6 +969,8 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			
 			angular.element(document.querySelector("#source-selector-default")).remove();
 		};
+		
+		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}
 )
 

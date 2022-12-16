@@ -99,7 +99,7 @@
 						</ul>
 					</div>
 					<div class="settings-wrapper unfocus-target" ng-class="sidebarToggleActive(settings_visible)">
-						<div class="settings">
+						<div class="settings ng-cloak">
 							<h3 class="show-mobile">Settings</h3>
 							<div pill-button model="settings.use_idolized_thumbnails">
 								Idolized Art
