@@ -1409,18 +1409,23 @@ select
 	}
 }
 
-.array-wrapper .array-top
+.array-wrapper
 {
 	display: flex;
 	justify-content: flex-start;
-	flex-flow: row nowrap;
+	flex-flow: row wrap;
 	align-items: center;
 	gap: 0.4rem 1rem;
+	
+	.array-group
+	{
+		flex-basis: 100%;
+	}
 }
 
 @media screen and (max-width: 1500px)
 {
-	.array-wrapper .array-top
+	.array-wrapper
 	{
 		width: 100%;
 		flex-flow: column nowrap;
@@ -1430,7 +1435,7 @@ select
 
 @media screen and (max-width: 1200px)
 {
-	.array-wrapper .array-top
+	.array-wrapper
 	{
 		p
 		{
@@ -1443,7 +1448,7 @@ select
 
 @media screen and (max-width: 900px)
 {
-	.array-wrapper .array-top
+	.array-wrapper
 	{
 		align-items: center;
 		

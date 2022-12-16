@@ -1,20 +1,18 @@
 
 <div class="array-wrapper">
 	{% for group, num_pages, group_data in idol_arrays %}
-		<div class="array-top">
-			<ul class="page-selector array-group-page-selector" data-num-pages="{{ num_pages }}">
-				{% for page_index in range(num_pages): %}
-					<li>
-						<a href="#/{{ group.tag }}/{{ page_index }}" ng-class="pageActive({{ page_index }})">
-							Page {{ page_index + 1 }}
-						</a>
-					</li>
-				{% endfor %}
-			</ul>
-			<p>
-				The number indicates how many of the same type-attribute pair the idol has. <b>Change pages to see them all.</b>
-			</p>
-		</div>
+		<ul class="page-selector array-group-page-selector" data-num-pages="{{ num_pages }}">
+			{% for page_index in range(num_pages): %}
+				<li>
+					<a href="#/{{ group.tag }}/{{ page_index }}" ng-class="pageActive({{ page_index }})">
+						Page {{ page_index + 1 }}
+					</a>
+				</li>
+			{% endfor %}
+		</ul>
+		<p>
+			The number indicates how many of the same type-attribute pair the idol has. <b>Change pages to see them all.</b>
+		</p>
 		{% for page_index in range(num_pages): %}
 			<div class="array-group {{ group.tag }}" ng-class="pageActive({{ page_index }})">
 				{% for member_id, card_array in group_data %}
@@ -79,4 +77,5 @@
 			</div>
 		{% endfor %}	
 	{% endfor %}
+		</div>
 </div>
