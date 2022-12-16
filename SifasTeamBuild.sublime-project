@@ -36,6 +36,16 @@
 			"quiet": false
 		},
 		{
+			"name": "Python Dev Build Force Render",
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -fr --colored-output 0",
+
+			"env": {"PYTHONIOENCODING": "utf-8"},
+
+			"working_dir": "$project_path",
+			"quiet": false
+		},
+		{
 			"name": "Python Dev Build Force Update",
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
 			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -f --colored-output 0",

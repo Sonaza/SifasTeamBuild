@@ -57,7 +57,7 @@
 						<div class="st-th st-cell-45">Attributes</div>
 						<div class="st-th st-cell-30">Types</div>
 					</div>
-					<div class="st-tbody">
+					<div class="st-tbody stats-attribute-type">
 						{% for member, stats in data %}
 							<div class="st-tr idol-{{ member.value }}">
 								<div class="st-td st-cell-25 idol-identity">
@@ -149,6 +149,7 @@
 												data-member-name="{{ member.full_name }}"
 												data-card-status="1"
 												data-card-ordinal="{{ card.ordinal }}"
+												data-card-rarity="{{ card.rarity.value }}"
 												data-card-attribute="{{ card.attribute.value }}"
 												data-card-type="{{ card.type.value }}"
 												data-card-title-normal="{{ card.get_card_name(False) | e }}"

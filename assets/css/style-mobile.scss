@@ -160,7 +160,7 @@
 
 /***************************************************************************************/
 
-@media screen and (max-height: 810px) and (min-width: 900px)
+@media screen and (max-height: 820px) and (min-width: 900px)
 {
 	
 #header
@@ -287,11 +287,6 @@ body
 @media screen and (max-width: 1100px)
 {
 
-#side-nav
-{
-	/*width: 200px;*/
-}
-
 body
 {
 	background: #eaeef7;
@@ -331,7 +326,7 @@ body
 	}
 }
 
-#side-nav li a
+body:not(.dark-mode) #side-nav li a
 {
 	background: #fff;
 	border: 1px solid #AD8EED;

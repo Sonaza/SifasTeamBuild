@@ -91,16 +91,13 @@
 		<div class="st-tbody reversable" ng-class="filterBannersClass()">
 			{% for banner_id, banner_data in banners_with_cards.items() %}
 				{% set banner = banner_data['banner'] %}
-				<div class="st-tr event-row {{ banner_data['idols'] }} banner-type-{{ banner['type'].value }}">
+				<div class="st-tr event-row {{ banner_data['idols'] }} gacha-banner banner-type-{{ banner['type'].value }}">
 					<div class="st-td st-cell-banner-title event-details">
 						<div class="event-title">
 							<span class="banner-title-label" title="{{ banner['title'] }}">
 								<span>{{ loop.index }}.</span>
 								{{ banner['title'] }}
 							</span>
-							{# <span class="banner-title-type">
-								{{ banner['type'].name }}
-							</span> #}
 						</div>
 						<div class="event-runtime">
 							<span class="event-runtime-label">
@@ -116,6 +113,7 @@
 										data-member-name="{{ card.member_id.full_name }}"
 										data-card-status="1"
 										data-card-ordinal="{{ card.ordinal }}"
+										data-card-rarity="{{ card.rarity.value }}"
 										data-card-attribute="{{ card.attribute.value }}"
 										data-card-type="{{ card.type.value }}"
 										data-card-title-normal="{{ card.get_card_name(False) | e }}"

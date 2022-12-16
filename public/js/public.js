@@ -253,7 +253,7 @@ const routes = [
 	},
 ];
 
-var app = angular.module('app', ['ngRoute', 'ngSanitize'],
+var app = angular.module('app', ['ngRoute', 'ngSanitize', 'ngCookies'],
 	function($interpolateProvider)
 	{
 		$interpolateProvider.startSymbol('[[');
@@ -453,12 +453,12 @@ let toggleTooltip = function($scope, $event, visible)
 	
 	tooltip.style.visibility = 'visible';
 	
-	let e = $event.target.closest('.tooltip-data');
+	let tooltipDataElement = $event.target.closest('.tooltip-data');
 	
 	const keys = [
 		'member-id', 'member-name',
 		'card-status', 'card-ordinal',
-		'card-attribute', 'card-type',
+		'card-rarity', 'card-attribute', 'card-type',
 		'card-title-normal', 'card-title-idolized',
 		'card-source', 'card-release-date',
 		'card-event', 'stats-tooltip',
@@ -466,7 +466,7 @@ let toggleTooltip = function($scope, $event, visible)
 	
 	$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
 		return {
-			[key.replace(/-/g, '_')] : e.getAttribute('data-' + key)
+			[key.replace(/-/g, '_')] : tooltipDataElement.getAttribute('data-' + key)
 		}
 	}));
 	
@@ -480,7 +480,7 @@ let toggleTooltip = function($scope, $event, visible)
 		return;
 	}
 	
-	let rect = e.getBoundingClientRect();
+	let rect = tooltipDataElement.getBoundingClientRect();
 	
 	const doc = document.documentElement;
 	const view_width = doc.clientWidth;
@@ -523,6 +523,7 @@ app.run(($rootScope, $window) =>
 			show_tooltips           : getStorage('show_tooltips', true),
 			collapsed               : getStorage('collapsed', false),
 			hide_empty_rows         : getStorage('hide_empty_rows', false),
+			dark_mode               : getStorage('dark_mode', window.matchMedia("(prefers-color-scheme: dark)").matches),
 			// alt           : true,
 		}
 		
@@ -564,7 +565,7 @@ app.run(($rootScope, $window) =>
 	}
 )
 
-app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location, $timeout, $parse, $window)
+app.controller('BaseController', function($rootScope, $scope, $route, $routeParams, $location, $timeout, $parse, $window, $cookies)
 	{
 		angular.element(document.querySelector("body")).removeClass('no-js');
 		
@@ -654,6 +655,11 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 				output.push('hide-tooltips');
 			}
 			
+			if ($rootScope.settings.dark_mode)
+			{
+				output.push('dark-mode');
+			}
+			
 			output.push('source-highlight-' + $rootScope.settings.highlight_source);
 			if ($rootScope.settings.highlight_source != '0')
 			{
@@ -703,6 +709,21 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			if (!$rootScope.settings.show_tooltips)
 			{
 				toggleTooltip(undefined, undefined, false);
+			}
+			
+			let expires = new Date();
+			expires.setDate(expires.getDate() + 365);
+			if ($rootScope.settings.dark_mode)
+			{
+				$cookies.put('dark_mode_enabled', 1, {
+					expires: expires,
+				});
+			}
+			else
+			{
+				$cookies.put('dark_mode_enabled', 0, {
+					expires: expires,
+				});
 			}
 			
 			$scope.update_search_params();
@@ -768,7 +789,6 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 				}
 			}
 		}
-		
 		
 		$scope.toggle = ($event, variable_name) =>
 		{
@@ -1984,44 +2004,6 @@ app.controller('HistoryController', function($rootScope, $scope, $route, $routeP
 		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}
 )
-/*
-app.directive('scrollbarIfRequired', function($window)
-{
-	console.log("IS ANYTHING HGAPPENING AT ALL!?!?!?!???!?!!");
-	
-	return {
-		restrict: 'A',
-		link: function (scope, element, attrs)
-		{
-			let update_class = () =>
-			{
-				// console.log(element[0]);
-				
-				// let side_nav = document.querySelector("#side-nav");
-				
-				let rect = element[0].getBoundingClientRect();
-				console.log(rect, $window.innerHeight - 60);
-				console.log("(window.innerHeight - 60) < rect.height", ($window.innerHeight - 60) < rect.height);
-				
-				if (($window.innerHeight - 60) < rect.height)
-				{
-					element.addClass("use-nav-scrollbar");
-				}
-				else
-				{
-					// element.removeClass("use-nav-scrollbar");
-				}
-			}
-			
-			angular.element($window).on('resize', () =>
-			{
-				update_class();
-			});
-			
-			update_class();
-		}
-	}
-});*/
 
 app.directive('pillButton', function($parse, $timeout)
 {
@@ -2079,8 +2061,8 @@ app.directive('cardTooltip', function($parse)
 {
 	return {
 		restrict: 'A',
-		// templateUrl: 'tooltip.html?hhgffg',
-		template: '<div class="card-tooltip-inner" ng-class="\'idol-\' + data.member_id"><div class="member-info idol-bg-color-dark idol-bg-glow-border"><div class="name">[[ data.member_name ]]</div><div class="card-info" ng-if="data.card_status == 1"><span class="icon-32" ng-class="\'attribute-\' + data.card_attribute"></span><span class="icon-32" ng-class="\'type-\' + data.card_type"></span></div></div><table class="card-details" ng-if="data.card_status == 1"><colgroup><col class="card-detail-label"><col class="card-detail-data"></colgroup><tr class="card-title"><td colspan="2">&#12300;<span class="normal">[[ data.card_title_normal ]]</span><span class="idolized">[[ data.card_title_idolized ]]</span>&#12301;</td></tr><tr class="spacer-top"><th>Source</th><td>[[ data.card_source ]]</td></tr><tr ng-if="data.card_event"><th>Related Event</th><td>[[ data.card_event ]]</td></tr><tr><th>Release Date</th><td>[[ data.card_release_date ]]</td></tr><tr class="card-kirara-link" ng-if="is_in_mobile_mode() && data.card_ordinal != undefined"><td colspan="2"><a href="https://allstars.kirara.ca/card/[[ data.card_ordinal ]]" target="_blank"><i class="fa fa-globe"></i> View on Kirara Database &raquo;</a></td></tr></table><div class="card-details card-missing" ng-if="data.card_status == 2"><b>[[ first_name ]]</b> has yet to receive a card in this cycle.</div><div class="card-details card-missing" ng-if="data.card_status == 3"><b>[[ first_name ]]</b> did not receive a card in this cycle.</div></div>',
+		// templateUrl: 'tooltip.html?ad',
+		template: '<div class="card-tooltip-inner" ng-class="\'idol-\' + data.member_id"><div class="member-info idol-bg-color-dark idol-bg-glow-border"><div class="name">[[ data.member_name ]]</div><div class="card-info" ng-if="data.card_status == 1"><span class="icon-32" ng-class="\'rarity-\' + data.card_rarity"></span><span class="icon-32" ng-class="\'attribute-\' + data.card_attribute"></span><span class="icon-32" ng-class="\'type-\' + data.card_type"></span></div></div><table class="card-details" ng-if="data.card_status == 1"><colgroup><col class="card-detail-label"><col class="card-detail-data"></colgroup><tr class="card-title"><td colspan="2">&#12300;<span class="normal">[[ data.card_title_normal ]]</span><span class="idolized">[[ data.card_title_idolized ]]</span>&#12301;</td></tr><tr class="spacer-top"><th>Source</th><td>[[ data.card_source ]]</td></tr><tr ng-if="data.card_event"><th>Related Event</th><td>[[ data.card_event ]]</td></tr><tr><th>Release Date</th><td>[[ data.card_release_date ]]</td></tr><tr class="card-kirara-link" ng-if="is_in_mobile_mode() && data.card_ordinal != undefined"><td colspan="2"><a href="https://allstars.kirara.ca/card/[[ data.card_ordinal ]]" target="_blank"><i class="fa fa-globe"></i> View on Kirara Database &raquo;</a></td></tr></table><div class="card-details card-missing" ng-if="data.card_status == 2"><b>[[ first_name ]]</b> has yet to receive a card in this cycle.</div><div class="card-details card-missing" ng-if="data.card_status == 3"><b>[[ first_name ]]</b> did not receive a card in this cycle.</div></div>',
 		link: function (scope, element, attrs)
 		{
 			scope.$watch(attrs.cardTooltip, function(value)

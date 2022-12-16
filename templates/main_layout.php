@@ -119,6 +119,9 @@
 							<div pill-button model="settings.show_tooltips">
 								Tooltips
 							</div>
+							<div pill-button model="settings.dark_mode">
+								Dark Mode
+							</div>
 						</div>
 					</div>
 				</div>
@@ -168,6 +171,7 @@
 		<script src="/js/vendor/angular/angular.js"></script>
 		<script src="/js/vendor/angular/angular-route.js"></script>
 		<script src="/js/vendor/angular/angular-sanitize.js"></script>
+		<script src="/js/vendor/angular/angular-cookies.js"></script>
 	{% else %}
 		{# <script src="/js/vendor/angular/angular.min.js"></script>
 		<script src="/js/vendor/angular/angular-route.min.js"></script>

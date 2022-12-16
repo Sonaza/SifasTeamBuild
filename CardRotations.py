@@ -34,6 +34,9 @@ class CardRotations():
 		self.parser.add_argument("-f", "--force", help="Force database update regardless of when it was last performed.",
 							action="store_true")
 		
+		self.parser.add_argument("-fr", "--force-render", help="Force render of all templates regardless if they've changed (database update not forced).",
+							action="store_true")
+		
 		self.parser.add_argument("-ra", "--remake-atlas", help="Remake the atlas of thumbnails and the associated CSS code.",
 							action="store_true")
 		
@@ -61,7 +64,9 @@ class CardRotations():
 				"assets/css/atlas.css",
 				"assets/css/idols.css",
 				"assets/css/style.scss",
+				"assets/css/style-darkmode.scss",
 				"assets/css/style-mobile.scss",
+				"assets/css/style-darkmode-mobile.scss",
 			],
 			'output_file'     : os.path.join(self.OutputDirectory, "css/public.min.css").replace('\\', '/'),
 		})
@@ -810,7 +815,7 @@ class CardRotations():
 		return preload_assets
 		
 	def due_for_rendering(self, template_filename):
-		if self.args.force or self.client.was_database_updated():
+		if self.args.force or self.args.force_render or self.client.was_database_updated():
 			return True
 			
 		if self.renderer.has_template_changed(template_filename) or self.renderer.is_any_output_missing(template_filename):

@@ -11,7 +11,7 @@
 						</div>
 						{% if rotation_title %}
 							<div class="set-title">
-								<span class="bullshit-centering">{{ rotation_title }}</span>
+								<span>{{ rotation_title }}</span>
 							</div>
 						{% endif %}
 					</div>
@@ -24,6 +24,7 @@
 										data-member-name="{{ member_id.full_name }}"
 										data-card-status="1"
 										data-card-ordinal="{{ card.ordinal }}"
+										data-card-rarity="{{ card.rarity.value }}"
 										data-card-attribute="{{ card.attribute.value }}"
 										data-card-type="{{ card.type.value }}"
 										data-card-title-normal="{{ card.get_card_name(False) | e }}"
