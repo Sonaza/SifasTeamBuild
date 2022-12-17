@@ -65,11 +65,11 @@
 					<div class="innards"><i class="fa fa-times"></i></div>
 				</div>
 			</div>
-			{# {% if cmd_args.dev %}
+			{% if cmd_args.dev %}
 				<div class="dev-build">
 					DEV BUILD!
 				</div>
-			{% endif %} #}
+			{% endif %}
 		</div>
 	</div>
 	<div id="main-outer-wrapper">

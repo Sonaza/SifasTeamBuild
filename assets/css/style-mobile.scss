@@ -25,6 +25,10 @@
 
 @media screen and (max-width: 1400px)
 {
+	#header > .dev-build
+	{
+		display: none;
+	}
 
 	.show-narrow-1400
 	{
@@ -160,6 +164,8 @@
 
 /***************************************************************************************/
 
+// Tablet and small PC screens
+
 @media screen and (max-height: 820px) and (min-width: 900px)
 {
 	
@@ -278,6 +284,75 @@ body
 		}
 	}
 }
+
+.settings-select-box
+{
+	.select-box-backdrop
+	{
+		z-index: 99999999999;
+		background: #0009;
+	}
+	
+	.select-box-options
+	{
+		$box-margin : 40px;
+		$box-margin-vw : #{$box-margin / 1300px * 100}vw;
+		
+		position: fixed;
+		height: calc(100% - #{$box-margin * 2});
+		
+		top: $box-margin;
+		bottom: $box-margin;
+		
+		left: calc(230px + #{$box-margin-vw});
+		right: $box-margin-vw;
+		
+		overflow-y: scroll;
+		
+		padding: 0.6rem;
+		margin: 0px;
+		
+		z-index: 999999999999;
+		
+		background: #ffffffd7;
+		backdrop-filter: blur(5px);
+		
+		box-shadow: 0 5px 40px #0009;
+		
+		ul
+		{
+			// flex-flow: column nowrap;
+			justify-content: space-around;
+			
+			li.select-box-group
+			{
+				width: calc(31%);
+				padding: 0 0 1rem 0;
+				
+				span.group-title
+				{
+					font-size: 15pt;
+					// margin: 0.4rem;
+					// padding: 0.6rem;
+				}
+			}
+		}	
+		
+		.select-box-option
+		{
+			padding: 0.4rem 0.7rem 0.4rem 1rem;
+			
+			&.default-option
+			{
+				position: sticky;
+				padding: 0.7rem 1.2rem;
+				margin-bottom: 0.7rem;
+				top: 0;
+			}
+		}
+	}
+}
+
 
 }
 

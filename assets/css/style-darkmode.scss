@@ -109,7 +109,7 @@ select
 	.select-box-options
 	{
 		border: 1px solid #372361;
-		box-shadow: 0 2px 3px #3335;
+		box-shadow: 0 2px 4px #000c;
 		color: #f4f4f4;
 		background: #1D1927ee;
 		backdrop-filter: blur(4px);
@@ -120,7 +120,7 @@ select
 			{
 				span.group-title
 				{
-					color: #FFAEE3;
+					color: #CE96FC;
 				}
 			}
 		}
@@ -137,8 +137,8 @@ select
 			&.default-option
 			{
 				color: #A788E9;
-				background: transparent;
-				border: 1px solid transparent;
+				background: #1D1927ee;
+				border: 1px solid #3F3656;
 				
 				&:hover
 				{

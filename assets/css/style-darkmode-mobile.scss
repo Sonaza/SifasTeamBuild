@@ -73,6 +73,30 @@ body.dark-mode
 	}
 }
 
+
+.settings-select-box
+{
+	
+	.select-box-options
+	{
+		box-shadow: 0 5px 40px #000c;
+		
+		ul
+		{
+			li.select-box-group
+			{
+				span.group-title
+				{
+					// background: linear-gradient(to bottom, #0F0C15 0%, #0F0C1500 40%);
+					background: transparent;
+					border-bottom: 1px solid #3A2E52;
+				}
+			}
+		}
+	}
+	
+}
+
 }
 
 }
@@ -159,6 +183,25 @@ body.dark-mode
 			}
 		}
 	}
+}
+
+/*************************************************************************/
+
+.settings-select-box
+{
+	
+	.select-box-options
+	{
+		ul li.select-box-group
+		{
+			span.group-title
+			{
+				background: transparent;
+				border-bottom: 1px solid #3A2E52;
+			}
+		}
+	}
+	
 }
 	
 }

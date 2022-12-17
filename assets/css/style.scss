@@ -269,6 +269,7 @@ a
 		padding: 7px 20px;
 		border-radius: 4px;
 		text-shadow: none;
+		mix-blend-mode: hard-light;
 	}
 	
 	&.dev-build
@@ -615,7 +616,6 @@ select
 		margin: 0.25rem 0 0.4rem 0;
 		-moz-padding-start: calc(0.75rem - 3px);
 		line-height: 1.5;
-		color: #242129;
 		background-color: #fff;
 		background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNiAxNic+PHBhdGggZmlsbD0nbm9uZScgc3Ryb2tlPScjMzQzYTQwJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5lam9pbj0ncm91bmQnIHN0cm9rZS13aWR0aD0nMicgZD0nTTIgNWw2IDYgNi02Jy8+PC9zdmc+");
 		background-repeat: no-repeat;
