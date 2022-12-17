@@ -57,6 +57,7 @@ class CardRotations():
 		self.css_settings = dotdict({
 			'watch_directory' : "assets/",
 			'watched_files'   : [
+				"assets/css/*.css",
 				"assets/css/*.scss",
 			],
 			'input_files'     : [
