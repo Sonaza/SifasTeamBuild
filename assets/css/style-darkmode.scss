@@ -303,14 +303,24 @@ $brightness-level: 85%;
 
 .rotation-group
 {
+	box-shadow: 0 2px 1px #58396D;
+	
 	.rotation-title
 	{
-		filter: brightness($brightness-level);
+		.set-index
+		{
+			background: #0002;
+		}
+		
+		.set-title
+		{
+			color: #f0f0f0;
+		}
 	}
 	
 	.grid-icon:not(:hover)
 	{
-		filter: brightness($brightness-level);
+		filter: contrast(120%) brightness($brightness-level);
 	}
 	
 	.grid-icon.non-extant:not(:hover)
@@ -335,7 +345,7 @@ $brightness-level: 85%;
 	
 		.card-array-cell .grid-icon:not(:hover) a
 		{
-			filter: brightness($brightness-level);
+			filter: contrast(120%) brightness($brightness-level);
 		}
 	}
 }
@@ -447,10 +457,23 @@ $brightness-level: 85%;
 		}
 	}
 	
-	.thumbnail:not(:hover),
-	.card-details .card-rarity
+	.thumbnail:not(:hover)
 	{
+		// filter: contrast(110%) saturate(80%) brightness(80%);
 		filter: brightness(80%);
+	}
+	
+	.card-details 
+	{
+		.card-rarity
+		{
+			filter: brightness(80%);
+		}
+		
+		.card-source
+		{
+			color: #715A96;
+		}
 	}
 	
 	.st-td.stat-various
