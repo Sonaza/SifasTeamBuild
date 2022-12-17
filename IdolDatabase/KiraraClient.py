@@ -113,10 +113,7 @@ class KiraraIdol():
 		else:
 			return self.normal_name
 	
-	def set_song_modifiers(self, matching_attribute = Attribute.Unset, matching_type = Type.Unset, modifiers = (1, 1)):
-		self.modifiers = (matching_attribute, matching_type, modifiers[0], modifiers[1])
-	
-	def get_parameters(self, level : int, limit_break : int, with_song_modifiers = False):
+	def get_raw_parameters(self, level : int, limit_break : int):
 		if not (level >= 1 and level <= 100):
 			raise KiraraClientValueError("Level must be between 1-100.")
 			
@@ -128,17 +125,6 @@ class KiraraIdol():
 			self.data["stats"][level - 1][2] + self.data["tt_offset"][limit_break][2] + self.data["idolized_offset"][2],
 			self.data["stats"][level - 1][3] + self.data["tt_offset"][limit_break][3] + self.data["idolized_offset"][3],
 		)
-		
-		if with_song_modifiers:
-			if self.modifiers[0] != Attribute.Unset:
-				if self.modifiers[0] == self.attribute:
-					parameters = (parameters[0] * self.modifiers[2], parameters[1] * self.modifiers[2], parameters[2] * self.modifiers[2])
-					
-				elif self.modifiers[0] != self.attribute:
-					parameters = (parameters[0] * self.modifiers[3], parameters[1], parameters[2])
-			
-			if self.modifiers[1] != Type.Unset and self.modifiers[1] != self.type:
-					parameters = (parameters[0] * self.modifiers[3], parameters[1], parameters[2])
 			
 		return parameters
 		

@@ -18,48 +18,115 @@ class Idol(IdolBase):
 		idol = Idols.by_member_id[self.data.member_id]
 		self.set(idol)
 		
-		self.identifier = identifier
+		self.member_id = self.data.member_id
+		
+		self.identifier 	= identifier
 		self.crit_power     = crit_power
 		
 		self.buff_appeal    = buff_appeal
 		self.buff_technique = buff_technique
 		
+		self.bond_board = None
+		self.song_modifier = None
+		
+		self.num_insight_slots = self.data.data['max_passive_skill_slot']
+		
 		self._update_parameters()	
 	
 	def _update_parameters(self):
-		self.raw_appeal, self.raw_stamina, self.raw_technique = self.data.get_parameters(80, 5, False)
-		self.base_appeal, self.base_stamina, self.base_technique = self.data.get_parameters(80, 5, True)
+		if self.bond_board == None:
+			self.raw_appeal, self.raw_stamina, self.raw_technique = self.data.get_raw_parameters(80, 5)
+			self.base_appeal, self.base_stamina, self.base_technique = (self.raw_appeal, self.raw_stamina, self.raw_technique)
+			
+		else:
+			self.raw_appeal, self.raw_stamina, self.raw_technique = self.data.get_raw_parameters(self.bond_board[BondParameter.URLevel], 5)
+			# print("RAW", self.raw_appeal, self.raw_stamina, self.raw_technique)
+			
+			self.base_appeal    = self.raw_appeal * (1 + self.bond_board[BondParameter.Appeal] * 0.01)
+			self.base_stamina   = self.raw_stamina * (1 + self.bond_board[BondParameter.Appeal] * 0.01)
+			self.base_technique = self.raw_technique * (1 + self.bond_board[BondParameter.Appeal] * 0.01)
+		
+		print(self.identifier, "BASE", self.base_appeal, self.base_stamina, self.base_technique)
+		
+		if self.song_modifier != None:
+			if self.song_modifier[0] != Attribute.Unset:
+				if self.song_modifier[0] == self.data.attribute:
+					# On-attribute matching bonus
+					matching_bonus = self.song_modifier[1]
+					
+					if self.bond_board != None:
+						matching_bonus += self.bond_board[BondParameter.AttributeBonus] * 0.01
+					
+					self.base_appeal    *= matching_bonus
+					self.base_stamina   *= matching_bonus
+					self.base_technique *= matching_bonus
+					
+				elif self.song_modifier[0] != self.data.attribute:
+					# Off-attribute song appeal penalty
+					self.base_appeal    *= self.song_modifier[2]
+		
+		# Adjust insights, assuming best in slot appeal
+		appeal_insight_skills = self.num_insight_slots * 2
 		
 		# Adjust appeal and technique per the buffs
-		self.appeal    = self.base_appeal * (1 + self.buff_appeal * 0.01)
-		self.technique = self.base_technique * (1 + self.buff_technique * 0.01)
+		self.sheet_appeal    = math.floor(self.base_appeal) * (1 + (self.buff_appeal + appeal_insight_skills) * 0.01)
+		self.sheet_stamina   = math.floor(self.base_stamina)
+		self.sheet_technique = math.floor(self.base_technique) * (1 + self.buff_technique * 0.01)
+		
+		print(self.identifier, "SHEET", self.sheet_appeal, self.sheet_stamina, self.sheet_technique)
 		
 		# Cards with technique as the highest stat get extra crit rate
-		self.crit_profile   = False
+		self.crit_sense   = False
 		if self.raw_technique > self.raw_appeal and self.raw_technique > self.raw_stamina:
-			self.crit_profile = True
+			self.crit_sense = True
+		
+		base_crit_power = 150
+		
+		self.crit_rate = min(1, ((self.sheet_technique * 0.003) + (15 if self.crit_sense else 0)) * 0.01)
+		if self.bond_board != None:
+			base_crit_power += self.bond_board[BondParameter.CritPower]
 			
-		self.crit_rate = min(1, ((self.technique * 0.003) + (15 if self.crit_profile else 0)) * 0.01)
+			self.crit_rate += self.bond_board[BondParameter.CritRate] * 0.01
+			self.crit_power *= base_crit_power * 0.01
+			# self.crit_power = (base_crit_power * 0.01) * self.crit_power
+		
+		print(self.crit_rate, self.crit_power)
 		
 		# Calculating the final value
-		self.effective_appeal = (self.appeal * self.crit_rate * self.crit_power) + (self.appeal * (1 - self.crit_rate))
+		self.effective_appeal = (self.sheet_appeal * self.crit_rate * self.crit_power) + (self.sheet_appeal * (1 - self.crit_rate))
+		print()
+		
+	def set_bond_board(self, bond_level, board_level, unlocked_tiles):
+		# self.bond_bonuses = IdolBondBonuses.get_bond_parameters(bond_level=bond_level, board_level=board_level, unlocked_tiles=unlocked_tiles)
+		
+		self.bond_board = IdolBondBonuses.get_bond_parameters(
+			bond_level     = bond_level,
+			board_level    = board_level,
+			unlocked_tiles = unlocked_tiles)
+		
+		self._update_parameters()
 	
-	def set_song_modifiers(self, matching_attribute = Attribute.Unset, matching_type = Type.Unset, modifiers = (1, 1)):
-		self.data.set_song_modifiers(matching_attribute, matching_type, modifiers)
+	def set_song_modifiers(self, matching_attribute = Attribute.Unset, modifiers = (1, 1)):
+		self.song_modifiers = (matching_attribute, modifiers[0], modifiers[1])
 		self._update_parameters()
 	
 	def __str__(self):
 		global name_length
-		# return f'    {self.identifier + " " + self.first_name:<{name_length}}    Effective Appeal {self.effective_appeal:5.0f}    Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.crit_profile)]})' 
-		return f'{self.identifier + " " + self.first_name:<{name_length}}  | {self.effective_appeal:5.0f}   | {self.crit_rate * 100:5.2f}%' 
+		# return f'    {self.identifier + " " + self.first_name:<{name_length}}    Effective Appeal {self.effective_appeal:5.0f}    Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.crit_sense)]})' 
+		return f'{self.identifier + " " + self.first_name:<{name_length}}  | {self.effective_appeal:5.0f}   | {self.crit_rate * 100:5.2f}% | ({[" ", "×"][int(self.crit_sense)]})' 
 		
 	def __lt__(self, other):
 		return self.effective_appeal < other.effective_appeal
 
 #########################################################
 
+bond_boards = {
+	Member.Hanamaru: { 'bond_level': 122, 'board_level': 120, 'unlocked_tiles' : [ BondParameter.Appeal, ] },
+	Member.Nozomi  : { 'bond_level': 261, 'board_level': 260, 'unlocked_tiles' : True },
+}
+
 number_of_bangles = 0
-crit_power = 1.8 * (1 + number_of_bangles * 0.2)
+crit_power = (1 + number_of_bangles * 0.2)
 
 idols = [
 	#    Idol                  Identifier         Crit Power   Appeal Buff%  Technique Buff%
@@ -83,7 +150,9 @@ idols = [
 	
 	Idol(337, Idols.Nozomi,    "Fes1",            crit_power,  5.2,          0.0),
 	Idol(466, Idols.Nozomi,    "Fes2",            crit_power,  7.0,          0.0),
+	Idol(728, Idols.Nozomi,    "Fes3",            crit_power,  7.0,          3.5),
 	Idol(193, Idols.Nozomi,    "Magical Fever",   crit_power,  4.2,          0.0),
+	Idol(577, Idols.Nozomi,    "Thanksgiving",    crit_power,  5.2,          0.0),
 	
 	Idol(164, Idols.Nico,      "Fes1",            crit_power,  0.0,          0.0),
 	Idol(392, Idols.Nico,      "Fes2",            crit_power,  5.2,          0.0),
@@ -92,6 +161,7 @@ idols = [
 	## Aqours
 	
 	Idol(467, Idols.Hanamaru,  "Fes2",            crit_power,  7.0,          0.0),
+	Idol(782, Idols.Hanamaru,  "Fes3",            crit_power,  5.2,          2.6),
 	
 	Idol(504, Idols.Ruby,      "Fes2",            crit_power,  5.2,          0.0),
 	Idol(470, Idols.Ruby,      "Rain Blossom",    crit_power,  5.2,          0.0),
@@ -151,15 +221,18 @@ idols = [
 	Idol(579, Idols.Mia,       "Thanksgiving Proc",    crit_power,  15.025,       0.0),
 ]
 
-print("Card | Effective Appeal (incl. self buffs) | Crit Rate")
+print("Card | Effective Appeal (incl. self buffs) | Crit Rate | Crit Sense")
 print("-- | -- | --")
 
-# for idol in sorted(idols, reverse = True):
-# 	idol.set_song_modifiers(Attribute.Natural, modifiers=(1.2, 0.8))
+for idol in idols:
+	# idol.set_song_modifiers(Attribute.Natural, modifiers=(1.2, 0.8))
+	
+	if idol.member_id in bond_boards:
+		idol.set_bond_board(**bond_boards[idol.member_id])
 
 for idol in sorted(idols, reverse = True):
-	if idol.data.type != Type.Vo:
-		continue
+	# if idol.member_id != Member.Hanamaru:
+	# 	continue
 		
 	print(idol)
 

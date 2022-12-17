@@ -128,6 +128,17 @@ class IdolBondBonuses():
 
 		( 180,   (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
 		( 200,   (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
+		( 220,   (0.0,   0.0,     1.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
+		( 240,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
+		( 260,   (0.0,   0.0,     0.0,       0.0,       0.0,        2.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
+		( 280,   (0.0,   0.0,     0.0,       1.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
+		( 300,   (0.0,   0.0,     0.0,       0.0,       20.0,       0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
+		( 320,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        5.0,             0,        0,        0,      ) ),
+		( 340,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
+		( 360,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             2,        4,        6,      ) ),
+
+		( 380,   (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
+		( 400,   (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
 	])
 
 	BOND_BOARD_TILES = dict([
@@ -146,8 +157,8 @@ class IdolBondBonuses():
 		( 50,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
 		( 60,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, } ),
 		( 70,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , } ),
-		( 80,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.5, } ),
-		( 90,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.2, } ),
+		( 80,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
+		( 90,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
 		( 100, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.URLevel        : 2,   } ),
 		( 120, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
 		( 140, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, } ),
@@ -155,6 +166,17 @@ class IdolBondBonuses():
 
 		( 180, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
 		( 200, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
+		( 220, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, } ),
+		( 240, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , } ),
+		( 260, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
+		( 280, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
+		( 300, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.URLevel        : 2,   } ),
+		( 320, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
+		( 340, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, } ),
+		( 360, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
+
+		( 380, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
+		( 400, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
 	])
 
 	@staticmethod
@@ -164,25 +186,33 @@ class IdolBondBonuses():
 		return a
 
 	@staticmethod
-	def get_bond_parameters(bond_level, active_board_level, current_board_unlocks):
+	def get_bond_parameters(bond_level, board_level, unlocked_tiles):
 		# result = dict.fromkeys(BOND_PARAMETER_FIELDS, 0)
 		result = [0] * len(IdolBondBonuses.BOND_PARAMETER_FIELDS)
+		
+		current_tiles = IdolBondBonuses.BOND_BOARD_TILES[board_level]
+		if isinstance(unlocked_tiles, bool) and unlocked_tiles == True:
+			unlocked_tiles = list(current_tiles.keys())
+		
+		current_board_completed = len(unlocked_tiles) == 5
 
 		for level, params in IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS.items():
-			if level == active_board_level: break
+			if level == board_level and not current_board_completed:
+				break
 			result = [sum(x) for x in zip(result, params)]
+			if level == board_level and current_board_completed:
+				break
 
 		result = dict(zip(IdolBondBonuses.BOND_PARAMETER_FIELDS, result))
 
 		for level, params in IdolBondBonuses.BOND_BOARD_TILES.items():
-			if level == active_board_level: break
+			if level == board_level: break
 			for key, value in params.items():
 				result[key] += value
-
-		current_tiles = IdolBondBonuses.BOND_BOARD_TILES[active_board_level]
-		for key in current_board_unlocks:
+				
+		for key in unlocked_tiles:
 			if key not in current_tiles:
-				raise IdolBondBonusesValueError(f"Given tile '{key}' does not exist in current board (level {active_board_level})")
+				raise IdolBondBonusesValueError(f"Given tile '{key}' does not exist in current board (level {board_level})")
 			result[key] += current_tiles[key]
 
 		try:
@@ -201,15 +231,18 @@ class IdolBondBonuses():
 		result[BondParameter.SRLevel] += 60
 		result[BondParameter.RLevel]  += 40
 
-		print()
-		for k, v in result.items():
-			print(f"   {k.name:<15}  : {v:>4.2f}")
-		print()
+		# print()
+		# for k, v in result.items():
+		# 	print(f"   {k.name:<15}  : {v:>4.2f}")
+		# print()
+		
+		return result
 
 
 ## TEST CODE
 if __name__ == "__main__":
+	IdolBondBonuses.get_bond_parameters(bond_level=261, board_level=260, unlocked_tiles=True)
+	
 	# IdolBondBonuses.get_bond_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
-	IdolBondBonuses.get_bond_parameters(117, 50, [ BondParameter.CritPower ])
 	# IdolBondBonuses.get_bond_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])
 	# IdolBondBonuses.get_bond_parameters(77, 30, [ BondParameter.CritRate ])

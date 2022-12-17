@@ -20,7 +20,7 @@ class IdolBase():
 	def set(self, idol):
 		self.member_id  = idol.member_id
 		
-		self.id = idol.value
+		self.id = self.member_id.value
 		
 		self.full_name  = idol.full_name
 		self.first_name = idol.first_name
