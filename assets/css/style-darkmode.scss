@@ -463,24 +463,32 @@ $brightness-level: 85%;
 		filter: brightness(80%);
 	}
 	
-	.card-details .card-metadata
-	{
-		.card-rarity
-		{
-			filter: brightness(80%);
-		}
-		
-		.card-source
-		{
-			color: #715A96;
-		}
-	}
-	
 	.st-td
 	{
 		&.stat-various
 		{
 			filter: brightness($brightness-level);
+		}
+		
+		&.card-details
+		{
+			.flex-wrapper .num-others
+			{
+				color: #BE7EF9;
+			}
+			
+			.card-metadata
+			{
+				.card-rarity
+				{
+					filter: brightness(80%);
+				}
+				
+				.card-source
+				{
+					color: #715A96;
+				}
+			}
 		}
 		
 		.idol-icon
