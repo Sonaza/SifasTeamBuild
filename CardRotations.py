@@ -918,6 +918,8 @@ class CardRotations():
 			self.renderer.render_and_save("history_frontpage.html", "pages/history.html", {}, minify=not self.args.dev)
 		
 		if self.due_for_rendering("history_stats.html"):
+			member_addition_dates = self.client.get_member_addition_dates()
+			
 			history_per_member, history_category_info, history_category_flags = self.get_card_history_per_member()
 			for member, history_data in history_per_member.items():
 				for category_tag, history_info in history_category_info.items():
@@ -926,6 +928,7 @@ class CardRotations():
 						'history_data'   : history_data[category_tag],
 						'history_info'   : history_category_info[category_tag],
 						'history_flags'  : history_category_flags[category_tag],
+						'member_added'   : member_addition_dates[member],
 					}, minify=not self.args.dev)
 			
 		# -------------------------------------------------------
@@ -979,7 +982,7 @@ class CardRotations():
 		
 		now = datetime.now(timezone.utc)
 		self.renderer.render_and_save("main_layout.php", "views/content_index.php", {
-			'last_update'           : now.strftime('%d %B %Y %H:%M %Z'),
+			'last_update'           : now, #.strftime('%d %B %Y %H:%M %Z'),
 			'last_update_timestamp' : now.isoformat(),
 			'preloads' : preload_assets
 		}, minify=False, output_basepath='')

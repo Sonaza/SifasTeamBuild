@@ -40,19 +40,26 @@
 
 <div class="stats-category {{ category_tag }}">
 	<h2>{{ member.first_name }} &mdash; {{ history_info[0] }}</h2>
-	<p>{{ history_info[1] }}</p>
+	<p>
+		{{ history_info[1] }}
+		{% if member_added['game_launch'] %}
+			{{ member.first_name }} was introduced to the game with its launch on {{ member_added['date_added'] | format_datestring(long_month=True) }}.
+		{% else %}
+			{{ member.first_name }} was introduced to the game on {{ member_added['date_added'] | format_datestring(long_month=True) }}.
+		{% endif %}
+	</p>
 	<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
 	
 	<div class="stats-category-group">
 		<div class="stats-table {{ 'with-source' | conditional_css(history_flags.show_source) }}">
 			<div class="st-tr st-thead idol-{{ member.value }}">
-				<div class="st-th st-cell-35 idol-bg-color-dim">
+				<div class="st-th st-cell-35 idol-bg-color-dim" ng-class="dimInLightDarkInDark()">
 					Released
 				</div>
-				<div class="st-th st-cell-15 idol-bg-color-dim time-inbetween" title="The time between this card's release and the previous.">
+				<div class="st-th st-cell-15 idol-bg-color-dim time-inbetween" ng-class="dimInLightDarkInDark()" title="The time between this card's release and the previous.">
 					Interval
 				</div>
-				<div class="st-th st-cell-50 idol-identity idol-bg-color-dim">
+				<div class="st-th st-cell-50 idol-identity idol-bg-color-dim" ng-class="dimInLightDarkInDark()">
 					<div class="idol-icon idol-icon-32-border"></div>
 					<div class="idol-name">
 						<span class="hide-narrow-1400">{{ member.full_name }} Card History</span>
@@ -65,13 +72,15 @@
 				{% for card, time_since_release, time_since_previous in history_data %}
 					<div class="st-tr idol-{{ member.value }}" data-index="{{ loop.index }}">
 						<div class="st-td st-cell-17-5">
-							{{ card.release_date.strftime('%d %b %Y') }}
+							{{ card.release_date | format_datestring(ordinalize=False) }}
 						</div>
 						<div class="st-td st-cell-17-5">
 							{{ time_since_release.days | format_years_days }}
 						</div>
-						{% if time_since_previous != None: %}
-							<div class="st-td st-cell-15 time-inbetween with-data" title="This card released {{ time_since_previous.days | format_delta_days }} after the previous.">
+						{% if time_since_previous != None %}
+							{% set title_text = 'the previous card' if loop.index != 1 else 'the character\'s introduction' %}
+							<div class="st-td st-cell-15 time-inbetween with-data {{ 'character-addition-interval' | conditional_css(loop.index == 1) }}"
+								title="This card released {{ time_since_previous.days | format_delta_days }} after {{ title_text }}.">
 								{{ time_since_previous.days | format_delta_days }}
 							</div>
 						{% else %}
@@ -92,7 +101,7 @@
 									data-card-title-normal="{{ card.get_card_name(False) | e }}"
 									data-card-title-idolized="{{ card.get_card_name(True) | e }}"
 									data-card-source="{{ get_card_source_label(card) }}"
-									data-card-release-date="{{ card.release_date.strftime('%d %B %Y') }}"
+									data-card-release-date="{{ card.release_date | format_datestring(long_month=True) }}"
 									data-card-event="{{ card.event_title or '' | e }}"
 									data-stats-tooltip="1"
 									ng-mouseover="toggleTooltip($event, true)"

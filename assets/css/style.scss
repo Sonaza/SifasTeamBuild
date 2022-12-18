@@ -2209,6 +2209,11 @@ body
 		{
 			text-decoration: underline dotted #aaa;
 		}
+		
+		&.time-inbetween.character-addition-interval
+		{
+			color: #1F90C4;
+		}
 	}
 
 	&.event-cards-table .st-td.card-details div.thumbnail

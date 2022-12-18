@@ -188,6 +188,9 @@ class KiraraClient():
 		
 		self._create_tables()
 	
+	def post_update(self):
+		self._initialize_member_addition_dates()
+	
 	# -------------------------------------------------------------------------------------------
 	
 	def _create_tables(self):
@@ -412,6 +415,7 @@ class KiraraClient():
 	def update_database(self, forced=False):
 		if not forced and not self.database_needs_update():
 			print(f"  {Fore.BLACK}{Style.BRIGHT}No need to update database right now.{Style.RESET_ALL}")
+			self.post_update()
 			return False
 		
 		print(f"{Fore.BLUE}{Style.BRIGHT}Populating members...{Style.RESET_ALL}")
@@ -434,6 +438,8 @@ class KiraraClient():
 			
 		self.refresh_last_update_time()
 		self._database_updated = True
+		
+		self.post_update()
 		
 		return True
 		
@@ -842,6 +848,36 @@ class KiraraClient():
 		
 	# -------------------------------------------------------------------------------------------
 	
+	def get_member_addition_dates(self):
+		return self.member_addition_dates
+	
+	def _initialize_member_addition_dates(self):
+		try:
+			if self.member_addition_dates: return
+		except AttributeError:
+			pass
+		
+		sifas_jp_launch_date = datetime(2019, 9, 26, 15, 0, tzinfo=timezone.utc)
+			
+		query = """SELECT member_id, min(release_date) AS release_date FROM idols
+		           WHERE rarity = 10 AND source = 1
+		           GROUP BY member_id
+		           ORDER BY ordinal ASC"""
+		
+		self.db.execute(query)
+		
+		self.member_addition_dates = {}
+		for data in self.db.fetchall():
+			date_added = datetime.fromisoformat(data['release_date'])
+			game_launch = ((sifas_jp_launch_date - date_added).days == 0)
+			
+			self.member_addition_dates[Member(data['member_id'])] = {
+				'date_added'  : date_added,
+				'game_launch' : game_launch,
+			}
+	
+	# -------------------------------------------------------------------------------------------
+	
 	# Categories should be a dictionary of tuples with "category name" as the key
 	# and value being ([list of rarities], [list of sources]) or None instead of list for any.
 	def get_idol_history(self, member : Member, categories, time_now : datetime):
@@ -882,7 +918,7 @@ class KiraraClient():
 				if previous_idol:
 					time_since_previous = idol.release_date - previous_idol.release_date
 				else:
-					time_since_previous = None
+					time_since_previous = idol.release_date - self.member_addition_dates[member]['date_added']
 				
 				# current_list.append({
 				# 	'idol' : idol,

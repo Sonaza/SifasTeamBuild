@@ -1,5 +1,6 @@
 import os
 import math
+import platform
 from datetime import datetime, timezone
 from IdolDatabase import *
 from CardValidity import *
@@ -97,7 +98,25 @@ def _get_card_source_label(card):
 			return 'Event Gacha'
 		
 	return card.source.display_name
-		
+
+def _is_windows():
+	return (platform.system() == "Windows" or 'CYGWIN_NT' in platform.system())
+
+def _format_datestring(date, long_month = False, ordinalize = True, with_utc_time = False):
+	day_format   = '%#d' if _is_windows() else '%-d'
+	month_format = '%B' if long_month else '%b'
+	
+	format_string = f'{day_format} {month_format} %Y'
+	if with_utc_time:
+		format_string = f'{format_string} %H:%M %Z'
+	
+	day, month, year = date.strftime(format_string).split(' ', 2)
+	
+	if ordinalize:
+		day = f"{_ordinalize(day)} of"
+	
+	return f"{day} {month} {year}"
+	
 # -------------------------------------------------------------------------------------------
 
 class PageRenderer():
@@ -120,6 +139,7 @@ class PageRenderer():
 			'ordinalize'        : _ordinalize,
 			
 			'conditional_css'   : _conditional_css,
+			'format_datestring' : _format_datestring,
 		})
 		
 		self.jinja.globals.update({

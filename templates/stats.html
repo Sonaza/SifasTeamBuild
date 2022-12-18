@@ -131,7 +131,7 @@
 									{% endif %}
 								</div>
 								{% if is_valid_card(card) %}
-									<div class="st-td st-cell-20 card-release-elapsed" title="Released on {{ card.release_date.strftime('%d %B %Y') }}">
+									<div class="st-td st-cell-20 card-release-elapsed" title="Released on {{ card.release_date | format_datestring }}">
 										{% if category_tag not in ['limited', 'nonlimited', 'ur', 'sr', 'all']: %}
 											<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[card.source] }}" class="history-link">
 												{{ time_since.days | format_days }}
@@ -155,7 +155,7 @@
 												data-card-title-normal="{{ card.get_card_name(False) | e }}"
 												data-card-title-idolized="{{ card.get_card_name(True) | e }}"
 												data-card-source="{{ get_card_source_label(card) }}"
-												data-card-release-date="{{ card.release_date.strftime('%d %B %Y') }}"
+												data-card-release-date="{{ card.release_date | format_datestring(long_month=True) }}"
 												data-card-event="{{ card.event_title or '' | e }}"
 												data-stats-tooltip="1"
 												ng-mouseover="toggleTooltip($event, true)"

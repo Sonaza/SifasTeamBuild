@@ -560,6 +560,18 @@ app.run(($rootScope, $window) =>
 			$rootScope.toggleTooltip($event, false);
 		}
 		
+		$rootScope.dimInLightDarkInDark = () =>
+		{
+			if ($rootScope.settings.dark_mode)
+			{
+				return 'idol-bg-color-dark';
+			}
+			else
+			{
+				return 'idol-bg-color-dim';
+			}
+		}
+		
 		$rootScope.toggleTooltip = ($event, visible) => { toggleTooltip($rootScope, $event, visible); }
 		angular.element($window).on('resize', () => { $rootScope.toggleTooltip(undefined, false); });
 	}

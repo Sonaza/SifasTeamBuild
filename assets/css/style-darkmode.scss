@@ -476,35 +476,43 @@ $brightness-level: 85%;
 		}
 	}
 	
-	.st-td.stat-various
+	.st-td
 	{
-		filter: brightness($brightness-level);
-	}
-	
-	.st-td .idol-icon
-	{
-		filter: contrast(130%) brightness(90%);
-	}
-	
-	.st-td .idol-limited
-	{
-		border-color: #663D82;
-		background: #1A171C;
-		box-shadow: 0 1px 2px #1B1B1B;
-		
-		span.limited-pill
+		&.stat-various
 		{
-			&.source-6.limited-not-max // Festival
-			{
-				background: #CC276A;
-				color: #fff;
-			}
+			filter: brightness($brightness-level);
+		}
+		
+		.idol-icon
+		{
+			filter: contrast(130%) brightness(90%);
+		}
+		
+		.idol-limited
+		{
+			border-color: #663D82;
+			background: #1A171C;
+			box-shadow: 0 1px 2px #1B1B1B;
 			
-			&.source-7.limited-not-max // Party
+			span.limited-pill
 			{
-				background: #B57F00;
-				color: #fff;
+				&.source-6.limited-not-max // Festival
+				{
+					background: #CC276A;
+					color: #fff;
+				}
+				
+				&.source-7.limited-not-max // Party
+				{
+					background: #B57F00;
+					color: #fff;
+				}
 			}
+		}
+		
+		&.time-inbetween.character-addition-interval
+		{
+			color: #EED33E;
 		}
 	}
 	
@@ -618,9 +626,9 @@ $brightness-level: 85%;
 
 .history-page-selector .page-selector
 {
-	li a
+	li
 	{
-		filter: contrast(150%) brightness(80%);
+		opacity: 0.9;
 	}
 }
 
