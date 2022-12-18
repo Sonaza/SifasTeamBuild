@@ -43,9 +43,9 @@
 	<p>
 		{{ history_info[1] }}
 		{% if member_added['game_launch'] %}
-			{{ member.first_name }} was introduced to the game with its launch on {{ member_added['date_added'] | format_datestring(long_month=True) }}.
+			{{ member.first_name }} was introduced in the game with its launch on {{ member_added['date_added'] | format_datestring(long_month=True) }}.
 		{% else %}
-			{{ member.first_name }} was introduced to the game on {{ member_added['date_added'] | format_datestring(long_month=True) }}.
+			{{ member.first_name }} was introduced in the game on {{ member_added['date_added'] | format_datestring(long_month=True) }}.
 		{% endif %}
 	</p>
 	<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
