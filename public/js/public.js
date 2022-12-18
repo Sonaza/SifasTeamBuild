@@ -1010,7 +1010,22 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 			{
 				$scope.filter_options = "?" + url[1];
 			}
-		})
+		});
+		
+		$scope.$on('keydown', (_, e) =>
+		{
+			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
+			
+			if (!e.shiftKey)
+			{
+				if (e.keyCode == 82) // R-key
+				{
+					e.preventDefault();
+					$scope.filter_options = "";
+					return;
+				}
+			}
+		});
 		
 		$scope.$on('update-title', (_, sub_title) =>
 		{
