@@ -856,25 +856,41 @@ class KiraraClient():
 			if self.member_addition_dates: return
 		except AttributeError:
 			pass
-		
-		sifas_jp_launch_date = datetime(2019, 9, 26, 15, 0, tzinfo=timezone.utc)
 			
-		query = """SELECT member_id, min(release_date) AS release_date FROM idols
-		           WHERE rarity = 10 AND source = 1
-		           GROUP BY member_id
-		           ORDER BY ordinal ASC"""
+		member_release_date = {
+			Member.Shioriko : datetime(2020, 8, 5, 6, 0, tzinfo=timezone.utc),
+			Member.Lanzhu   : datetime(2021, 9, 3, 6, 0, tzinfo=timezone.utc),
+			Member.Mia      : datetime(2021, 9, 3, 6, 0, tzinfo=timezone.utc),
+		}
 		
-		self.db.execute(query)
+		sifas_launch_date = datetime(2019, 9, 26, 15, 0, tzinfo=timezone.utc)
 		
 		self.member_addition_dates = {}
-		for data in self.db.fetchall():
-			date_added = datetime.fromisoformat(data['release_date'])
-			game_launch = ((sifas_jp_launch_date - date_added).days == 0)
+		for member in Member:
+			date_added = member_release_date.get(member, sifas_launch_date)
+			game_launch = ((sifas_launch_date - date_added).days == 0)
 			
-			self.member_addition_dates[Member(data['member_id'])] = {
+			self.member_addition_dates[member] = {
 				'date_added'  : date_added,
 				'game_launch' : game_launch,
 			}
+			
+		# query = """SELECT member_id, min(release_date) AS release_date FROM idols
+		#            WHERE rarity = 10 AND source = 1
+		#            GROUP BY member_id
+		#            ORDER BY ordinal ASC"""
+		
+		# self.db.execute(query)
+		
+		# self.member_addition_dates = {}
+		# for data in self.db.fetchall():
+		# 	date_added = datetime.fromisoformat(data['release_date'])
+		# 	game_launch = ((sifas_jp_launch_date - date_added).days == 0)
+			
+		# 	self.member_addition_dates[Member(data['member_id'])] = {
+		# 		'date_added'  : date_added,
+		# 		'game_launch' : game_launch,
+		# 	}
 	
 	# -------------------------------------------------------------------------------------------
 	
