@@ -1997,7 +1997,8 @@ body
 		height: 3rem;
 		padding-top: 0.4rem;
 	}
-
+	
+	// .st-th,
 	.st-td
 	{
 		&:last-child
@@ -2030,6 +2031,11 @@ body
 			flex-flow: row nowrap;
 			align-items: center;
 			padding: 0 !important;
+			
+			.idol-name
+			{
+				padding: 0 0.5rem;
+			}
 
 			.idol-icon
 			{
@@ -2040,6 +2046,7 @@ body
 				min-height: 38px;
 				background-position: center center !important;
 				background-repeat: no-repeat !important;
+				// margin-left: 0.5rem;
 			}
 			
 			.idol-limited
@@ -2110,69 +2117,8 @@ body
 				padding: 0.5rem 0.8rem;
 			}
 		}
-		
 	}
-
-	.st-th
-	{
-		&:last-child
-		{
-			border-right: none;
-		}
-
-		.flex-wrapper
-		{
-			width: 100%;
-			display: flex;
-			flex-flow: row nowrap;
-			align-items: center;
-			
-			.num-others
-			{
-				padding: 0 1rem;
-				font-family: 'Montserrat', sans-serif;
-				font-weight: 700;
-				font-size: 10pt;
-				color: #7B4DA6;
-				cursor: help;
-				text-decoration: underline dotted;
-			}
-		}
-
-		&.idol-identity
-		{
-			display: flex;
-			flex-flow: row nowrap;
-			justify-content: center;
-			align-items: center;
-			padding: 0 !important;
-
-			.idol-icon
-			{
-				display: block;
-				width: 38px;
-				min-width: 38px;
-				height: 38px;
-				min-height: 38px;
-				background-position: center center !important;
-				background-repeat: no-repeat !important;
-				margin-left: 0.5rem;
-			}
-			
-			.idol-name
-			{
-				// width: 100%;
-				padding: 0 0.5rem;
-			}
-		}
-		
-		&.time-inbetween
-		{
-			padding-left: 0;
-			padding-right: 0;
-		}
-	}
-
+	
 	&.event-cards-table .st-td.idol-identity .idol-icon
 	{
 		width: 38px;
@@ -2193,15 +2139,17 @@ body
 		{
 			// display: flex;
 			// flex-flow: row nowrap;
-			align-items: center;
+			padding: 0 !important;
+			min-width: 0 !important;
 			
 			display: grid;
 			grid-template-columns: 38px 1fr auto;
-  
-			padding: 0 !important;
+			align-items: center;
 			
-			// overflow: hidden;
-			min-width: 0 !important;
+			&.st-cell-banner-cards
+			{
+				grid-template-columns: auto;
+			}
 
 			&.text-overflowed:hover
 			{
