@@ -166,16 +166,19 @@
 											</div>
 										</div>
 										<div class="card-link">
-											<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
+											<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ellipsis-bullshit=".card-details" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
 										</div>
-										{% if data.show_source %}
-											<div class="card-source">
-												{{ card.source.display_name }}
-											</div>
-										{% endif %}
-										{% if data.show_rarity %}
-											<div class="card-rarity icon-32 rarity-{{ card.rarity.value }}">
-												
+										
+										{% if data.show_source or data.show_rarity %}
+											<div class="card-metadata">
+												{% if data.show_source %}
+													<div class="card-source">
+														{{ card.source.display_name }}
+													</div>
+												{% endif %}
+												{% if data.show_rarity %}
+													<div class="card-rarity icon-32 rarity-{{ card.rarity.value }}"></div>
+												{% endif %}
 											</div>
 										{% endif %}
 									</div>

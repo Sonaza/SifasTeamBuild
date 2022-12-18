@@ -463,7 +463,7 @@ $brightness-level: 85%;
 		filter: brightness(80%);
 	}
 	
-	.card-details 
+	.card-details .card-metadata
 	{
 		.card-rarity
 		{
@@ -626,9 +626,83 @@ $brightness-level: 85%;
 
 .history-page-selector .page-selector
 {
+	&.member-page-selector li
+	{
+		// transition: opacity linear 60ms;
+		
+		// &:not(:hover)
+		// {
+		// 	opacity: 0.9;
+		// }
+	}
+	
 	li
 	{
-		opacity: 0.9;
+		a
+		{
+			transition: all linear 70ms;
+			text-shadow: 1px  1px #0008,
+			            -1px -1px #0008,
+			             1px -1px #0008,
+			            -1px  1px #0008;
+		}
+		
+		&.group-muse a
+		{
+			background: #C73064;
+			color: #FFF4F8;
+			border-color: #D67092;
+			
+			&:hover, &.active
+			{
+				background: #E8588A;
+				color: #fff !important;
+				border-color: #E784A6;
+			}
+			
+			&.active:hover
+			{
+				background: #F57AA5;
+			}
+		}
+
+		&.group-aqours a
+		{
+			background: #2380AD;
+			color: #F2FBFF;
+			border-color: #52B4E2;
+			
+			&:hover, &.active
+			{
+				background: #59B9E7;
+				color: #fff !important;
+				border-color: #55AAD2;
+			}
+			
+			&.active:hover
+			{
+				background: #73D0FD;
+			}
+		}
+
+		&.group-nijigasaki a
+		{
+			background: #9E7C12;
+			color: #FFF8E4;
+			border-color: #CDA837;
+			
+			&:hover, &.active
+			{
+				background: #DCB22E;
+				color: #fff !important;
+				border-color: #DEBA4C;
+			}
+			
+			&.active:hover
+			{
+				background: #F5CE55;
+			}
+		}
 	}
 }
 

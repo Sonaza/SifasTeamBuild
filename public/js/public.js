@@ -560,18 +560,6 @@ app.run(($rootScope, $window) =>
 			$rootScope.toggleTooltip($event, false);
 		}
 		
-		$rootScope.dimInLightDarkInDark = () =>
-		{
-			if ($rootScope.settings.dark_mode)
-			{
-				return 'idol-bg-color-dark';
-			}
-			else
-			{
-				return 'idol-bg-color-dim';
-			}
-		}
-		
 		$rootScope.toggleTooltip = ($event, visible) => { toggleTooltip($rootScope, $event, visible); }
 		angular.element($window).on('resize', () => { $rootScope.toggleTooltip(undefined, false); });
 	}
@@ -1048,7 +1036,10 @@ app.directive('ellipsisBullshit', function($window)
 			let element = elements[0];
 			if (!element) return;
 			
-			let parent = element.closest('.event-title');
+			let parent_selector = attrs['ellipsisBullshit'];
+			if (!parent_selector) return;
+			
+			let parent = element.closest(parent_selector);
 			if (!parent) return;
 			
 			let update = (event) =>

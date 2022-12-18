@@ -16,18 +16,7 @@
 .icon-48.attribute-4 { background-image: url('/img/icons/48/attribute-4.png') !important; }
 .icon-48.attribute-5 { background-image: url('/img/icons/48/attribute-5.png') !important; }
 .icon-48.attribute-6 { background-image: url('/img/icons/48/attribute-6.png') !important; }
-.icon-64.attribute-1 { background-image: url('/img/icons/64/attribute-1.png') !important; }
-.icon-64.attribute-2 { background-image: url('/img/icons/64/attribute-2.png') !important; }
-.icon-64.attribute-3 { background-image: url('/img/icons/64/attribute-3.png') !important; }
-.icon-64.attribute-4 { background-image: url('/img/icons/64/attribute-4.png') !important; }
-.icon-64.attribute-5 { background-image: url('/img/icons/64/attribute-5.png') !important; }
-.icon-64.attribute-6 { background-image: url('/img/icons/64/attribute-6.png') !important; }
-.icon-128.attribute-1 { background-image: url('/img/icons/128/attribute-1.png') !important; }
-.icon-128.attribute-2 { background-image: url('/img/icons/128/attribute-2.png') !important; }
-.icon-128.attribute-3 { background-image: url('/img/icons/128/attribute-3.png') !important; }
-.icon-128.attribute-4 { background-image: url('/img/icons/128/attribute-4.png') !important; }
-.icon-128.attribute-5 { background-image: url('/img/icons/128/attribute-5.png') !important; }
-.icon-128.attribute-6 { background-image: url('/img/icons/128/attribute-6.png') !important; }
+
 .attribute-1.attribute-bg-color      { background-color: #dd4aa5 !important; }
 .attribute-1.attribute-bg-color-dim  { background-color: #9a3373 !important; }
 .attribute-1.attribute-bg-color-dark { background-color: #581d42 !important; }
@@ -52,6 +41,7 @@
 .attribute-6.attribute-bg-color-dim  { background-color: #5d386d !important; }
 .attribute-6.attribute-bg-color-dark { background-color: #35203e !important; }
 .st-tr:hover .attribute-6.attribute-bg-color-dim  { background-color: #714484 !important; }
+
 .icon-16.type-1 { background-image: url('/img/icons/16/type-1.png') !important; }
 .icon-16.type-2 { background-image: url('/img/icons/16/type-2.png') !important; }
 .icon-16.type-3 { background-image: url('/img/icons/16/type-3.png') !important; }
@@ -64,14 +54,7 @@
 .icon-48.type-2 { background-image: url('/img/icons/48/type-2.png') !important; }
 .icon-48.type-3 { background-image: url('/img/icons/48/type-3.png') !important; }
 .icon-48.type-4 { background-image: url('/img/icons/48/type-4.png') !important; }
-.icon-64.type-1 { background-image: url('/img/icons/64/type-1.png') !important; }
-.icon-64.type-2 { background-image: url('/img/icons/64/type-2.png') !important; }
-.icon-64.type-3 { background-image: url('/img/icons/64/type-3.png') !important; }
-.icon-64.type-4 { background-image: url('/img/icons/64/type-4.png') !important; }
-.icon-128.type-1 { background-image: url('/img/icons/128/type-1.png') !important; }
-.icon-128.type-2 { background-image: url('/img/icons/128/type-2.png') !important; }
-.icon-128.type-3 { background-image: url('/img/icons/128/type-3.png') !important; }
-.icon-128.type-4 { background-image: url('/img/icons/128/type-4.png') !important; }
+
 .type-1.type-bg-color      { background-color: #cf413f !important; }
 .type-1.type-bg-color-dim  { background-color: #902d2c !important; }
 .type-1.type-bg-color-dark { background-color: #521a19 !important; }
@@ -88,6 +71,7 @@
 .type-4.type-bg-color-dim  { background-color: #9e7f2e !important; }
 .type-4.type-bg-color-dark { background-color: #5a481a !important; }
 .st-tr:hover .type-4.type-bg-color-dim  { background-color: #c09a38 !important; }
+
 .icon-16.rarity-10 { background-image: url('/img/icons/16/rarity-10.png') !important; }
 .icon-16.rarity-20 { background-image: url('/img/icons/16/rarity-20.png') !important; }
 .icon-16.rarity-30 { background-image: url('/img/icons/16/rarity-30.png') !important; }
@@ -97,12 +81,6 @@
 .icon-48.rarity-10 { background-image: url('/img/icons/48/rarity-10.png') !important; }
 .icon-48.rarity-20 { background-image: url('/img/icons/48/rarity-20.png') !important; }
 .icon-48.rarity-30 { background-image: url('/img/icons/48/rarity-30.png') !important; }
-.icon-64.rarity-10 { background-image: url('/img/icons/64/rarity-10.png') !important; }
-.icon-64.rarity-20 { background-image: url('/img/icons/64/rarity-20.png') !important; }
-.icon-64.rarity-30 { background-image: url('/img/icons/64/rarity-30.png') !important; }
-.icon-128.rarity-10 { background-image: url('/img/icons/128/rarity-10.png') !important; }
-.icon-128.rarity-20 { background-image: url('/img/icons/128/rarity-20.png') !important; }
-.icon-128.rarity-30 { background-image: url('/img/icons/128/rarity-30.png') !important; }
 
 .idol-1   .idol-icon-16        { background-image: url('/img/icons/16/icon-1.png') !important; }
 .idol-2   .idol-icon-16        { background-image: url('/img/icons/16/icon-2.png') !important; }
@@ -224,86 +202,6 @@
 .idol-308 .idol-icon-48        { background-image: url('/img/icons/48/icon-308.png') !important; }
 .idol-309 .idol-icon-48        { background-image: url('/img/icons/48/icon-309.png') !important; }
 
-.idol-1   .idol-icon-64        { background-image: url('/img/icons/64/icon-1.png') !important; }
-.idol-2   .idol-icon-64        { background-image: url('/img/icons/64/icon-2.png') !important; }
-.idol-3   .idol-icon-64        { background-image: url('/img/icons/64/icon-3.png') !important; }
-.idol-4   .idol-icon-64        { background-image: url('/img/icons/64/icon-4.png') !important; }
-.idol-5   .idol-icon-64        { background-image: url('/img/icons/64/icon-5.png') !important; }
-.idol-6   .idol-icon-64        { background-image: url('/img/icons/64/icon-6.png') !important; }
-.idol-7   .idol-icon-64        { background-image: url('/img/icons/64/icon-7.png') !important; }
-.idol-8   .idol-icon-64        { background-image: url('/img/icons/64/icon-8.png') !important; }
-.idol-9   .idol-icon-64        { background-image: url('/img/icons/64/icon-9.png') !important; }
-.idol-101 .idol-icon-64        { background-image: url('/img/icons/64/icon-101.png') !important; }
-.idol-102 .idol-icon-64        { background-image: url('/img/icons/64/icon-102.png') !important; }
-.idol-103 .idol-icon-64        { background-image: url('/img/icons/64/icon-103.png') !important; }
-.idol-104 .idol-icon-64        { background-image: url('/img/icons/64/icon-104.png') !important; }
-.idol-105 .idol-icon-64        { background-image: url('/img/icons/64/icon-105.png') !important; }
-.idol-106 .idol-icon-64        { background-image: url('/img/icons/64/icon-106.png') !important; }
-.idol-107 .idol-icon-64        { background-image: url('/img/icons/64/icon-107.png') !important; }
-.idol-108 .idol-icon-64        { background-image: url('/img/icons/64/icon-108.png') !important; }
-.idol-109 .idol-icon-64        { background-image: url('/img/icons/64/icon-109.png') !important; }
-.idol-201 .idol-icon-64        { background-image: url('/img/icons/64/icon-201.png') !important; }
-.idol-202 .idol-icon-64        { background-image: url('/img/icons/64/icon-202.png') !important; }
-.idol-203 .idol-icon-64        { background-image: url('/img/icons/64/icon-203.png') !important; }
-.idol-204 .idol-icon-64        { background-image: url('/img/icons/64/icon-204.png') !important; }
-.idol-205 .idol-icon-64        { background-image: url('/img/icons/64/icon-205.png') !important; }
-.idol-206 .idol-icon-64        { background-image: url('/img/icons/64/icon-206.png') !important; }
-.idol-207 .idol-icon-64        { background-image: url('/img/icons/64/icon-207.png') !important; }
-.idol-208 .idol-icon-64        { background-image: url('/img/icons/64/icon-208.png') !important; }
-.idol-209 .idol-icon-64        { background-image: url('/img/icons/64/icon-209.png') !important; }
-.idol-210 .idol-icon-64        { background-image: url('/img/icons/64/icon-210.png') !important; }
-.idol-211 .idol-icon-64        { background-image: url('/img/icons/64/icon-211.png') !important; }
-.idol-212 .idol-icon-64        { background-image: url('/img/icons/64/icon-212.png') !important; }
-.idol-301 .idol-icon-64        { background-image: url('/img/icons/64/icon-301.png') !important; }
-.idol-302 .idol-icon-64        { background-image: url('/img/icons/64/icon-302.png') !important; }
-.idol-303 .idol-icon-64        { background-image: url('/img/icons/64/icon-303.png') !important; }
-.idol-304 .idol-icon-64        { background-image: url('/img/icons/64/icon-304.png') !important; }
-.idol-305 .idol-icon-64        { background-image: url('/img/icons/64/icon-305.png') !important; }
-.idol-306 .idol-icon-64        { background-image: url('/img/icons/64/icon-306.png') !important; }
-.idol-307 .idol-icon-64        { background-image: url('/img/icons/64/icon-307.png') !important; }
-.idol-308 .idol-icon-64        { background-image: url('/img/icons/64/icon-308.png') !important; }
-.idol-309 .idol-icon-64        { background-image: url('/img/icons/64/icon-309.png') !important; }
-
-.idol-1   .idol-icon-128        { background-image: url('/img/icons/128/icon-1.png') !important; }
-.idol-2   .idol-icon-128        { background-image: url('/img/icons/128/icon-2.png') !important; }
-.idol-3   .idol-icon-128        { background-image: url('/img/icons/128/icon-3.png') !important; }
-.idol-4   .idol-icon-128        { background-image: url('/img/icons/128/icon-4.png') !important; }
-.idol-5   .idol-icon-128        { background-image: url('/img/icons/128/icon-5.png') !important; }
-.idol-6   .idol-icon-128        { background-image: url('/img/icons/128/icon-6.png') !important; }
-.idol-7   .idol-icon-128        { background-image: url('/img/icons/128/icon-7.png') !important; }
-.idol-8   .idol-icon-128        { background-image: url('/img/icons/128/icon-8.png') !important; }
-.idol-9   .idol-icon-128        { background-image: url('/img/icons/128/icon-9.png') !important; }
-.idol-101 .idol-icon-128        { background-image: url('/img/icons/128/icon-101.png') !important; }
-.idol-102 .idol-icon-128        { background-image: url('/img/icons/128/icon-102.png') !important; }
-.idol-103 .idol-icon-128        { background-image: url('/img/icons/128/icon-103.png') !important; }
-.idol-104 .idol-icon-128        { background-image: url('/img/icons/128/icon-104.png') !important; }
-.idol-105 .idol-icon-128        { background-image: url('/img/icons/128/icon-105.png') !important; }
-.idol-106 .idol-icon-128        { background-image: url('/img/icons/128/icon-106.png') !important; }
-.idol-107 .idol-icon-128        { background-image: url('/img/icons/128/icon-107.png') !important; }
-.idol-108 .idol-icon-128        { background-image: url('/img/icons/128/icon-108.png') !important; }
-.idol-109 .idol-icon-128        { background-image: url('/img/icons/128/icon-109.png') !important; }
-.idol-201 .idol-icon-128        { background-image: url('/img/icons/128/icon-201.png') !important; }
-.idol-202 .idol-icon-128        { background-image: url('/img/icons/128/icon-202.png') !important; }
-.idol-203 .idol-icon-128        { background-image: url('/img/icons/128/icon-203.png') !important; }
-.idol-204 .idol-icon-128        { background-image: url('/img/icons/128/icon-204.png') !important; }
-.idol-205 .idol-icon-128        { background-image: url('/img/icons/128/icon-205.png') !important; }
-.idol-206 .idol-icon-128        { background-image: url('/img/icons/128/icon-206.png') !important; }
-.idol-207 .idol-icon-128        { background-image: url('/img/icons/128/icon-207.png') !important; }
-.idol-208 .idol-icon-128        { background-image: url('/img/icons/128/icon-208.png') !important; }
-.idol-209 .idol-icon-128        { background-image: url('/img/icons/128/icon-209.png') !important; }
-.idol-210 .idol-icon-128        { background-image: url('/img/icons/128/icon-210.png') !important; }
-.idol-211 .idol-icon-128        { background-image: url('/img/icons/128/icon-211.png') !important; }
-.idol-212 .idol-icon-128        { background-image: url('/img/icons/128/icon-212.png') !important; }
-.idol-301 .idol-icon-128        { background-image: url('/img/icons/128/icon-301.png') !important; }
-.idol-302 .idol-icon-128        { background-image: url('/img/icons/128/icon-302.png') !important; }
-.idol-303 .idol-icon-128        { background-image: url('/img/icons/128/icon-303.png') !important; }
-.idol-304 .idol-icon-128        { background-image: url('/img/icons/128/icon-304.png') !important; }
-.idol-305 .idol-icon-128        { background-image: url('/img/icons/128/icon-305.png') !important; }
-.idol-306 .idol-icon-128        { background-image: url('/img/icons/128/icon-306.png') !important; }
-.idol-307 .idol-icon-128        { background-image: url('/img/icons/128/icon-307.png') !important; }
-.idol-308 .idol-icon-128        { background-image: url('/img/icons/128/icon-308.png') !important; }
-.idol-309 .idol-icon-128        { background-image: url('/img/icons/128/icon-309.png') !important; }
-
 .idol-1   .idol-icon-16-border { background-image: url('/img/icons/16/icon-1-border.png') !important; }
 .idol-2   .idol-icon-16-border { background-image: url('/img/icons/16/icon-2-border.png') !important; }
 .idol-3   .idol-icon-16-border { background-image: url('/img/icons/16/icon-3-border.png') !important; }
@@ -424,86 +322,6 @@
 .idol-308 .idol-icon-48-border { background-image: url('/img/icons/48/icon-308-border.png') !important; }
 .idol-309 .idol-icon-48-border { background-image: url('/img/icons/48/icon-309-border.png') !important; }
 
-.idol-1   .idol-icon-64-border { background-image: url('/img/icons/64/icon-1-border.png') !important; }
-.idol-2   .idol-icon-64-border { background-image: url('/img/icons/64/icon-2-border.png') !important; }
-.idol-3   .idol-icon-64-border { background-image: url('/img/icons/64/icon-3-border.png') !important; }
-.idol-4   .idol-icon-64-border { background-image: url('/img/icons/64/icon-4-border.png') !important; }
-.idol-5   .idol-icon-64-border { background-image: url('/img/icons/64/icon-5-border.png') !important; }
-.idol-6   .idol-icon-64-border { background-image: url('/img/icons/64/icon-6-border.png') !important; }
-.idol-7   .idol-icon-64-border { background-image: url('/img/icons/64/icon-7-border.png') !important; }
-.idol-8   .idol-icon-64-border { background-image: url('/img/icons/64/icon-8-border.png') !important; }
-.idol-9   .idol-icon-64-border { background-image: url('/img/icons/64/icon-9-border.png') !important; }
-.idol-101 .idol-icon-64-border { background-image: url('/img/icons/64/icon-101-border.png') !important; }
-.idol-102 .idol-icon-64-border { background-image: url('/img/icons/64/icon-102-border.png') !important; }
-.idol-103 .idol-icon-64-border { background-image: url('/img/icons/64/icon-103-border.png') !important; }
-.idol-104 .idol-icon-64-border { background-image: url('/img/icons/64/icon-104-border.png') !important; }
-.idol-105 .idol-icon-64-border { background-image: url('/img/icons/64/icon-105-border.png') !important; }
-.idol-106 .idol-icon-64-border { background-image: url('/img/icons/64/icon-106-border.png') !important; }
-.idol-107 .idol-icon-64-border { background-image: url('/img/icons/64/icon-107-border.png') !important; }
-.idol-108 .idol-icon-64-border { background-image: url('/img/icons/64/icon-108-border.png') !important; }
-.idol-109 .idol-icon-64-border { background-image: url('/img/icons/64/icon-109-border.png') !important; }
-.idol-201 .idol-icon-64-border { background-image: url('/img/icons/64/icon-201-border.png') !important; }
-.idol-202 .idol-icon-64-border { background-image: url('/img/icons/64/icon-202-border.png') !important; }
-.idol-203 .idol-icon-64-border { background-image: url('/img/icons/64/icon-203-border.png') !important; }
-.idol-204 .idol-icon-64-border { background-image: url('/img/icons/64/icon-204-border.png') !important; }
-.idol-205 .idol-icon-64-border { background-image: url('/img/icons/64/icon-205-border.png') !important; }
-.idol-206 .idol-icon-64-border { background-image: url('/img/icons/64/icon-206-border.png') !important; }
-.idol-207 .idol-icon-64-border { background-image: url('/img/icons/64/icon-207-border.png') !important; }
-.idol-208 .idol-icon-64-border { background-image: url('/img/icons/64/icon-208-border.png') !important; }
-.idol-209 .idol-icon-64-border { background-image: url('/img/icons/64/icon-209-border.png') !important; }
-.idol-210 .idol-icon-64-border { background-image: url('/img/icons/64/icon-210-border.png') !important; }
-.idol-211 .idol-icon-64-border { background-image: url('/img/icons/64/icon-211-border.png') !important; }
-.idol-212 .idol-icon-64-border { background-image: url('/img/icons/64/icon-212-border.png') !important; }
-.idol-301 .idol-icon-64-border { background-image: url('/img/icons/64/icon-301-border.png') !important; }
-.idol-302 .idol-icon-64-border { background-image: url('/img/icons/64/icon-302-border.png') !important; }
-.idol-303 .idol-icon-64-border { background-image: url('/img/icons/64/icon-303-border.png') !important; }
-.idol-304 .idol-icon-64-border { background-image: url('/img/icons/64/icon-304-border.png') !important; }
-.idol-305 .idol-icon-64-border { background-image: url('/img/icons/64/icon-305-border.png') !important; }
-.idol-306 .idol-icon-64-border { background-image: url('/img/icons/64/icon-306-border.png') !important; }
-.idol-307 .idol-icon-64-border { background-image: url('/img/icons/64/icon-307-border.png') !important; }
-.idol-308 .idol-icon-64-border { background-image: url('/img/icons/64/icon-308-border.png') !important; }
-.idol-309 .idol-icon-64-border { background-image: url('/img/icons/64/icon-309-border.png') !important; }
-
-.idol-1   .idol-icon-128-border { background-image: url('/img/icons/128/icon-1-border.png') !important; }
-.idol-2   .idol-icon-128-border { background-image: url('/img/icons/128/icon-2-border.png') !important; }
-.idol-3   .idol-icon-128-border { background-image: url('/img/icons/128/icon-3-border.png') !important; }
-.idol-4   .idol-icon-128-border { background-image: url('/img/icons/128/icon-4-border.png') !important; }
-.idol-5   .idol-icon-128-border { background-image: url('/img/icons/128/icon-5-border.png') !important; }
-.idol-6   .idol-icon-128-border { background-image: url('/img/icons/128/icon-6-border.png') !important; }
-.idol-7   .idol-icon-128-border { background-image: url('/img/icons/128/icon-7-border.png') !important; }
-.idol-8   .idol-icon-128-border { background-image: url('/img/icons/128/icon-8-border.png') !important; }
-.idol-9   .idol-icon-128-border { background-image: url('/img/icons/128/icon-9-border.png') !important; }
-.idol-101 .idol-icon-128-border { background-image: url('/img/icons/128/icon-101-border.png') !important; }
-.idol-102 .idol-icon-128-border { background-image: url('/img/icons/128/icon-102-border.png') !important; }
-.idol-103 .idol-icon-128-border { background-image: url('/img/icons/128/icon-103-border.png') !important; }
-.idol-104 .idol-icon-128-border { background-image: url('/img/icons/128/icon-104-border.png') !important; }
-.idol-105 .idol-icon-128-border { background-image: url('/img/icons/128/icon-105-border.png') !important; }
-.idol-106 .idol-icon-128-border { background-image: url('/img/icons/128/icon-106-border.png') !important; }
-.idol-107 .idol-icon-128-border { background-image: url('/img/icons/128/icon-107-border.png') !important; }
-.idol-108 .idol-icon-128-border { background-image: url('/img/icons/128/icon-108-border.png') !important; }
-.idol-109 .idol-icon-128-border { background-image: url('/img/icons/128/icon-109-border.png') !important; }
-.idol-201 .idol-icon-128-border { background-image: url('/img/icons/128/icon-201-border.png') !important; }
-.idol-202 .idol-icon-128-border { background-image: url('/img/icons/128/icon-202-border.png') !important; }
-.idol-203 .idol-icon-128-border { background-image: url('/img/icons/128/icon-203-border.png') !important; }
-.idol-204 .idol-icon-128-border { background-image: url('/img/icons/128/icon-204-border.png') !important; }
-.idol-205 .idol-icon-128-border { background-image: url('/img/icons/128/icon-205-border.png') !important; }
-.idol-206 .idol-icon-128-border { background-image: url('/img/icons/128/icon-206-border.png') !important; }
-.idol-207 .idol-icon-128-border { background-image: url('/img/icons/128/icon-207-border.png') !important; }
-.idol-208 .idol-icon-128-border { background-image: url('/img/icons/128/icon-208-border.png') !important; }
-.idol-209 .idol-icon-128-border { background-image: url('/img/icons/128/icon-209-border.png') !important; }
-.idol-210 .idol-icon-128-border { background-image: url('/img/icons/128/icon-210-border.png') !important; }
-.idol-211 .idol-icon-128-border { background-image: url('/img/icons/128/icon-211-border.png') !important; }
-.idol-212 .idol-icon-128-border { background-image: url('/img/icons/128/icon-212-border.png') !important; }
-.idol-301 .idol-icon-128-border { background-image: url('/img/icons/128/icon-301-border.png') !important; }
-.idol-302 .idol-icon-128-border { background-image: url('/img/icons/128/icon-302-border.png') !important; }
-.idol-303 .idol-icon-128-border { background-image: url('/img/icons/128/icon-303-border.png') !important; }
-.idol-304 .idol-icon-128-border { background-image: url('/img/icons/128/icon-304-border.png') !important; }
-.idol-305 .idol-icon-128-border { background-image: url('/img/icons/128/icon-305-border.png') !important; }
-.idol-306 .idol-icon-128-border { background-image: url('/img/icons/128/icon-306-border.png') !important; }
-.idol-307 .idol-icon-128-border { background-image: url('/img/icons/128/icon-307-border.png') !important; }
-.idol-308 .idol-icon-128-border { background-image: url('/img/icons/128/icon-308-border.png') !important; }
-.idol-309 .idol-icon-128-border { background-image: url('/img/icons/128/icon-309-border.png') !important; }
-
 .idol-1   .idol-bg-color      { background-color: #f39801 !important; }
 .idol-2   .idol-bg-color      { background-color: #1eb8ec !important; }
 .idol-3   .idol-bg-color      { background-color: #abadac !important; }
@@ -544,241 +362,553 @@
 .idol-308 .idol-bg-color      { background-color: #b2ffdd !important; }
 .idol-309 .idol-bg-color      { background-color: #ff51c4 !important; }
 
-.idol-1          .idol-bg-color-dim  { background-color: #aa6a00 !important; }
-.idol-1          .idol-bg-color-dim.bg-color-highlight  { background-color: #da8800 !important; }
-.idol-1:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #da8800 !important; }
-.idol-2          .idol-bg-color-dim  { background-color: #1580a5 !important; }
-.idol-2          .idol-bg-color-dim.bg-color-highlight  { background-color: #1ba5d4 !important; }
-.idol-2:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #1ba5d4 !important; }
-.idol-3          .idol-bg-color-dim  { background-color: #777978 !important; }
-.idol-3          .idol-bg-color-dim.bg-color-highlight  { background-color: #999b9a !important; }
-.idol-3:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #999b9a !important; }
-.idol-4          .idol-bg-color-dim  { background-color: #1e4f80 !important; }
-.idol-4          .idol-bg-color-dim.bg-color-highlight  { background-color: #2766a4 !important; }
-.idol-4:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #2766a4 !important; }
-.idol-5          .idol-bg-color-dim  { background-color: #b1a801 !important; }
-.idol-5          .idol-bg-color-dim.bg-color-highlight  { background-color: #e4d801 !important; }
-.idol-5:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #e4d801 !important; }
-.idol-6          .idol-bg-color-dim  { background-color: #a32417 !important; }
-.idol-6          .idol-bg-color-dim.bg-color-highlight  { background-color: #d12e1d !important; }
-.idol-6:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #d12e1d !important; }
-.idol-7          .idol-bg-color-dim  { background-color: #664172 !important; }
-.idol-7          .idol-bg-color-dim.bg-color-highlight  { background-color: #835392 !important; }
-.idol-7:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #835392 !important; }
-.idol-8          .idol-bg-color-dim  { background-color: #187828 !important; }
-.idol-8          .idol-bg-color-dim.bg-color-highlight  { background-color: #1f9a34 !important; }
-.idol-8:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #1f9a34 !important; }
-.idol-9          .idol-bg-color-dim  { background-color: #a54d6c !important; }
-.idol-9          .idol-bg-color-dim.bg-color-highlight  { background-color: #d4638b !important; }
-.idol-9:hover    .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #d4638b !important; }
-.idol-101        .idol-bg-color-dim  { background-color: #a95a00 !important; }
-.idol-101        .idol-bg-color-dim.bg-color-highlight  { background-color: #d97400 !important; }
-.idol-101:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #d97400 !important; }
-.idol-102        .idol-bg-color-dim  { background-color: #aa6d68 !important; }
-.idol-102        .idol-bg-color-dim.bg-color-highlight  { background-color: #da8c86 !important; }
-.idol-102:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #da8c86 !important; }
-.idol-103        .idol-bg-color-dim  { background-color: #458679 !important; }
-.idol-103        .idol-bg-color-dim.bg-color-highlight  { background-color: #59ac9b !important; }
-.idol-103:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #59ac9b !important; }
-.idol-104        .idol-bg-color-dim  { background-color: #a1000e !important; }
-.idol-104        .idol-bg-color-dim.bg-color-highlight  { background-color: #cf0012 !important; }
-.idol-104:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #cf0012 !important; }
-.idol-105        .idol-bg-color-dim  { background-color: #48769c !important; }
-.idol-105        .idol-bg-color-dim.bg-color-highlight  { background-color: #5c99c8 !important; }
-.idol-105:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #5c99c8 !important; }
-.idol-106        .idol-bg-color-dim  { background-color: #6f6f6f !important; }
-.idol-106        .idol-bg-color-dim.bg-color-highlight  { background-color: #8f8f8f !important; }
-.idol-106:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #8f8f8f !important; }
-.idol-107        .idol-bg-color-dim  { background-color: #b19e01 !important; }
-.idol-107        .idol-bg-color-dim.bg-color-highlight  { background-color: #e4cb01 !important; }
-.idol-107:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #e4cb01 !important; }
-.idol-108        .idol-bg-color-dim  { background-color: #463d72 !important; }
-.idol-108        .idol-bg-color-dim.bg-color-highlight  { background-color: #5a4f93 !important; }
-.idol-108:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #5a4f93 !important; }
-.idol-109        .idol-bg-color-dim  { background-color: #a64c74 !important; }
-.idol-109        .idol-bg-color-dim.bg-color-highlight  { background-color: #d66295 !important; }
-.idol-109:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #d66295 !important; }
-.idol-201        .idol-bg-color-dim  { background-color: #a8666e !important; }
-.idol-201        .idol-bg-color-dim.bg-color-highlight  { background-color: #d8848e !important; }
-.idol-201:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #d8848e !important; }
-.idol-202        .idol-bg-color-dim  { background-color: #aca846 !important; }
-.idol-202        .idol-bg-color-dim.bg-color-highlight  { background-color: #ded85a !important; }
-.idol-202:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #ded85a !important; }
-.idol-203        .idol-bg-color-dim  { background-color: #5a8aa7 !important; }
-.idol-203        .idol-bg-color-dim.bg-color-highlight  { background-color: #74b2d7 !important; }
-.idol-203:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #74b2d7 !important; }
-.idol-204        .idol-bg-color-dim  { background-color: #022c6b !important; }
-.idol-204        .idol-bg-color-dim.bg-color-highlight  { background-color: #023989 !important; }
-.idol-204:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #023989 !important; }
-.idol-205        .idol-bg-color-dim  { background-color: #a44300 !important; }
-.idol-205        .idol-bg-color-dim.bg-color-highlight  { background-color: #d35600 !important; }
-.idol-205:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #d35600 !important; }
-.idol-206        .idol-bg-color-dim  { background-color: #826387 !important; }
-.idol-206        .idol-bg-color-dim.bg-color-highlight  { background-color: #a77fad !important; }
-.idol-206:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #a77fad !important; }
-.idol-207        .idol-bg-color-dim  { background-color: #98252c !important; }
-.idol-207        .idol-bg-color-dim.bg-color-highlight  { background-color: #c43038 !important; }
-.idol-207:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #c43038 !important; }
-.idol-208        .idol-bg-color-dim  { background-color: #4b8443 !important; }
-.idol-208        .idol-bg-color-dim.bg-color-highlight  { background-color: #61aa57 !important; }
-.idol-208:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #61aa57 !important; }
-.idol-209        .idol-bg-color-dim  { background-color: #757676 !important; }
-.idol-209        .idol-bg-color-dim.bg-color-highlight  { background-color: #979998 !important; }
-.idol-209:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #979998 !important; }
-.idol-210        .idol-bg-color-dim  { background-color: #1e6e58 !important; }
-.idol-210        .idol-bg-color-dim.bg-color-highlight  { background-color: #278e71 !important; }
-.idol-210:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #278e71 !important; }
-.idol-211        .idol-bg-color-dim  { background-color: #95958d !important; }
-.idol-211        .idol-bg-color-dim.bg-color-highlight  { background-color: #c0bfb5 !important; }
-.idol-211:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #c0bfb5 !important; }
-.idol-212        .idol-bg-color-dim  { background-color: #ad8c89 !important; }
-.idol-212        .idol-bg-color-dim.bg-color-highlight  { background-color: #dfb4b0 !important; }
-.idol-212:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #dfb4b0 !important; }
-.idol-301        .idol-bg-color-dim  { background-color: #b2581b !important; }
-.idol-301        .idol-bg-color-dim.bg-color-highlight  { background-color: #e57223 !important; }
-.idol-301:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #e57223 !important; }
-.idol-302        .idol-bg-color-dim  { background-color: #70b2ae !important; }
-.idol-302        .idol-bg-color-dim.bg-color-highlight  { background-color: #90e5e0 !important; }
-.idol-302:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #90e5e0 !important; }
-.idol-303        .idol-bg-color-dim  { background-color: #b24d64 !important; }
-.idol-303        .idol-bg-color-dim.bg-color-highlight  { background-color: #e56381 !important; }
-.idol-303:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #e56381 !important; }
-.idol-304        .idol-bg-color-dim  { background-color: #51aa47 !important; }
-.idol-304        .idol-bg-color-dim.bg-color-highlight  { background-color: #68db5b !important; }
-.idol-304:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #68db5b !important; }
-.idol-305        .idol-bg-color-dim  { background-color: #000070 !important; }
-.idol-305        .idol-bg-color-dim.bg-color-highlight  { background-color: #000090 !important; }
-.idol-305:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #000090 !important; }
-.idol-306        .idol-bg-color-dim  { background-color: #b2aa2e !important; }
-.idol-306        .idol-bg-color-dim.bg-color-highlight  { background-color: #e5db3b !important; }
-.idol-306:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #e5db3b !important; }
-.idol-307        .idol-bg-color-dim  { background-color: #b22525 !important; }
-.idol-307        .idol-bg-color-dim.bg-color-highlight  { background-color: #e52f2f !important; }
-.idol-307:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #e52f2f !important; }
-.idol-308        .idol-bg-color-dim  { background-color: #7cb29a !important; }
-.idol-308        .idol-bg-color-dim.bg-color-highlight  { background-color: #a0e5c6 !important; }
-.idol-308:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #a0e5c6 !important; }
-.idol-309        .idol-bg-color-dim  { background-color: #b23889 !important; }
-.idol-309        .idol-bg-color-dim.bg-color-highlight  { background-color: #e548b0 !important; }
-.idol-309:hover  .idol-bg-color-dim.bg-color-highlight-hover  { background-color: #e548b0 !important; }
+               .idol-1          .idol-bg-color-dim,
+body.dark-mode .idol-1          .idol-bg-color { background-color: #aa6a00 !important; }
+               .idol-1          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-1          .idol-bg-color.bg-color-highlight { background-color: #da8800 !important; }
+               .idol-1:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-1:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #da8800 !important; }
 
-.idol-1          .idol-bg-color-dark { background-color: #613c00 !important; }
-.idol-1          .idol-bg-color-dark.bg-color-highlight { background-color: #aa6a00 !important; }
-.idol-1:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #aa6a00 !important; }
-.idol-2          .idol-bg-color-dark { background-color: #0c495e !important; }
-.idol-2          .idol-bg-color-dark.bg-color-highlight { background-color: #1580a5 !important; }
-.idol-2:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #1580a5 !important; }
-.idol-3          .idol-bg-color-dark { background-color: #444544 !important; }
-.idol-3          .idol-bg-color-dark.bg-color-highlight { background-color: #777978 !important; }
-.idol-3:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #777978 !important; }
-.idol-4          .idol-bg-color-dark { background-color: #112d49 !important; }
-.idol-4          .idol-bg-color-dark.bg-color-highlight { background-color: #1e4f80 !important; }
-.idol-4:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #1e4f80 !important; }
-.idol-5          .idol-bg-color-dark { background-color: #656000 !important; }
-.idol-5          .idol-bg-color-dark.bg-color-highlight { background-color: #b1a801 !important; }
-.idol-5:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #b1a801 !important; }
-.idol-6          .idol-bg-color-dark { background-color: #5d140d !important; }
-.idol-6          .idol-bg-color-dark.bg-color-highlight { background-color: #a32417 !important; }
-.idol-6:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #a32417 !important; }
-.idol-7          .idol-bg-color-dark { background-color: #3a2541 !important; }
-.idol-7          .idol-bg-color-dark.bg-color-highlight { background-color: #664172 !important; }
-.idol-7:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #664172 !important; }
-.idol-8          .idol-bg-color-dark { background-color: #0e4417 !important; }
-.idol-8          .idol-bg-color-dark.bg-color-highlight { background-color: #187828 !important; }
-.idol-8:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #187828 !important; }
-.idol-9          .idol-bg-color-dark { background-color: #5e2c3e !important; }
-.idol-9          .idol-bg-color-dark.bg-color-highlight { background-color: #a54d6c !important; }
-.idol-9:hover    .idol-bg-color-dark.bg-color-highlight-hover { background-color: #a54d6c !important; }
-.idol-101        .idol-bg-color-dark { background-color: #603300 !important; }
-.idol-101        .idol-bg-color-dark.bg-color-highlight { background-color: #a95a00 !important; }
-.idol-101:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #a95a00 !important; }
-.idol-102        .idol-bg-color-dark { background-color: #613e3b !important; }
-.idol-102        .idol-bg-color-dark.bg-color-highlight { background-color: #aa6d68 !important; }
-.idol-102:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #aa6d68 !important; }
-.idol-103        .idol-bg-color-dark { background-color: #274c45 !important; }
-.idol-103        .idol-bg-color-dark.bg-color-highlight { background-color: #458679 !important; }
-.idol-103:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #458679 !important; }
-.idol-104        .idol-bg-color-dark { background-color: #5c0008 !important; }
-.idol-104        .idol-bg-color-dark.bg-color-highlight { background-color: #a1000e !important; }
-.idol-104:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #a1000e !important; }
-.idol-105        .idol-bg-color-dark { background-color: #294459 !important; }
-.idol-105        .idol-bg-color-dark.bg-color-highlight { background-color: #48769c !important; }
-.idol-105:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #48769c !important; }
-.idol-106        .idol-bg-color-dark { background-color: #3f3f3f !important; }
-.idol-106        .idol-bg-color-dark.bg-color-highlight { background-color: #6f6f6f !important; }
-.idol-106:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #6f6f6f !important; }
-.idol-107        .idol-bg-color-dark { background-color: #655a00 !important; }
-.idol-107        .idol-bg-color-dark.bg-color-highlight { background-color: #b19e01 !important; }
-.idol-107:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #b19e01 !important; }
-.idol-108        .idol-bg-color-dark { background-color: #282341 !important; }
-.idol-108        .idol-bg-color-dark.bg-color-highlight { background-color: #463d72 !important; }
-.idol-108:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #463d72 !important; }
-.idol-109        .idol-bg-color-dark { background-color: #5f2b42 !important; }
-.idol-109        .idol-bg-color-dark.bg-color-highlight { background-color: #a64c74 !important; }
-.idol-109:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #a64c74 !important; }
-.idol-201        .idol-bg-color-dark { background-color: #603a3f !important; }
-.idol-201        .idol-bg-color-dark.bg-color-highlight { background-color: #a8666e !important; }
-.idol-201:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #a8666e !important; }
-.idol-202        .idol-bg-color-dark { background-color: #626028 !important; }
-.idol-202        .idol-bg-color-dark.bg-color-highlight { background-color: #aca846 !important; }
-.idol-202:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #aca846 !important; }
-.idol-203        .idol-bg-color-dark { background-color: #334f5f !important; }
-.idol-203        .idol-bg-color-dark.bg-color-highlight { background-color: #5a8aa7 !important; }
-.idol-203:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #5a8aa7 !important; }
-.idol-204        .idol-bg-color-dark { background-color: #01193d !important; }
-.idol-204        .idol-bg-color-dark.bg-color-highlight { background-color: #022c6b !important; }
-.idol-204:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #022c6b !important; }
-.idol-205        .idol-bg-color-dark { background-color: #5e2600 !important; }
-.idol-205        .idol-bg-color-dark.bg-color-highlight { background-color: #a44300 !important; }
-.idol-205:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #a44300 !important; }
-.idol-206        .idol-bg-color-dark { background-color: #4a384d !important; }
-.idol-206        .idol-bg-color-dark.bg-color-highlight { background-color: #826387 !important; }
-.idol-206:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #826387 !important; }
-.idol-207        .idol-bg-color-dark { background-color: #571519 !important; }
-.idol-207        .idol-bg-color-dark.bg-color-highlight { background-color: #98252c !important; }
-.idol-207:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #98252c !important; }
-.idol-208        .idol-bg-color-dark { background-color: #2b4b26 !important; }
-.idol-208        .idol-bg-color-dark.bg-color-highlight { background-color: #4b8443 !important; }
-.idol-208:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #4b8443 !important; }
-.idol-209        .idol-bg-color-dark { background-color: #434443 !important; }
-.idol-209        .idol-bg-color-dark.bg-color-highlight { background-color: #757676 !important; }
-.idol-209:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #757676 !important; }
-.idol-210        .idol-bg-color-dark { background-color: #113f32 !important; }
-.idol-210        .idol-bg-color-dark.bg-color-highlight { background-color: #1e6e58 !important; }
-.idol-210:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #1e6e58 !important; }
-.idol-211        .idol-bg-color-dark { background-color: #555550 !important; }
-.idol-211        .idol-bg-color-dark.bg-color-highlight { background-color: #95958d !important; }
-.idol-211:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #95958d !important; }
-.idol-212        .idol-bg-color-dark { background-color: #63504e !important; }
-.idol-212        .idol-bg-color-dark.bg-color-highlight { background-color: #ad8c89 !important; }
-.idol-212:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #ad8c89 !important; }
-.idol-301        .idol-bg-color-dark { background-color: #66320f !important; }
-.idol-301        .idol-bg-color-dark.bg-color-highlight { background-color: #b2581b !important; }
-.idol-301:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #b2581b !important; }
-.idol-302        .idol-bg-color-dark { background-color: #406663 !important; }
-.idol-302        .idol-bg-color-dark.bg-color-highlight { background-color: #70b2ae !important; }
-.idol-302:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #70b2ae !important; }
-.idol-303        .idol-bg-color-dark { background-color: #662c39 !important; }
-.idol-303        .idol-bg-color-dark.bg-color-highlight { background-color: #b24d64 !important; }
-.idol-303:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #b24d64 !important; }
-.idol-304        .idol-bg-color-dark { background-color: #2e6128 !important; }
-.idol-304        .idol-bg-color-dark.bg-color-highlight { background-color: #51aa47 !important; }
-.idol-304:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #51aa47 !important; }
-.idol-305        .idol-bg-color-dark { background-color: #000040 !important; }
-.idol-305        .idol-bg-color-dark.bg-color-highlight { background-color: #000070 !important; }
-.idol-305:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #000070 !important; }
-.idol-306        .idol-bg-color-dark { background-color: #66611a !important; }
-.idol-306        .idol-bg-color-dark.bg-color-highlight { background-color: #b2aa2e !important; }
-.idol-306:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #b2aa2e !important; }
-.idol-307        .idol-bg-color-dark { background-color: #661515 !important; }
-.idol-307        .idol-bg-color-dark.bg-color-highlight { background-color: #b22525 !important; }
-.idol-307:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #b22525 !important; }
-.idol-308        .idol-bg-color-dark { background-color: #476658 !important; }
-.idol-308        .idol-bg-color-dark.bg-color-highlight { background-color: #7cb29a !important; }
-.idol-308:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #7cb29a !important; }
-.idol-309        .idol-bg-color-dark { background-color: #66204e !important; }
-.idol-309        .idol-bg-color-dark.bg-color-highlight { background-color: #b23889 !important; }
-.idol-309:hover  .idol-bg-color-dark.bg-color-highlight-hover { background-color: #b23889 !important; }
+               .idol-2          .idol-bg-color-dim,
+body.dark-mode .idol-2          .idol-bg-color { background-color: #1580a5 !important; }
+               .idol-2          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-2          .idol-bg-color.bg-color-highlight { background-color: #1ba5d4 !important; }
+               .idol-2:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-2:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #1ba5d4 !important; }
+
+               .idol-3          .idol-bg-color-dim,
+body.dark-mode .idol-3          .idol-bg-color { background-color: #777978 !important; }
+               .idol-3          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-3          .idol-bg-color.bg-color-highlight { background-color: #999b9a !important; }
+               .idol-3:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-3:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #999b9a !important; }
+
+               .idol-4          .idol-bg-color-dim,
+body.dark-mode .idol-4          .idol-bg-color { background-color: #1e4f80 !important; }
+               .idol-4          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-4          .idol-bg-color.bg-color-highlight { background-color: #2766a4 !important; }
+               .idol-4:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-4:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #2766a4 !important; }
+
+               .idol-5          .idol-bg-color-dim,
+body.dark-mode .idol-5          .idol-bg-color { background-color: #b1a801 !important; }
+               .idol-5          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-5          .idol-bg-color.bg-color-highlight { background-color: #e4d801 !important; }
+               .idol-5:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-5:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #e4d801 !important; }
+
+               .idol-6          .idol-bg-color-dim,
+body.dark-mode .idol-6          .idol-bg-color { background-color: #a32417 !important; }
+               .idol-6          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-6          .idol-bg-color.bg-color-highlight { background-color: #d12e1d !important; }
+               .idol-6:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-6:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #d12e1d !important; }
+
+               .idol-7          .idol-bg-color-dim,
+body.dark-mode .idol-7          .idol-bg-color { background-color: #664172 !important; }
+               .idol-7          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-7          .idol-bg-color.bg-color-highlight { background-color: #835392 !important; }
+               .idol-7:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-7:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #835392 !important; }
+
+               .idol-8          .idol-bg-color-dim,
+body.dark-mode .idol-8          .idol-bg-color { background-color: #187828 !important; }
+               .idol-8          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-8          .idol-bg-color.bg-color-highlight { background-color: #1f9a34 !important; }
+               .idol-8:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-8:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #1f9a34 !important; }
+
+               .idol-9          .idol-bg-color-dim,
+body.dark-mode .idol-9          .idol-bg-color { background-color: #a54d6c !important; }
+               .idol-9          .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-9          .idol-bg-color.bg-color-highlight { background-color: #d4638b !important; }
+               .idol-9:hover    .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-9:hover    .idol-bg-color.bg-color-highlight-hover { background-color: #d4638b !important; }
+
+               .idol-101        .idol-bg-color-dim,
+body.dark-mode .idol-101        .idol-bg-color { background-color: #a95a00 !important; }
+               .idol-101        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-101        .idol-bg-color.bg-color-highlight { background-color: #d97400 !important; }
+               .idol-101:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-101:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #d97400 !important; }
+
+               .idol-102        .idol-bg-color-dim,
+body.dark-mode .idol-102        .idol-bg-color { background-color: #aa6d68 !important; }
+               .idol-102        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-102        .idol-bg-color.bg-color-highlight { background-color: #da8c86 !important; }
+               .idol-102:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-102:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #da8c86 !important; }
+
+               .idol-103        .idol-bg-color-dim,
+body.dark-mode .idol-103        .idol-bg-color { background-color: #458679 !important; }
+               .idol-103        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-103        .idol-bg-color.bg-color-highlight { background-color: #59ac9b !important; }
+               .idol-103:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-103:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #59ac9b !important; }
+
+               .idol-104        .idol-bg-color-dim,
+body.dark-mode .idol-104        .idol-bg-color { background-color: #a1000e !important; }
+               .idol-104        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-104        .idol-bg-color.bg-color-highlight { background-color: #cf0012 !important; }
+               .idol-104:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-104:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #cf0012 !important; }
+
+               .idol-105        .idol-bg-color-dim,
+body.dark-mode .idol-105        .idol-bg-color { background-color: #48769c !important; }
+               .idol-105        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-105        .idol-bg-color.bg-color-highlight { background-color: #5c99c8 !important; }
+               .idol-105:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-105:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #5c99c8 !important; }
+
+               .idol-106        .idol-bg-color-dim,
+body.dark-mode .idol-106        .idol-bg-color { background-color: #6f6f6f !important; }
+               .idol-106        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-106        .idol-bg-color.bg-color-highlight { background-color: #8f8f8f !important; }
+               .idol-106:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-106:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #8f8f8f !important; }
+
+               .idol-107        .idol-bg-color-dim,
+body.dark-mode .idol-107        .idol-bg-color { background-color: #b19e01 !important; }
+               .idol-107        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-107        .idol-bg-color.bg-color-highlight { background-color: #e4cb01 !important; }
+               .idol-107:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-107:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #e4cb01 !important; }
+
+               .idol-108        .idol-bg-color-dim,
+body.dark-mode .idol-108        .idol-bg-color { background-color: #463d72 !important; }
+               .idol-108        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-108        .idol-bg-color.bg-color-highlight { background-color: #5a4f93 !important; }
+               .idol-108:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-108:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #5a4f93 !important; }
+
+               .idol-109        .idol-bg-color-dim,
+body.dark-mode .idol-109        .idol-bg-color { background-color: #a64c74 !important; }
+               .idol-109        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-109        .idol-bg-color.bg-color-highlight { background-color: #d66295 !important; }
+               .idol-109:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-109:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #d66295 !important; }
+
+               .idol-201        .idol-bg-color-dim,
+body.dark-mode .idol-201        .idol-bg-color { background-color: #a8666e !important; }
+               .idol-201        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-201        .idol-bg-color.bg-color-highlight { background-color: #d8848e !important; }
+               .idol-201:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-201:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #d8848e !important; }
+
+               .idol-202        .idol-bg-color-dim,
+body.dark-mode .idol-202        .idol-bg-color { background-color: #aca846 !important; }
+               .idol-202        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-202        .idol-bg-color.bg-color-highlight { background-color: #ded85a !important; }
+               .idol-202:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-202:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #ded85a !important; }
+
+               .idol-203        .idol-bg-color-dim,
+body.dark-mode .idol-203        .idol-bg-color { background-color: #5a8aa7 !important; }
+               .idol-203        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-203        .idol-bg-color.bg-color-highlight { background-color: #74b2d7 !important; }
+               .idol-203:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-203:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #74b2d7 !important; }
+
+               .idol-204        .idol-bg-color-dim,
+body.dark-mode .idol-204        .idol-bg-color { background-color: #022c6b !important; }
+               .idol-204        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-204        .idol-bg-color.bg-color-highlight { background-color: #023989 !important; }
+               .idol-204:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-204:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #023989 !important; }
+
+               .idol-205        .idol-bg-color-dim,
+body.dark-mode .idol-205        .idol-bg-color { background-color: #a44300 !important; }
+               .idol-205        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-205        .idol-bg-color.bg-color-highlight { background-color: #d35600 !important; }
+               .idol-205:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-205:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #d35600 !important; }
+
+               .idol-206        .idol-bg-color-dim,
+body.dark-mode .idol-206        .idol-bg-color { background-color: #826387 !important; }
+               .idol-206        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-206        .idol-bg-color.bg-color-highlight { background-color: #a77fad !important; }
+               .idol-206:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-206:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #a77fad !important; }
+
+               .idol-207        .idol-bg-color-dim,
+body.dark-mode .idol-207        .idol-bg-color { background-color: #98252c !important; }
+               .idol-207        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-207        .idol-bg-color.bg-color-highlight { background-color: #c43038 !important; }
+               .idol-207:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-207:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #c43038 !important; }
+
+               .idol-208        .idol-bg-color-dim,
+body.dark-mode .idol-208        .idol-bg-color { background-color: #4b8443 !important; }
+               .idol-208        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-208        .idol-bg-color.bg-color-highlight { background-color: #61aa57 !important; }
+               .idol-208:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-208:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #61aa57 !important; }
+
+               .idol-209        .idol-bg-color-dim,
+body.dark-mode .idol-209        .idol-bg-color { background-color: #757676 !important; }
+               .idol-209        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-209        .idol-bg-color.bg-color-highlight { background-color: #979998 !important; }
+               .idol-209:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-209:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #979998 !important; }
+
+               .idol-210        .idol-bg-color-dim,
+body.dark-mode .idol-210        .idol-bg-color { background-color: #1e6e58 !important; }
+               .idol-210        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-210        .idol-bg-color.bg-color-highlight { background-color: #278e71 !important; }
+               .idol-210:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-210:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #278e71 !important; }
+
+               .idol-211        .idol-bg-color-dim,
+body.dark-mode .idol-211        .idol-bg-color { background-color: #95958d !important; }
+               .idol-211        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-211        .idol-bg-color.bg-color-highlight { background-color: #c0bfb5 !important; }
+               .idol-211:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-211:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #c0bfb5 !important; }
+
+               .idol-212        .idol-bg-color-dim,
+body.dark-mode .idol-212        .idol-bg-color { background-color: #ad8c89 !important; }
+               .idol-212        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-212        .idol-bg-color.bg-color-highlight { background-color: #dfb4b0 !important; }
+               .idol-212:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-212:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #dfb4b0 !important; }
+
+               .idol-301        .idol-bg-color-dim,
+body.dark-mode .idol-301        .idol-bg-color { background-color: #b2581b !important; }
+               .idol-301        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-301        .idol-bg-color.bg-color-highlight { background-color: #e57223 !important; }
+               .idol-301:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-301:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #e57223 !important; }
+
+               .idol-302        .idol-bg-color-dim,
+body.dark-mode .idol-302        .idol-bg-color { background-color: #70b2ae !important; }
+               .idol-302        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-302        .idol-bg-color.bg-color-highlight { background-color: #90e5e0 !important; }
+               .idol-302:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-302:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #90e5e0 !important; }
+
+               .idol-303        .idol-bg-color-dim,
+body.dark-mode .idol-303        .idol-bg-color { background-color: #b24d64 !important; }
+               .idol-303        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-303        .idol-bg-color.bg-color-highlight { background-color: #e56381 !important; }
+               .idol-303:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-303:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #e56381 !important; }
+
+               .idol-304        .idol-bg-color-dim,
+body.dark-mode .idol-304        .idol-bg-color { background-color: #51aa47 !important; }
+               .idol-304        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-304        .idol-bg-color.bg-color-highlight { background-color: #68db5b !important; }
+               .idol-304:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-304:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #68db5b !important; }
+
+               .idol-305        .idol-bg-color-dim,
+body.dark-mode .idol-305        .idol-bg-color { background-color: #000070 !important; }
+               .idol-305        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-305        .idol-bg-color.bg-color-highlight { background-color: #000090 !important; }
+               .idol-305:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-305:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #000090 !important; }
+
+               .idol-306        .idol-bg-color-dim,
+body.dark-mode .idol-306        .idol-bg-color { background-color: #b2aa2e !important; }
+               .idol-306        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-306        .idol-bg-color.bg-color-highlight { background-color: #e5db3b !important; }
+               .idol-306:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-306:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #e5db3b !important; }
+
+               .idol-307        .idol-bg-color-dim,
+body.dark-mode .idol-307        .idol-bg-color { background-color: #b22525 !important; }
+               .idol-307        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-307        .idol-bg-color.bg-color-highlight { background-color: #e52f2f !important; }
+               .idol-307:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-307:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #e52f2f !important; }
+
+               .idol-308        .idol-bg-color-dim,
+body.dark-mode .idol-308        .idol-bg-color { background-color: #7cb29a !important; }
+               .idol-308        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-308        .idol-bg-color.bg-color-highlight { background-color: #a0e5c6 !important; }
+               .idol-308:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-308:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #a0e5c6 !important; }
+
+               .idol-309        .idol-bg-color-dim,
+body.dark-mode .idol-309        .idol-bg-color { background-color: #b23889 !important; }
+               .idol-309        .idol-bg-color-dim.bg-color-highlight,
+body.dark-mode .idol-309        .idol-bg-color.bg-color-highlight { background-color: #e548b0 !important; }
+               .idol-309:hover  .idol-bg-color-dim.bg-color-highlight-hover,
+body.dark-mode .idol-309:hover  .idol-bg-color.bg-color-highlight-hover { background-color: #e548b0 !important; }
+
+
+               .idol-1          .idol-bg-color-dark,
+body.dark-mode .idol-1          .idol-bg-color-dim { background-color: #794c00 !important; }
+               .idol-1          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-1          .idol-bg-color-dim.bg-color-highlight { background-color: #aa6a00 !important; }
+               .idol-1:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-1:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #aa6a00 !important; }
+
+               .idol-2          .idol-bg-color-dark,
+body.dark-mode .idol-2          .idol-bg-color-dim { background-color: #0f5c76 !important; }
+               .idol-2          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-2          .idol-bg-color-dim.bg-color-highlight { background-color: #1580a5 !important; }
+               .idol-2:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-2:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #1580a5 !important; }
+
+               .idol-3          .idol-bg-color-dark,
+body.dark-mode .idol-3          .idol-bg-color-dim { background-color: #555656 !important; }
+               .idol-3          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-3          .idol-bg-color-dim.bg-color-highlight { background-color: #777978 !important; }
+               .idol-3:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-3:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #777978 !important; }
+
+               .idol-4          .idol-bg-color-dark,
+body.dark-mode .idol-4          .idol-bg-color-dim { background-color: #16395b !important; }
+               .idol-4          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-4          .idol-bg-color-dim.bg-color-highlight { background-color: #1e4f80 !important; }
+               .idol-4:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-4:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #1e4f80 !important; }
+
+               .idol-5          .idol-bg-color-dark,
+body.dark-mode .idol-5          .idol-bg-color-dim { background-color: #7f7801 !important; }
+               .idol-5          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-5          .idol-bg-color-dim.bg-color-highlight { background-color: #b1a801 !important; }
+               .idol-5:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-5:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #b1a801 !important; }
+
+               .idol-6          .idol-bg-color-dark,
+body.dark-mode .idol-6          .idol-bg-color-dim { background-color: #741a10 !important; }
+               .idol-6          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-6          .idol-bg-color-dim.bg-color-highlight { background-color: #a32417 !important; }
+               .idol-6:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-6:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #a32417 !important; }
+
+               .idol-7          .idol-bg-color-dark,
+body.dark-mode .idol-7          .idol-bg-color-dim { background-color: #492e51 !important; }
+               .idol-7          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-7          .idol-bg-color-dim.bg-color-highlight { background-color: #664172 !important; }
+               .idol-7:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-7:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #664172 !important; }
+
+               .idol-8          .idol-bg-color-dark,
+body.dark-mode .idol-8          .idol-bg-color-dim { background-color: #11561d !important; }
+               .idol-8          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-8          .idol-bg-color-dim.bg-color-highlight { background-color: #187828 !important; }
+               .idol-8:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-8:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #187828 !important; }
+
+               .idol-9          .idol-bg-color-dark,
+body.dark-mode .idol-9          .idol-bg-color-dim { background-color: #76374d !important; }
+               .idol-9          .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-9          .idol-bg-color-dim.bg-color-highlight { background-color: #a54d6c !important; }
+               .idol-9:hover    .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-9:hover    .idol-bg-color-dim.bg-color-highlight-hover { background-color: #a54d6c !important; }
+
+               .idol-101        .idol-bg-color-dark,
+body.dark-mode .idol-101        .idol-bg-color-dim { background-color: #794000 !important; }
+               .idol-101        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-101        .idol-bg-color-dim.bg-color-highlight { background-color: #a95a00 !important; }
+               .idol-101:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-101:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #a95a00 !important; }
+
+               .idol-102        .idol-bg-color-dark,
+body.dark-mode .idol-102        .idol-bg-color-dim { background-color: #794e4a !important; }
+               .idol-102        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-102        .idol-bg-color-dim.bg-color-highlight { background-color: #aa6d68 !important; }
+               .idol-102:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-102:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #aa6d68 !important; }
+
+               .idol-103        .idol-bg-color-dark,
+body.dark-mode .idol-103        .idol-bg-color-dim { background-color: #316056 !important; }
+               .idol-103        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-103        .idol-bg-color-dim.bg-color-highlight { background-color: #458679 !important; }
+               .idol-103:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-103:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #458679 !important; }
+
+               .idol-104        .idol-bg-color-dark,
+body.dark-mode .idol-104        .idol-bg-color-dim { background-color: #73000a !important; }
+               .idol-104        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-104        .idol-bg-color-dim.bg-color-highlight { background-color: #a1000e !important; }
+               .idol-104:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-104:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #a1000e !important; }
+
+               .idol-105        .idol-bg-color-dark,
+body.dark-mode .idol-105        .idol-bg-color-dim { background-color: #33556f !important; }
+               .idol-105        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-105        .idol-bg-color-dim.bg-color-highlight { background-color: #48769c !important; }
+               .idol-105:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-105:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #48769c !important; }
+
+               .idol-106        .idol-bg-color-dark,
+body.dark-mode .idol-106        .idol-bg-color-dim { background-color: #4f4f4f !important; }
+               .idol-106        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-106        .idol-bg-color-dim.bg-color-highlight { background-color: #6f6f6f !important; }
+               .idol-106:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-106:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #6f6f6f !important; }
+
+               .idol-107        .idol-bg-color-dark,
+body.dark-mode .idol-107        .idol-bg-color-dim { background-color: #7f7101 !important; }
+               .idol-107        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-107        .idol-bg-color-dim.bg-color-highlight { background-color: #b19e01 !important; }
+               .idol-107:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-107:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #b19e01 !important; }
+
+               .idol-108        .idol-bg-color-dark,
+body.dark-mode .idol-108        .idol-bg-color-dim { background-color: #322c52 !important; }
+               .idol-108        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-108        .idol-bg-color-dim.bg-color-highlight { background-color: #463d72 !important; }
+               .idol-108:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-108:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #463d72 !important; }
+
+               .idol-109        .idol-bg-color-dark,
+body.dark-mode .idol-109        .idol-bg-color-dim { background-color: #773653 !important; }
+               .idol-109        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-109        .idol-bg-color-dim.bg-color-highlight { background-color: #a64c74 !important; }
+               .idol-109:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-109:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #a64c74 !important; }
+
+               .idol-201        .idol-bg-color-dark,
+body.dark-mode .idol-201        .idol-bg-color-dim { background-color: #78494f !important; }
+               .idol-201        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-201        .idol-bg-color-dim.bg-color-highlight { background-color: #a8666e !important; }
+               .idol-201:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-201:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #a8666e !important; }
+
+               .idol-202        .idol-bg-color-dark,
+body.dark-mode .idol-202        .idol-bg-color-dim { background-color: #7b7832 !important; }
+               .idol-202        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-202        .idol-bg-color-dim.bg-color-highlight { background-color: #aca846 !important; }
+               .idol-202:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-202:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #aca846 !important; }
+
+               .idol-203        .idol-bg-color-dark,
+body.dark-mode .idol-203        .idol-bg-color-dim { background-color: #406377 !important; }
+               .idol-203        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-203        .idol-bg-color-dim.bg-color-highlight { background-color: #5a8aa7 !important; }
+               .idol-203:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-203:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #5a8aa7 !important; }
+
+               .idol-204        .idol-bg-color-dark,
+body.dark-mode .idol-204        .idol-bg-color-dim { background-color: #01204c !important; }
+               .idol-204        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-204        .idol-bg-color-dim.bg-color-highlight { background-color: #022c6b !important; }
+               .idol-204:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-204:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #022c6b !important; }
+
+               .idol-205        .idol-bg-color-dark,
+body.dark-mode .idol-205        .idol-bg-color-dim { background-color: #753000 !important; }
+               .idol-205        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-205        .idol-bg-color-dim.bg-color-highlight { background-color: #a44300 !important; }
+               .idol-205:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-205:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #a44300 !important; }
+
+               .idol-206        .idol-bg-color-dark,
+body.dark-mode .idol-206        .idol-bg-color-dim { background-color: #5d4760 !important; }
+               .idol-206        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-206        .idol-bg-color-dim.bg-color-highlight { background-color: #826387 !important; }
+               .idol-206:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-206:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #826387 !important; }
+
+               .idol-207        .idol-bg-color-dark,
+body.dark-mode .idol-207        .idol-bg-color-dim { background-color: #6d1b1f !important; }
+               .idol-207        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-207        .idol-bg-color-dim.bg-color-highlight { background-color: #98252c !important; }
+               .idol-207:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-207:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #98252c !important; }
+
+               .idol-208        .idol-bg-color-dark,
+body.dark-mode .idol-208        .idol-bg-color-dim { background-color: #365e30 !important; }
+               .idol-208        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-208        .idol-bg-color-dim.bg-color-highlight { background-color: #4b8443 !important; }
+               .idol-208:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-208:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #4b8443 !important; }
+
+               .idol-209        .idol-bg-color-dark,
+body.dark-mode .idol-209        .idol-bg-color-dim { background-color: #545554 !important; }
+               .idol-209        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-209        .idol-bg-color-dim.bg-color-highlight { background-color: #757676 !important; }
+               .idol-209:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-209:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #757676 !important; }
+
+               .idol-210        .idol-bg-color-dark,
+body.dark-mode .idol-210        .idol-bg-color-dim { background-color: #164f3f !important; }
+               .idol-210        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-210        .idol-bg-color-dim.bg-color-highlight { background-color: #1e6e58 !important; }
+               .idol-210:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-210:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #1e6e58 !important; }
+
+               .idol-211        .idol-bg-color-dark,
+body.dark-mode .idol-211        .idol-bg-color-dim { background-color: #6b6a65 !important; }
+               .idol-211        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-211        .idol-bg-color-dim.bg-color-highlight { background-color: #95958d !important; }
+               .idol-211:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-211:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #95958d !important; }
+
+               .idol-212        .idol-bg-color-dark,
+body.dark-mode .idol-212        .idol-bg-color-dim { background-color: #7c6462 !important; }
+               .idol-212        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-212        .idol-bg-color-dim.bg-color-highlight { background-color: #ad8c89 !important; }
+               .idol-212:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-212:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #ad8c89 !important; }
+
+               .idol-301        .idol-bg-color-dark,
+body.dark-mode .idol-301        .idol-bg-color-dim { background-color: #7f3f13 !important; }
+               .idol-301        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-301        .idol-bg-color-dim.bg-color-highlight { background-color: #b2581b !important; }
+               .idol-301:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-301:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #b2581b !important; }
+
+               .idol-302        .idol-bg-color-dark,
+body.dark-mode .idol-302        .idol-bg-color-dim { background-color: #507f7c !important; }
+               .idol-302        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-302        .idol-bg-color-dim.bg-color-highlight { background-color: #70b2ae !important; }
+               .idol-302:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-302:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #70b2ae !important; }
+
+               .idol-303        .idol-bg-color-dark,
+body.dark-mode .idol-303        .idol-bg-color-dim { background-color: #7f3748 !important; }
+               .idol-303        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-303        .idol-bg-color-dim.bg-color-highlight { background-color: #b24d64 !important; }
+               .idol-303:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-303:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #b24d64 !important; }
+
+               .idol-304        .idol-bg-color-dark,
+body.dark-mode .idol-304        .idol-bg-color-dim { background-color: #3a7a33 !important; }
+               .idol-304        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-304        .idol-bg-color-dim.bg-color-highlight { background-color: #51aa47 !important; }
+               .idol-304:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-304:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #51aa47 !important; }
+
+               .idol-305        .idol-bg-color-dark,
+body.dark-mode .idol-305        .idol-bg-color-dim { background-color: #000050 !important; }
+               .idol-305        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-305        .idol-bg-color-dim.bg-color-highlight { background-color: #000070 !important; }
+               .idol-305:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-305:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #000070 !important; }
+
+               .idol-306        .idol-bg-color-dark,
+body.dark-mode .idol-306        .idol-bg-color-dim { background-color: #7f7a21 !important; }
+               .idol-306        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-306        .idol-bg-color-dim.bg-color-highlight { background-color: #b2aa2e !important; }
+               .idol-306:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-306:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #b2aa2e !important; }
+
+               .idol-307        .idol-bg-color-dark,
+body.dark-mode .idol-307        .idol-bg-color-dim { background-color: #7f1a1a !important; }
+               .idol-307        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-307        .idol-bg-color-dim.bg-color-highlight { background-color: #b22525 !important; }
+               .idol-307:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-307:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #b22525 !important; }
+
+               .idol-308        .idol-bg-color-dark,
+body.dark-mode .idol-308        .idol-bg-color-dim { background-color: #597f6e !important; }
+               .idol-308        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-308        .idol-bg-color-dim.bg-color-highlight { background-color: #7cb29a !important; }
+               .idol-308:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-308:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #7cb29a !important; }
+
+               .idol-309        .idol-bg-color-dark,
+body.dark-mode .idol-309        .idol-bg-color-dim { background-color: #7f2862 !important; }
+               .idol-309        .idol-bg-color-dark.bg-color-highlight,
+body.dark-mode .idol-309        .idol-bg-color-dim.bg-color-highlight { background-color: #b23889 !important; }
+               .idol-309:hover  .idol-bg-color-dark.bg-color-highlight-hover,
+body.dark-mode .idol-309:hover  .idol-bg-color-dim.bg-color-highlight-hover { background-color: #b23889 !important; }
+
 
 .idol-1   .idol-border-color      { border-color: #f39801 !important; }
 .idol-2   .idol-border-color      { border-color: #1eb8ec !important; }
@@ -820,84 +950,279 @@
 .idol-308 .idol-border-color      { border-color: #b2ffdd !important; }
 .idol-309 .idol-border-color      { border-color: #ff51c4 !important; }
 
-.idol-1          .idol-border-color-dim  { border-color: #aa6a00 !important; }
-.idol-1          .idol-border-color-dim.border-color-highlight  { border-color: #da8800 !important; }
-.idol-2          .idol-border-color-dim  { border-color: #1580a5 !important; }
-.idol-2          .idol-border-color-dim.border-color-highlight  { border-color: #1ba5d4 !important; }
-.idol-3          .idol-border-color-dim  { border-color: #777978 !important; }
-.idol-3          .idol-border-color-dim.border-color-highlight  { border-color: #999b9a !important; }
-.idol-4          .idol-border-color-dim  { border-color: #1e4f80 !important; }
-.idol-4          .idol-border-color-dim.border-color-highlight  { border-color: #2766a4 !important; }
-.idol-5          .idol-border-color-dim  { border-color: #b1a801 !important; }
-.idol-5          .idol-border-color-dim.border-color-highlight  { border-color: #e4d801 !important; }
-.idol-6          .idol-border-color-dim  { border-color: #a32417 !important; }
-.idol-6          .idol-border-color-dim.border-color-highlight  { border-color: #d12e1d !important; }
-.idol-7          .idol-border-color-dim  { border-color: #664172 !important; }
-.idol-7          .idol-border-color-dim.border-color-highlight  { border-color: #835392 !important; }
-.idol-8          .idol-border-color-dim  { border-color: #187828 !important; }
-.idol-8          .idol-border-color-dim.border-color-highlight  { border-color: #1f9a34 !important; }
-.idol-9          .idol-border-color-dim  { border-color: #a54d6c !important; }
-.idol-9          .idol-border-color-dim.border-color-highlight  { border-color: #d4638b !important; }
-.idol-101        .idol-border-color-dim  { border-color: #a95a00 !important; }
-.idol-101        .idol-border-color-dim.border-color-highlight  { border-color: #d97400 !important; }
-.idol-102        .idol-border-color-dim  { border-color: #aa6d68 !important; }
-.idol-102        .idol-border-color-dim.border-color-highlight  { border-color: #da8c86 !important; }
-.idol-103        .idol-border-color-dim  { border-color: #458679 !important; }
-.idol-103        .idol-border-color-dim.border-color-highlight  { border-color: #59ac9b !important; }
-.idol-104        .idol-border-color-dim  { border-color: #a1000e !important; }
-.idol-104        .idol-border-color-dim.border-color-highlight  { border-color: #cf0012 !important; }
-.idol-105        .idol-border-color-dim  { border-color: #48769c !important; }
-.idol-105        .idol-border-color-dim.border-color-highlight  { border-color: #5c99c8 !important; }
-.idol-106        .idol-border-color-dim  { border-color: #6f6f6f !important; }
-.idol-106        .idol-border-color-dim.border-color-highlight  { border-color: #8f8f8f !important; }
-.idol-107        .idol-border-color-dim  { border-color: #b19e01 !important; }
-.idol-107        .idol-border-color-dim.border-color-highlight  { border-color: #e4cb01 !important; }
-.idol-108        .idol-border-color-dim  { border-color: #463d72 !important; }
-.idol-108        .idol-border-color-dim.border-color-highlight  { border-color: #5a4f93 !important; }
-.idol-109        .idol-border-color-dim  { border-color: #a64c74 !important; }
-.idol-109        .idol-border-color-dim.border-color-highlight  { border-color: #d66295 !important; }
-.idol-201        .idol-border-color-dim  { border-color: #a8666e !important; }
-.idol-201        .idol-border-color-dim.border-color-highlight  { border-color: #d8848e !important; }
-.idol-202        .idol-border-color-dim  { border-color: #aca846 !important; }
-.idol-202        .idol-border-color-dim.border-color-highlight  { border-color: #ded85a !important; }
-.idol-203        .idol-border-color-dim  { border-color: #5a8aa7 !important; }
-.idol-203        .idol-border-color-dim.border-color-highlight  { border-color: #74b2d7 !important; }
-.idol-204        .idol-border-color-dim  { border-color: #022c6b !important; }
-.idol-204        .idol-border-color-dim.border-color-highlight  { border-color: #023989 !important; }
-.idol-205        .idol-border-color-dim  { border-color: #a44300 !important; }
-.idol-205        .idol-border-color-dim.border-color-highlight  { border-color: #d35600 !important; }
-.idol-206        .idol-border-color-dim  { border-color: #826387 !important; }
-.idol-206        .idol-border-color-dim.border-color-highlight  { border-color: #a77fad !important; }
-.idol-207        .idol-border-color-dim  { border-color: #98252c !important; }
-.idol-207        .idol-border-color-dim.border-color-highlight  { border-color: #c43038 !important; }
-.idol-208        .idol-border-color-dim  { border-color: #4b8443 !important; }
-.idol-208        .idol-border-color-dim.border-color-highlight  { border-color: #61aa57 !important; }
-.idol-209        .idol-border-color-dim  { border-color: #757676 !important; }
-.idol-209        .idol-border-color-dim.border-color-highlight  { border-color: #979998 !important; }
-.idol-210        .idol-border-color-dim  { border-color: #1e6e58 !important; }
-.idol-210        .idol-border-color-dim.border-color-highlight  { border-color: #278e71 !important; }
-.idol-211        .idol-border-color-dim  { border-color: #95958d !important; }
-.idol-211        .idol-border-color-dim.border-color-highlight  { border-color: #c0bfb5 !important; }
-.idol-212        .idol-border-color-dim  { border-color: #ad8c89 !important; }
-.idol-212        .idol-border-color-dim.border-color-highlight  { border-color: #dfb4b0 !important; }
-.idol-301        .idol-border-color-dim  { border-color: #b2581b !important; }
-.idol-301        .idol-border-color-dim.border-color-highlight  { border-color: #e57223 !important; }
-.idol-302        .idol-border-color-dim  { border-color: #70b2ae !important; }
-.idol-302        .idol-border-color-dim.border-color-highlight  { border-color: #90e5e0 !important; }
-.idol-303        .idol-border-color-dim  { border-color: #b24d64 !important; }
-.idol-303        .idol-border-color-dim.border-color-highlight  { border-color: #e56381 !important; }
-.idol-304        .idol-border-color-dim  { border-color: #51aa47 !important; }
-.idol-304        .idol-border-color-dim.border-color-highlight  { border-color: #68db5b !important; }
-.idol-305        .idol-border-color-dim  { border-color: #000070 !important; }
-.idol-305        .idol-border-color-dim.border-color-highlight  { border-color: #000090 !important; }
-.idol-306        .idol-border-color-dim  { border-color: #b2aa2e !important; }
-.idol-306        .idol-border-color-dim.border-color-highlight  { border-color: #e5db3b !important; }
-.idol-307        .idol-border-color-dim  { border-color: #b22525 !important; }
-.idol-307        .idol-border-color-dim.border-color-highlight  { border-color: #e52f2f !important; }
-.idol-308        .idol-border-color-dim  { border-color: #7cb29a !important; }
-.idol-308        .idol-border-color-dim.border-color-highlight  { border-color: #a0e5c6 !important; }
-.idol-309        .idol-border-color-dim  { border-color: #b23889 !important; }
-.idol-309        .idol-border-color-dim.border-color-highlight  { border-color: #e548b0 !important; }
+               .idol-1          .idol-border-color-dark,
+body.dark-mode .idol-1          .idol-border-color-dim { border-color: #794c00 !important; }
+               .idol-1          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-1          .idol-border-color-dim.border-color-highlight { border-color: #aa6a00 !important; }
+               .idol-1:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-1:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #aa6a00 !important; }
+
+               .idol-2          .idol-border-color-dark,
+body.dark-mode .idol-2          .idol-border-color-dim { border-color: #0f5c76 !important; }
+               .idol-2          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-2          .idol-border-color-dim.border-color-highlight { border-color: #1580a5 !important; }
+               .idol-2:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-2:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #1580a5 !important; }
+
+               .idol-3          .idol-border-color-dark,
+body.dark-mode .idol-3          .idol-border-color-dim { border-color: #555656 !important; }
+               .idol-3          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-3          .idol-border-color-dim.border-color-highlight { border-color: #777978 !important; }
+               .idol-3:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-3:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #777978 !important; }
+
+               .idol-4          .idol-border-color-dark,
+body.dark-mode .idol-4          .idol-border-color-dim { border-color: #16395b !important; }
+               .idol-4          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-4          .idol-border-color-dim.border-color-highlight { border-color: #1e4f80 !important; }
+               .idol-4:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-4:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #1e4f80 !important; }
+
+               .idol-5          .idol-border-color-dark,
+body.dark-mode .idol-5          .idol-border-color-dim { border-color: #7f7801 !important; }
+               .idol-5          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-5          .idol-border-color-dim.border-color-highlight { border-color: #b1a801 !important; }
+               .idol-5:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-5:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #b1a801 !important; }
+
+               .idol-6          .idol-border-color-dark,
+body.dark-mode .idol-6          .idol-border-color-dim { border-color: #741a10 !important; }
+               .idol-6          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-6          .idol-border-color-dim.border-color-highlight { border-color: #a32417 !important; }
+               .idol-6:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-6:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #a32417 !important; }
+
+               .idol-7          .idol-border-color-dark,
+body.dark-mode .idol-7          .idol-border-color-dim { border-color: #492e51 !important; }
+               .idol-7          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-7          .idol-border-color-dim.border-color-highlight { border-color: #664172 !important; }
+               .idol-7:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-7:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #664172 !important; }
+
+               .idol-8          .idol-border-color-dark,
+body.dark-mode .idol-8          .idol-border-color-dim { border-color: #11561d !important; }
+               .idol-8          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-8          .idol-border-color-dim.border-color-highlight { border-color: #187828 !important; }
+               .idol-8:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-8:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #187828 !important; }
+
+               .idol-9          .idol-border-color-dark,
+body.dark-mode .idol-9          .idol-border-color-dim { border-color: #76374d !important; }
+               .idol-9          .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-9          .idol-border-color-dim.border-color-highlight { border-color: #a54d6c !important; }
+               .idol-9:hover    .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-9:hover    .idol-border-color-dim.border-color-highlight-hover { border-color: #a54d6c !important; }
+
+               .idol-101        .idol-border-color-dark,
+body.dark-mode .idol-101        .idol-border-color-dim { border-color: #794000 !important; }
+               .idol-101        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-101        .idol-border-color-dim.border-color-highlight { border-color: #a95a00 !important; }
+               .idol-101:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-101:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #a95a00 !important; }
+
+               .idol-102        .idol-border-color-dark,
+body.dark-mode .idol-102        .idol-border-color-dim { border-color: #794e4a !important; }
+               .idol-102        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-102        .idol-border-color-dim.border-color-highlight { border-color: #aa6d68 !important; }
+               .idol-102:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-102:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #aa6d68 !important; }
+
+               .idol-103        .idol-border-color-dark,
+body.dark-mode .idol-103        .idol-border-color-dim { border-color: #316056 !important; }
+               .idol-103        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-103        .idol-border-color-dim.border-color-highlight { border-color: #458679 !important; }
+               .idol-103:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-103:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #458679 !important; }
+
+               .idol-104        .idol-border-color-dark,
+body.dark-mode .idol-104        .idol-border-color-dim { border-color: #73000a !important; }
+               .idol-104        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-104        .idol-border-color-dim.border-color-highlight { border-color: #a1000e !important; }
+               .idol-104:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-104:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #a1000e !important; }
+
+               .idol-105        .idol-border-color-dark,
+body.dark-mode .idol-105        .idol-border-color-dim { border-color: #33556f !important; }
+               .idol-105        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-105        .idol-border-color-dim.border-color-highlight { border-color: #48769c !important; }
+               .idol-105:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-105:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #48769c !important; }
+
+               .idol-106        .idol-border-color-dark,
+body.dark-mode .idol-106        .idol-border-color-dim { border-color: #4f4f4f !important; }
+               .idol-106        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-106        .idol-border-color-dim.border-color-highlight { border-color: #6f6f6f !important; }
+               .idol-106:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-106:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #6f6f6f !important; }
+
+               .idol-107        .idol-border-color-dark,
+body.dark-mode .idol-107        .idol-border-color-dim { border-color: #7f7101 !important; }
+               .idol-107        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-107        .idol-border-color-dim.border-color-highlight { border-color: #b19e01 !important; }
+               .idol-107:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-107:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #b19e01 !important; }
+
+               .idol-108        .idol-border-color-dark,
+body.dark-mode .idol-108        .idol-border-color-dim { border-color: #322c52 !important; }
+               .idol-108        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-108        .idol-border-color-dim.border-color-highlight { border-color: #463d72 !important; }
+               .idol-108:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-108:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #463d72 !important; }
+
+               .idol-109        .idol-border-color-dark,
+body.dark-mode .idol-109        .idol-border-color-dim { border-color: #773653 !important; }
+               .idol-109        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-109        .idol-border-color-dim.border-color-highlight { border-color: #a64c74 !important; }
+               .idol-109:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-109:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #a64c74 !important; }
+
+               .idol-201        .idol-border-color-dark,
+body.dark-mode .idol-201        .idol-border-color-dim { border-color: #78494f !important; }
+               .idol-201        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-201        .idol-border-color-dim.border-color-highlight { border-color: #a8666e !important; }
+               .idol-201:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-201:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #a8666e !important; }
+
+               .idol-202        .idol-border-color-dark,
+body.dark-mode .idol-202        .idol-border-color-dim { border-color: #7b7832 !important; }
+               .idol-202        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-202        .idol-border-color-dim.border-color-highlight { border-color: #aca846 !important; }
+               .idol-202:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-202:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #aca846 !important; }
+
+               .idol-203        .idol-border-color-dark,
+body.dark-mode .idol-203        .idol-border-color-dim { border-color: #406377 !important; }
+               .idol-203        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-203        .idol-border-color-dim.border-color-highlight { border-color: #5a8aa7 !important; }
+               .idol-203:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-203:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #5a8aa7 !important; }
+
+               .idol-204        .idol-border-color-dark,
+body.dark-mode .idol-204        .idol-border-color-dim { border-color: #01204c !important; }
+               .idol-204        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-204        .idol-border-color-dim.border-color-highlight { border-color: #022c6b !important; }
+               .idol-204:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-204:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #022c6b !important; }
+
+               .idol-205        .idol-border-color-dark,
+body.dark-mode .idol-205        .idol-border-color-dim { border-color: #753000 !important; }
+               .idol-205        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-205        .idol-border-color-dim.border-color-highlight { border-color: #a44300 !important; }
+               .idol-205:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-205:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #a44300 !important; }
+
+               .idol-206        .idol-border-color-dark,
+body.dark-mode .idol-206        .idol-border-color-dim { border-color: #5d4760 !important; }
+               .idol-206        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-206        .idol-border-color-dim.border-color-highlight { border-color: #826387 !important; }
+               .idol-206:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-206:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #826387 !important; }
+
+               .idol-207        .idol-border-color-dark,
+body.dark-mode .idol-207        .idol-border-color-dim { border-color: #6d1b1f !important; }
+               .idol-207        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-207        .idol-border-color-dim.border-color-highlight { border-color: #98252c !important; }
+               .idol-207:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-207:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #98252c !important; }
+
+               .idol-208        .idol-border-color-dark,
+body.dark-mode .idol-208        .idol-border-color-dim { border-color: #365e30 !important; }
+               .idol-208        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-208        .idol-border-color-dim.border-color-highlight { border-color: #4b8443 !important; }
+               .idol-208:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-208:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #4b8443 !important; }
+
+               .idol-209        .idol-border-color-dark,
+body.dark-mode .idol-209        .idol-border-color-dim { border-color: #545554 !important; }
+               .idol-209        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-209        .idol-border-color-dim.border-color-highlight { border-color: #757676 !important; }
+               .idol-209:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-209:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #757676 !important; }
+
+               .idol-210        .idol-border-color-dark,
+body.dark-mode .idol-210        .idol-border-color-dim { border-color: #164f3f !important; }
+               .idol-210        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-210        .idol-border-color-dim.border-color-highlight { border-color: #1e6e58 !important; }
+               .idol-210:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-210:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #1e6e58 !important; }
+
+               .idol-211        .idol-border-color-dark,
+body.dark-mode .idol-211        .idol-border-color-dim { border-color: #6b6a65 !important; }
+               .idol-211        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-211        .idol-border-color-dim.border-color-highlight { border-color: #95958d !important; }
+               .idol-211:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-211:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #95958d !important; }
+
+               .idol-212        .idol-border-color-dark,
+body.dark-mode .idol-212        .idol-border-color-dim { border-color: #7c6462 !important; }
+               .idol-212        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-212        .idol-border-color-dim.border-color-highlight { border-color: #ad8c89 !important; }
+               .idol-212:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-212:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #ad8c89 !important; }
+
+               .idol-301        .idol-border-color-dark,
+body.dark-mode .idol-301        .idol-border-color-dim { border-color: #7f3f13 !important; }
+               .idol-301        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-301        .idol-border-color-dim.border-color-highlight { border-color: #b2581b !important; }
+               .idol-301:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-301:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #b2581b !important; }
+
+               .idol-302        .idol-border-color-dark,
+body.dark-mode .idol-302        .idol-border-color-dim { border-color: #507f7c !important; }
+               .idol-302        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-302        .idol-border-color-dim.border-color-highlight { border-color: #70b2ae !important; }
+               .idol-302:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-302:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #70b2ae !important; }
+
+               .idol-303        .idol-border-color-dark,
+body.dark-mode .idol-303        .idol-border-color-dim { border-color: #7f3748 !important; }
+               .idol-303        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-303        .idol-border-color-dim.border-color-highlight { border-color: #b24d64 !important; }
+               .idol-303:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-303:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #b24d64 !important; }
+
+               .idol-304        .idol-border-color-dark,
+body.dark-mode .idol-304        .idol-border-color-dim { border-color: #3a7a33 !important; }
+               .idol-304        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-304        .idol-border-color-dim.border-color-highlight { border-color: #51aa47 !important; }
+               .idol-304:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-304:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #51aa47 !important; }
+
+               .idol-305        .idol-border-color-dark,
+body.dark-mode .idol-305        .idol-border-color-dim { border-color: #000050 !important; }
+               .idol-305        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-305        .idol-border-color-dim.border-color-highlight { border-color: #000070 !important; }
+               .idol-305:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-305:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #000070 !important; }
+
+               .idol-306        .idol-border-color-dark,
+body.dark-mode .idol-306        .idol-border-color-dim { border-color: #7f7a21 !important; }
+               .idol-306        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-306        .idol-border-color-dim.border-color-highlight { border-color: #b2aa2e !important; }
+               .idol-306:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-306:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #b2aa2e !important; }
+
+               .idol-307        .idol-border-color-dark,
+body.dark-mode .idol-307        .idol-border-color-dim { border-color: #7f1a1a !important; }
+               .idol-307        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-307        .idol-border-color-dim.border-color-highlight { border-color: #b22525 !important; }
+               .idol-307:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-307:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #b22525 !important; }
+
+               .idol-308        .idol-border-color-dark,
+body.dark-mode .idol-308        .idol-border-color-dim { border-color: #597f6e !important; }
+               .idol-308        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-308        .idol-border-color-dim.border-color-highlight { border-color: #7cb29a !important; }
+               .idol-308:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-308:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #7cb29a !important; }
+
+               .idol-309        .idol-border-color-dark,
+body.dark-mode .idol-309        .idol-border-color-dim { border-color: #7f2862 !important; }
+               .idol-309        .idol-border-color-dark.border-color-highlight,
+body.dark-mode .idol-309        .idol-border-color-dim.border-color-highlight { border-color: #b23889 !important; }
+               .idol-309:hover  .idol-border-color-dark.border-color-highlight-hover,
+body.dark-mode .idol-309:hover  .idol-border-color-dim.border-color-highlight-hover { border-color: #b23889 !important; }
+
 
 .idol-1          .idol-border-color-dark  { border-color: #613c00 !important; }
 .idol-1          .idol-border-color-dark.border-color-highlight  { border-color: #aa6a00 !important; }

@@ -2191,17 +2191,100 @@ body
 
 		&.card-details
 		{
-			display: flex;
-			flex-flow: row nowrap;
+			// display: flex;
+			// flex-flow: row nowrap;
 			align-items: center;
+			
+			display: grid;
+			grid-template-columns: 38px 1fr auto;
+  
 			padding: 0 !important;
+			
+			// overflow: hidden;
+			min-width: 0 !important;
 
-			div.thumbnail
+			&.text-overflowed:hover
 			{
-				display: block;
-				width: 38px;
-				height: 38px;
-				padding: 0;
+				.card-metadata
+				{
+					max-width: 0;
+					opacity: 0;
+				}
+			}
+			
+			> div
+			{
+				&.thumbnail
+				{
+					display: block;
+					width: 38px;
+					height: 38px;
+					padding: 0;
+				}
+				
+				&.card-link
+				{
+					display: block;
+					width: calc(100%);
+					padding: 0 0.8rem;
+					
+					overflow-x: hidden;
+					white-space: nowrap;
+					text-overflow: ellipsis;
+
+					a
+					{
+						width: 100%;
+						display: inline-block;
+						padding: 0.5rem 0;
+						overflow-x: hidden;
+						white-space: nowrap;
+						text-overflow: ellipsis;
+					}
+				}
+				
+				&.card-metadata
+				{
+					display: flex;
+					flex-flow: row nowrap;
+					justify-content: center;
+					align-items: center;
+					// gap: 0 0.6rem;
+					padding: 0 0.4rem 0 0;
+					margin-top: -2px;
+					
+					transition: all linear 80ms;
+					width: auto;
+					max-width: 150px;
+					overflow: hidden;
+
+					.card-source
+					{
+						display: block;
+						font-family: 'Montserrat';
+						color: #707070;
+						font-weight: 700;
+						font-size: 10pt;
+						text-align: right;
+						padding: 0 0.6rem 0 0;
+						white-space: nowrap;
+						user-select: none;
+						-moz-user-select: none;
+						-khtml-user-select: none;
+						-webkit-user-select: none;
+						-o-user-select: none;
+					}
+					
+					.card-rarity
+					{
+						width: 38px;
+						height: 32px;
+						display: block;
+						margin: 0;
+						background-repeat: no-repeat;
+						background-position: 50% calc(50% - 1px);
+					}
+				}
 			}
 		}
 		
@@ -2213,6 +2296,40 @@ body
 		&.time-inbetween.character-addition-interval
 		{
 			color: #1F90C4;
+		}
+		
+		&.stat-number
+		{
+			text-align: center;
+		}
+
+		&.stat-various
+		{
+			display: flex;
+			align-items: center;
+			padding: 0;
+			text-align: center;
+			border-bottom: 1px solid #bbb7;
+
+			&.has-none
+			{
+				opacity: 0.5;
+			}
+
+			span.icon-32
+			{
+				display: inline-block;
+				width: 100%;
+				padding: 2px 32px 0 2px;
+				text-align: center;
+				font-weight: 700;
+				font-size: 11.5pt;
+				background-position: 84% 52%;
+				background-repeat: no-repeat;
+				background-size: 20px;
+				text-align: center;
+				color: #fff;
+			}
 		}
 	}
 
@@ -2272,86 +2389,6 @@ body
 	&.event-cards-table .st-td.card-details div.thumbnail:hover .card-thumbnail
 	{
 		transform: scale(0.9) translate(-15px, -15px);
-	}
-
-	.st-td
-	{
-		&.card-details div
-		{
-			&.card-link
-			{
-				width: 100%;
-				display: block;
-				padding: 0 0.8rem;
-
-				a
-				{
-					width: 100%;
-					display: inline-block;
-					padding: 0.5rem 0;
-				}
-			}
-
-			&.card-rarity
-			{
-				width: 48px;
-				height: 32px;
-				display: block;
-				margin: 0 0.4rem 0 0;
-				background-repeat: no-repeat;
-			}
-
-			&.card-source
-			{
-				display: block;
-				font-family: 'Montserrat';
-				color: #707070;
-				font-weight: 700;
-				font-size: 10pt;
-				text-align: right;
-				padding: 0 0.8rem 0 0;
-				white-space: nowrap;
-				user-select: none;
-				-moz-user-select: none;
-				-khtml-user-select: none;
-				-webkit-user-select: none;
-				-o-user-select: none;
-			}
-		}
-
-		&.stat-number
-		{
-			text-align: center;
-		}
-
-		&.stat-various
-		{
-			display: flex;
-			align-items: center;
-			padding: 0;
-			text-align: center;
-			border-bottom: 1px solid #bbb7;
-
-			&.has-none
-			{
-				opacity: 0.5;
-			}
-
-			span.icon-32
-			{
-				display: inline-block;
-				width: 100%;
-				padding: 2px 32px 0 2px;
-				text-align: center;
-				font-weight: 700;
-				font-size: 11.5pt;
-				background-position: 84% 52%;
-				background-repeat: no-repeat;
-				background-size: 20px;
-				text-align: center;
-				color: #fff;
-			}
-		}
 	}
 }
 
@@ -2809,7 +2846,6 @@ $cell-margin: 5px;
 	}
 	
 }
-
 
 /**************/
 

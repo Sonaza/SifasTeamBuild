@@ -23,7 +23,8 @@ def generate_idols_css(output_file):
 
 	rarities = [10, 20, 30]
 
-	icon_sizes = [16, 32, 48, 64, 128]
+	# icon_sizes = [16, 32, 48, 64, 128]
+	icon_sizes = [16, 32, 48]
 
 	def darken(hex, m):
 		r = int(int(hex[0:2], 16) * m)
@@ -37,6 +38,7 @@ def generate_idols_css(output_file):
 		for attribute in attributes:
 			line = f".icon-{size}.attribute-{attribute} {{ background-image: url('/img/icons/{size}/attribute-{attribute}.png') !important; }}"
 			css.append(line)
+	css.append('')
 			
 	for attribute, color in attribute_colors:
 		line = f".attribute-{attribute}.attribute-bg-color      {{ background-color: #{color} !important; }}"
@@ -48,11 +50,13 @@ def generate_idols_css(output_file):
 		
 		line = f".st-tr:hover .attribute-{attribute}.attribute-bg-color-dim  {{ background-color: #{darken(color, 0.85)} !important; }}"
 		css.append(line)
+	css.append('')
 
 	for size in icon_sizes:
 		for type in types:
 			line = f".icon-{size}.type-{type} {{ background-image: url('/img/icons/{size}/type-{type}.png') !important; }}"
 			css.append(line)
+	css.append('')
 			
 	for type, color in type_colors:
 		line = f".type-{type}.type-bg-color      {{ background-color: #{color} !important; }}"
@@ -64,6 +68,7 @@ def generate_idols_css(output_file):
 		
 		line = f".st-tr:hover .type-{type}.type-bg-color-dim  {{ background-color: #{darken(color, 0.85)} !important; }}"
 		css.append(line)
+	css.append('')
 
 	for size in icon_sizes:
 		for rarity in rarities:
@@ -91,21 +96,47 @@ def generate_idols_css(output_file):
 	css.append('')
 
 	for idol, color in idol_colors:
-		line = f".idol-{idol:<10} .idol-bg-color-dim  {{ background-color: #{darken(color, 0.7)} !important; }}"
+		# line = f".idol-{idol:<10} .idol-bg-color-dim  {{ background-color: #{darken(color, 0.7)} !important; }}"
+		# css.append(line)
+		# line = f".idol-{idol:<10} .idol-bg-color-dim.bg-color-highlight  {{ background-color: #{darken(color, 0.9)} !important; }}"
+		# css.append(line)
+		# line = f".idol-{str(idol) + ':hover':<10} .idol-bg-color-dim.bg-color-highlight-hover  {{ background-color: #{darken(color, 0.9)} !important; }}"
+		# css.append(line)
+		
+		
+		line = f"               .idol-{idol:<10} .idol-bg-color-dim,"
 		css.append(line)
-		line = f".idol-{idol:<10} .idol-bg-color-dim.bg-color-highlight  {{ background-color: #{darken(color, 0.9)} !important; }}"
+		line = f"body.dark-mode .idol-{idol:<10} .idol-bg-color {{ background-color: #{darken(color, 0.7)} !important; }}"
 		css.append(line)
-		line = f".idol-{str(idol) + ':hover':<10} .idol-bg-color-dim.bg-color-highlight-hover  {{ background-color: #{darken(color, 0.9)} !important; }}"
+		
+		line = f"               .idol-{idol:<10} .idol-bg-color-dim.bg-color-highlight,"
 		css.append(line)
+		line = f"body.dark-mode .idol-{idol:<10} .idol-bg-color.bg-color-highlight {{ background-color: #{darken(color, 0.9)} !important; }}"
+		css.append(line)
+		
+		line = f"               .idol-{str(idol) + ':hover':<10} .idol-bg-color-dim.bg-color-highlight-hover,"
+		css.append(line)
+		line = f"body.dark-mode .idol-{str(idol) + ':hover':<10} .idol-bg-color.bg-color-highlight-hover {{ background-color: #{darken(color, 0.9)} !important; }}"
+		css.append(line)
+		css.append('')
 	css.append('')
 
 	for idol, color in idol_colors:
-		line = f".idol-{idol:<10} .idol-bg-color-dark {{ background-color: #{darken(color, 0.4)} !important; }}"
+		line = f"               .idol-{idol:<10} .idol-bg-color-dark,"
 		css.append(line)
-		line = f".idol-{idol:<10} .idol-bg-color-dark.bg-color-highlight {{ background-color: #{darken(color, 0.7)} !important; }}"
+		line = f"body.dark-mode .idol-{idol:<10} .idol-bg-color-dim {{ background-color: #{darken(color, 0.5)} !important; }}"
 		css.append(line)
-		line = f".idol-{str(idol) + ':hover':<10} .idol-bg-color-dark.bg-color-highlight-hover {{ background-color: #{darken(color, 0.7)} !important; }}"
+		
+		line = f"               .idol-{idol:<10} .idol-bg-color-dark.bg-color-highlight,"
 		css.append(line)
+		line = f"body.dark-mode .idol-{idol:<10} .idol-bg-color-dim.bg-color-highlight {{ background-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		
+		line = f"               .idol-{str(idol) + ':hover':<10} .idol-bg-color-dark.bg-color-highlight-hover,"
+		css.append(line)
+		line = f"body.dark-mode .idol-{str(idol) + ':hover':<10} .idol-bg-color-dim.bg-color-highlight-hover {{ background-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		css.append('')
 	css.append('')
 
 	for idol, color in idol_colors:
@@ -114,11 +145,29 @@ def generate_idols_css(output_file):
 	css.append('')
 
 	for idol, color in idol_colors:
-		line = f".idol-{idol:<10} .idol-border-color-dim  {{ border-color: #{darken(color, 0.7)} !important; }}"
+		# line = f".idol-{idol:<10} .idol-border-color-dim  {{ border-color: #{darken(color, 0.7)} !important; }}"
+		# css.append(line)
+		# line = f".idol-{idol:<10} .idol-border-color-dim.border-color-highlight  {{ border-color: #{darken(color, 0.9)} !important; }}"
+		# css.append(line)
+		# line = f".idol-{str(idol) + ':hover':<10} .idol-border-color-dim.border-color-highlight-hover  {{ border-color: #{darken(color, 0.9)} !important; }}"
+		
+		
+		line = f"               .idol-{idol:<10} .idol-border-color-dark,"
 		css.append(line)
-		line = f".idol-{idol:<10} .idol-border-color-dim.border-color-highlight  {{ border-color: #{darken(color, 0.9)} !important; }}"
+		line = f"body.dark-mode .idol-{idol:<10} .idol-border-color-dim {{ border-color: #{darken(color, 0.5)} !important; }}"
 		css.append(line)
-		line = f".idol-{str(idol) + ':hover':<10} .idol-border-color-dim.border-color-highlight-hover  {{ border-color: #{darken(color, 0.9)} !important; }}"
+		
+		line = f"               .idol-{idol:<10} .idol-border-color-dark.border-color-highlight,"
+		css.append(line)
+		line = f"body.dark-mode .idol-{idol:<10} .idol-border-color-dim.border-color-highlight {{ border-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		
+		line = f"               .idol-{str(idol) + ':hover':<10} .idol-border-color-dark.border-color-highlight-hover,"
+		css.append(line)
+		line = f"body.dark-mode .idol-{str(idol) + ':hover':<10} .idol-border-color-dim.border-color-highlight-hover {{ border-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		css.append('')
+		
 	css.append('')
 
 	for idol, color in idol_colors:

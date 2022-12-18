@@ -38,7 +38,7 @@
 	<li><a href="#/history/{{ member.first_name.lower() }}/sr"         ng-class="pageActive('sr')">Any SR</a></li>
 </ul>
 
-<div class="stats-category {{ category_tag }}">
+<div class="stats-category history-stats-category {{ category_tag }}">
 	<h2>{{ member.first_name }} &mdash; {{ history_info[0] }}</h2>
 	<p>
 		{{ history_info[1] }}
@@ -53,13 +53,13 @@
 	<div class="stats-category-group">
 		<div class="stats-table {{ 'with-source' | conditional_css(history_flags.show_source) }}">
 			<div class="st-tr st-thead idol-{{ member.value }}">
-				<div class="st-th st-cell-35 idol-bg-color-dim" ng-class="dimInLightDarkInDark()">
+				<div class="st-th st-cell-35 idol-bg-color-dim">
 					Released
 				</div>
-				<div class="st-th st-cell-15 idol-bg-color-dim time-inbetween" ng-class="dimInLightDarkInDark()" title="The time between this card's release and the previous.">
+				<div class="st-th st-cell-15 idol-bg-color-dim time-inbetween" title="The time between this card's release and the previous.">
 					Interval
 				</div>
-				<div class="st-th st-cell-50 idol-identity idol-bg-color-dim" ng-class="dimInLightDarkInDark()">
+				<div class="st-th st-cell-50 idol-identity idol-bg-color-dim">
 					<div class="idol-icon idol-icon-32-border"></div>
 					<div class="idol-name">
 						<span class="hide-narrow-1400">{{ member.full_name }} Card History</span>
@@ -112,15 +112,19 @@
 								</div>
 							</div>
 							<div class="card-link">
-								<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
+								<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ellipsis-bullshit=".card-details" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
 							</div>
-							{% if history_flags.show_source %}
-								<div class="card-source">
-									{{ card.source.display_name }}
+							{% if history_flags.show_source or history_flags.show_rarity %}
+								<div class="card-metadata">
+									{% if history_flags.show_source %}
+										<div class="card-source">
+											{{ card.source.display_name }}
+										</div>
+									{% endif %}
+									{% if history_flags.show_rarity %}
+										<div class="card-rarity icon-32 rarity-{{ card.rarity.value }}"></div>
+									{% endif %}
 								</div>
-							{% endif %}
-							{% if history_flags.show_rarity %}
-								<div class="card-rarity icon-32 rarity-{{ card.rarity.value }}"></div>
 							{% endif %}
 						</div>
 					</div>

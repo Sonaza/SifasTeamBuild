@@ -89,7 +89,7 @@
 				<div class="st-tr event-row {{ event_data['idols'] }}">
 					<div class="st-td st-cell-event-title event-details">
 						<div class="event-title">
-							<span class="event-title-label" ellipsis-bullshit title="{{ event['title'] | e }}">
+							<span class="event-title-label" ellipsis-bullshit=".event-title" title="{{ event['title'] | e }}">
 								<span>{{ loop.index }}.</span> {{ event['title'] | e }}
 							</span>
 							<span class="event-title-type">
