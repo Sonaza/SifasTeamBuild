@@ -695,6 +695,8 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			{
 				$location.search('highlight', highlight_reverse_map[$rootScope.settings.highlight_source]).replace();
 			}
+			
+			
 			// $location.search('idolized', $rootScope.settings.use_idolized_thumbnails ? 'true' : 'false').replace();
 			// $location.search('reverse', $rootScope.settings.order_reversed ? 'true' : 'false').replace();
 		}
@@ -995,7 +997,21 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 				return 'active';
 			}
 		}
-
+		
+		$rootScope.$on('$locationChangeSuccess', (event) =>
+		{
+			if ($scope.filter_options === undefined)
+			{
+				$scope.filter_options = "";
+			}
+			
+			let url =  $location.url().split('?');
+			if (url.length >= 2)
+			{
+				$scope.filter_options = "?" + url[1];
+			}
+		})
+		
 		$scope.$on('update-title', (_, sub_title) =>
 		{
 			if ($location.path() == '/')

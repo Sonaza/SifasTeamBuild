@@ -91,10 +91,10 @@
 							<li><a href="#/aqours"       ng-class="classActive('/aqours')">Aqours Cards</a></li>
 							<li><a href="#/nijigasaki"   ng-class="classActive('/nijigasaki')">Nijigasaki Cards</a></li>
 							<li class="spacer"></li>
-							<li><a href="#/event_cards"  ng-class="classActive('/event_cards', true)">Event Cards</a></li>
-							<li><a href="#/banners"      ng-class="classActive('/banners', true)">Gacha Banners</a></li>
-							<li><a href="#/stats"        ng-class="classActive('/stats')">Card Stats</a></li>
-							<li><a href="#/history"      ng-class="classActive('/history')">Card History <span class="new-tag">[NEW]</span></a></li>
+							<li><a href="#/event_cards[[ filter_options ]]"  ng-class="classActive('/event_cards', true)">Event Cards</a></li>
+							<li><a href="#/banners[[ filter_options ]]"      ng-class="classActive('/banners', true)">Gacha Banners</a></li>
+							<li><a href="#/stats"                            ng-class="classActive('/stats')">Card Stats</a></li>
+							<li><a href="#/history"                          ng-class="classActive('/history')">Card History <span class="new-tag">[NEW]</span></a></li>
 							<?php /* <span class="new-tag">[NEW]</span> */ ?>
 						</ul>
 					</div>
