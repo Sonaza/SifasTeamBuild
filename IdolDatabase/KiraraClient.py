@@ -876,7 +876,7 @@ class KiraraClient():
 			}
 			
 		# query = """SELECT member_id, min(release_date) AS release_date FROM idols
-		#            WHERE rarity = 10 AND source = 1
+		#            WHERE rarity = 20
 		#            GROUP BY member_id
 		#            ORDER BY ordinal ASC"""
 		
