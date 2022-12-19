@@ -439,13 +439,19 @@ $brightness-level: 85%;
 
 	.st-tbody:not(.filtering-active):not(.filtering-banner-types) .st-tr.highlight-idol
 	{
-		background: #EBBCF933 !important;
-		box-shadow: inset 2px 0 1px 1px #E48BFE77 !important;
+		background: #504168cc !important;
+		box-shadow: inset 2px 0 1px 1px #E48BFEaa !important;
 		
 		&.highlight-new
 		{
-			background: #F8E29533 !important;
-			box-shadow: inset 2px 0 1px 1px #E4BC8777 !important;
+			// background: #F8E29555 !important;
+			background: #5c5149cc !important;
+			box-shadow: inset 2px 0 1px 1px #E4BC87aa !important;
+		}
+		
+		.card-metadata .card-source
+		{
+			color: #9E89C1 !important;
 		}
 	}
 	

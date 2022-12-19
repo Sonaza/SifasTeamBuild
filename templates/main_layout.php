@@ -162,7 +162,7 @@
 				This website is not affiliated with Love Live!, Mynet Inc., SUNRISE Inc., Bushiroad Inc. or any other associated company.
 			</div>
 			<div class="render-info">
-				Pages last rendered
+				The page was rendered
 				{% if cmd_args.auto %}
 					automatically
 				{% endif %} on {{ last_update | format_datestring(long_month=False, with_utc_time=True) }}<span class="ng-cloak time-since-update" ng-bind="time_since('{{ last_update.isoformat() }}')"></span>

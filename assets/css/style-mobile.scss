@@ -1025,31 +1025,41 @@ body.sidebar-open
 
 /*****************************************************************/
 
-#footer-top .footer-top-inner
+#footer
 {
-	flex-flow: column nowrap;
-
-	> div
+	#footer-top .footer-top-inner
 	{
-		width: 100% !important;
-		padding: 0.5rem 0;
+		max-width: 100%;
+		margin: 0;
+		flex-flow: column nowrap;
+
+		> div
+		{
+			width: 100% !important;
+			padding: 0.5rem 0;
+		}
+	}
+
+	#footer-bottom
+	{
+		> div
+		{
+			padding: 0.25rem 1rem;
+
+			&.disclaimer
+			{
+				text-align: justify-all;
+				font-size: 8pt;
+			}
+			
+			&.render-info
+			{
+				font-size: 8pt;
+			}
+		}
 	}
 }
 
-#footer-bottom
-{
-	.details
-	{
-		padding: 0.25rem 1.5rem;
-	}
-
-	.disclaimer
-	{
-		padding: 0.25rem 1.5rem;
-		text-align: justify-all;
-		font-size: 8pt;
-	}
-}
 
 /*****************************************************************/
 
