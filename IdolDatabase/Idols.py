@@ -5,30 +5,16 @@ from .Enums import *
 
 class IdolBase():
 	def __init__(self, member_id : Member):
-		self.member_id = member_id
-		
-		self.id = member_id.value
-		
-		self.full_name  = member_id.full_name
-		self.first_name = member_id.first_name
-		self.last_name  = member_id.last_name
-		
-		self.group      = member_id.group
-		self.year       = member_id.year
-		self.subunit    = member_id.subunit
+		self.member_id  = member_id
 	
 	def set(self, idol):
 		self.member_id  = idol.member_id
 		
-		self.id = self.member_id.value
+	def __getattr__(self, key):
+		if key == 'id':
+			return self.member_id.value
 		
-		self.full_name  = idol.full_name
-		self.first_name = idol.first_name
-		self.last_name  = idol.last_name
-		
-		self.group      = idol.group 
-		self.year       = idol.year   
-		self.subunit    = idol.subunit
+		return self.member_id.__getattr__(key)
 	
 	def __str__(self):
 		return f"{self.full_name}" #({self.group.display_name} / {self.year.display_name} / {self.subunit.display_name})"

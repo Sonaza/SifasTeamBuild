@@ -13,17 +13,15 @@
 # (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
 # HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
-# https://github.com/summertriangle-dev/arposandra/blob/master/libcard2/skill_cs_enums.py
+
+# Edited from: https://github.com/summertriangle-dev/arposandra/blob/master/libcard2/skill_cs_enums.py
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This file needs to be kept up to date with game enums.
 # The corresponding C# enum type is named in the docstring of each class.
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-from enum import Enum
-
-class FT(Enum):
+class FT:
     """SkillEffectFinishTimingType"""
 
     Permanent = 1
@@ -37,7 +35,7 @@ class FT(Enum):
     Non = 255
 
 
-class TT(Enum):
+class TT:
     """LivePassiveSkillTrigger"""
 
     BeforeLive = 1
@@ -55,7 +53,7 @@ class TT(Enum):
     Non = 255
 
 
-class CT(Enum):
+class CT:
     """SkillEffectConditionType"""
 
     Probability = 1
@@ -68,7 +66,7 @@ class CT(Enum):
     Non = 255
 
 
-class ST(Enum):
+class ST:
     """SkillEffectType"""
 
     Non = 1

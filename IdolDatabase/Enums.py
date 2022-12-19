@@ -1,9 +1,11 @@
 from aenum import Enum
 
 class Rarity(Enum):
-	R  = 10
-	SR = 20
-	UR = 30
+	_init_ = 'value max_level'
+	
+	R  = 10, 40
+	SR = 20, 60
+	UR = 30, 80
 
 class Type(Enum):
 	_init_ = 'value full_name valid'
@@ -152,6 +154,7 @@ class Source(Enum):
 	Party       = 7, 'Party'
 	
 class SkillTarget(Enum):
+	Unknown       = 0
 	All           = 1
 	Group         = 2
 	SameStrategy  = 3
@@ -162,6 +165,11 @@ class SkillTarget(Enum):
 	SameMember    = 8
 	SameSubunit   = 9
 	Self          = 10
+	
+class SkillTargetParameter(Enum):
+	Stamina   = 9
+	Appeal    = 10
+	Technique = 11
 	
 class Ordinal(): pass
 class SortingOrder(Enum):

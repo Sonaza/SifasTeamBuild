@@ -8,6 +8,12 @@ from datetime import datetime, timezone
 from colorama import Fore
 from colorama import Style
 
+from dataclasses import dataclass, field
+from typing import List, Optional, Tuple, Dict, Any
+
+from .Skill import Skill
+from .SkillEnum import ST, TT
+
 try:
 	from backports.datetime_fromisoformat import MonkeyPatch
 	MonkeyPatch.patch_fromisoformat()
@@ -38,8 +44,6 @@ class KiraraIdolLazyLoader():
 	def __getitem__(self, key):
 		pass
 	
-# class KiraraIdolSkill():
-
 class KiraraNameSubstitutions():
 	normal_name = {
 		
@@ -93,7 +97,8 @@ class KiraraIdol():
 		
 		try:
 			self.data = json.loads(data['json'])
-		except:
+			self._process_skill_data()
+		except json.JSONDecodeError:
 			self.data = {}
 			# self.data = KiraraIdolLazyLoader()
 		
@@ -127,32 +132,95 @@ class KiraraIdol():
 		)
 			
 		return parameters
-		
-	def zipeffect(self, data):
-		keys = [
-			"target_parameter",
-			"effect_type",
-			"effect_value",
-			"scale_type",
-			"calc_type",
-			"timing",
-			"finish_type",
-			"finish_value",
-		]
-		return dict(zip(keys, data))
 	
-	def get_passive_skill(self):
+	def _process_skill_data(self):
+		def get_skill_object(skill_data):
+			del skill_data['is_squashed']
+			del skill_data['programmatic_description']
+			del skill_data['programmatic_target']
+			return Skill(**skill_data)
+		
+		self.passive_skill = get_skill_object(self.data['passive_skills'][0])
+		assert(self.passive_skill.trigger_type == TT.Non)
+		
+		try:
+			self.active_skill = get_skill_object(self.data['passive_skills'][1])
+		except IndexError:
+			self.active_skill = None
+	
+	# @dataclass
+	# class SkillEffectLevel(object):
+	# 	target_parameter : SkillTargetParameter = field(default_factory=SkillTargetParameter)
+	# 	effect_type : SkillEffectType = field(default_factory=SkillEffectType)
+	# 	effect_value : int
+	# 	scale_type : int
+	# 	calc_type : int
+	# 	timing : int
+	# 	finish_type : int
+	# 	finish_value : int
+	
+	def get_passive_skill_effect(self, skill_level):
+		max_skill_level = len(self.passive_skill.levels)
+		if not (skill_level >= 1 and skill_level <= max_skill_level):
+			raise KiraraClientValueError(f"Skill level must be between 1-{max_skill_level}")
+			
 		passive = self.data['passive_skills'][0]
+		skill_target = self._determine_skill_target(self.passive_skill.target)
 		
-		target = {}
-		for key, value in passive['target'].items():
-			if value:
-				target[key] = value
+		if self.passive_skill.target_2 != None:
+			assert(skill_target == self._determine_skill_target(self.passive_skill.target_2))
 		
-		levels = [self.zipeffect(x) for x in passive['levels']]
-		# levels = passive['levels']
+		# print(skill_target)
 		
-		return passive, target, levels
+		effects = []
+		for levels in [self.passive_skill.levels, self.passive_skill.levels_2]:
+			if levels == None:
+				continue
+			
+			effect = Skill.Effect._make(levels[skill_level - 1])
+			effects.append({
+				"target_parameter" : SkillTargetParameter(effect.effect_type),
+				"effect_value" : effect.effect_value / 100,
+			})
+		
+		# print(effects)
+		return skill_target, effects
+		
+	def _determine_skill_target(self, target_data):
+		try:
+			assert(len(target_data['fixed_attributes']) == 0)
+			assert(len(target_data['fixed_subunits']) == 0)
+			assert(len(target_data['fixed_schools']) == 0)
+			assert(len(target_data['fixed_years']) == 0)
+			assert(len(target_data['fixed_roles']) == 0)
+		except:
+			print(target_data)
+			raise Exception("FIXED DATA ISN'T EMPTY AFTER ALL?")
+		
+		if   target_data['not_self']        == 1:
+			return SkillTarget.Group
+		elif target_data['owner_party']     == 1:
+			return SkillTarget.SameStrategy
+		elif target_data['owner_attribute'] == 1:
+			return SkillTarget.SameAttribute
+		elif target_data['owner_year']      == 1:
+			return SkillTarget.SameYear
+		elif target_data['owner_school']    == 1:
+			return SkillTarget.SameSchool
+		elif target_data['owner_role']      == 1:
+			return SkillTarget.SameType
+		elif target_data['owner_subunit']   == 1:
+			return SkillTarget.SameSubunit
+		elif target_data['self_only']       == 1:
+			return SkillTarget.Self
+		elif len(target_data['fixed_members']) > 0:
+			assert(len(target_data['fixed_members']) == 1)
+			assert(target_data['fixed_members'][0] == self.member_id.value)
+			return SkillTarget.SameMember
+		elif target_data['apply_count'] == 9:
+			return SkillTarget.All
+		
+		return SkillTarget.Unknown
 
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -264,7 +332,7 @@ class KiraraClient():
 		assert isinstance(requested_ordinals, list)
 		
 		query = f"""SELECT * FROM idols_json
-		            WHERE ordinal IN ({self._make_where_placeholders(requested_ordinals)})"""
+					WHERE ordinal IN ({self._make_where_placeholders(requested_ordinals)})"""
 		self.db.execute(query, requested_ordinals)
 		
 		idols_data = []
@@ -714,12 +782,12 @@ class KiraraClient():
 	def get_all_idols(self, with_json = False):
 		if with_json:
 			query = f"""SELECT v_idols.*, idols_json.json FROM 'v_idols'
-			            LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
-			            ORDER BY ordinal"""
+						LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
+						ORDER BY ordinal"""
 		else:
 			query = f"""SELECT * FROM v_idols
-			            ORDER BY ordinal"""
-		            
+						ORDER BY ordinal"""
+					
 		self.db.execute(query)
 		return self.convert_to_idol_object(self.db.fetchall())
 	
@@ -727,7 +795,7 @@ class KiraraClient():
 		
 	def get_all_idol_thumbnails(self):
 		query = f"""SELECT * FROM idols_json
-		            ORDER BY ordinal"""
+					ORDER BY ordinal"""
 		self.db.execute(query)
 		
 		output = []
@@ -792,14 +860,14 @@ class KiraraClient():
 		
 		if fields:
 			query = f"""SELECT * FROM 'v_idols_with_events'
-			            WHERE {' AND '.join([x[0] for x in fields])} {group_by}
-			            ORDER BY {order_by} {order}"""
+						WHERE {' AND '.join([x[0] for x in fields])} {group_by}
+						ORDER BY {order_by} {order}"""
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:
 			query = f"""SELECT * FROM 'v_idols_with_events'
-			            {group_by}
-			            ORDER BY {order_by} {order}"""
+						{group_by}
+						ORDER BY {order_by} {order}"""
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())
@@ -824,7 +892,7 @@ class KiraraClient():
 	# -------------------------------------------------------------------------------------------
 	
 	def get_newest_idols(self, group : Group = None,   rarity : Rarity = None,
-		                       source : Source = None, members : Member = [], released_before : datetime = None):
+							   source : Source = None, members : Member = [], released_before : datetime = None):
 		fields = []
 		if group      != None: fields.append(self._make_where_condition("group_id",  group))
 		if rarity     != None: fields.append(self._make_where_condition("rarity",    rarity))
@@ -836,12 +904,12 @@ class KiraraClient():
 		
 		if fields:
 			query = f"""SELECT * FROM 'v_idols_with_events_and_banner_info_null_allowed'
-			            WHERE ordinal IN (
-			            	SELECT MAX(ordinal) FROM 'v_idols'
-			            	WHERE {' AND '.join([x[0] for x in fields])}
-			            	GROUP BY member_id
-			            )
-			            ORDER BY release_date ASC"""
+						WHERE ordinal IN (
+							SELECT MAX(ordinal) FROM 'v_idols'
+							WHERE {' AND '.join([x[0] for x in fields])}
+							GROUP BY member_id
+						)
+						ORDER BY release_date ASC"""
 			# print(query)
 			self.db.execute(query, [value for x in fields for value in x[1]])
 		else:
@@ -945,11 +1013,6 @@ class KiraraClient():
 				else:
 					time_since_previous = idol.release_date - self.member_addition_dates[member]['date_added']
 				
-				# current_list.append({
-				# 	'idol' : idol,
-				# 	'time_since_release'  : time_since_release,
-				# 	'time_since_previous' : time_since_previous,
-				# })
 				current_list.append((idol, time_since_release, time_since_previous))
 				
 				previous_idol = idol
@@ -1010,14 +1073,14 @@ class KiraraClient():
 	
 	def get_event_features_per_member(self):
 		query = """SELECT
-		               members.id,
-		               COUNT(idols.member_id) AS "times_featured"
-		           FROM members
-		           LEFT JOIN idols ON idols.member_id = members.id AND idols.source = ? AND idols.rarity = ?
-		           LEFT JOIN event_cards ON idols.ordinal = event_cards.ordinal
-		           GROUP BY members.id
-		           ORDER BY members.id
-		        """
+					   members.id,
+					   COUNT(idols.member_id) AS "times_featured"
+				   FROM members
+				   LEFT JOIN idols ON idols.member_id = members.id AND idols.source = ? AND idols.rarity = ?
+				   LEFT JOIN event_cards ON idols.ordinal = event_cards.ordinal
+				   GROUP BY members.id
+				   ORDER BY members.id
+				"""
 		self.db.execute(query, self._get_enum_values([Source.Event, Rarity.UR]))
 		
 		return dict((Member(x['id']), x['times_featured']) for x in self.db.fetchall())
@@ -1026,15 +1089,15 @@ class KiraraClient():
 	
 	def _get_card_member_index(self, ordinal):
 		query = '''SELECT member_id, rarity, source FROM idols
-		           WHERE ordinal = ?'''
+				   WHERE ordinal = ?'''
 		self.db.execute(query, [ordinal])
 		
 		card = self.db.fetchone()
 		
 		query = '''SELECT ordinal FROM v_idols
-		           WHERE v_idols.member_id = ? AND v_idols.rarity = ? AND v_idols.source = ?
-		           ORDER BY v_idols.ordinal'''
-		           
+				   WHERE v_idols.member_id = ? AND v_idols.rarity = ? AND v_idols.source = ?
+				   ORDER BY v_idols.ordinal'''
+				   
 		self.db.execute(query, [card['member_id'], card['rarity'], card['source']])
 		
 		for index, filtered_card in enumerate(self.db.fetchall()):
@@ -1111,31 +1174,6 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _determine_skill_target(self, target_data, card_data):
-		try:
-			assert(len(target_data['fixed_attributes']) == 0)
-			assert(len(target_data['fixed_subunits']) == 0)
-			assert(len(target_data['fixed_schools']) == 0)
-			assert(len(target_data['fixed_years']) == 0)
-			assert(len(target_data['fixed_roles']) == 0)
-		except:
-			print(target_data)
-			raise Exception("FIXED DATA ISN'T EMPTY AFTER ALL?")
-		
-		if   target_data['not_self']        == 1: return SkillTarget.Group
-		elif target_data['owner_party']     == 1: return SkillTarget.SameStrategy
-		elif target_data['owner_attribute'] == 1: return SkillTarget.SameAttribute
-		elif target_data['owner_year']      == 1: return SkillTarget.SameYear
-		elif target_data['owner_school']    == 1: return SkillTarget.SameSchool
-		elif target_data['owner_role']      == 1: return SkillTarget.SameType
-		elif target_data['owner_subunit']   == 1: return SkillTarget.SameSubunit
-		elif target_data['self_only']       == 1: return SkillTarget.Self
-		elif len(target_data['fixed_members']) > 0:
-			assert(len(target_data['fixed_members']) == 1)
-			assert(target_data['fixed_members'][0] == card_data['member'])
-			return SkillTarget.SameMember
-		elif target_data['apply_count'] == 9: return SkillTarget.All
-	
 	def get_idols_by_ordinal(self, ordinals, with_json = False):
 		assert isinstance(ordinals, int) or isinstance(ordinals, list) or isinstance(ordinals, set)
 		
@@ -1146,11 +1184,11 @@ class KiraraClient():
 		
 		if with_json:
 			query = f"""SELECT v_idols.*, idols_json.json FROM v_idols
-			            LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
-			            WHERE v_idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
+						LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
+						WHERE v_idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
 		else:
 			query = f"""SELECT * FROM v_idols
-			            WHERE v_idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
+						WHERE v_idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
 		self.db.execute(query, ordinals)
 		
 		return self.convert_to_idol_object(self.db.fetchall())
