@@ -1039,7 +1039,7 @@ class CardRotations():
 		last_data_update = self.client.get_database_update_time()
 		now = datetime.now(timezone.utc)
 		self.renderer.render_and_save("main_layout.php", "views/content_index.php", {
-			'last_update'      : now, #.strftime('%d %B %Y %H : %M %Z'),
+			'last_update'      : now,
 			'last_data_update' : last_data_update,
 			'render_time'      : f"{render_time_so_far:0.2f}s",
 			'preloads'         : preload_assets,

@@ -719,12 +719,14 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			{
 				$cookies.put('dark_mode_enabled', 1, {
 					expires: expires,
+					samesite: 'strict',
 				});
 			}
 			else
 			{
 				$cookies.put('dark_mode_enabled', 0, {
 					expires: expires,
+					samesite: 'strict',
 				});
 			}
 			
