@@ -209,23 +209,32 @@ class KiraraClient():
 		self.dbcon.commit()
 	
 	# -------------------------------------------------------------------------------------------
-		
-	def database_needs_update(self):
+	
+	def get_database_update_time(self):
 		query = "SELECT value FROM parameters WHERE key = 'last_database_update'"
 		self.db.execute(query)
-		data = self.db.fetchone()
-		if data == None: return True
 		
-		now = datetime.now(timezone.utc)
+		data = self.db.fetchone()
+		if data == None:
+			return None
+		
 		try:
 			last_update = datetime.fromisoformat(data['value'])
 		except:
+			return None
+		
+		return last_update
+	
+	def database_needs_update(self):
+		last_update = self.get_database_update_time()
+		if last_update == None:
 			return True
 		
-		# Update database if it has been over 12 hours
+		# Update database if it has been over 18 hours
+		now = datetime.now(timezone.utc)
 		last_update_seconds = (now - last_update).seconds
 		print(f"{Fore.YELLOW}{Style.BRIGHT}{last_update_seconds / 3600:0.1f} hours since the last database update.{Style.RESET_ALL}")
-		return last_update_seconds > 12 * 3600
+		return last_update_seconds > 18 * 3600
 		
 	def refresh_last_update_time(self):
 		query = "INSERT OR REPLACE INTO parameters (key, value) VALUES ('last_database_update', ?)"

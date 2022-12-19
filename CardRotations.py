@@ -967,27 +967,6 @@ class CardRotations():
 			self.renderer.render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
-		# Compile and minify CSS
-		
-		self.processor.compile_css(
-			input_files = self.css_settings.input_files,
-			output_file = self.css_settings.output_file,
-			minify=not self.args.dev,
-		)
-		
-		# -------------------------------------------------------
-		# Main index and layout
-		
-		preload_assets = self._get_preload_assets()
-		
-		now = datetime.now(timezone.utc)
-		self.renderer.render_and_save("main_layout.php", "views/content_index.php", {
-			'last_update'           : now, #.strftime('%d %B %Y %H:%M %Z'),
-			'last_update_timestamp' : now.isoformat(),
-			'preloads' : preload_assets
-		}, minify=False, output_basepath='')
-		
-		# -------------------------------------------------------
 		# Error Pages
 		
 		if self.due_for_rendering("error.html"):
@@ -1036,10 +1015,35 @@ class CardRotations():
 		# -------------------------------------------------------
 		# .htaccess
 		
+		preload_assets = self._get_preload_assets()
+		
 		if self.due_for_rendering("template.htaccess"):
 			self.renderer.render_and_save("template.htaccess", ".htaccess", {
 				'preloads' : preload_assets
 			}, minify=False, generated_note=True)
+		
+		# -------------------------------------------------------
+		# Compile and minify CSS
+		
+		self.processor.compile_css(
+			input_files = self.css_settings.input_files,
+			output_file = self.css_settings.output_file,
+			minify=not self.args.dev,
+		)
+		
+		# -------------------------------------------------------
+		# Main index and layout
+		
+		render_time_so_far = time.perf_counter() - render_start_time
+		
+		last_data_update = self.client.get_database_update_time()
+		now = datetime.now(timezone.utc)
+		self.renderer.render_and_save("main_layout.php", "views/content_index.php", {
+			'last_update'      : now, #.strftime('%d %B %Y %H : %M %Z'),
+			'last_data_update' : last_data_update,
+			'render_time'      : f"{render_time_so_far:0.2f}s",
+			'preloads'         : preload_assets,
+		}, minify=False, output_basepath='')
 		
 		# -------------------------------------------------------
 		# File cleanup

@@ -153,16 +153,19 @@
 			</div>
 		</div>
 		<div id="footer-bottom">
-			<div class="details">
-				Last update performed
-				{% if cmd_args.auto %}
-					automatically
-				{% endif %} on {{ last_update | format_datestring(long_month=False, with_utc_time=True) }}<span class="ng-cloak time-since-update" ng-bind="time_since('{{ last_update_timestamp }}')"></span>
+			<div class="data-update">
+				Last data update on {{ last_data_update | format_datestring(long_month=False, with_utc_time=True) }}<span class="ng-cloak time-since-update" ng-bind="time_since('{{ last_data_update.isoformat() }}')"></span>
 				&mdash;
 				Data is retrieved from <a href="https://allstars.kirara.ca/" target="_blank">Kirara All Stars Card Database</a>
 			</div>
 			<div class="disclaimer">
 				This website is not affiliated with Love Live!, Mynet Inc., SUNRISE Inc., Bushiroad Inc. or any other associated company.
+			</div>
+			<div class="render-info">
+				Pages last rendered
+				{% if cmd_args.auto %}
+					automatically
+				{% endif %} on {{ last_update | format_datestring(long_month=False, with_utc_time=True) }}<span class="ng-cloak time-since-update" ng-bind="time_since('{{ last_update.isoformat() }}')"></span>
 			</div>
 		</div>
 	</footer>
