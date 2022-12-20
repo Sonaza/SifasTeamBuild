@@ -1,5 +1,11 @@
 import math
+import collections
 from enum import Enum
+
+if __name__ == "__main__":
+	from Enums import *
+else:
+	from .Enums import *
 
 class BondParameter(Enum):
 	Appeal         = 1
@@ -27,222 +33,205 @@ class BondParameter(Enum):
 class IdolBondBonusesValueError(Exception): pass
 class IdolBondBonuses():
 	BOND_PARAMETER_FIELDS = [e for e in BondParameter]
-
-	# Source: https://suyo.be/sifas/wiki/gameplay/bond-level
-	BOND_LEVEL_PARAMETER_BONUS = dict([
-		(  1,  0.00), (  2,  1.00), (  3,  1.87), (  4,  2.31), (  5,  2.64),
-		(  6,  2.90), (  7,  3.13), (  8,  3.33), (  9,  3.51), ( 10,  3.67),
-		( 11,  3.82), ( 12,  3.96), ( 13,  4.09), ( 14,  4.22), ( 15,  4.33),
-		( 16,  4.45), ( 17,  4.55), ( 18,  4.66), ( 19,  4.75), ( 20,  4.85),
-		( 21,  4.94), ( 22,  5.03), ( 23,  5.12), ( 24,  5.20), ( 25,  5.28),
-		( 26,  5.36), ( 27,  5.43), ( 28,  5.51), ( 29,  5.58), ( 30,  5.65),
-		( 31,  5.72), ( 32,  5.79), ( 33,  5.86), ( 34,  5.92), ( 35,  5.98),
-		( 36,  6.05), ( 37,  6.11), ( 38,  6.17), ( 39,  6.23), ( 40,  6.29),
-		( 41,  6.34), ( 42,  6.40), ( 43,  6.45), ( 44,  6.51), ( 45,  6.56),
-		( 46,  6.62), ( 47,  6.67), ( 48,  6.72), ( 49,  6.77), ( 50,  6.82),
-		( 51,  6.87), ( 52,  6.92), ( 53,  6.96), ( 54,  7.01), ( 55,  7.06),
-		( 56,  7.10), ( 57,  7.15), ( 58,  7.20), ( 59,  7.24), ( 60,  7.28),
-		( 61,  7.33), ( 62,  7.37), ( 63,  7.41), ( 64,  7.46), ( 65,  7.50),
-		( 66,  7.54), ( 67,  7.58), ( 68,  7.62), ( 69,  7.66), ( 70,  7.70),
-		( 71,  7.74), ( 72,  7.78), ( 73,  7.82), ( 74,  7.85), ( 75,  7.89),
-		( 76,  7.93), ( 77,  7.97), ( 78,  8.00), ( 79,  8.04), ( 80,  8.08),
-		( 81,  8.11), ( 82,  8.15), ( 83,  8.18), ( 84,  8.22), ( 85,  8.25),
-		( 86,  8.29), ( 87,  8.32), ( 88,  8.36), ( 89,  8.39), ( 90,  8.42),
-		( 91,  8.46), ( 92,  8.49), ( 93,  8.52), ( 94,  8.56), ( 95,  8.59),
-		( 96,  8.62), ( 97,  8.65), ( 98,  8.68), ( 99,  8.72), (100,  8.75),
-		(101,  8.78), (102,  8.81), (103,  8.84), (104,  8.87), (105,  8.90),
-		(106,  8.93), (107,  8.96), (108,  8.99), (109,  9.02), (110,  9.05),
-		(111,  9.08), (112,  9.11), (113,  9.14), (114,  9.17), (115,  9.19),
-		(116,  9.22), (117,  9.25), (118,  9.28), (119,  9.31), (120,  9.33),
-		(121,  9.36), (122,  9.39), (123,  9.42), (124,  9.44), (125,  9.47),
-		(126,  9.50), (127,  9.52), (128,  9.55), (129,  9.58), (130,  9.60),
-		(131,  9.63), (132,  9.66), (133,  9.68), (134,  9.71), (135,  9.73),
-		(136,  9.76), (137,  9.78), (138,  9.81), (139,  9.83), (140,  9.86),
-		(141,  9.88), (142,  9.91), (143,  9.93), (144,  9.96), (145,  9.98),
-		(146, 10.01), (147, 10.03), (148, 10.05), (149, 10.08), (150, 10.10),
-		(151, 10.13), (152, 10.15), (153, 10.17), (154, 10.20), (155, 10.22),
-		(156, 10.24), (157, 10.27), (158, 10.29), (159, 10.31), (160, 10.34),
-		(161, 10.36), (162, 10.38), (163, 10.40), (164, 10.43), (165, 10.45),
-		(166, 10.47), (167, 10.49), (168, 10.52), (169, 10.54), (170, 10.56),
-		(171, 10.58), (172, 10.60), (173, 10.63), (174, 10.65), (175, 10.67),
-		(176, 10.69), (177, 10.71), (178, 10.73), (179, 10.75), (180, 10.78),
-		(181, 10.80), (182, 10.82), (183, 10.84), (184, 10.86), (185, 10.88),
-		(186, 10.90), (187, 10.92), (188, 10.94), (189, 10.96), (190, 10.98),
-		(191, 11.00), (192, 11.02), (193, 11.04), (194, 11.07), (195, 11.09),
-		(196, 11.11), (197, 11.13), (198, 11.15), (199, 11.16), (200, 11.18),
-		(201, 11.20), (202, 11.22), (203, 11.24), (204, 11.26), (205, 11.28),
-		(206, 11.30), (207, 11.32), (208, 11.34), (209, 11.36), (210, 11.38),
-		(211, 11.40), (212, 11.42), (213, 11.44), (214, 11.46), (215, 11.47),
-		(216, 11.49), (217, 11.51), (218, 11.53), (219, 11.55), (220, 11.57),
-		(221, 11.59), (222, 11.60), (223, 11.62), (224, 11.64), (225, 11.66),
-		(226, 11.68), (227, 11.70), (228, 11.71), (229, 11.73), (230, 11.75),
-		(231, 11.77), (232, 11.79), (233, 11.80), (234, 11.82), (235, 11.84),
-		(236, 11.86), (237, 11.88), (238, 11.89), (239, 11.91), (240, 11.93),
-		(241, 11.95), (242, 11.96), (243, 11.98), (244, 12.00), (245, 12.02),
-		(246, 12.03), (247, 12.05), (248, 12.07), (249, 12.08), (250, 12.10),
-		(251, 12.12), (252, 12.14), (253, 12.15), (254, 12.17), (255, 12.19),
-		(256, 12.20), (257, 12.22), (258, 12.24), (259, 12.25), (260, 12.27),
-		(261, 12.29), (262, 12.30), (263, 12.32), (264, 12.34), (265, 12.35),
-		(266, 12.37), (267, 12.38), (268, 12.40), (269, 12.42), (270, 12.43),
-		(271, 12.45), (272, 12.47), (273, 12.48), (274, 12.50), (275, 12.51),
-		(276, 12.53), (277, 12.55), (278, 12.56), (279, 12.58), (280, 12.59),
-		(281, 12.61), (282, 12.63), (283, 12.64), (284, 12.66), (285, 12.67),
-		(286, 12.69), (287, 12.70), (288, 12.72), (289, 12.74), (290, 12.75),
-		(291, 12.77), (292, 12.78), (293, 12.80), (294, 12.81), (295, 12.83),
-		(296, 12.84), (297, 12.86), (298, 12.87), (299, 12.89), (300, 12.90),
-		(301, 12.92), (302, 12.93), (303, 12.95), (304, 12.96), (305, 12.98),
-		(306, 12.99), (307, 13.01), (308, 13.02), (309, 13.04), (310, 13.05),
-		(311, 13.07), (312, 13.08), (313, 13.10), (314, 13.11), (315, 13.13),
-		(316, 13.14), (317, 13.16), (318, 13.17), (319, 13.19), (320, 13.20),
-		(321, 13.21), (322, 13.23), (323, 13.24), (324, 13.26), (325, 13.27),
-		(326, 13.29), (327, 13.30), (328, 13.32), (329, 13.33), (330, 13.34),
-		(331, 13.36), (332, 13.37), (333, 13.39), (334, 13.40), (335, 13.41),
-		(336, 13.43), (337, 13.44), (338, 13.46), (339, 13.47), (340, 13.48),
-		(341, 13.50), (342, 13.51), (343, 13.53), (344, 13.54), (345, 13.55),
-		(346, 13.57), (347, 13.58), (348, 13.60), (349, 13.61), (350, 13.62),
-	])
-
-	BOND_BOARD_COMPLETION_BONUS = dict([
-		# Board  Appeal  Stamina  Technique  Crit Rate  Crit Power  Sp Gain  Sp Voltage  Vo Penalty  Sp Penalty  Gd Penalty  Sk Penalty  Attribute Bonus  UR Level  SR Level  R Level
-		( 1,     (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 3,     (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 5,     (0.0,   0.0,     1.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 7,     (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 10,    (0.0,   0.0,     0.0,       0.0,       0.0,        2.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 15,    (0.0,   0.0,     0.0,       1.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 20,    (0.0,   0.0,     0.0,       0.0,       20.0,       0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 25,    (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        5.0,             0,        0,        0,      ) ),
-		( 30,    (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 35,    (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             2,        4,        6,      ) ),
-
-		( 40,    (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 50,    (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 60,    (0.0,   0.0,     1.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 70,    (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 80,    (0.0,   0.0,     0.0,       0.0,       0.0,        2.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 90,    (0.0,   0.0,     0.0,       1.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 100,   (0.0,   0.0,     0.0,       0.0,       20.0,       0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 120,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        5.0,             0,        0,        0,      ) ),
-		( 140,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 160,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             2,        4,        6,      ) ),
-
-		( 180,   (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 200,   (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 220,   (0.0,   0.0,     1.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 240,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 260,   (0.0,   0.0,     0.0,       0.0,       0.0,        2.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 280,   (0.0,   0.0,     0.0,       1.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 300,   (0.0,   0.0,     0.0,       0.0,       20.0,       0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 320,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        5.0,             0,        0,        0,      ) ),
-		( 340,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 360,   (0.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             2,        4,        6,      ) ),
-
-		( 380,   (1.0,   0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-		( 400,   (0.0,   1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ) ),
-	])
-
-	BOND_BOARD_TILES = dict([
-		( 1,   {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 3,   {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
-		( 5,   {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, } ),
-		( 7,   {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , } ),
-		( 10,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
-		( 15,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 20,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.URLevel        : 2,   } ),
-		( 25,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 30,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, } ),
-		( 35,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
-
-		( 40,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 50,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
-		( 60,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, } ),
-		( 70,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , } ),
-		( 80,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
-		( 90,  {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 100, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.URLevel        : 2,   } ),
-		( 120, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 140, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, } ),
-		( 160, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
-
-		( 180, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 200, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
-		( 220, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, } ),
-		( 240, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , } ),
-		( 260, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
-		( 280, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 300, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.URLevel        : 2,   } ),
-		( 320, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 340, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, } ),
-		( 360, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, } ),
-
-		( 380, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, } ),
-		( 400, {  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   } ),
-	])
-
+	
+	BOND_BOARD_LEVELS = [
+		1,   3,   5,   7,  10,  15,  20,  25,  30,  35,
+		40,  50,  60,  70,  80,  90, 100, 120, 140, 160,
+		180, 200, 220, 240, 260, 280, 300, 320, 340, 360,
+		380, 400,
+	]
+	
 	@staticmethod
-	def add_parameters(a, b):
-		for k in a:
-			a[k] += b[k]
-		return a
-
-	@staticmethod
-	def get_bond_parameters(bond_level, board_level, unlocked_tiles):
-		# result = dict.fromkeys(BOND_PARAMETER_FIELDS, 0)
-		result = [0] * len(IdolBondBonuses.BOND_PARAMETER_FIELDS)
-		
-		current_tiles = IdolBondBonuses.BOND_BOARD_TILES[board_level]
-		if isinstance(unlocked_tiles, bool) and unlocked_tiles == True:
-			unlocked_tiles = list(current_tiles.keys())
-		
-		current_board_completed = len(unlocked_tiles) == 5
-
-		for level, params in IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS.items():
-			if level == board_level and not current_board_completed:
-				break
-			result = [sum(x) for x in zip(result, params)]
-			if level == board_level and current_board_completed:
-				break
-
-		result = dict(zip(IdolBondBonuses.BOND_PARAMETER_FIELDS, result))
-
-		for level, params in IdolBondBonuses.BOND_BOARD_TILES.items():
-			if level == board_level: break
-			for key, value in params.items():
-				result[key] += value
-				
-		for key in unlocked_tiles:
-			if key not in current_tiles:
-				raise IdolBondBonusesValueError(f"Given tile '{key}' does not exist in current board (level {board_level})")
-			result[key] += current_tiles[key]
-
+	def get_board_index(board_level):
 		try:
-			bonus_percentage = IdolBondBonuses.BOND_LEVEL_PARAMETER_BONUS[bond_level]
-		except IndexError:
-			bonus_percentage = None
-
-		if bonus_percentage == None:
-			raise IdolBondBonusesValueError("Bond bonus percentage not found in the parameter bonus list (may be unimplemented).")
-
-		result[BondParameter.Appeal]    += bonus_percentage
-		result[BondParameter.Stamina]   += bonus_percentage
-		result[BondParameter.Technique] += bonus_percentage
-
-		result[BondParameter.URLevel] += 80
-		result[BondParameter.SRLevel] += 60
-		result[BondParameter.RLevel]  += 40
-
-		# print()
-		# for k, v in result.items():
-		# 	print(f"   {k.name:<15}  : {v:>4.2f}")
-		# print()
+			return IdolBondBonuses.BOND_BOARD_LEVELS.index(board_level)
+		except ValueError:
+			raise IdolBondBonusesValueError(f"Bond board level '{board_level}' does not exist.")
+	
+	@staticmethod
+	def get_max_board_level_for_bond_level(bond_level):
+		for board_level in reversed(IdolBondBonuses.BOND_BOARD_LEVELS):
+			if board_level <= bond_level:
+				return board_level
 		
-		return result
+		raise IdolBondBonusesValueError(f"Invalid bond level.")
+	
+	@staticmethod
+	def get_parameter_bonus(bond_level : int):
+		# https://suyo.be/sifas/wiki/gameplay/bond-level
+		# https://suyo.be/sifas/wiki/calculations/bond-level
+		bonus = max(0, (5 * bond_level - 9)) ** 0.35
+		return round(bonus, 2)
+		
+	# --------------------------------------------------
+	
+	# Bond board tiles and completion bonuses seem to loop every 10 boards
+	
+	BOND_BOARD_TILES = [
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.URLevel        : 2,   },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, },
+	]
+	
+	BOND_BOARD_COMPLETION_BONUS = [
+		# Appeal  Stamina  Technique  Crit Rate  Crit Power  Sp Gain  Sp Voltage  Vo Penalty  Sp Penalty  Gd Penalty  Sk Penalty  Attribute Bonus  UR Level  SR Level  R Level
+		( 1.0,    0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
+		( 0.0,    1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
+		( 0.0,    0.0,     1.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
+		( 0.0,    0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
+		( 0.0,    0.0,     0.0,       0.0,       0.0,        2.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
+		( 0.0,    0.0,     0.0,       1.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
+		( 0.0,    0.0,     0.0,       0.0,       20.0,       0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
+		( 0.0,    0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        5.0,             0,        0,        0,      ),
+		( 0.0,    0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
+		( 0.0,    0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             2,        4,        6,      ),
+	]
+		
+	# --------------------------------------------------
+	
+	@staticmethod
+	def get_board_completion_bonus(board_level : int):
+		board_index = IdolBondBonuses.get_board_index(board_level)
+		return IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS[board_index % len(IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS)]
+		
+	@staticmethod
+	def get_cumulative_completion_parameters(start_board_level : int = 1, end_board_level : int = None, end_inclusive : bool = True):
+		parameters = [0] * len(IdolBondBonuses.BOND_PARAMETER_FIELDS)
+		for board_level, bonuses in IdolBondBonuses.board_completion_bonuses(start_board_level, end_board_level, end_inclusive):
+			parameters = [sum(x) for x in zip(parameters, bonuses)]
+		parameters = dict(zip(IdolBondBonuses.BOND_PARAMETER_FIELDS, parameters))
+		return parameters
+		
+	@staticmethod
+	def board_completion_bonuses(start_board_level : int = 1, end_board_level : int = None, end_inclusive : bool = True):
+		for index, board_level in enumerate(IdolBondBonuses.BOND_BOARD_LEVELS):
+			if board_level < start_board_level:
+				continue
+			if isinstance(end_board_level, int):
+				if end_inclusive     and board_level >  end_board_level: break
+				if not end_inclusive and board_level >= end_board_level: break
+			yield (board_level, IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS[index % len(IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS)])
+		
+	# --------------------------------------------------
+	
+	@staticmethod
+	def get_board_tiles(board_level : int):
+		board_index = IdolBondBonuses.get_board_index(board_level)
+		return IdolBondBonuses.BOND_BOARD_TILES[board_index % len(IdolBondBonuses.BOND_BOARD_TILES)]
+	
+	@staticmethod
+	def board_tiles(start_board_level : int = 1, end_board_level : int = None, end_inclusive : bool = True):
+		for index, board_level in enumerate(IdolBondBonuses.BOND_BOARD_LEVELS):
+			if board_level < start_board_level:
+				continue
+			if isinstance(end_board_level, int):
+				if end_inclusive     and board_level >  end_board_level: break
+				if not end_inclusive and board_level >= end_board_level: break
+				
+			yield (board_level, IdolBondBonuses.BOND_BOARD_TILES[index % len(IdolBondBonuses.BOND_BOARD_TILES)])
+	
+	@staticmethod
+	def get_cumulative_tile_parameters(start_board_level : int = 1, end_board_level : int = None, end_inclusive : bool = True):
+		parameters = dict.fromkeys(IdolBondBonuses.BOND_PARAMETER_FIELDS, 0)
+		for board_level, board_tiles in IdolBondBonuses.board_tiles(start_board_level, end_board_level, end_inclusive):
+			for tile_parameter, value in board_tiles.items():
+				parameters[tile_parameter] += value
+		return parameters
+		
+	# --------------------------------------------------
+	
+	@staticmethod
+	def get_board_parameters(bond_level : int, board_level : int, unlocked_tiles : list):
+		"""Return total cumulative bond board parameters for the given bond level, board level and unlocked tiles.
+		
+		Arguments:
+	      bond_level     : integer value for bond level. Min value 1.
+	      
+	      board_level    : integer value for board level. Min value 1, max value [bond_level].
+	                     :  Value must exist in BOND_BOARD_LEVELS list.
+	                     
+	      unlocked_tiles : Can be a boolean or a list.
+	                     :   If boolean:  True  = all tiles of current board are unlocked
+	                     :                False = no tiles of current board are unlocked
+	                     :   If list:     The list should contain up to 5 values of enum type BondParameter
+	                     :                and the values must exist in the list returned by method get_board_tiles(board_level).
+		"""
+		
+		if bond_level < 1:
+			raise IdolBondBonusesValueError(f"Invalid bond level.")
+			
+		if board_level not in IdolBondBonuses.BOND_BOARD_LEVELS:
+			raise IdolBondBonusesValueError(f"Given board level ({board_level}) is not a valid board level.")
+		
+		max_board_level = IdolBondBonuses.get_max_board_level_for_bond_level(bond_level)
+		if board_level > max_board_level:
+			raise IdolBondBonusesValueError(f"Bond level ({bond_level}) is lower than required for the board level ({max_board_level}).")
+		
+		current_tiles = IdolBondBonuses.get_board_tiles(board_level)
+		
+		if isinstance(unlocked_tiles, bool):
+			current_board_completed = (unlocked_tiles == True)
+			
+		elif isinstance(unlocked_tiles, list):
+			assert(len(unlocked_tiles) <= 5)
+			current_board_completed = len(unlocked_tiles) == 5 and collections.Counter(unlocked_tiles) == collections.Counter(current_tiles.keys())
+		
+		else:
+			raise IdolBondBonusesValueError("Argument 'unlocked_tiles' should be a boolean or a list of BondParameter enum values.")
+		
+		sum_dicts = lambda a, b: {k: a.get(k, 0) + b.get(k, 0) for k in a.keys()}
+		parameters = sum_dicts(
+			IdolBondBonuses.get_cumulative_completion_parameters(end_board_level=board_level, end_inclusive=current_board_completed),
+			IdolBondBonuses.get_cumulative_tile_parameters(end_board_level=board_level, end_inclusive=current_board_completed)
+		)
+
+		if not current_board_completed and isinstance(unlocked_tiles, list):
+			for tile_parameter in unlocked_tiles:
+				if tile_parameter not in current_tiles:
+					raise IdolBondBonusesValueError(f"Given tile '{key}' does not exist in current board (level {board_level})")
+				parameters[tile_parameter] += current_tiles[tile_parameter]
+
+		parameter_bonus = IdolBondBonuses.get_parameter_bonus(bond_level)
+		parameters[BondParameter.Appeal]    += parameter_bonus
+		parameters[BondParameter.Stamina]   += parameter_bonus
+		parameters[BondParameter.Technique] += parameter_bonus
+
+		parameters[BondParameter.URLevel] += Rarity.UR.max_level
+		parameters[BondParameter.SRLevel] += Rarity.SR.max_level
+		parameters[BondParameter.RLevel]  += Rarity.R.max_level
+
+		if __name__ == "__main__":
+			print()
+			for k, v in parameters.items():
+				print(f"   {k.name:<15}  : {v:>4.2f}")
+			print()
+		
+		return parameters
 
 
 ## TEST CODE
 if __name__ == "__main__":
-	IdolBondBonuses.get_bond_parameters(bond_level=261, board_level=260, unlocked_tiles=True)
+	# max_board_level = IdolBondBonuses.get_max_board_level_for_bond_level(bond_level=260)
+	# print("max_board_level", max_board_level)
 	
-	# IdolBondBonuses.get_bond_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
-	# IdolBondBonuses.get_bond_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])
-	# IdolBondBonuses.get_bond_parameters(77, 30, [ BondParameter.CritRate ])
+	# board_index = IdolBondBonuses.get_board_index(max_board_level)
+	# print("board_index", board_index)
+	
+	# completion = IdolBondBonuses.get_board_completion_bonus(max_board_level)
+	# print(completion)
+	
+	# for board_level, completion in IdolBondBonuses.board_completion_bonuses(end_board_level=260, end_inclusive = False):
+	# 	print(board_level, completion)
+	
+	IdolBondBonuses.get_board_parameters(bond_level=261, board_level=260, unlocked_tiles=True)
+	
+	# IdolBondBonuses.get_board_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
+	# IdolBondBonuses.get_board_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])
+	# IdolBondBonuses.get_board_parameters(77, 30, [ BondParameter.CritRate ])

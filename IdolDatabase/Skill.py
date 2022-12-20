@@ -63,14 +63,14 @@ class Skill(object):
     Effect = namedtuple(
         "Effect",
         (
-            "target_parameter",
-            "effect_type",
-            "effect_value",
-            "scale_type",
-            "calc_type",
-            "timing",
-            "finish_type",
-            "finish_value",
+            "target_parameter", # 0
+            "effect_type",      # 1
+            "effect_value",     # 2
+            "scale_type",       # 3
+            "calc_type",        # 4
+            "timing",           # 5
+            "finish_type",      # 6
+            "finish_value",     # 7
         ),
     )
 

@@ -222,6 +222,8 @@ class KiraraIdol():
 		elif target_data['apply_count'] == 9:
 			return SkillTarget.All
 		
+		print(target_data)
+		raise Exception("Something is not handled?")
 		return SkillTarget.Unknown
 
 #-----------------------------------------------------------------------------------------------------------------------

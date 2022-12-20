@@ -97,9 +97,9 @@ class Idol(IdolBase):
 		print()
 		
 	def set_bond_board(self, bond_level, board_level, unlocked_tiles):
-		# self.bond_bonuses = IdolBondBonuses.get_bond_parameters(bond_level=bond_level, board_level=board_level, unlocked_tiles=unlocked_tiles)
+		# self.bond_bonuses = IdolBondBonuses.get_board_parameters(bond_level=bond_level, board_level=board_level, unlocked_tiles=unlocked_tiles)
 		
-		self.bond_board = IdolBondBonuses.get_bond_parameters(
+		self.bond_board = IdolBondBonuses.get_board_parameters(
 			bond_level     = bond_level,
 			board_level    = board_level,
 			unlocked_tiles = unlocked_tiles)

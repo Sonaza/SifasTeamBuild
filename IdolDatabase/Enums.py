@@ -171,6 +171,8 @@ class SkillTargetParameter(Enum):
 	Appeal    = 10
 	Technique = 11
 	
+	BaseAppeal = 26
+	
 class Ordinal(): pass
 class SortingOrder(Enum):
 	Ascending  = 1

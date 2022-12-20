@@ -94,7 +94,7 @@ class IdolUnit(IdolBase):
 	# ---------------------------------------------
 	
 	def set_bond_board(self, bond_level, board_level, unlocked_tiles):
-		self.bond_board = IdolBondBonuses.get_bond_parameters(
+		self.bond_board = IdolBondBonuses.get_board_parameters(
 			bond_level     = bond_level,
 			board_level    = board_level,
 			unlocked_tiles = unlocked_tiles)
@@ -188,11 +188,9 @@ class IdolUnit(IdolBase):
 		#---------------------------------------------------------
 		
 		# Cards with technique as the highest stat get extra crit rate
-		self.crit_sense   = False
-		if self.raw_technique > self.raw_appeal and self.raw_technique > self.raw_stamina:
-			self.crit_sense = True
+		self.has_crit_sense   = (self.data.data['critical_rate_additive_bonus'] > 0)
 		
-		self.crit_rate = min(1, ((self.sheet_technique * 0.003) + (15 if self.crit_sense else 0)) * 0.01)
+		self.crit_rate = ((self.sheet_technique * 0.003) + (self.data.data['critical_rate_additive_bonus'] / 100)) * 0.01
 		if self.bond_board != None:
 			base_crit_power += self.bond_board[BondParameter.CritPower]
 			self.crit_rate += self.bond_board[BondParameter.CritRate] * 0.01
@@ -201,13 +199,13 @@ class IdolUnit(IdolBase):
 		# print("final crit_power", crit_power)
 		
 		# Calculating the final value
-		self.effective_appeal = (self.sheet_appeal * self.crit_rate * (crit_power * 0.01)) + (self.sheet_appeal * (1 - self.crit_rate))
+		self.effective_appeal = (self.sheet_appeal * min(1, self.crit_rate) * (crit_power * 0.01)) + (self.sheet_appeal * (1 - min(1, self.crit_rate)))
 	
 	# ---------------------------------------------
 	
 	def __str__(self):
 		global name_length
-		return f'{self.identifier + " " + self.first_name:<{name_length}}  |   {self.sheet_appeal:0.0f} appeal, {self.sheet_stamina:0.0f} stamina, {self.sheet_technique:0.0f} technique  |  Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.crit_sense)]})'
+		return f'{self.identifier + " " + self.first_name:<{name_length}}  |   {self.sheet_appeal:5.0f} appeal, {self.sheet_stamina:5.0f} stamina, {self.sheet_technique:5.0f} technique  |  {self.effective_appeal:5.0f} effective appeal |  Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.has_crit_sense)]})'
 		# return f'    {self.identifier + " " + self.first_name:<{name_length}}    Effective Appeal {self.effective_appeal:5.0f}    Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.crit_sense)]})' 
 		# return f'{self.identifier + " " + self.first_name:<{name_length}}  | {self.effective_appeal:5.0f}   | {self.crit_rate * 100:5.2f}% | ({[" ", "×"][int(self.crit_sense)]})' 
 		
@@ -242,3 +240,7 @@ nozomi.set_team_modifiers([
 # print("Passive", target, levels)
 
 print(nozomi)
+
+# nozomi.set_bond_board(**{ 'bond_level': 300, 'board_level': 300, 'unlocked_tiles' : True })
+
+# print(nozomi)
