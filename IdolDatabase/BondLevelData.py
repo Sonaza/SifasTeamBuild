@@ -159,7 +159,7 @@ class IdolBondBonuses():
 	                     
 	      unlocked_tiles : Can be a boolean or a list.
 	                     :   If boolean:  True  = all tiles of current board are unlocked
-	                     :                False = no tiles of current board are unlocked
+	                     :                False = no tiles of current board are unlocked (the same as supplying an empty list)
 	                     :   If list:     The list should contain up to 5 values of enum type BondParameter
 	                     :                and the values must exist in the list returned by method get_board_tiles(board_level).
 		"""
@@ -230,7 +230,8 @@ if __name__ == "__main__":
 	# for board_level, completion in IdolBondBonuses.board_completion_bonuses(end_board_level=260, end_inclusive = False):
 	# 	print(board_level, completion)
 	
-	IdolBondBonuses.get_board_parameters(bond_level=261, board_level=260, unlocked_tiles=True)
+	# IdolBondBonuses.get_board_parameters(bond_level=261, board_level=260, unlocked_tiles=True)
+	IdolBondBonuses.get_board_parameters(bond_level=92, board_level=60, unlocked_tiles=[BondParameter.AttributeBonus])
 	
 	# IdolBondBonuses.get_board_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
 	# IdolBondBonuses.get_board_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])
