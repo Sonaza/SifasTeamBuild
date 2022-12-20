@@ -97,10 +97,12 @@ class KiraraIdol():
 		
 		try:
 			self.data = json.loads(data['json'])
-			self._process_skill_data()
-		except json.JSONDecodeError:
+		except (IndexError, json.JSONDecodeError):
 			self.data = {}
 			# self.data = KiraraIdolLazyLoader()
+		
+		if self.data:
+			self._process_skill_data()
 		
 		self.modifiers = (Attribute.Unset, Type.Unset, 1, 1)
 	
