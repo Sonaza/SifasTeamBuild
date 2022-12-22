@@ -121,8 +121,7 @@
 										<div class="idol-limited">
 											{% for source in data.limited_sources: %}
 												{% set lim_info = data.limited_idols[member][source] %}
-												{% set max_offset = data.limited_max_offsets[member][source] if member in data.limited_max_offsets else 0 %}
-												<span class="limited-pill source-{{ source.value }} {{ 'limited-not-max' | conditional_css(lim_info['num_idols'] < (data.max_per_source[source] + max_offset)) }}"
+												<span class="limited-pill source-{{ source.value }} {{ 'limited-not-max' | conditional_css(lim_info['num_idols'] < (data.max_per_source[source] + lim_info['max_offset'])) }}"
 												      title="{{ member.first_name }} has {{ lim_info['num_idols'] }} {{ source.name }} card(s)">
 													{{ lim_info['num_idols'] }} {{ source.name[0] }}
 												</span>

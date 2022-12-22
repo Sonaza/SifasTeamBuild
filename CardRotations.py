@@ -628,10 +628,6 @@ class CardRotations():
 			'limited'   : [Source.Festival, Source.Party],
 			'spotlight' : [Source.Party],
 		}
-		limited_max_offsets = {
-			Member.Mia    : { Source.Festival : -2, Source.Party : 0, },
-			Member.Lanzhu : { Source.Festival : -2, Source.Party : 0, },
-		}
 		limited_idols, max_per_source = self.client.get_idols_by_source_and_member([Source.Festival, Source.Party])
 		
 		category_data = defaultdict(dict)
@@ -650,7 +646,6 @@ class CardRotations():
 					'limited_idols'   : limited_idols,
 					'limited_sources' : (limited_sources[category] if category in limited_sources else []),
 					'max_per_source'  : max_per_source,
-					'limited_max_offsets' : limited_max_offsets,
 				}
 				category_has_empty_rows[category] = has_empty_rows or category_has_empty_rows[category]
 				
@@ -663,7 +658,6 @@ class CardRotations():
 				'limited_idols'   : limited_idols,
 				'limited_sources' : (limited_sources[category] if category in limited_sources else []),
 				'max_per_source'  : max_per_source,
-				'limited_max_offsets' : limited_max_offsets,
 			}
 			category_has_empty_rows[category] = has_empty_rows or category_has_empty_rows[category]
 		
@@ -821,6 +815,9 @@ class CardRotations():
 		return False
 	
 	def generate_pages(self):
+		self.client.get_weighted_overdueness()
+		exit()
+		
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		files_to_delete.extend([x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/history/*.html"))])
 		

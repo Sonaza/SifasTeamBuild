@@ -25,10 +25,10 @@ class InsightSkills():
 	Appeal_M_Group     = InsightSkill(SkillTarget.Group,          SkillTargetParameter.Appeal, effect_value = 2.0)
 	Appeal_S_Attribute = InsightSkill(SkillTarget.SameAttribute,  SkillTargetParameter.Appeal, effect_value = 1.0)
 	Appeal_M_Attribute = InsightSkill(SkillTarget.SameAttribute,  SkillTargetParameter.Appeal, effect_value = 2.0)
-	Appeal_S_Year      = InsightSkill(SkillTarget.SameYear,  SkillTargetParameter.Appeal, effect_value = 1.0)
-	Appeal_M_Year      = InsightSkill(SkillTarget.SameYear,  SkillTargetParameter.Appeal, effect_value = 2.0)
-	Appeal_S_School    = InsightSkill(SkillTarget.SameSchool,  SkillTargetParameter.Appeal, effect_value = 1.0)
-	Appeal_M_School    = InsightSkill(SkillTarget.SameSchool,  SkillTargetParameter.Appeal, effect_value = 2.0)
+	Appeal_S_Year      = InsightSkill(SkillTarget.SameYear,       SkillTargetParameter.Appeal, effect_value = 1.0)
+	Appeal_M_Year      = InsightSkill(SkillTarget.SameYear,       SkillTargetParameter.Appeal, effect_value = 2.0)
+	Appeal_S_School    = InsightSkill(SkillTarget.SameSchool,     SkillTargetParameter.Appeal, effect_value = 1.0)
+	Appeal_M_School    = InsightSkill(SkillTarget.SameSchool,     SkillTargetParameter.Appeal, effect_value = 2.0)
 
 class IdolUnit(IdolBase):
 	def __init__(self, card_ordinal : int, identifier : str, limit_break : int = 5):
@@ -429,7 +429,7 @@ the_best_team = IdolTeam()
 the_best_team.set_all_units([
 	# Fes2 Rina
 	IdolUnit(487, "Fes2", limit_break = 5) \
-		.set_bond_board(   **{ 'bond_level': 113, 'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.Technique, BondParameter.AttributeBonus ] }) \
+		.set_bond_board(**{ 'bond_level': 113, 'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.Technique, BondParameter.AttributeBonus ] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 4),
 	# Magical Nozo
 	IdolUnit(193, "Magical", limit_break = 5) \
@@ -437,33 +437,33 @@ the_best_team.set_all_units([
 		.set_insight_skills([InsightSkills.Appeal_M_Group] * 3),
 	# Fes1 Kanata
 	IdolUnit(182, "Fes1", limit_break = 5) \
-		.set_bond_board(   **{ 'bond_level': 120, 'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.AttributeBonus ] }) \
+		.set_bond_board(**{ 'bond_level': 120, 'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.AttributeBonus ] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 4),
 
 	# Party Shio
 	IdolUnit(477, "Party", limit_break = 5) \
-		.set_bond_board(  **{ 'bond_level': 123, 'board_level': 120, 'unlocked_tiles' : [] }) \
+		.set_bond_board(**{ 'bond_level': 123, 'board_level': 120, 'unlocked_tiles' : [] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 	# Fes3 Nozo
 	IdolUnit(728, "Fes3", limit_break = 5) \
-		.set_bond_board(   **{ 'bond_level': 261, 'board_level': 260, 'unlocked_tiles' : True }) \
+		.set_bond_board(**{ 'bond_level': 261, 'board_level': 260, 'unlocked_tiles' : True }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 	# Party Koto
 	IdolUnit(514, "Party", limit_break = 5) \
-		.set_bond_board(  **{ 'bond_level': 91,  'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.Technique, BondParameter.AttributeBonus ] }) \
+		.set_bond_board(**{ 'bond_level': 91,  'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.Technique, BondParameter.AttributeBonus ] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 
 	# Initial Kanan
 	IdolUnit(48, "Initial", limit_break = 1) \
-		.set_bond_board( **{ 'bond_level': 108, 'board_level': 60,  'unlocked_tiles'  : [] }) \
+		.set_bond_board(**{ 'bond_level': 108, 'board_level': 60,  'unlocked_tiles'  : [] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 2),
 	# Star Setsu
 	IdolUnit(713, "Star", limit_break = 0) \
-		.set_bond_board(   **{ 'bond_level': 81,  'board_level': 40,  'unlocked_tiles' : [ BondParameter.CritRate ] }) \
+		.set_bond_board(**{ 'bond_level': 81,  'board_level': 40,  'unlocked_tiles' : [ BondParameter.CritRate ] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 2),
 	# Party Ransu
 	IdolUnit(629, "Party", limit_break = 1) \
-		.set_bond_board(  **{ 'bond_level': 50,  'board_level': 30,  'unlocked_tiles' : [] }) \
+		.set_bond_board(**{ 'bond_level': 50,  'board_level': 30,  'unlocked_tiles' : [] }) \
 		.set_insight_skills([InsightSkills.Appeal_M_Group] * 4),
 
 	# # Fes3 Nozo

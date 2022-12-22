@@ -937,6 +937,52 @@ class KiraraClient():
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())
+	
+	def get_weighted_overdueness(self):
+		
+		limited_idols, max_per_source = self.get_idols_by_source_and_member([Source.Festival, Source.Party])
+		overdue_members = set()
+		for member in Member:
+			for source, data in limited_idols[member].items():
+				if data['num_idols'] < (max_per_source[source] + data['max_offset']):
+					overdue_members.add(member)
+					break
+		# print(overdue_members)
+		
+		now = datetime.now(timezone.utc) #+ timedelta(days=30)
+		
+		all_urs     = self.get_newest_idols(rarity=Rarity.UR)
+		longest_overdue = 0
+		elapsed_per_member = {}
+		for idol in all_urs:
+			delta = now - idol.release_date
+			longest_overdue = max(delta.days, longest_overdue)
+			if idol.member_id in overdue_members:
+				elapsed_per_member[idol.member_id] = delta
+		
+		weighted_overdueness = {}
+		limited_urs = self.get_newest_idols(rarity=Rarity.UR, source=[Source.Festival, Source.Party])
+		for idol in limited_urs:
+			if idol.member_id not in overdue_members:
+				continue
+			
+			coefficient = elapsed_per_member[idol.member_id].days / longest_overdue
+			delta = now - idol.release_date
+			
+			weighted_value = coefficient * delta.days
+			
+			weighted_overdueness[idol.member_id] = {
+				'last_any_ur'     : elapsed_per_member[idol.member_id],
+				'last_limited_ur' : delta,
+				'weighted_value'  : weighted_value,
+				'last_card'       : idol,
+			}
+		
+		weighted_overdueness = {k: v for k, v in sorted(weighted_overdueness.items(), key=lambda x: x[1]['weighted_value'], reverse=True)}
+		for member, data in weighted_overdueness.items():
+			print(f"{member:<15}    | Lim: {data['last_limited_ur'].days:>4} days  |  Any: {data['last_any_ur'].days:>4} days  |  value {data['weighted_value']:>8.3f}  | {data['last_card']}")
+			
+		return weighted_overdueness
 		
 	# -------------------------------------------------------------------------------------------
 	
@@ -1159,24 +1205,34 @@ class KiraraClient():
 					WHERE source = ? AND rarity = ?
 					GROUP BY member_id"""
 		
+		max_offsets_per_member = {
+			Member.Mia    : { Source.Festival : -2, Source.Party : 0, },
+			Member.Lanzhu : { Source.Festival : -2, Source.Party : 0, },
+		}
+		
 		max_per_source = dict()
 		num_idols_by_member = defaultdict(dict)
 		for source in sources:
 			max_per_source[source] = 0
 			
 			for member in Member:
+				try:
+					max_offset = max_offsets_per_member[member][source]
+				except:
+					max_offset = 0
+					
 				num_idols_by_member[member][source] = {
-					'num_idols' : 0,
-					'idols'     : [],
+					'num_idols'  : 0,
+					'idols'      : [],
+					'max_offset' : max_offset,
 				}
 			
 			self.db.execute(query, [source.value, rarity.value])
 			for row in self.db.fetchall():
 				member = Member(row['member_id'])
-				num_idols_by_member[member][source] = {
-					'num_idols' : row['num_idols'],
-					'idols'     : [int(x) for x in row['idol_ordinals'].split(',')],
-				}
+				
+				num_idols_by_member[member][source]['num_idols'] = row['num_idols']
+				num_idols_by_member[member][source]['nuidolsm_idols'] = [int(x) for x in row['idol_ordinals'].split(',')]
 				
 				max_per_source[source] = max(row['num_idols'], max_per_source[source])
 				
