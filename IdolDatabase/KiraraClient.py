@@ -68,6 +68,17 @@ class KiraraNameSubstitutions():
 
 #-----------------------------------------------------------------------------------------------------------------------
 
+# @dataclass
+# class PassiveSkill():
+# 	skill_target     : SkillTarget          = field(init = False)
+	
+# 	@dataclass
+# 	class Effect():
+# 		target_parameter : SkillTargetParameter = field(init = False)
+# 		effect_value     : float                = field(init = False)
+	
+# 	skill_effects : List[SkillEffect] = field(init = False, default_factory=list)
+
 class KiraraIdol():
 	def __init__(self, client, data):
 		self._client        = client
@@ -180,10 +191,10 @@ class KiraraIdol():
 				continue
 			
 			effect = Skill.Effect._make(levels[skill_level - 1])
-			effects.append({
+			effects.append(dotdict({
 				"target_parameter" : SkillTargetParameter(effect.effect_type),
-				"effect_value" : effect.effect_value / 100,
-			})
+				"effect_value"     : effect.effect_value / 100,
+			}))
 		
 		# print(effects)
 		return skill_target, effects

@@ -2,6 +2,8 @@ import math
 import collections
 from enum import Enum
 
+from typing import List, Dict, Union, Optional
+
 if __name__ == "__main__":
 	from Enums import *
 else:
@@ -29,6 +31,9 @@ class BondParameter(Enum):
 	SRLevel        = 14
 	RLevel         = 15
 
+class cyclelist(list):
+	def __getitem__(self, index):
+		return super().__getitem__(index % len(self))
 
 class IdolBondBonusesValueError(Exception): pass
 class IdolBondBonuses():
@@ -67,7 +72,7 @@ class IdolBondBonuses():
 	
 	# Bond board tiles and completion bonuses seem to loop every 10 boards
 	
-	BOND_BOARD_TILES = [
+	BOND_BOARD_TILES = cyclelist([
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, },
@@ -78,9 +83,9 @@ class IdolBondBonuses():
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpPenalty : 0.5,  BondParameter.SpGain         : 0.5, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.VoPenalty : 0.5,  BondParameter.CritRate       : 0.5, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, },
-	]
+	])
 	
-	BOND_BOARD_COMPLETION_BONUS = [
+	BOND_BOARD_COMPLETION_BONUS = cyclelist([
 		# Appeal  Stamina  Technique  Crit Rate  Crit Power  Sp Gain  Sp Voltage  Vo Penalty  Sp Penalty  Gd Penalty  Sk Penalty  Attribute Bonus  UR Level  SR Level  R Level
 		( 1.0,    0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
 		( 0.0,    1.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
@@ -92,17 +97,17 @@ class IdolBondBonuses():
 		( 0.0,    0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        5.0,             0,        0,        0,      ),
 		( 0.0,    0.0,     0.0,       0.0,       0.0,        0.0,     1.0,        0.0,        0.0,        0.0,        0.0,        0.0,             0,        0,        0,      ),
 		( 0.0,    0.0,     0.0,       0.0,       0.0,        0.0,     0.0,        0.0,        0.0,        0.0,        0.0,        0.0,             2,        4,        6,      ),
-	]
+	])
 		
 	# --------------------------------------------------
 	
 	@staticmethod
 	def get_board_completion_bonus(board_level : int):
 		board_index = IdolBondBonuses.get_board_index(board_level)
-		return IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS[board_index % len(IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS)]
+		return IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS[board_index]
 		
 	@staticmethod
-	def get_cumulative_completion_parameters(start_board_level : int = 1, end_board_level : int = None, end_inclusive : bool = True):
+	def get_cumulative_completion_parameters(start_board_level : int = 1, end_board_level : Optional[int] = None, end_inclusive : bool = True):
 		parameters = [0] * len(IdolBondBonuses.BOND_PARAMETER_FIELDS)
 		for board_level, bonuses in IdolBondBonuses.board_completion_bonuses(start_board_level, end_board_level, end_inclusive):
 			parameters = [sum(x) for x in zip(parameters, bonuses)]
@@ -110,24 +115,24 @@ class IdolBondBonuses():
 		return parameters
 		
 	@staticmethod
-	def board_completion_bonuses(start_board_level : int = 1, end_board_level : int = None, end_inclusive : bool = True):
+	def board_completion_bonuses(start_board_level : int = 1, end_board_level : Optional[int] = None, end_inclusive : bool = True):
 		for index, board_level in enumerate(IdolBondBonuses.BOND_BOARD_LEVELS):
 			if board_level < start_board_level:
 				continue
 			if isinstance(end_board_level, int):
 				if end_inclusive     and board_level >  end_board_level: break
 				if not end_inclusive and board_level >= end_board_level: break
-			yield (board_level, IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS[index % len(IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS)])
+			yield (board_level, IdolBondBonuses.BOND_BOARD_COMPLETION_BONUS[index])
 		
 	# --------------------------------------------------
 	
 	@staticmethod
 	def get_board_tiles(board_level : int):
 		board_index = IdolBondBonuses.get_board_index(board_level)
-		return IdolBondBonuses.BOND_BOARD_TILES[board_index % len(IdolBondBonuses.BOND_BOARD_TILES)]
+		return IdolBondBonuses.BOND_BOARD_TILES[board_index]
 	
 	@staticmethod
-	def board_tiles(start_board_level : int = 1, end_board_level : int = None, end_inclusive : bool = True):
+	def board_tiles(start_board_level : int = 1, end_board_level : Optional[int] = None, end_inclusive : bool = True):
 		for index, board_level in enumerate(IdolBondBonuses.BOND_BOARD_LEVELS):
 			if board_level < start_board_level:
 				continue
@@ -135,10 +140,10 @@ class IdolBondBonuses():
 				if end_inclusive     and board_level >  end_board_level: break
 				if not end_inclusive and board_level >= end_board_level: break
 				
-			yield (board_level, IdolBondBonuses.BOND_BOARD_TILES[index % len(IdolBondBonuses.BOND_BOARD_TILES)])
+			yield (board_level, IdolBondBonuses.BOND_BOARD_TILES[index])
 	
 	@staticmethod
-	def get_cumulative_tile_parameters(start_board_level : int = 1, end_board_level : int = None, end_inclusive : bool = True):
+	def get_cumulative_tile_parameters(start_board_level : int = 1, end_board_level : Optional[int] = None, end_inclusive : bool = True):
 		parameters = dict.fromkeys(IdolBondBonuses.BOND_PARAMETER_FIELDS, 0)
 		for board_level, board_tiles in IdolBondBonuses.board_tiles(start_board_level, end_board_level, end_inclusive):
 			for tile_parameter, value in board_tiles.items():
@@ -148,7 +153,7 @@ class IdolBondBonuses():
 	# --------------------------------------------------
 	
 	@staticmethod
-	def get_board_parameters(bond_level : int, board_level : int, unlocked_tiles : list):
+	def get_board_parameters(bond_level : int, board_level : int, unlocked_tiles : Union[bool, List[BondParameter]]) -> Dict[BondParameter, float]:
 		"""Return total cumulative bond board parameters for the given bond level, board level and unlocked tiles.
 		
 		Arguments:
