@@ -282,11 +282,11 @@ class KiraraClient():
 		for schema in schemas:
 			try:
 				self.db.execute(schema)
-				print("Created new table", schema)
+				print("Executed SQL:", schema)
 				print()
 			except sqlite.OperationalError as e:
 				error_str = str(e)
-				if not ('table' in error_str and 'already exists' in error_str):
+				if not ('already exists' in error_str):
 					print(schema)
 					raise e
 				

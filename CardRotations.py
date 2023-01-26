@@ -938,6 +938,15 @@ class CardRotations():
 			self.renderer.render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
+		# Compile and minify CSS
+		
+		self.processor.compile_css(
+			input_files = self.css_settings.input_files,
+			output_file = self.css_settings.output_file,
+			minify=not self.args.dev,
+		)
+		
+        # -------------------------------------------------------
 		# Error Pages
 		
 		if self.due_for_rendering("error.html"):
@@ -992,15 +1001,6 @@ class CardRotations():
 			self.renderer.render_and_save("template.htaccess", ".htaccess", {
 				'preloads' : preload_assets
 			}, minify=False, generated_note=True)
-		
-		# -------------------------------------------------------
-		# Compile and minify CSS
-		
-		self.processor.compile_css(
-			input_files = self.css_settings.input_files,
-			output_file = self.css_settings.output_file,
-			minify=not self.args.dev,
-		)
 		
 		# -------------------------------------------------------
 		# Main index and layout
