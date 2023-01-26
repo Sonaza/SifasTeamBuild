@@ -1754,6 +1754,11 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 			}
 		}
 		
+		angular.element(document.querySelector('.rotation-column-wrapper')).on('scroll', ($event) =>
+		{
+			$rootScope.$broadcast('rotation-column-scrolled');
+		});
+		
 		let num_pages = undefined;
 		let page_selector = document.querySelector('.array-group-page-selector');
 		if (page_selector)
@@ -2111,6 +2116,72 @@ app.directive('cardTooltip', function($parse)
 					scope.first_name = value.member_name.split(' ')[0];
 				}
 			}, true);
+		}
+	}
+})
+
+app.directive('deferredLoad', function($parse, $window)
+{
+	return {
+		restrict: 'A',
+		// templateUrl: function(element, attrs)
+		// {
+		// 	let url = 'pages/deferred/' + attrs.deferredLoad + '.html';
+		// 	return url;
+		// },
+		scope: true,
+		template: '<ng-include src="getTemplateUrl()">',
+		link: function (scope, element, attrs)
+		{
+			function isElementInViewport(el)
+			{
+			    var rect = el.getBoundingClientRect();
+			    return (
+			        rect.top >= 0 &&
+			        rect.left >= 0 &&
+			        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
+			        rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
+			    );
+			}
+			function isElementPartiallyInViewport(el)
+			{
+			    var rect = el.getBoundingClientRect();
+			    let width = rect.right - rect.left;
+			    let height = rect.bottom - rect.top;
+			    return (
+			        rect.top >= -height &&
+			        rect.left >= -width &&
+			        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) + height &&
+			        rect.right <= (window.innerWidth || document.documentElement.clientWidth) + width
+			    );
+			}
+			
+			scope.$on('rotation-column-scrolled', (_) => {
+				scope.$apply();
+			});
+			
+			scope.template_url = 'pages/deferred/' + attrs.deferredLoad + '.html';
+			
+			scope.getTemplateUrl = function()
+			{
+				// console.log("scope.getTemplateUrl called", attrs.deferredLoad, scope.template_url);
+				
+				if (!is_in_mobile_mode() && scope.loaded)
+				{
+					return scope.template_url;
+				}
+				
+				if (isElementPartiallyInViewport(element[0]))
+				{
+					// console.log("Loading", attrs.deferredLoad);
+					scope.loaded = true;
+					return scope.template_url;
+				}
+				
+				// console.log("Unloading", attrs.deferredLoad);
+				scope.loaded = false;
+				return '';
+			}
 		}
 	}
 })

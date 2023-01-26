@@ -1,5 +1,9 @@
 from enum import Enum
-from .Enums import *
+
+try:
+	from .Enums import *
+except:
+	from Enums import *
 
 class AccessoryType(Enum):
 	Brooch     = 1
@@ -162,7 +166,10 @@ class Accessories():
 ## TEST CODE
 if __name__ == "__main__":
 	# print(Accessories.Bracelet.get(limit_break=5, skill=1))
-	print(Accessories.Keychain.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=10))
-	
-	print(Accessories.Belt.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=15))
-	print(Accessories.Ribbon.get(Attribute.Cool, Rarity.UR, limit_break=0, skill=15))
+	# print(Accessories.Keychain.get(Attribute.Natural, Rarity.UR, limit_break=5, skill=10))
+	# print(Accessories.Ribbon.get(Attribute.Cool, Rarity.UR, limit_break=0, skill=15))
+	# print(Accessories.Belt.get(Attribute.Pure,    Rarity.UR, limit_break=5, skill=15))
+
+	print(Accessories.Belt.get(Attribute.Cool,    Rarity.UR, limit_break=5))
+	print(Accessories.Belt.get(Attribute.Pure,    Rarity.UR, limit_break=2))
+	print(Accessories.Belt.get(Attribute.Natural, Rarity.UR, limit_break=3))

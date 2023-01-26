@@ -1,0 +1,50 @@
+
+<div class="card-grid">
+	{% for member_id, card in card_rotation %}
+		<div class="grid-icon-wrapper idol-{{ member_id.value }}">
+			{% if is_valid_card(card) %}
+				<div class="grid-icon idol-icon-32 idol-bg-color-dark idol-bg-glow-border tooltip-data"
+					data-member-id="{{ member_id.value }}"
+					data-member-name="{{ member_id.full_name }}"
+					data-card-status="1"
+					data-card-ordinal="{{ card.ordinal }}"
+					data-card-rarity="{{ card.rarity.value }}"
+					data-card-attribute="{{ card.attribute.value }}"
+					data-card-type="{{ card.type.value }}"
+					data-card-title-normal="{{ card.get_card_name(False) | e }}"
+					data-card-title-idolized="{{ card.get_card_name(True) | e }}"
+					data-card-source="{{ get_card_source_label(card) }}"
+					data-card-release-date="{{ card.release_date | format_datestring(long_month=True) }}"
+					data-card-event="{{ card.event_title or '' | e }}"
+					ng-mouseover="toggleTooltip($event, true)"
+					ng-mouseleave="toggleTooltip($event, false)">
+					<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank">
+						<span class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+							<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+						</span>
+					</a>
+				</div>
+			{% else %}
+				{% if is_missing_card(card) %}
+					<div class="grid-icon idol-icon-32 idol-bg-color-dark idol-bg-glow-border missing tooltip-data"
+						data-member-id="{{ member_id.value }}"
+						data-member-name="{{ member_id.full_name }}"
+						data-card-status="2"
+						ng-mouseover="toggleTooltip($event, true)"
+						ng-mouseleave="toggleTooltip($event, false)" ng-click="openMobileTooltip($event)">
+						<span class="source-indicator"></span>
+					</div>
+				{% elif is_nonextant_card(card) %}
+					<div class="grid-icon idol-icon-32 idol-bg-color-dark idol-bg-glow-border non-extant tooltip-data"
+						data-member-id="{{ member_id.value }}"
+						data-member-name="{{ member_id.full_name }}"
+						data-card-status="3"
+						ng-mouseover="toggleTooltip($event, true)"
+						ng-mouseleave="toggleTooltip($event, false)" ng-click="openMobileTooltip($event)">
+						<div>N/A</div>
+					</div>
+				{% endif %}
+			{% endif %}
+		</div>
+	{% endfor %}	
+</div>

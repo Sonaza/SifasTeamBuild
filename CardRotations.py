@@ -105,7 +105,7 @@ class CardRotations():
 		
 	# -------------------------------------------------------------------------------------------
 	
-	def _sort_rotation(self, group, rotation, order):
+	def _sort_rotation(self, rotation, order):
 		output = []
 		for ordered_member_id in order:
 			if ordered_member_id in rotation:
@@ -139,7 +139,7 @@ class CardRotations():
 				Member.Shioriko, Member.Lanzhu,  Member.Mia,
 			]
 		
-		arrays_sorted = self._sort_rotation(group, cards_per_girl, order)
+		arrays_sorted = self._sort_rotation(cards_per_girl, order)
 		return (num_pages, arrays_sorted)
 	
 	def get_general_rotation(self, group : Group, rarity : Rarity):
@@ -161,7 +161,7 @@ class CardRotations():
 				Group.Nijigasaki : dict([
 					(0,  "1st Nijigasaki Solo"),
 					(5,  "3rd Nijigasaki Solo"),
-					(10, "Rainbow Waltz"),
+					# (10, "Rainbow Waltz"),
 				])
 			}
 		}
@@ -225,7 +225,7 @@ class CardRotations():
 				else:
 					print("WARNING! No set name could be determined for", rarity, group, "index", rotation_index)
 		
-			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order_by_group[group]), set_title ))
+			rotations.append(( self._sort_rotation(current_rotation, Idols.member_order_by_group[group]), set_title ))
 			rotation_index += 1
 		
 		return rotations
@@ -382,7 +382,7 @@ class CardRotations():
 					# Card not yet added to the game
 					current_rotation[member] = CardMissing()
 			
-			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order_by_group[group]), set_title ))
+			rotations.append(( self._sort_rotation(current_rotation, Idols.member_order_by_group[group]), set_title ))
 		
 		return rotations
 	
@@ -441,56 +441,11 @@ class CardRotations():
 					else:
 						current_rotation[idol.member_id] = CardMissing()
 			
-			rotations.append(( self._sort_rotation(group, current_rotation, Idols.member_order_by_group[group]), None ))
+			rotations.append(( self._sort_rotation(current_rotation, Idols.member_order_by_group[group]), None ))
 			rotation_index += 1
 		
 		return rotations
 		
-	# -------------------------------------------------------------------------------------------
-	
-	def _make_general_stats(self, group : Group):
-		categories = ['SRs', 'URs', 'event', 'festival', 'party', 'gacha', ]
-		stats = defaultdict(lambda: defaultdict(int))
-		
-		for idol in Idols.by_group[group]:
-			for category in categories:
-				stats[idol.member_id][category] = 0
-			
-			stats[idol.member_id]['attributes'] = defaultdict(int)
-			stats[idol.member_id]['types'] = defaultdict(int)
-		
-		idols = self.client.get_idols(group=group)
-		for idol in idols:
-			if idol.rarity == Rarity.SR:
-				stats[idol.member_id]['SRs'] += 1
-				
-			elif idol.rarity == Rarity.UR:
-				stats[idol.member_id]['URs'] += 1
-				
-				if idol.source == Source.Event:
-					stats[idol.member_id]['event'] += 1
-					
-				elif idol.source == Source.Festival:
-					stats[idol.member_id]['festival'] += 1
-					
-				elif idol.source == Source.Party:
-					stats[idol.member_id]['party'] += 1
-					
-				elif idol.source == Source.Gacha or idol.source == Source.Spotlight or idol.source == Source.Unspecified:
-					stats[idol.member_id]['gacha'] += 1
-				
-				stats[idol.member_id]['attributes'][idol.attribute] += 1
-				stats[idol.member_id]['types'][idol.type] += 1
-		
-		return self._sort_rotation(group, stats, Idols.member_order_by_group[group])
-	
-	def get_general_stats(self):
-		stats = {}
-		for group in Group:
-			stats[group] = self._make_general_stats(group=group)
-			
-		return stats
-	
 	# -------------------------------------------------------------------------------------------
 	
 	def _time_since_last(self, idols, group=None):
@@ -815,13 +770,16 @@ class CardRotations():
 		return False
 	
 	def generate_pages(self):
-		self.client.get_weighted_overdueness()
-		exit()
+		# self.client.get_weighted_overdueness()
+		
+		# exit()
 		
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		files_to_delete.extend([x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/history/*.html"))])
+		files_to_delete.extend([x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/deferred/*.html"))])
 		
 		render_start_time = time.perf_counter()
+		render_unique_str = str(hash(time.time()))[2:8]
 		
 		# -------------------------------------------------------
 		# Per school UR attribute-type arrays
@@ -836,52 +794,74 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Basic rotations
 		
-		if self.due_for_rendering("basic_rotation_template.html"):
+		if self.due_for_rendering("deferred_rotation.html") or self.due_for_rendering("deferred_card_grid.html"):
+			def render_deferred_card_grids(rotation_set_label, grouped_rotations, unique_str):
+				for group, group_data in grouped_rotations:
+					for index, (card_rotation, rotation_title) in enumerate(group_data):
+						self.renderer.render_and_save("deferred_card_grid.html", f"pages/deferred/{rotation_set_label}_{group.tag}_{index + 1}.html", {
+							'card_rotation'      : card_rotation,
+						}, minify=not self.args.dev)
+			
 			# General UR rotations
 			ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
-			self.renderer.render_and_save("basic_rotation_template.html", "pages/ur_rotations.html", {
+			self.renderer.render_and_save("deferred_rotation.html", "pages/ur_rotations.html", {
 				'grouped_rotations'  : ur_rotations,
+				'rotation_set_label' : 'ur',
+				'render_unique_str'  : render_unique_str,
 				'set_label'          : 'Rotation',
 				'page_title'         : 'UR Rotations',
 				'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
 				                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.''',
 			}, minify=not self.args.dev)
+			render_deferred_card_grids('ur', ur_rotations, render_unique_str)
 		
 			# Festival UR rotations
 			festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
-			self.renderer.render_and_save("basic_rotation_template.html", "pages/festival_rotations.html", {
+			self.renderer.render_and_save("deferred_rotation.html", "pages/festival_rotations.html", {
 				'grouped_rotations'  : festival_rotations,
+				'rotation_set_label' : 'festival',
+				'render_unique_str'  : render_unique_str,
 				'set_label'          : 'Rotation',
 				'page_title'         : 'Festival UR Rotations',
 				'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
 			}, minify=not self.args.dev)
+			render_deferred_card_grids('festival', festival_rotations, render_unique_str)
 		
 			# Party UR rotations
 			party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
-			self.renderer.render_and_save("basic_rotation_template.html", "pages/party_rotations.html", {
+			self.renderer.render_and_save("deferred_rotation.html", "pages/party_rotations.html", {
 				'grouped_rotations'  : party_rotations,
+				'rotation_set_label' : 'party',
+				'render_unique_str'  : render_unique_str,
 				'set_label'          : 'Rotation',
 				'page_title'         : 'Party UR Rotations',
 				'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
 			}, minify=not self.args.dev)
+			render_deferred_card_grids('party', party_rotations, render_unique_str)
 		
 			# Event UR rotations
 			event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
-			self.renderer.render_and_save("basic_rotation_template.html", "pages/event_rotations.html", {
+			self.renderer.render_and_save("deferred_rotation.html", "pages/event_rotations.html", {
 				'grouped_rotations'  : event_rotations,
+				'rotation_set_label' : 'event',
+				'render_unique_str'  : render_unique_str,
 				'set_label'          : 'Rotation',
 				'page_title'         : 'Event UR Rotations',
 				'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
 			}, minify=not self.args.dev)
+			render_deferred_card_grids('event', event_rotations, render_unique_str)
 		
 			# SR Sets
 			sr_sets = [(group, self.get_sr_sets(group)) for group in Group]
-			self.renderer.render_and_save("basic_rotation_template.html", "pages/sr_sets.html", {
+			self.renderer.render_and_save("deferred_rotation.html", "pages/sr_sets.html", {
 				'grouped_rotations'  : sr_sets,
+				'rotation_set_label' : 'sr',
+				'render_unique_str'  : render_unique_str,
 				'set_label'          : 'Set',
 				'page_title'         : 'SR Sets',
 				'page_description'   : '''SR cards organised into sets by costume or other common theme.''',
 			})
+			render_deferred_card_grids('sr', sr_sets, render_unique_str)
 		
 		# -------------------------------------------------------
 		# Event cards info
@@ -926,7 +906,7 @@ class CardRotations():
 		# Card stats
 		
 		if self.due_for_rendering("stats.html"):
-			general_stats = self.get_general_stats()
+			general_stats, maximums = self.client.get_general_stats()
 			self.renderer.render_and_save("stats.html", "pages/stats.html", {
 				'category_tag'   : 'general',
 				'general_stats'  : general_stats,
@@ -944,10 +924,10 @@ class CardRotations():
 			card_stats, category_info, category_has_empty_rows = self.get_card_stats()
 			for category_tag in card_stats.keys():
 				self.renderer.render_and_save("stats.html", f"pages/stats_{category_tag}.html", {
-					'category_tag'   : category_tag,
-					'category_data'  : card_stats[category_tag],
-					'category_info'  : category_info[category_tag],
-					'has_empty_rows' : category_has_empty_rows[category_tag],
+					'category_tag'     : category_tag,
+					'category_data'    : card_stats[category_tag],
+					'category_info'    : category_info[category_tag],
+					'has_empty_rows'   : category_has_empty_rows[category_tag],
 					'history_category' : history_category,
 				}, minify=not self.args.dev)
 		

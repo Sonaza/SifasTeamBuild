@@ -2,11 +2,12 @@ import requests
 import json
 import time
 import sqlite3 as sqlite
+import math
 from operator import itemgetter
 from datetime import datetime, timezone
 
-from colorama import Fore
-from colorama import Style
+from colorama import Fore, Style
+from collections import defaultdict, namedtuple
 
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Dict, Any
@@ -938,8 +939,72 @@ class KiraraClient():
 			
 		return self.convert_to_idol_object(self.db.fetchall())
 	
-	def get_weighted_overdueness(self):
+	# -------------------------------------------------------------------------------------------
+	
+	def get_general_stats(self):
+		try:
+			return self.general_stats, self.maximums
+		except:
+			self.general_stats = {}
+			
+		Stats = namedtuple('Stats', 'source rarity type attribute')
 		
+		def remove_default_factory(dd):
+			dd.default_factory = None
+			
+		source_categories = {
+			Source.Event       : 'event',
+			Source.Festival    : 'festival',
+			Source.Party       : 'party',
+			Source.Gacha       : 'gacha',
+			Source.Spotlight   : 'gacha',
+			Source.Unspecified : 'gacha',
+		}
+		
+		maximums = {
+			Rarity.UR: 0,
+			Rarity.SR: 0,
+		}
+		
+		for group in Group:
+			source_stats    = defaultdict(lambda: defaultdict(int))
+			rarity_stats    = defaultdict(lambda: defaultdict(int))
+			type_stats      = defaultdict(lambda: defaultdict(int))
+			attribute_stats = defaultdict(lambda: defaultdict(int))
+						
+			idols = self.get_idols(group=group)
+			for idol in idols:
+				# Don't care about R cards
+				if idol.rarity == Rarity.R: continue
+				
+				rarity_stats[idol.member_id][idol.rarity] += 1
+				maximums[idol.rarity] = max(maximums[idol.rarity], rarity_stats[idol.member_id][idol.rarity])
+				
+				if idol.rarity == Rarity.UR:
+					category = source_categories[idol.source]
+					source_stats[idol.member_id][category] += 1
+					
+					attribute_stats[idol.member_id][idol.attribute] += 1
+					type_stats[idol.member_id][idol.type] += 1
+			
+			remove_default_factory(source_stats)
+			remove_default_factory(rarity_stats)
+			remove_default_factory(type_stats)
+			remove_default_factory(attribute_stats)
+			
+			self.general_stats[group] = Stats(
+				source    = source_stats,
+				rarity    = rarity_stats,
+				type      = type_stats,
+				attribute = attribute_stats,
+			)
+			self.maximums = maximums
+			
+		return self.general_stats, self.maximums
+	
+	# -------------------------------------------------------------------------------------------
+	
+	def get_weighted_overdueness(self):
 		limited_idols, max_per_source = self.get_idols_by_source_and_member([Source.Festival, Source.Party])
 		overdue_members = set()
 		for member in Member:
@@ -948,6 +1013,36 @@ class KiraraClient():
 					overdue_members.add(member)
 					break
 		# print(overdue_members)
+		
+		# ------------------------
+		
+		max_UR_offsets = {
+			Member.Rina     : -2,
+			Member.Kasumi   : -2,
+			Member.Shizuku  : -2,
+			Member.Ayumu    : -2,
+			Member.Setsuna  : -2,
+			Member.Ai       : -2,
+			Member.Emma     : -2,
+			Member.Kanata   : -2,
+			Member.Karin    : -2,
+			Member.Shioriko : -3,
+			Member.Lanzhu   : -7,
+			Member.Mia      : -7,
+		}
+		
+		general_stats, maximums = self.get_general_stats()
+		
+		expected_by_member = {}
+		current_rotation_coefficient = {}
+		for member in overdue_members:
+			num_expected = maximums[Rarity.UR] + max_UR_offsets.get(member, 0)
+			num_current  = general_stats[member.group].rarity[member][Rarity.UR]
+			
+			expected_by_member[member] = (num_current, num_expected)
+			current_rotation_coefficient[member] = (num_expected / num_current)
+		
+		# ------------------------
 		
 		now = datetime.now(timezone.utc) #+ timedelta(days=30)
 		
@@ -969,18 +1064,22 @@ class KiraraClient():
 			coefficient = elapsed_per_member[idol.member_id].days / longest_overdue
 			delta = now - idol.release_date
 			
-			weighted_value = coefficient * delta.days
+			print(idol.member_id, current_rotation_coefficient.get(idol.member_id, 1), coefficient * delta.days)
+			weighted_value = (coefficient * delta.days) ** current_rotation_coefficient.get(idol.member_id, 1)
 			
 			weighted_overdueness[idol.member_id] = {
 				'last_any_ur'     : elapsed_per_member[idol.member_id],
 				'last_limited_ur' : delta,
 				'weighted_value'  : weighted_value,
+				'num_urs'         : expected_by_member[idol.member_id],
 				'last_card'       : idol,
 			}
 		
 		weighted_overdueness = {k: v for k, v in sorted(weighted_overdueness.items(), key=lambda x: x[1]['weighted_value'], reverse=True)}
 		for member, data in weighted_overdueness.items():
-			print(f"{member:<15}    | Lim: {data['last_limited_ur'].days:>4} days  |  Any: {data['last_any_ur'].days:>4} days  |  value {data['weighted_value']:>8.3f}  | {data['last_card']}")
+			expected_delta = data['num_urs'][1] - data['num_urs'][0]
+			print(f"{member:<15}    | Lim: {data['last_limited_ur'].days:>4} days  |  Any: {data['last_any_ur'].days:>4} days  |  Has: {data['num_urs'][0]} URs ({expected_delta:>2} delta)  |   value {data['weighted_value']:>8.3f}")
+			# print(f"{member:<15}    | Lim: {data['last_limited_ur'].days:>4} days  |  Any: {data['last_any_ur'].days:>4} days  |  value {data['weighted_value']:>8.3f}  | {data['last_card']}")
 			
 		return weighted_overdueness
 		

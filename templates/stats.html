@@ -18,7 +18,7 @@
 		<h2>General Stats</h2>
 		<p>Numbers of different types of cards.</p>
 		<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
-		{% for group, data in general_stats.items() %}
+		{% for group, stats in general_stats.items() %}
 			<div class="stats-category-group {{ group.tag }}">
 				<div class="stats-table general">
 					<div class="st-tr st-thead">
@@ -33,20 +33,20 @@
 						<div class="st-th st-cell-15">Gacha</div>
 					</div>
 					<div class="st-tbody">
-						{% for member, stats in data %}
+						{% for member in Idols.member_order_by_group[group] %}
 							<div class="st-tr idol-{{ member.value }}">
 								<div class="st-td st-cell-25 idol-identity">
 									<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
 									<span class="idol-name">{{ member.full_name }}</span>
 								</div>
 								
-								<div class="st-td st-cell-7-5 stat-number">{{ stats['URs'] }}</div>
-								<div class="st-td st-cell-7-5 stat-number">{{ stats['SRs'] }}</div>
+								<div class="st-td st-cell-7-5 stat-number">{{ stats.rarity[member][Rarity.UR] }}</div>
+								<div class="st-td st-cell-7-5 stat-number">{{ stats.rarity[member][Rarity.SR] }}</div>
 								
-								<div class="st-td st-cell-15 stat-number">{{ stats['festival'] }}</div>
-								<div class="st-td st-cell-15 stat-number">{{ stats['party'] }}</div>
-								<div class="st-td st-cell-15 stat-number">{{ stats['event'] }}</div>
-								<div class="st-td st-cell-15 stat-number">{{ stats['gacha'] }}</div>
+								<div class="st-td st-cell-15 stat-number">{{ stats.source[member]['festival'] }}</div>
+								<div class="st-td st-cell-15 stat-number">{{ stats.source[member]['party'] }}</div>
+								<div class="st-td st-cell-15 stat-number">{{ stats.source[member]['event'] }}</div>
+								<div class="st-td st-cell-15 stat-number">{{ stats.source[member]['gacha'] }}</div>
 							</div>
 						{% endfor %}
 					</div>
@@ -58,7 +58,7 @@
 						<div class="st-th st-cell-30">Types</div>
 					</div>
 					<div class="st-tbody stats-attribute-type">
-						{% for member, stats in data %}
+						{% for member in Idols.member_order_by_group[group] %}
 							<div class="st-tr idol-{{ member.value }}">
 								<div class="st-td st-cell-25 idol-identity">
 									<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
@@ -66,14 +66,14 @@
 								</div>
 								
 								{% for attribute in Attribute %}
-									<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats['attributes'][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
-										<span class="icon-32 attribute-{{ attribute.value }}">{{ stats['attributes'][attribute] }}</span>
+									<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats.attribute[member][attribute] == 0) }} attribute-{{ attribute.value }} attribute-bg-color-dim" title="{{ attribute.name }}-attribute">
+										<span class="icon-32 attribute-{{ attribute.value }}">{{ stats.attribute[member][attribute] }}</span>
 									</div>
 								{% endfor %}
 								
 								{% for type in Type %}
-									<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats['types'][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
-										<span class="icon-32 type-{{ type.value }}">{{ stats['types'][type] }}</span>
+									<div class="st-td st-cell-7-5 stat-various {{ 'has-none' | conditional_css(stats.type[member][type] == 0) }} type-{{ type.value }} type-bg-color-dim" title="{{ type.name }}-type">
+										<span class="icon-32 type-{{ type.value }}">{{ stats.type[member][type] }}</span>
 									</div>
 								{% endfor %}
 							</div>

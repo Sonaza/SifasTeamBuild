@@ -157,16 +157,16 @@ class IdolBondBonuses():
 		"""Return total cumulative bond board parameters for the given bond level, board level and unlocked tiles.
 		
 		Arguments:
-	      bond_level     : integer value for bond level. Min value 1.
-	      
-	      board_level    : integer value for board level. Min value 1, max value [bond_level].
-	                     :  Value must exist in BOND_BOARD_LEVELS list.
-	                     
-	      unlocked_tiles : Can be a boolean or a list.
-	                     :   If boolean:  True  = all tiles of current board are unlocked
-	                     :                False = no tiles of current board are unlocked (the same as supplying an empty list)
-	                     :   If list:     The list should contain up to 5 values of enum type BondParameter
-	                     :                and the values must exist in the list returned by method get_board_tiles(board_level).
+		  bond_level     : integer value for bond level. Min value 1.
+		  
+		  board_level    : integer value for board level. Min value 1, max value [bond_level].
+						 :  Value must exist in BOND_BOARD_LEVELS list.
+						 
+		  unlocked_tiles : Can be a boolean or a list.
+						 :   If boolean:  True  = all tiles of current board are unlocked
+						 :                False = no tiles of current board are unlocked (the same as supplying an empty list)
+						 :   If list:     The list should contain up to 5 values of enum type BondParameter
+						 :                and the values must exist in the list returned by method get_board_tiles(board_level).
 		"""
 		
 		if bond_level < 1:
@@ -220,9 +220,54 @@ class IdolBondBonuses():
 		
 		return parameters
 
+class BondPoints:
+	@staticmethod
+	def get_points_to_next_level(current_level):
+		if current_level < 1:
+			raise IdolBondBonusesValueError("Current bond level must be >=1.")
+		
+		# Breakpoints where increment per level goes up
+		tiers = [
+			(1,   4,        40),
+			(5,   18,       50),
+			(19,  57,       60),
+			(58,  151,      70),
+			(152, math.inf, 150),
+		]
+		
+		points = 60
+		for level_start, level_end, points_diff in tiers:
+			if current_level > level_start:
+				level_diff = min(level_end - level_start + 1, current_level - level_start)
+				points += level_diff * points_diff
+			if level_end == math.inf or level_start >= current_level:
+				break
+		
+		return points
+	
+	BOND_POINTS_CUMULATIVE = [0]
+	
+	@staticmethod
+	def get_points_cumulative(bond_level):
+		try:
+			return BondPoints.BOND_POINTS_CUMULATIVE[bond_level - 1]
+		except IndexError:
+			pass
+		
+		cumulative = BondPoints.BOND_POINTS_CUMULATIVE[-1]
+		for bond_level in range(len(BondPoints.BOND_POINTS_CUMULATIVE) - 1, bond_level - 1):
+			cumulative += BondPoints.get_points_to_next_level(bond_level + 1)
+			BondPoints.BOND_POINTS_CUMULATIVE.append(cumulative)
+		
+		return cumulative
 
 ## TEST CODE
 if __name__ == "__main__":
+	for level in range(1, 501):
+		print("{}\t{}\t{}".format(level, BondPoints.get_points_to_next_level(level), BondPoints.get_points_cumulative(level)))
+		
+	# print(BondPoints.get_bond_points_cumulative(268) - BondPoints.get_bond_points_cumulative(267))
+	
 	# max_board_level = IdolBondBonuses.get_max_board_level_for_bond_level(bond_level=260)
 	# print("max_board_level", max_board_level)
 	
@@ -236,7 +281,7 @@ if __name__ == "__main__":
 	# 	print(board_level, completion)
 	
 	# IdolBondBonuses.get_board_parameters(bond_level=261, board_level=260, unlocked_tiles=True)
-	IdolBondBonuses.get_board_parameters(bond_level=92, board_level=60, unlocked_tiles=[BondParameter.AttributeBonus])
+	# IdolBondBonuses.get_board_parameters(bond_level=92, board_level=60, unlocked_tiles=[BondParameter.AttributeBonus])
 	
 	# IdolBondBonuses.get_board_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
 	# IdolBondBonuses.get_board_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])

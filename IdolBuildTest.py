@@ -385,7 +385,11 @@ class IdolTeam():
 				
 				for skill in unit_a.insight_skills:
 					skill_applies = self.test_if_skill_applies(skill.skill_target, unit_a_index, unit_b_index)
+					# print(skill, unit_a_index, unit_b_index)
 					if skill_applies:
+						if unit_b_index not in passive_multipliers:
+							passive_multipliers[unit_b_index] = [0, 0, 0]
+						
 						if skill.target_parameter   == SkillTargetParameter.Appeal:
 							passive_multipliers[unit_b_index][0] += skill.effect_value
 						elif skill.target_parameter == SkillTargetParameter.Stamina:
@@ -445,9 +449,13 @@ the_best_team.set_all_units([
 		.set_bond_board(**{ 'bond_level': 123, 'board_level': 120, 'unlocked_tiles' : [] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 	# Fes3 Nozo
-	IdolUnit(728, "Fes3", limit_break = 5) \
-		.set_bond_board(**{ 'bond_level': 261, 'board_level': 260, 'unlocked_tiles' : True }) \
-	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	# IdolUnit(728, "Fes3", limit_break = 5) \
+	# 	.set_bond_board(**{ 'bond_level': 266, 'board_level': 260, 'unlocked_tiles' : True }) \
+	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	# Thanksgiving Nozo
+	IdolUnit(577, "Thanksgiving", limit_break = 5) \
+		.set_bond_board(**{ 'bond_level': 266, 'board_level': 260, 'unlocked_tiles' : True }) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 3),
 	# Party Koto
 	IdolUnit(514, "Party", limit_break = 5) \
 		.set_bond_board(**{ 'bond_level': 91,  'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.Technique, BondParameter.AttributeBonus ] }) \
