@@ -6,7 +6,7 @@
 		Below is an attempt to sort the girls still missing limited cards in the current rotation by an experimental statistical weighted overdueness coefficient algorithm.
 	</p>
 	<p>
-		This coefficient takes into account the recency of any UR of that girl and the recency of their last limited card, rating this against all girls and then adjusting by whether they have already received a card in the current rotation. The girl considered the most overdue is first in the list.
+		This coefficient takes into account the recency of any UR of that girl and the recency of their last limited card, rating this against all girls. The weight is adjusted by the frequency of releases by group in the most recent limited banners and finally by whether they have already received a card in the current rotation. The girl considered the most overdue is first in the list.
 	</p>
 </div>
 <p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
@@ -19,7 +19,7 @@
 				<div class="st-th st-cell-20">{{ source.display_name }} Cards</div>
 				<div class="st-th st-cell-17-5">Last UR</div>
 				<div class="st-th st-cell-52-5">Last Limited UR</div>
-				<div class="st-th st-cell-10" title="The weighted overdueness coefficient. These values are only comparable between each other and there are no absolute limits. Negative values are possible if the girl is about to receive a card soon." style="text-decoration: underline dotted; cursor: help;">Value</div>
+				<div class="st-th st-cell-10" title="The weighted overdueness coefficient. These values don't confer any meaning and are only meant to be comparable between each other. There are no absolute limits and negative values are possible if the girl is about to receive a card soon." style="text-decoration: underline dotted; cursor: help;">Value</div>
 			</div>
 			
 			<div class="st-tbody">
@@ -75,10 +75,10 @@
 								</div>
 							</div>
 						{% else %} 
-							<div class="st-td st-cell-20">
+							<div class="st-td st-cell-17-5">
 								Never
 							</div>
-							<div class="st-td st-cell-30" style="color: #aaa;">
+							<div class="st-td st-cell-35" style="color: #aaa;">
 								&mdash;
 							</div>
 						{% endif %}
@@ -96,9 +96,9 @@
 
 <div class="main-content-inner">
 	<p style="font-size:1.4rem;padding-bottom:0.3rem">
-		<b>Please note:</b> This is completely experimental and no warranty or guarantee of accuracy is offered!
+		<b>Please note:</b> This is completely experimental pseudo-scientific nonsense and no warranty or guarantee of accuracy is offered!
 	</p>
 	<p>
-		It is entirely possible none of the girls listed here are next in line for a limited card, or that it is a girl considered the most unlikely. <s>They probably make the intern-kun pick the girl by darts anyway.</s>
+		It is entirely possible none of the girls listed here are next in line for a limited card or that it is a girl considered the most unlikely. <s>They probably make the intern-kun pick the girl by darts anyway.</s>
 	</p>
 </div>

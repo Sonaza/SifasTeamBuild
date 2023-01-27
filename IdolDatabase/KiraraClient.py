@@ -10,7 +10,7 @@ from colorama import Fore, Style
 from collections import defaultdict, namedtuple
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Tuple, Dict, Any
+from typing import List, Optional, Tuple, Dict, Any, Union
 
 from .Skill import Skill
 from .SkillEnum import ST, TT
@@ -1004,6 +1004,47 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
+	def get_banner_stats(self, banner_type : Union[BannerType, List[BannerType]], rarity : Union[Rarity, List[Rarity]]):
+		fields = []
+		fields.append(self._make_where_condition("b.type",   banner_type))
+		fields.append(self._make_where_condition("i.rarity", rarity))
+		
+		query = f"""SELECT
+						b.type,
+						b.start_jp AS start,
+						b.end_jp AS end,
+						GROUP_CONCAT(c.ordinal) AS ordinals,
+						GROUP_CONCAT(m.group_id) AS groups
+					FROM banners b
+						LEFT JOIN banner_cards c ON b.id = c.banner_id
+						LEFT JOIN idols i ON c.ordinal = i.ordinal
+						LEFT JOIN members m ON i.member_id = m.id
+					WHERE {' AND '.join([x[0] for x in fields])}
+					GROUP BY b.id
+					ORDER BY start DESC
+					LIMIT 10"""
+		self.db.execute(query, [value for x in fields for value in x[1]])
+		response_data = self.db.fetchall()
+		
+		most_recent_banner_type = BannerType(response_data[0]['type'])
+		
+		banners_by_type = defaultdict(list)
+		for banner_data in response_data:
+			idols  = self.get_idols_by_ordinal(banner_data['ordinals'].split(','))
+			groups = [Group(int(x)) for x in banner_data['groups'].split(',')]
+			
+			banner_type = BannerType(banner_data['type'])
+			banners_by_type[banner_type].append({
+				'start'  : datetime.fromisoformat(banner_data['start']),
+				'end'    : datetime.fromisoformat(banner_data['end']),
+				'idols'  : idols,
+				'groups' : groups,
+			})
+		
+		banners_by_type.default_factory = None
+		
+		return most_recent_banner_type, banners_by_type
+	
 	def get_weighted_overdueness(self):
 		overdue_sources = [Source.Festival, Source.Party]
 		
@@ -1046,7 +1087,7 @@ class KiraraClient():
 			expected_by_member[member] = (num_current, num_expected)
 			current_rotation_coefficient[member] = (num_expected / num_current)
 		
-		now                = datetime.now(timezone.utc)
+		now                = datetime.now(timezone.utc) # + timedelta(days=30)
 		longest_overdue    = 0
 		elapsed_per_member = {}
 		all_urs            = self.get_newest_idols(rarity=Rarity.UR)
@@ -1056,9 +1097,71 @@ class KiraraClient():
 			if idol.member_id in all_overdue_members:
 				elapsed_per_member[idol.member_id] = delta
 		
+		banner_types = [x.banner_type for x in overdue_sources]
+		most_recent_banner_type, banners_by_type = self.get_banner_stats(banner_type=banner_types, rarity=Rarity.UR)
+		most_recent_groups = banners_by_type[most_recent_banner_type][0]['groups']
+		# print(most_recent_banner_type, most_recent_groups)
+		
+		num_banners_for_group = defaultdict(lambda: defaultdict(int))
+		elapsed_by_group = defaultdict(dict)
+		for banner_type, banners in banners_by_type.items():
+			num_banners_for_group[banner_type] = {
+				'total'  : 0,
+				'groups' : defaultdict(int)
+			}
+			
+			for data in banners:
+				for group in data['groups']:
+					if group not in elapsed_by_group[banner_type]:
+						elapsed_by_group[banner_type][group] = (now - data['start'])
+						
+					num_banners_for_group[banner_type]['total'] += 1
+					num_banners_for_group[banner_type]['groups'][group] += 1
+		
+		elapsed_coefficients = {}
+		for banner_type, data in elapsed_by_group.items():
+			elapsed_coefficients[banner_type] = {}
+			max_delta = max([delta for group, delta in data.items()])
+			for group, delta in data.items():
+				elapsed_coefficients[banner_type][group] = delta.days / max_delta.days
+		
+		banner_shares = {}
+		for banner_type, data in num_banners_for_group.items():
+			banner_shares[banner_type] = {}
+			for group, value in data['groups'].items():
+				banner_shares[banner_type][group] = value / data['total']
+				
+		def sigmoid(steepness, value):
+			return 1 / (1 + math.e ** (-steepness * (value - 0.5)))
+		
+		# for banner_type, data in elapsed_by_group.items():
+		# 	print(banner_type)
+		# 	for group, delta in data.items():
+		# 		num, total = num_banners_for_group[banner_type]['groups'][group], num_banners_for_group[banner_type]['total']
+				
+		# 		share = 1 / banner_shares[banner_type][group]
+		# 		# share = sigmoid(8, share)
+				
+		# 		x = elapsed_coefficients[banner_type][group]
+		# 		k = 8
+		# 		ecff = sigmoid(k, x)
+				
+		# 		print(f"\t{group:>20}   {delta.days:>3} days ago  {num:>2}/{total:<2} ({share:.2f} share)  elapsed c. {x:0.2f} -> {ecff:0.2f}")
+		
+		# exit()
+		
+		other_banner_type = {
+			BannerType.Festival : BannerType.Party,
+			BannerType.Party    : BannerType.Festival,
+		}
+		next_banner_type = other_banner_type[most_recent_banner_type]
+		
+		
 		weighted_overdueness = {}
 		for current_source in overdue_sources:
 			weighted_overdueness[current_source] = {}
+			current_banner_type = current_source.banner_type
+			
 			found_members = set()
 			limited_urs = self.get_newest_idols(rarity=Rarity.UR, source=overdue_sources)
 			for idol in limited_urs:
@@ -1068,13 +1171,31 @@ class KiraraClient():
 				member = idol.member_id
 				found_members.add(member)
 				
-				coefficient = elapsed_per_member[member].days / longest_overdue
-				delta = now - idol.release_date
+				ur_coefficient = elapsed_per_member[member].days / longest_overdue
+				limited_delta = now - idol.release_date
 				
-				weighted_value = (coefficient * delta.days) ** current_rotation_coefficient.get(member, 1)
+				banner_share = banner_shares[current_banner_type][member.group]
+				banner_share = (1 / banner_share) if banner_share > 0 else 10
+				
+				sigmoid_steepness = 8
+				banner_elapsed_coefficient = elapsed_coefficients[current_banner_type][member.group]
+				banner_elapsed_coefficient = sigmoid(sigmoid_steepness, banner_elapsed_coefficient)
+				
+				weighted_value = ur_coefficient * limited_delta.days
+				weighted_value *= banner_share
+				weighted_value *= banner_elapsed_coefficient
+				
+				if next_banner_type == current_banner_type:
+					if member.group in most_recent_groups:
+						weighted_value *= 0.75
+					else:
+						weighted_value *= 1.25
+						
+				weighted_value **= current_rotation_coefficient.get(member, 1)
+				
 				weighted_overdueness[current_source][member] = {
 					'last_any_ur'       : elapsed_per_member[member],
-					'last_limited_ur'   : delta,
+					'last_limited_ur'   : limited_delta,
 					'weighted_value'    : weighted_value,
 					'num_urs'           : expected_by_member[member],
 					'last_limited_card' : idol,
@@ -1084,10 +1205,28 @@ class KiraraClient():
 				if member in found_members:
 					continue
 					
-				coefficient = elapsed_per_member[member].days / longest_overdue
-				delta = now - self.member_addition_dates[member]['date_added']
+				ur_coefficient = elapsed_per_member[member].days / longest_overdue
+				release_delta = now - self.member_addition_dates[member]['date_added']
 				
-				weighted_value = (coefficient * delta.days) ** current_rotation_coefficient.get(member, 1)
+				banner_share = banner_shares[current_banner_type][member.group]
+				banner_share = (1 / banner_share) if banner_share > 0 else 10
+				
+				sigmoid_steepness = 8
+				banner_elapsed_coefficient = elapsed_coefficients[current_banner_type][member.group]
+				banner_elapsed_coefficient = sigmoid(sigmoid_steepness, banner_elapsed_coefficient)
+				
+				weighted_value = ur_coefficient * release_delta.days
+				weighted_value *= banner_share
+				weighted_value *= banner_elapsed_coefficient
+				
+				if next_banner_type == current_banner_type:
+					if member.group in most_recent_groups:
+						weighted_value *= 0.75
+					else:
+						weighted_value *= 1.25
+						
+				weighted_value **= current_rotation_coefficient.get(member, 1)
+				
 				weighted_overdueness[current_source][member] = {
 					'last_any_ur'       : elapsed_per_member[member],
 					'last_limited_ur'   : None,

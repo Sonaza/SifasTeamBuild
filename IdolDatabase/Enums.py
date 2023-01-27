@@ -159,6 +159,21 @@ class Source(Enum):
 	Festival    = 6, 'Festival'
 	Party       = 7, 'Party'
 	
+	@classmethod
+	def get_banner_type(cls, source):
+		for banner_type in BannerType:
+			if banner_type.source == source:
+				return banner_type
+		
+		return BannerType.Unset
+	
+	def __getattr__(self, attr):
+		if attr == "banner_type":
+			return Source.get_banner_type(self)
+			
+		return Enum.__getattribute__(self, attr)
+	
+	
 class SkillTarget(Enum):
 	Unknown       = 0
 	All           = 1
@@ -198,13 +213,14 @@ class EventType(Enum):
 		return EventType.Unset
 	
 class BannerType(Enum):
-	_init_ = 'value valid'
+	_init_ = 'value valid source'
 	
-	Unset     = 0, False
-	Spotlight = 1, True
-	Festival  = 2, True
-	Party     = 3, True
-	Other     = 4, False
+	Unset     = 0, False, Source.Unspecified
+	Spotlight = 1, True,  Source.Spotlight
+	Festival  = 2, True,  Source.Festival
+	Party     = 3, True,  Source.Party
+	Other     = 4, False, Source.Unspecified
+	Gacha     = 5, False, Source.Gacha
 	
 	@classmethod
 	def from_string(cls, name):
