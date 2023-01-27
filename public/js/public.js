@@ -2125,11 +2125,6 @@ app.directive('deferredLoad', function($parse, $window)
 {
 	return {
 		restrict: 'A',
-		// templateUrl: function(element, attrs)
-		// {
-		// 	let url = 'pages/deferred/' + attrs.deferredLoad + '.html';
-		// 	return url;
-		// },
 		scope: true,
 		template: '<ng-include src="getTemplateUrl()">',
 		link: function (scope, element, attrs)
