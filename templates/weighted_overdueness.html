@@ -1,0 +1,104 @@
+{{ include_page("templates/stats_category_topbar.html") }}
+
+<div class="main-content-inner">
+	<h2>Weighted Overdueness</h2>
+	<p>
+		Below is an attempt to sort the girls still missing limited cards in the current rotation by an experimental statistical weighted overdueness coefficient.
+	</p>
+	<p>
+		This weighted overdueness coefficient takes into account the recency of any UR of that girl and the recency of their last limited card, rating this against all girls and then adjusting by whether they have already received a card in the current rotation. The girl considered the most overdue is first in the list.
+	</p>
+</div>
+<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
+
+{% for source, overdueness in weighted_overdueness.items() %}
+
+	<div class="stats-category-group overdueness source-{{ source.value }}">
+		<div class="stats-table">
+			<div class="st-tr st-thead">
+				<div class="st-th st-cell-20">{{ source.display_name }} Cards</div>
+				<div class="st-th st-cell-20">Last UR</div>
+				<div class="st-th st-cell-50">Last Limited UR</div>
+				<div class="st-th st-cell-10">Value</div>
+			</div>
+			
+			<div class="st-tbody">
+				{% for member, data in overdueness.items() %}
+					{% set card = data['last_limited_card'] %}
+					{% set expected_delta = data['num_urs'][1] - data['num_urs'][0] %}
+					<div class="st-tr idol-{{ member.value }}" data-index="{{ loop.index }}">
+						<div class="st-td st-cell-20 idol-identity">
+							<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
+							<div class="idol-name">
+								{{ member.first_name }}
+							</div>
+						</div>
+						
+						<div class="st-td st-cell-20 card-release-elapsed">
+							<a href="#/history/{{ member.first_name.lower() }}/ur" class="history-link">
+								{{ data['last_any_ur'].days | format_days }}
+							</a>
+						</div>
+						
+						{% if is_valid_card(card) %}
+							<div class="st-td st-cell-20 card-release-elapsed" title="Released on {{ card.release_date | format_datestring }}">
+								<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[source] }}" class="history-link">
+									{{ data['last_limited_ur'].days | format_days }}
+								</a>
+							</div>
+							
+							<div class="st-td st-cell-30 card-details">
+								<div class="thumbnail">
+									<div class="thumbnail-wrapper tooltip-data"
+										data-member-id="{{ member.value }}"
+										data-member-name="{{ member.full_name }}"
+										data-card-status="1"
+										data-card-ordinal="{{ card.ordinal }}"
+										data-card-rarity="{{ card.rarity.value }}"
+										data-card-attribute="{{ card.attribute.value }}"
+										data-card-type="{{ card.type.value }}"
+										data-card-title-normal="{{ card.get_card_name(False) | e }}"
+										data-card-title-idolized="{{ card.get_card_name(True) | e }}"
+										data-card-source="{{ get_card_source_label(card) }}"
+										data-card-release-date="{{ card.release_date | format_datestring(long_month=True) }}"
+										data-card-event="{{ card.event_title or '' | e }}"
+										data-stats-tooltip="1"
+										ng-mouseover="toggleTooltip($event, true)"
+										ng-mouseleave="toggleTooltip($event, false)">
+										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+											<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+										</a>
+									</div>
+								</div>
+								<div class="card-link">
+									<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ellipsis-bullshit=".card-details" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
+								</div>
+							</div>
+						{% else %} 
+							<div class="st-td st-cell-20">
+								Never
+							</div>
+							<div class="st-td st-cell-30" style="color: #aaa;">
+								&mdash;
+							</div>
+						{% endif %}
+						
+						<div class="st-td st-cell-10" style="text-align: right">
+							{{ '{:0.1f}'.format(data['weighted_value']) }}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+{% endfor %}
+
+<div class="main-content-inner">
+	<p style="font-size:1.4rem;padding-bottom:0.3rem">
+		<b>Please note:</b> This is completely experimental and no warranty or guarantee of accuracy is offered!
+	</p>
+	<p>
+		It is entirely possible none of the girls listed here are next in line for a limited card, or that it is a girl considered the most unlikely. <s>They probably make the intern-kun pick the girl by darts anyway.</s>
+	</p>
+</div>

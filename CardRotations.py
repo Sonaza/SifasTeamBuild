@@ -770,10 +770,6 @@ class CardRotations():
 		return False
 	
 	def generate_pages(self):
-		# self.client.get_weighted_overdueness()
-		
-		# exit()
-		
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
 		files_to_delete.extend([x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/history/*.html"))])
 		files_to_delete.extend([x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/deferred/*.html"))])
@@ -885,6 +881,15 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Card history
 		
+		history_category = {
+			Source.Unspecified : 'gacha',
+			Source.Event       : 'event',
+			Source.Gacha       : 'gacha',
+			Source.Spotlight   : 'gacha',
+			Source.Festival    : 'festival',
+			Source.Party       : 'party',
+		}
+		
 		if self.due_for_rendering("history_frontpage.html"):
 			self.renderer.render_and_save("history_frontpage.html", "pages/history.html", {}, minify=not self.args.dev)
 		
@@ -905,21 +910,12 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Card stats
 		
-		if self.due_for_rendering("stats.html"):
+		if self.due_for_rendering("stats.html") or self.due_for_rendering("stats_category_topbar.html") or self.due_for_rendering("weighted_overdueness.html"):
 			general_stats, maximums = self.client.get_general_stats()
 			self.renderer.render_and_save("stats.html", "pages/stats.html", {
 				'category_tag'   : 'general',
 				'general_stats'  : general_stats,
 			}, minify=not self.args.dev)
-		
-			history_category = {
-				Source.Unspecified : 'gacha',
-				Source.Event       : 'event',
-				Source.Gacha       : 'gacha',
-				Source.Spotlight   : 'gacha',
-				Source.Festival    : 'festival',
-				Source.Party       : 'party',
-			}
 			
 			card_stats, category_info, category_has_empty_rows = self.get_card_stats()
 			for category_tag in card_stats.keys():
@@ -930,6 +926,12 @@ class CardRotations():
 					'has_empty_rows'   : category_has_empty_rows[category_tag],
 					'history_category' : history_category,
 				}, minify=not self.args.dev)
+			
+			weighted_overdueness = self.client.get_weighted_overdueness()
+			self.renderer.render_and_save("weighted_overdueness.html", f"pages/stats_overdueness.html", {
+				'weighted_overdueness' : weighted_overdueness,
+				'history_category'     : history_category,
+			}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
 		# Index page

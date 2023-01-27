@@ -414,6 +414,21 @@ $brightness-level: 85%;
 		background: #78974C;
 		color: #fff;
 	}
+	
+	&.overdueness
+	{
+		&.source-6 .stats-table .st-thead .st-th
+		{
+			background: #B71557;
+			color: #fff;
+		}
+		
+		&.source-7 .stats-table .st-thead .st-th
+		{
+			background: #A57400;
+			color: #fff;
+		}
+	}
 }
 
 .stats-table

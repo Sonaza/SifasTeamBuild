@@ -1005,17 +1005,22 @@ class KiraraClient():
 	# -------------------------------------------------------------------------------------------
 	
 	def get_weighted_overdueness(self):
-		limited_idols, max_per_source = self.get_idols_by_source_and_member([Source.Festival, Source.Party])
-		overdue_members = set()
+		overdue_sources = [Source.Festival, Source.Party]
+		
+		limited_idols, max_per_source = self.get_idols_by_source_and_member(overdue_sources)
+		
+		all_overdue_members = set()
+		overdue_members = {}
 		for member in Member:
 			for source, data in limited_idols[member].items():
+				if source not in overdue_members:
+					overdue_members[source] = set()
+					
 				if data['num_idols'] < (max_per_source[source] + data['max_offset']):
-					overdue_members.add(member)
+					all_overdue_members.add(member)
+					overdue_members[source].add(member)
 					break
-		# print(overdue_members)
-		
-		# ------------------------
-		
+					
 		max_UR_offsets = {
 			Member.Rina     : -2,
 			Member.Kasumi   : -2,
@@ -1032,55 +1037,67 @@ class KiraraClient():
 		}
 		
 		general_stats, maximums = self.get_general_stats()
-		
 		expected_by_member = {}
 		current_rotation_coefficient = {}
-		for member in overdue_members:
+		for member in all_overdue_members:
 			num_expected = maximums[Rarity.UR] + max_UR_offsets.get(member, 0)
 			num_current  = general_stats[member.group].rarity[member][Rarity.UR]
 			
 			expected_by_member[member] = (num_current, num_expected)
 			current_rotation_coefficient[member] = (num_expected / num_current)
 		
-		# ------------------------
-		
-		now = datetime.now(timezone.utc) #+ timedelta(days=30)
-		
-		all_urs     = self.get_newest_idols(rarity=Rarity.UR)
-		longest_overdue = 0
+		now                = datetime.now(timezone.utc)
+		longest_overdue    = 0
 		elapsed_per_member = {}
+		all_urs            = self.get_newest_idols(rarity=Rarity.UR)
 		for idol in all_urs:
 			delta = now - idol.release_date
 			longest_overdue = max(delta.days, longest_overdue)
-			if idol.member_id in overdue_members:
+			if idol.member_id in all_overdue_members:
 				elapsed_per_member[idol.member_id] = delta
 		
 		weighted_overdueness = {}
-		limited_urs = self.get_newest_idols(rarity=Rarity.UR, source=[Source.Festival, Source.Party])
-		for idol in limited_urs:
-			if idol.member_id not in overdue_members:
-				continue
+		for current_source in overdue_sources:
+			weighted_overdueness[current_source] = {}
+			found_members = set()
+			limited_urs = self.get_newest_idols(rarity=Rarity.UR, source=overdue_sources)
+			for idol in limited_urs:
+				if idol.member_id not in overdue_members[current_source]:
+					continue
+				
+				member = idol.member_id
+				found_members.add(member)
+				
+				coefficient = elapsed_per_member[member].days / longest_overdue
+				delta = now - idol.release_date
+				
+				weighted_value = (coefficient * delta.days) ** current_rotation_coefficient.get(member, 1)
+				weighted_overdueness[current_source][member] = {
+					'last_any_ur'       : elapsed_per_member[member],
+					'last_limited_ur'   : delta,
+					'weighted_value'    : weighted_value,
+					'num_urs'           : expected_by_member[member],
+					'last_limited_card' : idol,
+				}
 			
-			coefficient = elapsed_per_member[idol.member_id].days / longest_overdue
-			delta = now - idol.release_date
+			for member in overdue_members[current_source]:
+				if member in found_members:
+					continue
+					
+				coefficient = elapsed_per_member[member].days / longest_overdue
+				delta = now - self.member_addition_dates[member]['date_added']
+				
+				weighted_value = (coefficient * delta.days) ** current_rotation_coefficient.get(member, 1)
+				weighted_overdueness[current_source][member] = {
+					'last_any_ur'       : elapsed_per_member[member],
+					'last_limited_ur'   : None,
+					'weighted_value'    : weighted_value,
+					'num_urs'           : expected_by_member[member],
+					'last_limited_card' : None,
+				}
 			
-			print(idol.member_id, current_rotation_coefficient.get(idol.member_id, 1), coefficient * delta.days)
-			weighted_value = (coefficient * delta.days) ** current_rotation_coefficient.get(idol.member_id, 1)
-			
-			weighted_overdueness[idol.member_id] = {
-				'last_any_ur'     : elapsed_per_member[idol.member_id],
-				'last_limited_ur' : delta,
-				'weighted_value'  : weighted_value,
-				'num_urs'         : expected_by_member[idol.member_id],
-				'last_card'       : idol,
-			}
-		
-		weighted_overdueness = {k: v for k, v in sorted(weighted_overdueness.items(), key=lambda x: x[1]['weighted_value'], reverse=True)}
-		for member, data in weighted_overdueness.items():
-			expected_delta = data['num_urs'][1] - data['num_urs'][0]
-			print(f"{member:<15}    | Lim: {data['last_limited_ur'].days:>4} days  |  Any: {data['last_any_ur'].days:>4} days  |  Has: {data['num_urs'][0]} URs ({expected_delta:>2} delta)  |   value {data['weighted_value']:>8.3f}")
-			# print(f"{member:<15}    | Lim: {data['last_limited_ur'].days:>4} days  |  Any: {data['last_any_ur'].days:>4} days  |  value {data['weighted_value']:>8.3f}  | {data['last_card']}")
-			
+			weighted_overdueness[current_source] = {k: v for k, v in sorted(weighted_overdueness[current_source].items(), key=lambda x: x[1]['weighted_value'], reverse=True)}
+				
 		return weighted_overdueness
 		
 	# -------------------------------------------------------------------------------------------

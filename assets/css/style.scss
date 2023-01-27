@@ -1890,6 +1890,21 @@ body
 		background: #D2E4B8;
 		color: #2D4F0E;
 	}
+	
+	&.overdueness
+	{
+		&.source-6 .stats-table .st-thead .st-th
+		{
+			background: #E0357A;
+			color: #fff;
+		}
+		
+		&.source-7 .stats-table .st-thead .st-th
+		{
+			background: #D19400;
+			color: #fff;
+		}
+	}
 }
 
 .stats-table
@@ -2135,6 +2150,11 @@ body
 				font-weight: 400;
 				text-decoration: none;
 				padding: 0.5rem 0.8rem;
+			}
+			
+			&.no-link
+			{
+				padding: 0.5rem 0.8rem !important;
 			}
 		}
 	}
