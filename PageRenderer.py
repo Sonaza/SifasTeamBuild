@@ -122,6 +122,9 @@ def _format_datestring(date, long_month = False, ordinalize = True, with_utc_tim
 class PageRenderer():
 	RENDER_HISTORY_FILE = "render_history.json"
 	
+	def reset_included_pages(self):
+		self.included_pages = set()
+	
 	def __init__(self, parent):
 		self.parent = parent
 		
@@ -130,6 +133,11 @@ class PageRenderer():
 			loader=PackageLoader("CardRotations", encoding='utf-8'),
 			# autoescape=select_autoescape()
 		)
+		
+		self.reset_included_pages()
+		def include_page_wrapper(filepath, minify=False):
+			self.included_pages.add(filepath.replace('templates/', ''))
+			return _include_page(filepath, minify=minify)
 		
 		self.jinja.filters.update({
 			'format_days'       : _format_days,
@@ -166,7 +174,7 @@ class PageRenderer():
 			'is_missing_card'       : is_missing_card,
 			'is_nonextant_card'     : is_nonextant_card,
 			
-			'include_page'          : _include_page,
+			'include_page'          : include_page_wrapper,
 			
 			# Systems stuff
 			'cache_buster'          : lambda filepath: _cache_buster(self.parent.OutputDirectory, filepath),
@@ -192,6 +200,7 @@ class PageRenderer():
 				
 				for template, data in self.render_history.items():
 					data['last_used'] = datetime.fromisoformat(data['last_used'])
+					data['output']    = set(data['output'])
 			except:
 				self.render_history = {}
 		
@@ -202,6 +211,8 @@ class PageRenderer():
 		def json_serialize(obj):
 		    if isinstance(obj, (datetime)):
 		        return obj.isoformat()
+		    if isinstance(obj, (set)):
+		        return list(obj)
 		    raise TypeError(f"Type {type(obj)} not serializable")
 		
 		with open(PageRenderer.RENDER_HISTORY_FILE, "w") as f:
@@ -240,8 +251,7 @@ class PageRenderer():
 	def reset_output(self, template_filename):
 		if template_filename not in self.render_history:
 			return False
-			
-		self.render_history[template_filename]['output'] = []
+		self.render_history[template_filename]['output'] = set()
 	
 	def preserve_output(self, template_filename):
 		print(f"{Fore.BLACK}{Style.BRIGHT}Unchanged  {Fore.WHITE}{template_filename:<30}{Style.RESET_ALL} ...  {Fore.GREEN}{Style.BRIGHT}OK{Style.RESET_ALL}")
@@ -255,34 +265,49 @@ class PageRenderer():
 	
 	# -------------------------------------------------------------------------------------------
 		
-	def render_and_save(self, template_filename, output_filename, data, minify=True, output_basepath=None, generated_note=False):
+	def mark_rendered(self, template_filename, full_output_filepath):
 		if template_filename not in self.render_history:
 			self.render_history[template_filename] = {
 				'last_used' : None,
-				'output'    : [],
+				'output'    : set(),
 			}
-			
+		self.render_history[template_filename]['last_used'] = datetime.now(timezone.utc)
+		self.render_history[template_filename]['output'].add(full_output_filepath)
+		
+	
+	def make_output_filepath(self, output_filename, output_basepath=None):
 		if output_basepath == None:
 			output_basepath = self.parent.OutputDirectory
+		return os.path.normpath(os.path.join(output_basepath, output_filename)).replace("\\", "/")
 		
-		full_output_filename = os.path.normpath(os.path.join(output_basepath, output_filename)).replace("\\", "/")
+		
+	def render_and_save(self, template_filename, output_filename, data, minify=True, output_basepath=None, generated_note=False, auxiliary_templates=[]):
+		template = self.jinja.get_template(template_filename)
+		
+		full_output_filepath = self.make_output_filepath(
+			output_filename = output_filename,
+			output_basepath = output_basepath)
 		
 		num_slashes = output_filename.count('/')
 		output_space = 115 + max(0, num_slashes - 1) * 10
 		
 		print(f"{f'{Fore.YELLOW}Rendering  {Fore.WHITE}{Style.BRIGHT}{template_filename:<30}{Style.RESET_ALL}  ->  {Fore.CYAN}{Style.BRIGHT}{output_filename}':<{output_space}}{Style.RESET_ALL} ...  ", end='')
 		
-		self.render_history[template_filename]['last_used'] = datetime.now(timezone.utc)
-		self.render_history[template_filename]['output'].append(full_output_filename)
-		
-		# template = self.jinja.get_template(os.path.join("templates", template_filename).replace("\\","/"))
-		template = self.jinja.get_template(template_filename)
+		self.mark_rendered(template_filename, full_output_filepath)
+		if auxiliary_templates:
+			for filename in auxiliary_templates:
+				self.mark_rendered(filename, full_output_filepath)
+			
+		self.reset_included_pages()
 		rendered_output = template.render(data)
+		
+		for filename in self.included_pages:
+			self.mark_rendered(filename, full_output_filepath)
 		
 		if minify:
 			rendered_output = htmlmin.minify(rendered_output, remove_empty_space=True)
 		
-		with open(full_output_filename, "w", encoding="utf8") as f:
+		with open(full_output_filepath, "w", encoding="utf8") as f:
 			if generated_note:
 				f.write(f"# ------------------------------------------------------------\n")
 				f.write(f"# DO NOT MODIFY THIS FILE DIRECTLY\n")
@@ -293,5 +318,5 @@ class PageRenderer():
 		
 		print(f"{Fore.GREEN}{Style.BRIGHT}Done{Style.RESET_ALL}")
 		
-		self.rendered_pages.append(full_output_filename)
-		return full_output_filename
+		self.rendered_pages.append(full_output_filepath)
+		return full_output_filepath

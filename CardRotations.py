@@ -103,6 +103,8 @@ class CardRotations():
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
 			self.thumbnails.make_atlas()
 		
+		self.due_for_rendering_cache = {}
+		
 	# -------------------------------------------------------------------------------------------
 	
 	def _sort_rotation(self, rotation, order):
@@ -758,17 +760,22 @@ class CardRotations():
 		
 		return preload_assets
 		
-	def due_for_rendering(self, template_filename, consume = True):
+		
+	def due_for_rendering(self, template_filename):
 		if self.args.force or self.args.force_render or self.client.was_database_updated():
 			return True
-			
-		if self.renderer.has_template_changed(template_filename) or self.renderer.is_any_output_missing(template_filename):
-			if consume:
-				self.renderer.reset_output(template_filename)
-			return True
 		
-		self.renderer.preserve_output(template_filename)
-		return False
+		def check(self, template_filename):
+			if self.renderer.has_template_changed(template_filename) or self.renderer.is_any_output_missing(template_filename):
+				self.renderer.reset_output(template_filename)
+				return True
+			self.renderer.preserve_output(template_filename)
+			return False
+		
+		if template_filename not in self.due_for_rendering_cache:
+			self.due_for_rendering_cache[template_filename] = check(self, template_filename)
+		return self.due_for_rendering_cache[template_filename]
+		
 	
 	def generate_pages(self):
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
@@ -911,7 +918,7 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Card stats
 		
-		if self.due_for_rendering("stats_category_topbar.html", False) or self.due_for_rendering("stats.html"):
+		if self.due_for_rendering("stats_category_topbar.html") or self.due_for_rendering("stats.html"):
 			general_stats, maximums = self.client.get_general_stats()
 			self.renderer.render_and_save("stats.html", "pages/stats.html", {
 				'category_tag'   : 'general',
