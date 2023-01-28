@@ -1040,10 +1040,10 @@ class KiraraClient():
 				'idols'  : idols,
 				'groups' : groups,
 			})
-		
+			
 		banners_by_type.default_factory = None
-		
 		return most_recent_banner_type, banners_by_type
+		
 	
 	def get_weighted_overdueness(self):
 		overdue_sources = [Source.Festival, Source.Party]
@@ -1052,6 +1052,14 @@ class KiraraClient():
 		
 		all_overdue_members = set()
 		overdue_members = {}
+		
+		# for member in Member:
+		# 	all_overdue_members.add(member)
+		# 	for source in overdue_sources:
+		# 		if source not in overdue_members:
+		# 			overdue_members[source] = set()
+		# 		overdue_members[source].add(member)
+		
 		for member in Member:
 			for source, data in limited_idols[member].items():
 				if source not in overdue_members:
@@ -1061,6 +1069,11 @@ class KiraraClient():
 					all_overdue_members.add(member)
 					overdue_members[source].add(member)
 					break
+		
+		# If nobody is overdue in current set then everyone is up for grabs
+		for source in overdue_sources:
+			if len(overdue_members[source]) == 0:
+				overdue_members[source] = set([member for member in Member])
 					
 		max_UR_offsets = {
 			Member.Rina     : -2,
