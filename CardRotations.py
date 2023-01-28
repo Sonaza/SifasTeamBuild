@@ -928,7 +928,7 @@ class CardRotations():
 					'history_category' : history_category,
 				}, minify=not self.args.dev)
 		
-		if True or self.due_for_rendering("stats_category_topbar.html") or self.due_for_rendering("weighted_overdueness.html"):
+		if self.due_for_rendering("stats_category_topbar.html") or self.due_for_rendering("weighted_overdueness.html"):
 			weighted_overdueness = self.client.get_weighted_overdueness()
 			self.renderer.render_and_save("weighted_overdueness.html", f"pages/stats_overdueness.html", {
 				'weighted_overdueness' : weighted_overdueness,
