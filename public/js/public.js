@@ -1214,7 +1214,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 				}
 			}
 			$scope.toggleSelectBox($event);
-			setTimeout(() => { $rootScope.$broadcast('refresh-deferred-loads') }, 10);
+			$rootScope.$broadcast('refresh-deferred-loads');
 		}
 		
 		$scope.keepSelectBoxOnScreen = (event) =>
@@ -1498,7 +1498,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 				}
 			}
 			$scope.toggleSelectBox($event);
-			setTimeout(() => { $rootScope.$broadcast('refresh-deferred-loads') }, 10);
+			$rootScope.$broadcast('refresh-deferred-loads');
 		}
 		
 		$scope.keepSelectBoxOnScreen = (event) =>
@@ -2164,7 +2164,8 @@ app.directive('deferredLoad', function($parse, $window)
 			}
 			
 			scope.$on('refresh-deferred-loads', (_) => {
-				scope.$apply();
+				// Needs slight delay just in case to let CSS changes update and stuff
+				setTimeout(() => { scope.$apply(); }, 0);
 			});
 			
 			scope.template_url = 'pages/deferred/' + attrs.deferredLoad + '.html';
