@@ -1164,7 +1164,6 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 				setTimeout($scope.keepSelectBoxOnScreen, 100);
 				setTimeout($scope.keepSelectBoxOnScreen, 150);
 			}
-			
 			$rootScope.disable_scrolling = $scope.select_box_options_opened;
 		}
 		
@@ -1214,8 +1213,8 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 					}
 				}
 			}
-			
 			$scope.toggleSelectBox($event);
+			setTimeout(() => { $rootScope.$broadcast('refresh-deferred-loads') }, 10);
 		}
 		
 		$scope.keepSelectBoxOnScreen = (event) =>
@@ -1317,6 +1316,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 			{
 				$location.search('filter_highlight', undefined).replace();
 			}
+			$rootScope.$broadcast('refresh-deferred-loads');
 		}, true)
 		
 		$scope.$watch('filter_settings.filter', function(a, b)
@@ -1344,6 +1344,7 @@ app.controller('EventCardsController', function($rootScope, $scope, $route, $rou
 					break;
 				}
 			}
+			$rootScope.$broadcast('refresh-deferred-loads');
 		});
 		
 		$rootScope.$broadcast('update-title');
@@ -1447,7 +1448,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 				setTimeout($scope.keepSelectBoxOnScreen, 100);
 				setTimeout($scope.keepSelectBoxOnScreen, 150);
 			}
-			
 			$rootScope.disable_scrolling = $scope.select_box_options_opened;
 		}
 		
@@ -1497,8 +1497,8 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 					}
 				}
 			}
-			
 			$scope.toggleSelectBox($event);
+			setTimeout(() => { $rootScope.$broadcast('refresh-deferred-loads') }, 10);
 		}
 		
 		$scope.keepSelectBoxOnScreen = (event) =>
@@ -2134,6 +2134,10 @@ app.directive('deferredLoad', function($parse, $window)
 		{
 			function isElementInViewport(el)
 			{
+				let style = window.getComputedStyle(el);
+    			if (style.display === 'none')
+    				return false;
+				
 			    var rect = el.getBoundingClientRect();
 			    return (
 			        rect.top >= 0 &&
@@ -2144,6 +2148,10 @@ app.directive('deferredLoad', function($parse, $window)
 			}
 			function isElementPartiallyInViewport(el)
 			{
+				let style = window.getComputedStyle(el);
+    			if (style.display === 'none')
+    				return false;
+				
 			    var rect = el.getBoundingClientRect();
 			    let width = rect.right - rect.left;
 			    let height = rect.bottom - rect.top;
