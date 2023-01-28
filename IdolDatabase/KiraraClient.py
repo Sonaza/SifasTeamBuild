@@ -907,13 +907,14 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def get_newest_idols(self, group : Group = None,   rarity : Rarity = None,
-							   source : Source = None, members : Member = [], released_before : datetime = None):
+	def get_newest_idols(self, group  : Union[Group, List[Group]]   = None, rarity  : Union[Rarity, List[Rarity]] = None,
+							   source : Union[Source, List[Source]] = None, members : Union[Member, List[Member]] = None,
+							   released_before : datetime = None):
 		fields = []
 		if group      != None: fields.append(self._make_where_condition("group_id",  group))
 		if rarity     != None: fields.append(self._make_where_condition("rarity",    rarity))
 		if source     != None: fields.append(self._make_where_condition("source",    source))
-		if members:            fields.append(self._make_where_condition("member_id", members))
+		if members    != None: fields.append(self._make_where_condition("member_id", members))
 		
 		if released_before != None:
 			fields.append((f"release_date <= ?", [released_before.isoformat()]))
@@ -1044,8 +1045,9 @@ class KiraraClient():
 		banners_by_type.default_factory = None
 		return most_recent_banner_type, banners_by_type
 		
+	# -------------------------------------------------------------------------------------------
 	
-	def get_weighted_overdueness(self):
+	def get_weighted_overdueness(self, days_offset=0):
 		overdue_sources = [Source.Festival, Source.Party]
 		
 		limited_idols, max_per_source = self.get_idols_by_source_and_member(overdue_sources)
@@ -1100,7 +1102,7 @@ class KiraraClient():
 			expected_by_member[member] = (num_current, num_expected)
 			current_rotation_coefficient[member] = (num_expected / num_current)
 		
-		now                = datetime.now(timezone.utc) # + timedelta(days=30)
+		now                = datetime.now(timezone.utc) + timedelta(days=days_offset)
 		longest_overdue    = 0
 		elapsed_per_member = {}
 		all_urs            = self.get_newest_idols(rarity=Rarity.UR)
@@ -1168,7 +1170,6 @@ class KiraraClient():
 			BannerType.Party    : BannerType.Festival,
 		}
 		next_banner_type = other_banner_type[most_recent_banner_type]
-		
 		
 		weighted_overdueness = {}
 		for current_source in overdue_sources:

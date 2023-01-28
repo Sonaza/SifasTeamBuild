@@ -1614,6 +1614,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			{
 				$location.search('filter_highlight', undefined).replace();
 			}
+			$rootScope.$broadcast('refresh-deferred-loads');
 		}, true)
 		
 		$scope.$watch('filter_settings.filter', function(a, b)
@@ -1638,6 +1639,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 					break;
 				}
 			}
+			$rootScope.$broadcast('refresh-deferred-loads');
 		});
 		
 		$scope.$watch('filter_settings.banner', function(a, b)
@@ -1661,6 +1663,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 					break;
 				}
 			}
+			$rootScope.$broadcast('refresh-deferred-loads');
 		});
 		
 		$rootScope.$broadcast('update-title');
@@ -1757,7 +1760,7 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 		
 		angular.element(document.querySelector('.rotation-column-wrapper')).on('scroll', ($event) =>
 		{
-			$rootScope.$broadcast('rotation-column-scrolled');
+			$rootScope.$broadcast('refresh-deferred-loads');
 		});
 		
 		let num_pages = undefined;
@@ -2126,7 +2129,7 @@ app.directive('deferredLoad', function($parse, $window)
 	return {
 		restrict: 'A',
 		scope: true,
-		template: '<ng-include src="getTemplateUrl()">',
+		template: '<ng-include class="deferred-load" src="getTemplateUrl()">',
 		link: function (scope, element, attrs)
 		{
 			function isElementInViewport(el)
@@ -2152,7 +2155,7 @@ app.directive('deferredLoad', function($parse, $window)
 			    );
 			}
 			
-			scope.$on('rotation-column-scrolled', (_) => {
+			scope.$on('refresh-deferred-loads', (_) => {
 				scope.$apply();
 			});
 			

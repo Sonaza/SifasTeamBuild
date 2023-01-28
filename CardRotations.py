@@ -775,7 +775,43 @@ class CardRotations():
 		if template_filename not in self.due_for_rendering_cache:
 			self.due_for_rendering_cache[template_filename] = check(self, template_filename)
 		return self.due_for_rendering_cache[template_filename]
+	
+	# --------------------------------------------
+	
+	def testing_stuff(self):
+		results = {
+			Source.Festival: {},
+			Source.Party: {},
+		}
+		offsets = []
 		
+		for day in range(0, 21):
+			offset = day - 10
+			offsets.append(offset)
+			
+			result = self.client.get_weighted_overdueness(days_offset=offset)
+			for source, overdueness in result.items():
+				for member, data in overdueness.items():
+					if member not in results[source]:
+						results[source][member] = []
+					results[source][member].append(data['weighted_value'])
+		
+		print(f"{'Member':<10}\t", end='')
+		for offset in offsets:
+			print(f"{offset:>7}\t", end='')
+		print()
+			
+		for source, data in results.items():
+			for member, values in data.items():
+				print(f"{member.first_name:<10}\t", end='')
+				for value in values:
+					print(f"{value:>7.2f}\t", end='')
+				print()
+			print()
+			
+		return True
+	
+	# --------------------------------------------
 	
 	def generate_pages(self):
 		files_to_delete = [x.replace("\\", "/") for x in glob(os.path.join(CardRotations.OutputDirectory, "pages/*.html"))]
@@ -798,7 +834,7 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Basic rotations
 		
-		if self.due_for_rendering("deferred_rotation.html") or self.due_for_rendering("deferred_card_grid.html"):
+		if any([self.due_for_rendering("deferred_rotation.html"), self.due_for_rendering("deferred_card_grid.html")]):
 			def render_deferred_card_grids(rotation_set_label, grouped_rotations, unique_str):
 				for group, group_data in grouped_rotations:
 					for index, (card_rotation, rotation_title) in enumerate(group_data):
@@ -864,27 +900,41 @@ class CardRotations():
 				'set_label'          : 'Set',
 				'page_title'         : 'SR Sets',
 				'page_description'   : '''SR cards organised into sets by costume or other common theme.''',
-			})
+			}, minify=not self.args.dev)
 			render_deferred_card_grids('sr', sr_sets, render_unique_str)
 		
 		# -------------------------------------------------------
 		# Event cards info
 		
-		if self.due_for_rendering("event_cards.html"):
+		if any([self.due_for_rendering("event_cards_deferred.html"), self.due_for_rendering("event_cards_deferred_row.html")]):
 			events_with_cards, zero_feature_members = self.get_events_with_cards()
-			self.renderer.render_and_save("event_cards.html", "pages/event_cards.html", {
+			for event_index, (event_id, event_data) in enumerate(events_with_cards.items()):
+				self.renderer.render_and_save("event_cards_deferred_row.html", f"pages/deferred/event_cards_{event_id}.html", {
+					'event_id'        : event_id,
+					'event_data'      : event_data,
+					'event_row_index' : event_index + 1,
+				}, minify=not self.args.dev)
+			
+			self.renderer.render_and_save("event_cards_deferred.html", "pages/event_cards.html", {
 				'events_with_cards'    : events_with_cards,
 				'zero_feature_members' : zero_feature_members,
-			})
+			}, minify=not self.args.dev)
 			
 		# -------------------------------------------------------
 		# Banner info
 		
-		if self.due_for_rendering("banners.html"):
+		if any([self.due_for_rendering("banners_deferred.html"), self.due_for_rendering("banners_deferred_row.html")]):
 			banners_with_cards = self.get_banners_with_cards()
-			self.renderer.render_and_save("banners.html", "pages/banners.html", {
+			for banner_index, (banner_id, banner_data) in enumerate(banners_with_cards.items()):
+				self.renderer.render_and_save("banners_deferred_row.html", f"pages/deferred/banner_{banner_id}.html", {
+					'banner_id'        : banner_id,
+					'banner_data'      : banner_data,
+					'banner_row_index' : banner_index + 1,
+				}, minify=not self.args.dev)
+				
+			self.renderer.render_and_save("banners_deferred.html", "pages/banners.html", {
 				'banners_with_cards' : banners_with_cards,
-			})
+			}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
 		# Card history
@@ -918,7 +968,7 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Card stats
 		
-		if self.due_for_rendering("stats_category_topbar.html") or self.due_for_rendering("stats.html"):
+		if any([self.due_for_rendering("stats_category_topbar.html"), self.due_for_rendering("stats.html")]):
 			general_stats, maximums = self.client.get_general_stats()
 			self.renderer.render_and_save("stats.html", "pages/stats.html", {
 				'category_tag'   : 'general',
@@ -935,7 +985,7 @@ class CardRotations():
 					'history_category' : history_category,
 				}, minify=not self.args.dev)
 		
-		if self.due_for_rendering("stats_category_topbar.html") or self.due_for_rendering("weighted_overdueness.html"):
+		if any([self.due_for_rendering("stats_category_topbar.html"), self.due_for_rendering("weighted_overdueness.html")]):
 			weighted_overdueness = self.client.get_weighted_overdueness()
 			self.renderer.render_and_save("weighted_overdueness.html", f"pages/stats_overdueness.html", {
 				'weighted_overdueness' : weighted_overdueness,
@@ -1062,6 +1112,8 @@ if __name__ == "__main__":
 	build_exception = None
 	
 	cr.initialize()
+	
+	# if cr.testing_stuff(): exit()
 	
 	try:
 		cr.generate_pages()

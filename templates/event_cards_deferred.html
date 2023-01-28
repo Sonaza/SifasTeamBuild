@@ -1,0 +1,98 @@
+<h2>Event Cards</h2>
+<p>
+	List of events with the original event runtime, the featured member and associated cards. For non-event gacha check <a href="/#/banners">the gacha banners page</a>.
+</p>
+<p>
+	An estimated date of addition to SBL shop is also present for applicable events, assuming the rate of one event added per SBL round.
+</p>
+
+<p class="show-mobile show-narrow-1400"><b>Hint:</b> You can scroll the table horizontally if it doesn't fit on screen.</p>
+
+<div class="page-settings-bar event-card-settings">
+	<label>
+		Filter Events <span class="hide-mobile">(E)</span>
+	</label>
+	<select ng-model="filter_settings.filter" class="select-box-hidden">
+		<option ng-value="-1">&mdash; Show All &mdash;</option>
+		{% for group in Group %}
+			<optgroup label="{{ group.display_name }}">
+				{% for idol in Idols.by_group[group] %}
+					<option ng-value="{{ idol.member_id.value }}">{{ idol.member_id.full_name }}</option>
+				{% endfor %}
+			</optgroup>
+		{% endfor %}
+	</select>
+	<div class="settings-select-box select-box-desktop-only">
+		<div class="select-box-backdrop" ng-click="toggleSelectBox($event)" ng-if="select_box_options_opened"></div>
+		<div class="select-box-current" ng-click="toggleSelectBox($event)">
+			<div class="idol-details" ng-if="filter_idol.id === -1">
+				<span class="default-option">
+					&mdash; Show All &mdash;
+				</span>
+			</div>
+			<div class="idol-details idol-[[ filter_idol.id ]]" ng-if="filter_idol.id !== -1">
+				<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+				<span class="idol-name">
+					[[ filter_idol.name ]]
+				</span>
+			</div>
+		</div>
+		<div class="select-box-options" ng-class="selectBoxOptionsClass()">
+			<div class="select-box-option default-option"
+				ng-class="optionSelectedClass(-1)" ng-click="chooseSelectOption($event, -1)">
+				&mdash; Show All &mdash;
+			</div>
+			<ul>
+				{% for group in Group %}
+					<li class="select-box-group">
+						<span class="group-title">
+							{{ group.display_name }}
+						</span>
+						<ol>
+							{% for idol in Idols.by_group[group] %}
+								<li class="select-box-option idol-{{ idol.member_id.value }}"
+								    ng-class="optionSelectedClass({{ idol.member_id.value }})"
+								    ng-click="chooseSelectOption($event, {{ idol.member_id.value }})">
+									<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
+									<span class="idol-name">
+										{{ idol.member_id.full_name }}
+									</span>
+								</li>
+							{% endfor %}
+						</ol>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div pill-button model="filter_settings.featured_only" keybind="F">
+		Apply filter to featured member
+	</div>
+	<div pill-button model="filter_settings.highlight" keybind="H">
+		Highlight selected member
+	</div>
+</div>
+
+<div class="event-cards-group">
+	<div class="stats-table event-cards-table">
+		<div class="st-tr st-thead">
+			<div class="st-th st-cell-event-title">Event</div>
+			<div class="st-th st-cell-event-featured">Featured</div>
+			<div class="st-th st-cell-event-cards">Free Cards</div>
+			<div class="st-th st-cell-event-cards">Gacha Cards</div>
+		</div>
+		
+		<div class="st-tbody reversable" ng-class="filterEventsClass()">
+			{% for event_id, event_data in events_with_cards.items() %}
+				<div class="st-tr event-row {{ event_data['idols'] }}" deferred-load="event_cards_{{ event_id }}"></div>
+			{% endfor %}
+			{% for member in zero_feature_members %}			
+				<div class="st-tr zero-event-row featured-idol-{{ member.value }}">
+					<div class="st-td st-cell-100">
+						{{ member.first_name }} has yet to be the featured member in an event
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
