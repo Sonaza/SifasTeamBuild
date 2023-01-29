@@ -90,13 +90,11 @@ class CardRotations():
 		self.client = KiraraClient()
 		self.client.update_database(forced=self.args.force)
 		
-		print()
-		
 		if not os.path.exists("assets/css/idols.css"):
 			raise Exception("Generated idols.css does not exist! Run tools/generate_idols_css.py")
 		
-		if not os.path.exists("assets/css/atlas.css"):
-			print("Atlas CSS file does not exist and must be regenerated!")
+		if not os.path.exists("assets/css/atlas.css") or not os.path.exists("atlas_metadata.json"):
+			print("Atlas CSS or metadata file does not exist and must be regenerated!")
 			self.args.remake_atlas = True
 		
 		self.thumbnails = CardThumbnails(self.client, CardRotations.OutputDirectory)
@@ -1057,11 +1055,9 @@ class CardRotations():
 		# .htaccess
 		
 		preload_assets = self._get_preload_assets()
-		
-		if self.due_for_rendering("template.htaccess"):
-			self.renderer.render_and_save("template.htaccess", ".htaccess", {
-				'preloads' : preload_assets
-			}, minify=False, generated_note=True)
+		self.renderer.render_and_save("template.htaccess", ".htaccess", {
+			'preloads' : preload_assets
+		}, minify=False, generated_note=True)
 		
 		# -------------------------------------------------------
 		# Main index and layout

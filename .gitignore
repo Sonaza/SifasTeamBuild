@@ -3,6 +3,7 @@
 wanha/
 res/
 data_fallback.json
+atlas_metadata.json
 
 public/.htaccess
 

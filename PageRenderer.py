@@ -4,8 +4,7 @@ import platform
 from datetime import datetime, timezone
 from IdolDatabase import *
 from CardValidity import *
-from colorama import Fore
-from colorama import Style
+from colorama import Fore, Style
 
 from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 import htmlmin
@@ -139,6 +138,9 @@ class PageRenderer():
 			self.included_pages.add(filepath.replace('templates/', ''))
 			return _include_page(filepath, minify=minify)
 		
+		def get_atlas_plane(ordinal):
+			return parent.thumbnails.get_atlas_plane(ordinal)
+		
 		self.jinja.filters.update({
 			'format_days'       : _format_days,
 			'format_years_days' : _format_years_days,
@@ -175,6 +177,9 @@ class PageRenderer():
 			'is_nonextant_card'     : is_nonextant_card,
 			
 			'include_page'          : include_page_wrapper,
+			
+			# Atlas
+			'get_atlas_plane'       : get_atlas_plane,
 			
 			# Systems stuff
 			'cache_buster'          : lambda filepath: _cache_buster(self.parent.OutputDirectory, filepath),

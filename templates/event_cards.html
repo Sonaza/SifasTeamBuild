@@ -129,7 +129,7 @@
 										ng-mouseover="toggleTooltip($event, true)"
 										ng-mouseleave="toggleTooltip($event, false)">
 									<div class="thumbnail-wrapper">
-										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }}-{{ get_atlas_plane(card.ordinal) }}card-{{ card.ordinal }}">
 											<span class="source-indicator idol-{{ card.member_id.value }} source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 										</a>
 									</div>
@@ -154,7 +154,7 @@
 										ng-mouseover="toggleTooltip($event, true)"
 										ng-mouseleave="toggleTooltip($event, false)">
 									<div class="thumbnail-wrapper">
-										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }} card-{{ card.ordinal }}">
+										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }}-{{ get_atlas_plane(card.ordinal) }}card-{{ card.ordinal }}">
 											<span class="source-indicator idol-{{ card.member_id.value }} source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 										</a>
 									</div>

@@ -109,7 +109,7 @@
 							</div>
 							<div>
 								<select class="source-selector ng-cloak" ng-model="settings.highlight_source">
-									<option disabled>&mdash; Source Highlight &mdash;</option>
+									{# <option disabled>&mdash; Source Highlight &mdash;</option> #}
 									<option ng-repeat="option in highlight_options" ng-value="option.value">[[ option.label ]]</option>
 								</select>
 								<select class="source-selector" id="source-selector-loading" ng-if="loading">

@@ -119,12 +119,14 @@ class KiraraIdol():
 		self.modifiers = (Attribute.Unset, Type.Unset, 1, 1)
 	
 	def __str__(self):
-		idol = Idols.by_member_id[self.member_id]
-		return f"「 {self.get_card_name(True)} 」 {self.attribute.name} {self.type.name} {idol}"
+		# idol = Idols.by_member_id[self.member_id]
+		# return f"「 {self.get_card_name(True)} 」 {self.attribute.name} {self.type.name} {idol}"
+		return f"{self.member_id.first_name} {self.ordinal}"
 	
 	def __repr__(self):
-		idol = Idols.by_member_id[self.member_id]
-		return f"「 {self.get_card_name(True)} 」 {self.attribute.name} {self.type.name} {idol}"
+		# idol = Idols.by_member_id[self.member_id]
+		# return f"「 {self.get_card_name(True)} 」 {self.attribute.name} {self.type.name} {idol}"
+		return f"{self.member_id.first_name} {self.ordinal}"
 	
 	def get_card_name(self, idolized : bool):
 		if idolized:
