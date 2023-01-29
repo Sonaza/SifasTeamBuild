@@ -96,6 +96,14 @@ Redirect 301 /index.html /
 
 <IfModule mod_expires.c>
 
+	AddType font/otf                         otf
+	AddType font/ttf                         ttf
+	AddType application/font-woff            woff
+	AddType application/font-woff2           woff2
+	AddType application/vnd.ms-fontobject    eot
+	
+	AddType image/webp                       webp
+
 	ExpiresActive on
 	ExpiresDefault                                      "access plus 1 month"
 
@@ -194,9 +202,7 @@ Redirect 301 /index.html /
 	ExpiresByType application/font-woff2                "access plus 1 year"
 	ExpiresByType font/woff2                            "access plus 1 year"
 
-
   # Other
-
 	ExpiresByType text/x-cross-domain-policy            "access plus 1 week"
 
 </IfModule>
