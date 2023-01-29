@@ -923,7 +923,7 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Banner info
 		
-		if any([True, self.due_for_rendering("banners_deferred.html"), self.due_for_rendering("banners_deferred_row.html")]):
+		if any([self.due_for_rendering("banners_deferred.html"), self.due_for_rendering("banners_deferred_row.html")]):
 			banners_with_cards = self.get_banners_with_cards()
 			for banner_index, (banner_id, banner_data) in enumerate(banners_with_cards.items()):
 				self.renderer.render_and_save("banners_deferred_row.html", f"pages/deferred/banner_{banner_id}.html", {

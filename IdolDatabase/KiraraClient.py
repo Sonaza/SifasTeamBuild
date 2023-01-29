@@ -1137,14 +1137,14 @@ class KiraraClient():
 		
 		elapsed_coefficients = {}
 		for banner_type, data in elapsed_by_group.items():
-			elapsed_coefficients[banner_type] = {}
+			elapsed_coefficients[banner_type] = {group: 1 for group in Group}
 			max_delta = max([delta for group, delta in data.items()])
 			for group, delta in data.items():
 				elapsed_coefficients[banner_type][group] = delta.days / max_delta.days
 		
 		banner_shares = {}
 		for banner_type, data in num_banners_for_group.items():
-			banner_shares[banner_type] = {}
+			banner_shares[banner_type] = {group: 0 for group in Group}
 			for group, value in data['groups'].items():
 				banner_shares[banner_type][group] = value / data['total']
 				
