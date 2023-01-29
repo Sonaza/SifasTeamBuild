@@ -738,9 +738,10 @@ class CardRotations():
 		preload_asset_files.extend(glob(os.path.join(CardRotations.OutputDirectory, "img/thumbnails/atlas_*_30_*_idolized.webp")))
 		
 		ext_types = {
-			'.css' : 'style',
-			'.png' : 'image',
-			'.js'  : 'script',
+			'.css'  : 'style',
+			'.png'  : 'image',
+			'.webp' : 'image',
+			'.js'   : 'script',
 		}
 		
 		for filepath in preload_asset_files:
