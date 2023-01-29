@@ -218,9 +218,13 @@ class CardThumbnails():
 		for ordinal, (group, rarity, atlas_plane, coordinates) in self.atlas_metadata.items():
 			atlas_css.append(f".card-thumbnail.card-{ordinal} {{ background-position: {-coordinates[0]}px {-coordinates[1]}px !important; }}")
 			
+		error_lines = []
 		for group, rarity, atlas_plane, (hash_normal, hash_idolized) in atlas_identifiers:
-			atlas_css.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value}-error         {{ background: url('/img/missing_icon.png') no-repeat 0px 0px !important; }}")
-			atlas_css.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value}-error         {{ background: url('/img/missing_icon.png') no-repeat 0px 0px !important; }}")
+			error_lines.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value}-error,")
+			error_lines.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value}-error,")
+			
+		error_lines[-1] = error_lines[-1].replace(",", "  {{ background: url('/img/missing_icon.png') no-repeat 0px 0px !important; }}")
+		atlas_css.extend(error_lines)
 		
 		with open("assets/css/atlas.css", "w", encoding="utf8") as output_file:
 			for line in atlas_css:

@@ -104,7 +104,7 @@ class CardRotations():
 		
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
 			self.thumbnails.make_atlas()
-			self.args.force_render = True
+			# self.args.force_render = True
 		
 		self.due_for_rendering_cache = {}
 		
