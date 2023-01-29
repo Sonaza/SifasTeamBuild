@@ -735,7 +735,7 @@ class CardRotations():
 			self.css_settings.output_file,
 			os.path.join(CardRotations.OutputDirectory, "js/public.js"),
 		]
-		preload_asset_files.extend(glob(os.path.join(CardRotations.OutputDirectory, "img/thumbnails/atlas_*_30_*_idolized.png")))
+		preload_asset_files.extend(glob(os.path.join(CardRotations.OutputDirectory, "img/thumbnails/atlas_*_30_*_idolized.webp")))
 		
 		ext_types = {
 			'.css' : 'style',
