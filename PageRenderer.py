@@ -1,122 +1,14 @@
 import os
 import math
 import platform
-from datetime import datetime, timezone
-from IdolDatabase import *
-from CardValidity import *
-from colorama import Fore, Style
-
-from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 import htmlmin
+from datetime import datetime, timezone
+from colorama import Fore, Style
+from jinja2 import Environment, PackageLoader, FileSystemLoader, select_autoescape
 
-def _ordinalize(n):
-	n = int(n)
-	if 11 <= (n % 100) <= 13:
-		suffix = 'th'
-	else:
-		suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
-	return str(n) + suffix
-	
-def _pluralize(value, singular, plural):
-	if abs(value) == 1:
-		return f"{abs(value)} {singular}"
-	else:
-		return f"{abs(value)} {plural}"
-
-def _format_days(value):
-	if value > 0:
-		return f"{_pluralize(value, 'day', 'days')} ago"
-	elif value == 0:
-		return "Today"
-	else:
-		return f"In {_pluralize(value, 'day', 'days')}"
-
-def _format_years_days(value):
-	years = math.floor(value / 365)
-	
-	if value > 0:
-		if years > 0:
-			return f"{years} y {value % 365} d ago"
-		else:
-			return f"{_pluralize(value, 'day', 'days')} ago"
-	elif value == 0:
-		return "Today"
-	else:
-		return f"In {_pluralize(value, 'day', 'days')}"
-
-def _format_delta_days(value):
-	if value > 0:
-		return f"{_pluralize(value, 'day', 'days')}"
-	elif value == 0:
-		return "0 days"
-	else:
-		return "Negative days impossible"
-	
-def _conditional_css(class_names, condition):
-	assert isinstance(class_names, str) or isinstance(class_names, list) or isinstance(class_names, tuple)
-	assert isinstance(condition, bool)
-	
-	if isinstance(class_names, str): class_names = [class_names, '']
-	elif len(class_names) == 1:      class_names = [class_names[0], '']
-		
-	if condition:
-		return class_names[0]
-	else:
-		return class_names[1]
-
-def get_file_modifyhash(filepath):
-	modify_time = os.stat(filepath).st_mtime
-	hashvalue = hash(modify_time) % 16711425
-	return f"{hashvalue:06x}"
-
-def _cache_buster(output_directory, filename):
-	full_path = os.path.normpath(output_directory + '/' + filename)
-	if not os.path.exists(full_path):
-		print(f"Cache busting path {full_path} does not exist!")
-		return filename
-		
-	name, ext = os.path.splitext(filename)
-	buster = get_file_modifyhash(full_path)
-	return f"{name}.{buster}{ext}"
-	
-def _include_page(filepath, minify=False):
-	if not os.path.exists(filepath):
-		return f"<h1>Error: {filepath} does not exist.</h1>"
-	
-	with open(filepath, encoding="utf8") as f:
-		data = f.read()
-		if minify:
-			data = htmlmin.minify(data, remove_empty_space=True)
-		return data
-		
-	return f"<h1>Error: Failed to open {filepath}.</h1>"
-	
-def _get_card_source_label(card):
-	if card.source == Source.Gacha:
-		if card.event_title != None:
-			return 'Event Gacha'
-		
-	return card.source.display_name
-
-def _is_windows():
-	return (platform.system() == "Windows" or 'CYGWIN_NT' in platform.system())
-
-def _format_datestring(date, long_month = False, ordinalize = True, with_utc_time = False):
-	day_format   = '%#d' if _is_windows() else '%-d'
-	month_format = '%B' if long_month else '%b'
-	
-	format_string = f'{day_format} {month_format} %Y'
-	if with_utc_time:
-		format_string = f'{format_string} %H:%M %Z'
-	
-	day, month, year = date.strftime(format_string).split(' ', 2)
-	
-	if ordinalize:
-		day = f"{_ordinalize(day)} of"
-	
-	return f"{day} {month} {year}"
-	
-# -------------------------------------------------------------------------------------------
+from IdolDatabase import *
+from Utility import *
+import CardValidity
 
 class PageRenderer():
 	RENDER_HISTORY_FILE = "render_history.json"
@@ -136,26 +28,27 @@ class PageRenderer():
 		self.reset_included_pages()
 		def include_page_wrapper(filepath, minify=False):
 			self.included_pages.add(filepath.replace('templates/', ''))
-			return _include_page(filepath, minify=minify)
+			return Utility.include_page(filepath, minify=minify)
 		
 		def get_atlas_plane(ordinal):
 			return parent.thumbnails.get_atlas_plane(ordinal)
 		
 		self.jinja.filters.update({
-			'format_days'       : _format_days,
-			'format_years_days' : _format_years_days,
-			'format_delta_days' : _format_delta_days,
-			'pluralize'         : _pluralize,
-			'ordinalize'        : _ordinalize,
+			'format_days'       : Utility.format_days,
+			'format_years_days' : Utility.format_years_days,
+			'format_delta_days' : Utility.format_delta_days,
+			'pluralize'         : Utility.pluralize,
+			'ordinalize'        : Utility.ordinalize,
 			
-			'conditional_css'   : _conditional_css,
-			'format_datestring' : _format_datestring,
+			'conditional_css'   : Utility.conditional_css,
+			'format_datestring' : Utility.format_datestring,
 		})
 		
 		self.jinja.globals.update({
 			# Python built in functions
-			'reversed'              : reversed,
 			'len'                   : len,
+			'range'                 : range,
+			'reversed'              : reversed,
 			
 			# Application related variables
 			'cmd_args'              : self.parent.args,
@@ -172,9 +65,10 @@ class PageRenderer():
 			'BannerType'            : BannerType.get_valid(),
 			
 			# Page specific functions
-			'is_valid_card'         : is_valid_card,
-			'is_missing_card'       : is_missing_card,
-			'is_nonextant_card'     : is_nonextant_card,
+			'is_valid_card'         : CardValidity.is_valid_card,
+			'is_missing_card'       : CardValidity.is_missing_card,
+			'is_nonextant_card'     : CardValidity.is_nonextant_card,
+			'get_card_source_label' : Utility.get_card_source_label,
 			
 			'include_page'          : include_page_wrapper,
 			
@@ -182,13 +76,10 @@ class PageRenderer():
 			'get_atlas_plane'       : get_atlas_plane,
 			
 			# Systems stuff
-			'cache_buster'          : lambda filepath: _cache_buster(self.parent.OutputDirectory, filepath),
-			
-			'get_card_source_label' : _get_card_source_label,
+			'cache_buster'          : lambda filepath: Utility.cache_buster(self.parent.OutputDirectory, filepath),
 		})
 		
 		self.rendered_pages = []
-		
 		self.load_render_history()
 		
 	# -------------------------------------------------------------------------------------------

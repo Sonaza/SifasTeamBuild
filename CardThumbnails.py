@@ -6,7 +6,7 @@ from colorama import Fore, Style
 from collections import namedtuple
 
 from IdolDatabase.Config import Config
-from PageRenderer import get_file_modifyhash
+from Utility import Utility
 
 AtlasMetadata = namedtuple('AtlasMetadata', 'group rarity atlas_plane coordinates')
 
@@ -20,10 +20,15 @@ class CardThumbnails():
 	def __init__(self, client, output_directory):
 		self.client = client
 		self.output_directory = output_directory
+		self.atlas_update_done = False
 		self.metadata_load_success = self.load_atlas_metadata()
 	
+	def atlas_updated(self):
+		return self.atlas_update_done
+		
 	def metadata_loaded_successfully(self):
 		return self.metadata_load_success
+		
 	
 	def load_atlas_metadata(self):
 		self.atlas_metadata = {}
@@ -57,11 +62,6 @@ class CardThumbnails():
 		return True
 		
 		
-	def make_random_string(self):
-		hashvalue = hash(datetime.now()) % 16711425
-		return f"{hashvalue:06x}"
-	
-	
 	def download_file(self, url, target_path):
 		r = requests.get(url, headers={
 			'User-Agent' : Config.USER_AGENT,
@@ -116,7 +116,6 @@ class CardThumbnails():
 		except KeyError:
 			pass
 		return 'error'
-		
 	
 	def make_atlas(self):
 		print(f"{Fore.GREEN}{Style.BRIGHT}Compiling thumbnail atlas planes...")
@@ -200,8 +199,8 @@ class CardThumbnails():
 					print(f'    {Fore.BLUE}{Style.BRIGHT}Saved idolized atlas (plane {atlas_plane + 1}/{num_atlas_planes})  {Fore.WHITE}: {atlas_idolized_path}{Style.RESET_ALL}')
 					
 					filehashes = (
-						get_file_modifyhash(atlas_normal_path),
-						get_file_modifyhash(atlas_idolized_path),
+						Utility.get_file_modifyhash(atlas_normal_path),
+						Utility.get_file_modifyhash(atlas_idolized_path),
 					)
 					atlas_identifiers.append((group, rarity, atlas_plane, filehashes))
 					
@@ -222,8 +221,7 @@ class CardThumbnails():
 		for group, rarity, atlas_plane, (hash_normal, hash_idolized) in atlas_identifiers:
 			error_lines.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value}-error,")
 			error_lines.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value}-error,")
-			
-		error_lines[-1] = error_lines[-1].replace(",", "  {{ background: url('/img/missing_icon.png') no-repeat 0px 0px !important; }}")
+		error_lines[-1] = error_lines[-1][:-1] + "  {{ background: url('/img/missing_icon.png') no-repeat 0px 0px !important; }}"
 		atlas_css.extend(error_lines)
 		
 		with open("assets/css/atlas.css", "w", encoding="utf8") as output_file:
@@ -235,6 +233,7 @@ class CardThumbnails():
 		self.save_atlas_metadata()
 		
 		print(f"{Fore.MAGENTA}{Style.BRIGHT}Atlas processing complete!{Style.RESET_ALL}")
-			
 		print()
+		
+		self.atlas_update_done = True
 	

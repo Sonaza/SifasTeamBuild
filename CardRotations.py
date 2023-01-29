@@ -1,6 +1,7 @@
 from IdolDatabase import *
 from CardThumbnails import CardThumbnails
 from CardValidity import *
+from Utility import Utility
 
 from ResourceProcessor import *
 from PageRenderer import *
@@ -16,8 +17,19 @@ from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta
 
 from colorama import init as colorama_init
-from colorama import Fore
-from colorama import Style
+from colorama import Fore, Style
+
+from dataclasses import dataclass
+
+@dataclass
+class IdolElapsed:
+	member    : Member
+	idol      : KiraraIdol
+	elapsed   : timedelta
+	highlight : bool
+	
+	def __iter__(self):
+		return iter((self.member, self.idol, self.elapsed, self.highlight))
 
 class CardRotations():
 	OutputDirectory = "public"
@@ -146,6 +158,8 @@ class CardRotations():
 		
 		arrays_sorted = self._sort_rotation(cards_per_girl, order)
 		return (num_pages, arrays_sorted)
+	
+	# -------------------------------------------------------------------------------------------
 	
 	def get_general_rotation(self, group : Group, rarity : Rarity):
 		member_delays = {
@@ -429,7 +443,6 @@ class CardRotations():
 			
 		num_rotations = 0
 		for member_id, cards in cards_per_girl.items():
-			# print(f"{Idols.by_member_id[member_id].first_name:>10} has {len(cards):>2} URs")
 			num_rotations = max(num_rotations, len(cards))
 
 		rotations = []
@@ -452,47 +465,6 @@ class CardRotations():
 		return rotations
 		
 	# -------------------------------------------------------------------------------------------
-	
-	def _time_since_last(self, idols, group=None):
-		now = datetime.now(timezone.utc)
-		
-		# Note down all idols
-		all_idols = set()
-		if group == None:
-			for idol in Idols.all_idols:
-				all_idols.add(idol.member_id)
-		else:
-			for idol in Idols.by_group[group]:
-				all_idols.add(idol.member_id)
-		
-		# Calculate time since stats
-		highlighted_idols = set()
-		idols_timedata = []
-		for idol in idols:
-			duplicate = not (idol.member_id in all_idols)
-			
-			# member, card, time_since, highlight
-			idols_timedata.append((idol.member_id, idol, now - idol.release_date, duplicate))
-			
-			if duplicate and idol.member_id not in highlighted_idols:
-				highlighted_idols.add(idol.member_id)
-				
-			try:
-				all_idols.remove(idol.member_id)
-			except: pass
-		
-		# Highlight all duplicate idol entries
-		for index, idol in enumerate(idols_timedata):
-			if idol[0] in highlighted_idols:
-				idols_timedata[index] = (idol[0], idol[1], idol[2], True)
-		
-		has_empty_rows = (len(all_idols) > 0)
-		
-		# Add dummy entries for idols not found in the dataset
-		for member_id in all_idols:
-			idols_timedata.insert(0, (member_id, CardNonExtant(), 0, False))
-			
-		return idols_timedata, has_empty_rows
 	
 	def get_newest_idols(self, group : Group = None, rarity : Rarity = None, source : Source = None):
 		idols = self.client.get_newest_idols(group=group, rarity=rarity, source=source)
@@ -555,6 +527,47 @@ class CardRotations():
 		return (history_by_member, category_info, category_flags)
 		
 	# ------------------------------------------------
+	
+	def process_time_elapsed(self, idols, group=None):
+		now = datetime.now(timezone.utc)
+		
+		# Note down all idols
+		all_idols = set()
+		if group == None:
+			for idol in Idols.all_idols:
+				all_idols.add(idol.member_id)
+		else:
+			for idol in Idols.by_group[group]:
+				all_idols.add(idol.member_id)
+		
+		# Calculate time since stats
+		highlighted_idols = set()
+		elapsed_list = []
+		for idol in idols:
+			duplicate = not (idol.member_id in all_idols)
+			
+			# member, card, time_since, highlight
+			elapsed_list.append(IdolElapsed(idol.member_id, idol, now - idol.release_date, duplicate))
+			
+			if duplicate and idol.member_id not in highlighted_idols:
+				highlighted_idols.add(idol.member_id)
+				
+			try:
+				all_idols.remove(idol.member_id)
+			except: pass
+		
+		# Highlight all duplicate idol entries
+		for index, data in enumerate(elapsed_list):
+			if data.member in highlighted_idols:
+				data.highlight = True
+		
+		has_empty_rows = (len(all_idols) > 0)
+		
+		# Add dummy entries for idols not found in the dataset
+		for member_id in all_idols:
+			elapsed_list.insert(0, IdolElapsed(member_id, CardNonExtant(), 0, False))
+			
+		return elapsed_list, has_empty_rows
 		
 	def get_card_stats(self):
 		categories = {
@@ -597,9 +610,9 @@ class CardRotations():
 		
 		for category, (rarity, sources) in categories.items():
 			for group in Group:
-				time_since_list, has_empty_rows = self._time_since_last(idols=self.get_newest_idols(group=group, rarity=rarity, source=sources), group=group)
+				elapsed_list, has_empty_rows = self.process_time_elapsed(idols=self.get_newest_idols(group=group, rarity=rarity, source=sources), group=group)
 				category_data[category][group] = {
-					'cards'           : time_since_list,
+					'cards'           : elapsed_list,
 					'has_empty_rows'  : has_empty_rows,
 					'show_source'     : (not isinstance(sources, list) or len(sources) > 1),
 					'show_rarity'     : (isinstance(rarity, list) and len(rarity) > 1),
@@ -609,9 +622,9 @@ class CardRotations():
 				}
 				category_has_empty_rows[category] = has_empty_rows or category_has_empty_rows[category]
 				
-			time_since_list, has_empty_rows = self._time_since_last(idols=self.get_newest_idols(rarity=rarity, source=sources), group=None)
+			elapsed_list, has_empty_rows = self.process_time_elapsed(idols=self.get_newest_idols(rarity=rarity, source=sources), group=None)
 			category_data[category]['collapsed'] = {
-				'cards'           : time_since_list,
+				'cards'           : elapsed_list,
 				'has_empty_rows'  : has_empty_rows,
 				'show_source'     : (not isinstance(sources, list) or len(sources) > 1),
 				'show_rarity'     : (isinstance(rarity, list) and len(rarity) > 1),
@@ -621,7 +634,7 @@ class CardRotations():
 			}
 			category_has_empty_rows[category] = has_empty_rows or category_has_empty_rows[category]
 		
-		return (category_data, category_info, category_has_empty_rows)
+		return category_data, category_info, category_has_empty_rows
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -630,8 +643,6 @@ class CardRotations():
 		features = self.client.get_event_features_per_member()
 		
 		zero_feature_members = [member for member, num_features in features.items() if num_features == 0]
-		
-		# sbl_events = [{'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Secret Party!'}, {'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Your Models are Here!'}, {'title': 'Trial Event: SIFAS Big Live Show', 'event': 'Odd Old Town Tour'}, {'title': 'SIFAS Big Live Show Round 1', 'event': 'Refresh with a Hike!'}, {'title': 'SIFAS Big Live Show Round 2', 'event': 'Invitation to a Wonderful Place!'}, {'title': 'SIFAS Big Live Show Round 3', 'event': 'All Aboard the School Idol Train!'}, {'title': 'SIFAS Big Live Show Round 4', 'event': 'Great Battle on the High Seas'}, {'title': 'SIFAS Big Live Show Round 5', 'event': 'Come Enjoy These Special Sweets'}, {'title': 'Mega Live Show!', 'event': 'Music Made Together'}, {'title': 'SIFAS Big Live Show Round 7', 'event': "Cryptid Catchin' Crusade!"}, {'title': 'SIFAS Big Live Show Round 8', 'event': 'Catch the Mischievous Wolf!'}, {'title': 'School Idol Festival Round 1!', 'event': 'Magical Time!'}, {'title': 'SIFAS Big Live Show Round 9', 'event': 'Cooking with Vegetables!'}, {'title': 'SIFAS Big Live Show Round 10', 'event': 'Ice Skating Youth'}, {'title': 'SIFAS Big Live Show Round 11', 'event': 'Hot Spring Rhapsody'}, {'title': 'SIFAS Big Live Show Round 12', 'event': 'Save the Ramen of Joy!'}, {'title': 'SIFAS Big Live Show Round 13', 'event': 'Three Princesses'}, {'title': 'SIFAS Big Live Show Round 14', 'event': 'Singing in the Rain with You'}, {'title': 'SIFAS Big Live Show Round 15', 'event': "Yohane and Hanayo's Whodunit Caper"}, {'title': 'SIFAS Big Live Show Round 16', 'event': "Rina's Creepy Haunted House"}, {'title': '2nd Anniversary SIFAS Big Live Show', 'event': 'Grab Victory in the Sports Battle!'}, {'title': 'SIFAS Big Live Show Round 17', 'event': 'Toy Store Panic'}, {'title': 'SIFAS Big Live Show Round 18', 'event': 'Rebel-ish Makeover'}, {'title': 'SIFAS Big Live Show Round 19', 'event': 'Enjoy the Taste of Fall!'}]
 		
 		sbl_reference_point = {
 			'event_id' : 47,
@@ -652,7 +663,6 @@ class CardRotations():
 			# 	events_per_month = 1
 			# 	diff_bonus = 14
 			
-			# strftime('%d %B %Y %H:%M %Z')
 			data['event']['start'] = data['event']['start'].strftime('%d %b %Y')
 			data['event']['end']   = data['event']['end'].strftime('%d %b %Y')
 			
@@ -673,14 +683,6 @@ class CardRotations():
 		return events, zero_feature_members
 	
 	# -------------------------------------------------------------------------------------------
-	
-	def _ordinalize(self, n):
-		n = int(n)
-		if 11 <= (n % 100) <= 13:
-			suffix = 'th'
-		else:
-			suffix = ['th', 'st', 'nd', 'rd', 'th'][min(n % 10, 4)]
-		return str(n) + suffix
 	
 	def get_banners_with_cards(self):
 		banners = self.client.get_banners_with_cards()
@@ -721,7 +723,7 @@ class CardRotations():
 				if data['banner']['type'] == BannerType.Spotlight:
 					data['banner']['title'] = f"{data['banner']['type'].name} {featured_str}"
 				else:
-					data['banner']['title'] = f"{self._ordinalize(data['index'] + 1)} {data['banner']['type'].name} {featured_str}"
+					data['banner']['title'] = f"{Utility.ordinalize(data['index'] + 1)} {data['banner']['type'].name} {featured_str}"
 		
 		return banners
 	
@@ -744,13 +746,8 @@ class CardRotations():
 		for filepath in preload_asset_files:
 			rel = 'preload'
 			
-			# if 'atlas_' in filepath:
-			# 	rel = "prefetch"
-			
 			filepath = filepath.replace('\\', '/')
-			basename = os.path.basename(filepath)
-			
-			filehash = get_file_modifyhash(filepath)
+			filehash = Utility.get_file_modifyhash(filepath)
 			
 			relative_path = filepath.replace('public/', '')
 			base, ext = os.path.splitext(relative_path)
@@ -926,7 +923,7 @@ class CardRotations():
 		# -------------------------------------------------------
 		# Banner info
 		
-		if any([self.due_for_rendering("banners_deferred.html"), self.due_for_rendering("banners_deferred_row.html")]):
+		if any([True, self.due_for_rendering("banners_deferred.html"), self.due_for_rendering("banners_deferred_row.html")]):
 			banners_with_cards = self.get_banners_with_cards()
 			for banner_index, (banner_id, banner_data) in enumerate(banners_with_cards.items()):
 				self.renderer.render_and_save("banners_deferred_row.html", f"pages/deferred/banner_{banner_id}.html", {
@@ -1060,9 +1057,10 @@ class CardRotations():
 		# .htaccess
 		
 		preload_assets = self._get_preload_assets()
-		self.renderer.render_and_save("template.htaccess", ".htaccess", {
-			'preloads' : preload_assets
-		}, minify=False, generated_note=True)
+		if self.due_for_rendering("template.htaccess"):
+			self.renderer.render_and_save("template.htaccess", ".htaccess", {
+				'preloads' : preload_assets
+			}, minify=False, generated_note=True)
 		
 		# -------------------------------------------------------
 		# Main index and layout

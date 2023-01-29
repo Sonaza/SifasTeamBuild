@@ -2,10 +2,8 @@ import os
 import re
 import time
 import glob
-
 import csscompressor
-from colorama import Fore
-from colorama import Style
+from colorama import Fore, Style
 
 import warnings
 with warnings.catch_warnings():
