@@ -93,13 +93,18 @@ class CardRotations():
 		if not os.path.exists("assets/css/idols.css"):
 			raise Exception("Generated idols.css does not exist! Run tools/generate_idols_css.py")
 		
-		if not os.path.exists("assets/css/atlas.css") or not os.path.exists("atlas_metadata.json"):
-			print("Atlas CSS or metadata file does not exist and must be regenerated!")
+		if not os.path.exists("assets/css/atlas.css"):
+			print("Atlas CSS does not exist and must be regenerated!")
 			self.args.remake_atlas = True
 		
 		self.thumbnails = CardThumbnails(self.client, CardRotations.OutputDirectory)
+		if not self.thumbnails.metadata_loaded_successfully():
+			print("Atlas metadata does not exist or is corrupted and must be regenerated!")
+			self.args.remake_atlas = True
+		
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
 			self.thumbnails.make_atlas()
+			self.args.force_render = True
 		
 		self.due_for_rendering_cache = {}
 		

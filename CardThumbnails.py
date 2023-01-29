@@ -20,25 +20,29 @@ class CardThumbnails():
 	def __init__(self, client, output_directory):
 		self.client = client
 		self.output_directory = output_directory
-		
-		self.load_atlas_metadata()
+		self.metadata_load_success = self.load_atlas_metadata()
 	
+	def metadata_loaded_successfully(self):
+		return self.metadata_load_success
 	
 	def load_atlas_metadata(self):
 		self.atlas_metadata = {}
 		if os.path.exists(CardThumbnails.ATLAS_METADATA_FILE):
 			try:
 				with open(CardThumbnails.ATLAS_METADATA_FILE, "r") as f:
-					self.atlas_metadata = json.load(f)
+					metadata = json.load(f)
 				
-				for ordinal, data in self.atlas_metadata.items():
-					self.atlas_metadata[ordinal] = AtlasMetadata(Group(data[0]), Rarity(data[1]), data[2], data[3])
+				for ordinal, data in metadata.items():
+					self.atlas_metadata[int(ordinal)] = AtlasMetadata(Group(data[0]), Rarity(data[1]), data[2], data[3])
+				
+				return True
 			except:
 				self.atlas_metadata = {}
-	
-	
+		return False
+		
 	def save_atlas_metadata(self):
 		if not isinstance(self.atlas_metadata, dict):
+			print(f'    {Fore.RED}{Style.BRIGHT}Atlas metadata not a dict!{Style.RESET_ALL}')
 			return False
 			
 		def json_serialize(obj):
@@ -48,6 +52,8 @@ class CardThumbnails():
 			
 		with open(CardThumbnails.ATLAS_METADATA_FILE, "w", encoding="utf8") as output_file:
 			json.dump(self.atlas_metadata, output_file, default=json_serialize)
+			
+		print(f'    {Fore.BLUE}{Style.BRIGHT}Saved atlas metadata   {Fore.WHITE}: {CardThumbnails.ATLAS_METADATA_FILE}{Style.RESET_ALL}')
 		return True
 		
 		
@@ -99,16 +105,14 @@ class CardThumbnails():
 			print(f"  {Fore.MAGENTA}{Style.BRIGHT}New thumbnails downloaded, remaking atlas is required.{Style.RESET_ALL}")
 		else:
 			print(f"  {Fore.BLACK}{Style.BRIGHT}No new thumbnails downloaded.{Style.RESET_ALL}")
-			
 		print()
-		
 		return has_new_thumbnails
 	
 	
 	def get_atlas_plane(self, ordinal):
 		try:
 			assert(len(self.atlas_metadata) > 0)
-			return self.atlas_metadata[str(ordinal)].atlas_plane
+			return self.atlas_metadata[ordinal].atlas_plane
 		except KeyError:
 			pass
 		return 'error'
