@@ -53,7 +53,7 @@ class CardThumbnails():
 		with open(CardThumbnails.ATLAS_METADATA_FILE, "w", encoding="utf8") as output_file:
 			json.dump(self.atlas_metadata, output_file, default=json_serialize)
 			
-		print(f'    {Fore.BLUE}{Style.BRIGHT}Saved atlas metadata   {Fore.WHITE}: {CardThumbnails.ATLAS_METADATA_FILE}{Style.RESET_ALL}')
+		print(f'{Fore.BLUE}{Style.BRIGHT}Saved atlas metadata in {Fore.WHITE}{CardThumbnails.ATLAS_METADATA_FILE}{Style.RESET_ALL}!')
 		return True
 		
 		
@@ -226,8 +226,11 @@ class CardThumbnails():
 			for line in atlas_css:
 				output_file.write(line + "\n")
 			
+		print(f"{Fore.GREEN}{Style.BRIGHT}Done!{Style.RESET_ALL}")
+		
 		self.save_atlas_metadata()
+		
+		print(f"{Fore.MAGENTA}{Style.BRIGHT}Atlas processing complete!{Style.RESET_ALL}")
 			
-		print(f"{Fore.GREEN}{Style.BRIGHT}Done!  {Fore.MAGENTA}{Style.BRIGHT}Atlas processing complete!{Style.RESET_ALL}")
 		print()
 	
