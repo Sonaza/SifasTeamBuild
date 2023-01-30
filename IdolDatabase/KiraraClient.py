@@ -1052,17 +1052,12 @@ class KiraraClient():
 	def get_weighted_overdueness(self, days_offset=0):
 		overdue_sources = [Source.Festival, Source.Party]
 		
+		now = datetime.now(timezone.utc) + timedelta(days=days_offset)
+		
 		limited_idols, max_per_source = self.get_idols_by_source_and_member(overdue_sources)
 		
 		all_overdue_members = set()
 		overdue_members = {}
-		
-		# for member in Member:
-		# 	all_overdue_members.add(member)
-		# 	for source in overdue_sources:
-		# 		if source not in overdue_members:
-		# 			overdue_members[source] = set()
-		# 		overdue_members[source].add(member)
 		
 		for member in Member:
 			for source, data in limited_idols[member].items():
@@ -1104,7 +1099,6 @@ class KiraraClient():
 			expected_by_member[member] = (num_current, num_expected)
 			current_rotation_coefficient[member] = (num_expected / num_current)
 		
-		now                = datetime.now(timezone.utc) + timedelta(days=days_offset)
 		longest_overdue    = 0
 		elapsed_per_member = {}
 		all_urs            = self.get_newest_idols(rarity=Rarity.UR)
@@ -1203,9 +1197,9 @@ class KiraraClient():
 				
 				if next_banner_type == current_banner_type:
 					if member.group in most_recent_groups:
-						weighted_value *= 0.75
+						weighted_value *= 0.85
 					else:
-						weighted_value *= 1.25
+						weighted_value *= 1.15
 						
 				weighted_value **= current_rotation_coefficient.get(member, 1)
 				
@@ -1470,10 +1464,18 @@ class KiraraClient():
 		
 		return banners
 		
-	def get_idols_by_source_and_member(self, sources = [], rarity : Rarity = Rarity.UR):
-		assert(sources)
-		query = f"""SELECT member_id, COUNT(ordinal) AS num_idols, GROUP_CONCAT(ordinal) AS idol_ordinals FROM idols i
-					WHERE source = ? AND rarity = ?
+	def get_idols_by_source_and_member(self, sources : List[Source] = [], rarity : Rarity = Rarity.UR,
+		                                     released_before : Optional[datetime] = None):
+		if not sources: raise KiraraClientValueError("Sources empty.")
+		
+		if released_before != None:
+			released_before = f"AND release_date <= '{released_before.isoformat()}'"
+		else:
+			released_before = ""
+		
+		query = f"""SELECT member_id, COUNT(ordinal) AS num_idols, GROUP_CONCAT(ordinal) AS idol_ordinals
+					FROM idols i
+					WHERE source = ? AND rarity = ? {released_before}
 					GROUP BY member_id"""
 		
 		max_offsets_per_member = {
@@ -1501,9 +1503,7 @@ class KiraraClient():
 			self.db.execute(query, [source.value, rarity.value])
 			for row in self.db.fetchall():
 				member = Member(row['member_id'])
-				
 				num_idols_by_member[member][source]['num_idols'] = row['num_idols']
-				num_idols_by_member[member][source]['nuidolsm_idols'] = [int(x) for x in row['idol_ordinals'].split(',')]
 				
 				max_per_source[source] = max(row['num_idols'], max_per_source[source])
 				
