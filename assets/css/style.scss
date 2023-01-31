@@ -1072,51 +1072,51 @@ select
 	}
 }
 
-
-@media screen and (min-width: 1000px) and (hover: none)
+@keyframes thumbnail-fade-in
 {
-	
-	@keyframes thumbnail-fade-in
+	from
 	{
-		from
-		{
-			// transform: scale(0.8) scaleY(0.4) translate(-10px, -10px);
-			opacity: 0;
-		}
-
-		to
-		{
-			// transform: scale(0.8) translate(-10px, -10px);
-			opacity: 1;
-		}
+		// transform: scale(0.8) scaleY(0.4) translate(-10px, -10px);
+		opacity: 0;
 	}
 
-	@mixin delayed-fade-in($index, $multi, $duration, $delay)
+	to
 	{
-		&:nth-child($index) .card-thumbnail
-		{
-			animation-name: thumbnail-fade-in;
-			animation-duration: $duration;
-			animation-delay: #{($multi - 1) * $delay};
-			animation-fill-mode: backwards;
-		}
+		// transform: scale(0.8) translate(-10px, -10px);
+		opacity: 1;
 	}
+}
+
+@mixin delayed-fade-in($index, $multi, $duration, $delay)
+{
+	&:nth-child($index) .card-thumbnail
+	{
+		animation: $duration linear #{($multi - 1) * $delay} 1 normal backwards running thumbnail-fade-in;
+	}
+}
+
+@media screen and (hover: hover)
+{
 	
 	.card-grid .grid-icon-wrapper
 	{
 		@for $i from 1 through 12
 		{
-			@include delayed-fade-in($i, $i, 60ms, 12ms);
+			@include delayed-fade-in($i, $i, 60ms, 6ms);
 		}
 	}
 	
-	@for $row from 2 through 5
+	
+	.card-array 
 	{
-		.card-array .card-array-row:nth-child($row) .card-array-cell
+		@for $row from 2 through 5
 		{
-			@for $column from 2 through 7
+			.card-array-row:nth-child($row) .card-array-cell
 			{
-				@include delayed-fade-in($column, $row * 2 + $column - 1, 80ms, 4ms);
+				@for $column from 2 through 7
+				{
+					@include delayed-fade-in($column, $row * 2 + $column - 1, 80ms, 5ms);
+				}
 			}
 		}
 	}
@@ -2499,7 +2499,7 @@ body:not(.order-reversed) .stats-table .st-tbody.reversable
 		display: flex;
 		flex-flow: column nowrap;
 		justify-content: center;
-		align-items: left;
+		align-items: start;
 	}
 
 	.event-title

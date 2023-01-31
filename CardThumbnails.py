@@ -221,7 +221,7 @@ class CardThumbnails():
 		for group, rarity, atlas_plane, (hash_normal, hash_idolized) in atlas_identifiers:
 			error_lines.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value}-error,")
 			error_lines.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value}-error,")
-		error_lines[-1] = error_lines[-1][:-1] + "  {{ background: url('/img/missing_icon.png') no-repeat 0px 0px !important; }}"
+		error_lines[-1] = error_lines[-1][:-1] + f"  {{ background: url('/img/missing_icon.png') no-repeat 0px 0px !important; }}"
 		atlas_css.extend(error_lines)
 		
 		with open("assets/css/atlas.css", "w", encoding="utf8") as output_file:
