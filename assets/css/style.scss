@@ -1102,7 +1102,7 @@ select
 	{
 		@for $i from 1 through 12
 		{
-			@include delayed-fade-in($i, $i, 100ms, 16ms);
+			@include delayed-fade-in($i, $i, 80ms, 9ms);
 		}
 	}
 	
@@ -1115,7 +1115,7 @@ select
 			{
 				@for $column from 2 through 7
 				{
-					@include delayed-fade-in($column, $row * 2 + $column - 1, 100ms, 16ms);
+					@include delayed-fade-in($column, $row * 2 + $column - 1, 85ms, 8ms);
 				}
 			}
 		}
@@ -2499,7 +2499,6 @@ body:not(.order-reversed) .stats-table .st-tbody.reversable
 		display: flex;
 		flex-flow: column nowrap;
 		justify-content: center;
-		align-items: start;
 	}
 
 	.event-title

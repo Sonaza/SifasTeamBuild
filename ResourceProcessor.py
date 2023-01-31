@@ -87,7 +87,7 @@ class ResourceProcessor():
 	# ---------------------------------------------------------------
 	
 	class EventHandler(FileSystemEventHandler):
-		is_dirty = False
+		is_dirty = True
 		
 		def __init__(self, parent, watched_files, input_files, output_file):
 			super().__init__()
