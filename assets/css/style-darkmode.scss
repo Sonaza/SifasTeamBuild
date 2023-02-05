@@ -282,7 +282,7 @@ $pillbutton-label-color: #E3CCFC;
 
 #main-outer-wrapper
 {
-	background: url('/img/background-dark.jpg') no-repeat center center fixed;
+	background: url('/img/background-dark.webp') no-repeat center center fixed;
 	background-size: cover;
 	
 	#main-wrapper
@@ -598,22 +598,22 @@ $brightness-level: 85%;
 {
 	&.banner-type-1 .st-cell-banner-title
 	{
-		background-image: url('/img/banner-type-1-dark.png');
+		background-image: url('/img/banner-type-1-dark.webp');
 	}
 
 	&.banner-type-2 .st-cell-banner-title
 	{
-		background-image: url('/img/banner-type-2-dark.png');
+		background-image: url('/img/banner-type-2-dark.webp');
 	}
 
 	&.banner-type-3 .st-cell-banner-title
 	{
-		background-image: url('/img/banner-type-3-dark.png');
+		background-image: url('/img/banner-type-3-dark.webp');
 	}
 
 	&.banner-type-4 .st-cell-banner-title
 	{
-		background-image: url('/img/banner-type-4-dark.png');
+		background-image: url('/img/banner-type-4-dark.webp');
 	}
 }
 

@@ -26,10 +26,10 @@ Redirect 301 /index.html /
 	Header add Link "</css/fonts/Montserrat-SemiBold-latin.woff2>;rel=preload;as=font;crossorigin"
 	Header add Link "</css/fonts/Montserrat-Bold-latin.woff2>;rel=preload;as=font;crossorigin"
 
-	Header add Link "</img/background.jpg>;rel=preload;as=image;media=(min-width: 1101px) and (prefers-color-scheme: light)"
-	Header add Link "</img/background-mobile.jpg>;rel=preload;as=image;media=(max-width: 1100px) and (prefers-color-scheme: light)"
-	Header add Link "</img/background-dark.jpg>;rel=preload;as=image;media=(min-width: 1101px) and (prefers-color-scheme: dark)"
-	Header add Link "</img/background-mobile-dark.jpg>;rel=preload;as=image;media=(max-width: 1100px) and (prefers-color-scheme: dark)"
+	Header add Link "</img/background.webp>;rel=preload;as=image;media=(min-width: 1101px) and (prefers-color-scheme: light)"
+	Header add Link "</img/background-mobile.webp>;rel=preload;as=image;media=(max-width: 1100px) and (prefers-color-scheme: light)"
+	Header add Link "</img/background-dark.webp>;rel=preload;as=image;media=(min-width: 1101px) and (prefers-color-scheme: dark)"
+	Header add Link "</img/background-mobile-dark.webp>;rel=preload;as=image;media=(max-width: 1100px) and (prefers-color-scheme: dark)"
 	
 	# FontAwesome only used on mobile or touch-only
 	Header add Link "</css/vendor/font-awesome/font-awesome.min.css>;rel=preload;as=style;media=(max-width: 1100px), (hover: none)"

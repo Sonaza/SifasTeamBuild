@@ -899,7 +899,7 @@ select
 	min-height: calc(100vh - 150px - 60px);
 	/*margin-top: 60px;*/
 	padding-top: 60px;
-	background: url('/img/background.jpg') no-repeat center center fixed;
+	background: url('/img/background.webp') no-repeat center center fixed;
 	background-size: cover;
 	
 	#main-wrapper
@@ -1055,17 +1055,17 @@ select
 	
 	&.muse .card-grid-deferred
 	{
-		background: url('/img/grid-placeholder-muse.png') no-repeat center center;
+		background: url('/img/grid-placeholder-muse.webp') no-repeat center center;
 	}
 	
 	&.aqours .card-grid-deferred
 	{
-		background: url('/img/grid-placeholder-aqours.png') no-repeat center center;
+		background: url('/img/grid-placeholder-aqours.webp') no-repeat center center;
 	}
 	
 	&.nijigasaki .card-grid-deferred
 	{
-		background: url('/img/grid-placeholder-nijigasaki.png') no-repeat center center;
+		background: url('/img/grid-placeholder-nijigasaki.webp') no-repeat center center;
 	}
 	
 	.card-grid
@@ -2707,22 +2707,22 @@ img.locale-emoji-20
 {
 	&.banner-type-1 .st-cell-banner-title
 	{
-		background: url('/img/banner-type-1.png') no-repeat 95% center;
+		background: url('/img/banner-type-1.webp') no-repeat 95% center;
 	}
 
 	&.banner-type-2 .st-cell-banner-title
 	{
-		background: url('/img/banner-type-2.png') no-repeat 95% center;
+		background: url('/img/banner-type-2.webp') no-repeat 95% center;
 	}
 
 	&.banner-type-3 .st-cell-banner-title
 	{
-		background: url('/img/banner-type-3.png') no-repeat 95% center;
+		background: url('/img/banner-type-3.webp') no-repeat 95% center;
 	}
 
 	&.banner-type-4 .st-cell-banner-title
 	{
-		background: url('/img/banner-type-4.png') no-repeat 95% center;
+		background: url('/img/banner-type-4.webp') no-repeat 95% center;
 	}
 }
 

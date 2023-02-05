@@ -599,6 +599,8 @@ class CardRotations():
 			'.css'  : 'style',
 			'.png'  : 'image',
 			'.webp' : 'image',
+			'.jpg'  : 'image',
+			'.jpeg' : 'image',
 			'.js'   : 'script',
 		}
 		
@@ -854,18 +856,18 @@ class CardRotations():
 			}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
-		# Save tooltip data cache
-		# Must be after all card pages have been rendered but before preloads!
-		
-		if self.is_doing_full_render():
-			self.renderer.save_tooltip_data("js/tooltip_data.js")
-		
-		# -------------------------------------------------------
 		# Index page
 		
 		if self.due_for_rendering("home.html"):
 			self.renderer.render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
 		
+		# -------------------------------------------------------
+		# Save tooltip data cache
+		# Must be after all card pages have been rendered but before preloads!
+		
+		if self.is_doing_full_render():
+			self.renderer.save_tooltip_data("js/tooltip_data.js")
+			
 		# -------------------------------------------------------
 		# Compile and minify CSS
 		
