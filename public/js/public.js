@@ -32,6 +32,11 @@ let is_in_mobile_mode = () =>
 	       || window.matchMedia("(any-hover: none)").matches;
 }
 
+let prefers_reduced_motion = () =>
+{
+	return window.matchMedia("(prefers-reduced-motion)").matches;
+}
+
 let pluralize = function(value, s, p)
 {
 	return new String(value) + " " + (value == 1 ? s : p);
@@ -387,6 +392,11 @@ let saveStorage = (values) =>
 	}
 }
 
+let parse_base64_json = (base64_json) =>
+{
+	return JSON.parse(decodeURIComponent(escape(window.atob(base64_json))));
+}
+
 let tooltipVisible = false;
 let toggleTooltip = function($scope, $event, visible)
 {
@@ -457,12 +467,7 @@ let toggleTooltip = function($scope, $event, visible)
 	let tooltipDataElement = $event.target.closest('.tooltip-data');
 	
 	const keys = [
-		'member-id', 'member-name',
-		'card-status', 'card-ordinal',
-		'card-rarity', 'card-attribute', 'card-type',
-		'card-title-normal', 'card-title-idolized',
-		'card-source', 'card-release-date',
-		'card-event', 'stats-tooltip',
+		'card-data', 'card-status', 'stats-tooltip', 
 	];
 	
 	$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
@@ -471,8 +476,46 @@ let toggleTooltip = function($scope, $event, visible)
 		}
 	}));
 	
+	let append = (data, target_keys) =>
+	{
+		if (target_keys.length == 1)
+		{
+			$scope.tooltip_data[target_keys[0]] = data;
+		}
+		else
+		{
+			for (let index in data)
+			{
+				$scope.tooltip_data[target_keys[index]] = data[index];
+			}
+		}
+	}
+	
 	if (!$scope.tooltip_data.card_status)
 		$scope.tooltip_data.card_status = 1;
+	$scope.tooltip_data.card_status = parseInt($scope.tooltip_data.card_status);
+	
+	let card_data;
+	if ($scope.tooltip_data.card_status == 1)
+	{
+		let card_ordinal = $scope.tooltip_data.card_data;
+		card_data = GLOBAL_TOOLTIP_DATA['cards'][card_ordinal];
+	}
+	else
+	{
+		let member_id = $scope.tooltip_data.card_data;
+		card_data = GLOBAL_TOOLTIP_DATA['members'][member_id];
+	}
+	
+	append(card_data['m'], ['member_id', 'member_name']);
+	if ($scope.tooltip_data.card_status == 1)
+	{
+		append(card_data['d'], ['card_ordinal', 'card_rarity', 'card_attribute', 'card_type']);
+		append(card_data['t'], ['card_title_normal', 'card_title_idolized']);
+		append(card_data['s'], ['card_source']);
+		append(card_data['r'], ['card_release']);
+		if ("e" in card_data) append(card_data['e'], ['card_event']);
+	}
 	
 	if (is_in_mobile_mode())
 	{
@@ -522,13 +565,16 @@ app.run(($rootScope, $window) =>
 			order_reversed          : getStorage('order_reversed', false),
 			highlight_source        : getStorage('highlight_source', '0'),
 			show_tooltips           : getStorage('show_tooltips', true),
+			global_dates            : getStorage('global_dates',false),
 			collapsed               : getStorage('collapsed', false),
 			hide_empty_rows         : getStorage('hide_empty_rows', false),
 			dark_mode               : getStorage('dark_mode', window.matchMedia("(prefers-color-scheme: dark)").matches),
+			disable_motion          : getStorage('disable_motion', window.matchMedia("(prefers-reduced-motion)").matches),
 			// alt           : true,
 		}
 		
 		$rootScope.is_in_mobile_mode = is_in_mobile_mode;
+		$rootScope.prefers_reduced_motion = prefers_reduced_motion;
 		
 		$rootScope.disable_scrolling = false;
 		$rootScope.scrollDisabler = () =>
@@ -661,6 +707,16 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 				output.push('dark-mode');
 			}
 			
+			if ($rootScope.settings.global_dates)
+			{
+				output.push('using_ww_dates');
+			}
+			
+			if ($rootScope.settings.disable_motion)
+			{
+				output.push('disable-motion');
+			}
+			
 			output.push('source-highlight-' + $rootScope.settings.highlight_source);
 			if ($rootScope.settings.highlight_source != '0')
 			{
@@ -678,6 +734,38 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 			
 			return output.join(' ');
 		}
+		
+		// -------------------------------------------------------------
+		// More settings
+		
+		$scope.settingsMouseEnter = () =>
+		{
+			if (is_in_mobile_mode())
+				return;
+			
+			if ($scope.collapse_more_timeout)
+				clearTimeout($scope.collapse_more_timeout);
+			$scope.collapse_more_timeout = false;
+		}
+		
+		$scope.settingsMouseLeave = () =>
+		{
+			if (is_in_mobile_mode())
+				return;
+			
+			$scope.collapse_more_timeout = setTimeout(() => {
+				$scope.more_settings_opened = false;
+				$scope.$apply();
+			}, 3000);
+		}
+		
+		$scope.more_settings_opened = is_in_mobile_mode();
+		$scope.open_more_settings = () =>
+		{
+			$scope.more_settings_opened = true;
+		}
+		
+		// -------------------------------------------------------------
 		
 		$scope.update_search_params = () =>
 		{
@@ -959,12 +1047,20 @@ app.controller('BaseController', function($rootScope, $scope, $route, $routePara
 						return;
 					}
 					
+					if ($event.keyCode == 68) // D-key
+					{
+						$event.preventDefault();
+						$rootScope.settings.global_dates	 = !$rootScope.settings.global_dates;
+						return;
+					}
+					
 					if ($event.keyCode == 82) // R-key
 					{
 						$event.preventDefault();
 						$rootScope.settings.use_idolized_thumbnails = true;
 						$rootScope.settings.order_reversed          = false;
 						$rootScope.settings.highlight_source        = '0';
+						$rootScope.settings.global_dates            = false;
 						// return;
 					}
 				}
@@ -2057,16 +2153,13 @@ app.directive('pillButton', function($parse, $timeout)
 	return {
 		restrict: 'A',
 		transclude: true,
-		scope: {
-			// variable: '=model',
-			// keybind: '=keybind',
-		},
+		scope: true,
 		template: '<div class="inner"><div class="inner-dot">&nbsp;</div></div><div class="label">[[ label ]] <span class="hide-mobile" ng-if="keybind">([[ keybind ]])</span></div>',
 		controller: function($scope, $transclude)
 		{
 			$transclude(function(clone, scope)
 			{
-				$scope.label = angular.element('<div>').append(clone).html();
+				$scope.label = angular.element('<div>').append(clone).html().trim();
 			});
 		},
 		link: function (scope, element, attrs)
@@ -2108,8 +2201,8 @@ app.directive('cardTooltip', function($parse)
 {
 	return {
 		restrict: 'A',
-		// templateUrl: 'tooltip.html?ad',
-		template: '<div class="card-tooltip-inner" ng-class="\'idol-\' + data.member_id"><div class="member-info idol-bg-color-dark idol-bg-glow-border"><div class="name">[[ data.member_name ]]</div><div class="card-info" ng-if="data.card_status == 1"><span class="icon-32" ng-class="\'rarity-\' + data.card_rarity"></span><span class="icon-32" ng-class="\'attribute-\' + data.card_attribute"></span><span class="icon-32" ng-class="\'type-\' + data.card_type"></span></div></div><table class="card-details" ng-if="data.card_status == 1"><colgroup><col class="card-detail-label"><col class="card-detail-data"></colgroup><tr class="card-title"><td colspan="2">&#12300;<span class="normal">[[ data.card_title_normal ]]</span><span class="idolized">[[ data.card_title_idolized ]]</span>&#12301;</td></tr><tr class="spacer-top"><th>Source</th><td>[[ data.card_source ]]</td></tr><tr ng-if="data.card_event"><th>Related Event</th><td>[[ data.card_event ]]</td></tr><tr><th>Release Date</th><td>[[ data.card_release_date ]]</td></tr><tr class="card-kirara-link" ng-if="is_in_mobile_mode() && data.card_ordinal != undefined"><td colspan="2"><a href="https://allstars.kirara.ca/card/[[ data.card_ordinal ]]" target="_blank"><i class="fa fa-globe"></i> View on Kirara Database &raquo;</a></td></tr></table><div class="card-details card-missing" ng-if="data.card_status == 2"><b>[[ first_name ]]</b> has yet to receive a card in this cycle.</div><div class="card-details card-missing" ng-if="data.card_status == 3"><b>[[ first_name ]]</b> did not receive a card in this cycle.</div></div>',
+		// templateUrl: 'tooltip.html?a',
+		template: '<div class="card-tooltip-inner" ng-class="\'idol-\' + data.member_id"><div class="member-info idol-bg-color-dark idol-bg-glow-border"><div class="name">[[ data.member_name ]]</div><div class="card-info" ng-if="data.card_status == 1"><span class="icon-32" ng-class="\'rarity-\' + data.card_rarity"></span><span class="icon-32" ng-class="\'attribute-\' + data.card_attribute"></span><span class="icon-32" ng-class="\'type-\' + data.card_type"></span></div></div><table class="card-details" ng-if="data.card_status == 1"><colgroup><col class="card-detail-label"><col class="card-detail-data"></colgroup><tr class="card-title"><td colspan="2">&#12300;<span class="normal">[[ data.card_title_normal ]]</span><span class="idolized">[[ data.card_title_idolized ]]</span>&#12301;</td></tr><tr class="spacer-top"><th>Source</th><td>[[ data.card_source ]]</td></tr><tr ng-if="data.card_event"><th>Related Event</th><td>[[ data.card_event ]]</td></tr><tr ng-if="data.card_release.length == 1"><th>Release Date <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP"> <img src="/img/emoji_globe.png" class="locale-emoji" alt="WW"></th><td>[[ data.card_release[0] ]]</td></tr><tr ng-if="data.card_release.length == 2"><th>Release Date <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP"></th><td>[[ data.card_release[0] ]]</td></tr><tr ng-if="data.card_release.length == 2"><th>Release Date <img src="/img/emoji_globe.png" class="locale-emoji" alt="WW"></th><td>[[ data.card_release[1] ]]</td></tr><tr class="card-kirara-link" ng-if="is_in_mobile_mode() && data.card_ordinal != undefined"><td colspan="2"><a href="https://allstars.kirara.ca/card/[[ data.card_ordinal ]]" target="_blank"><i class="fa fa-globe"></i> View on Kirara Database &raquo;</a></td></tr></table><div class="card-details card-missing" ng-if="data.card_status == 2"><b>[[ first_name ]]</b> has yet to receive a card in this cycle.</div><div class="card-details card-missing" ng-if="data.card_status == 3"><b>[[ first_name ]]</b> did not receive a card in this cycle.</div></div>',
 		link: function (scope, element, attrs)
 		{
 			scope.$watch(attrs.cardTooltip, function(value)
@@ -2129,7 +2222,7 @@ app.directive('deferredLoad', function($parse, $window)
 	return {
 		restrict: 'A',
 		scope: true,
-		template: '<ng-include class="deferred-load" src="getTemplateUrl()">',
+		template: '<span class="deferred-loading" ng-if="!loaded">Loading...</span><ng-include class="deferred-load" src="getTemplateUrl()">',
 		link: function (scope, element, attrs)
 		{
 			function isElementInViewport(el)
@@ -2168,25 +2261,22 @@ app.directive('deferredLoad', function($parse, $window)
 				setTimeout(() => { scope.$apply(); }, 0);
 			});
 			
+			scope.loaded = false;
 			scope.template_url = 'pages/deferred/' + attrs.deferredLoad + '.html';
 			
 			scope.getTemplateUrl = function()
 			{
-				// console.log("scope.getTemplateUrl called", attrs.deferredLoad, scope.template_url);
-				
-				if (!is_in_mobile_mode() && scope.loaded)
-				{
-					return scope.template_url;
-				}
+				// if (!is_in_mobile_mode() && scope.loaded)
+				// {
+				// 	return scope.template_url;
+				// }
 				
 				if (isElementPartiallyInViewport(element[0]))
 				{
-					// console.log("Loading", attrs.deferredLoad);
 					scope.loaded = true;
 					return scope.template_url;
 				}
 				
-				// console.log("Unloading", attrs.deferredLoad);
 				scope.loaded = false;
 				return '';
 			}

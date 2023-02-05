@@ -101,9 +101,13 @@ class CardRotations():
 		
 		self.client = KiraraClient()
 		self.client.update_database(forced=self.args.force)
-		
+			
 		if not os.path.exists("assets/css/idols.css"):
 			raise Exception("Generated idols.css does not exist! Run tools/generate_idols_css.py")
+			
+		if not os.path.exists("public/js/tooltip_data.js"):
+			print("Tooltip data file does not exist, a full render is required!")
+			self.args.force_render = True
 		
 		if not os.path.exists("assets/css/atlas.css"):
 			print("Atlas CSS does not exist and must be regenerated!")
@@ -162,28 +166,7 @@ class CardRotations():
 	# -------------------------------------------------------------------------------------------
 	
 	def get_general_rotation(self, group : Group, rarity : Rarity):
-		member_delays = {
-			Rarity.SR : {
-				Member.Shioriko : [0, 3, 2, ],
-				Member.Lanzhu   : [0, 8, ],
-				Member.Mia      : [0, 8, ],
-			},
-			Rarity.UR : {
-				Member.Shioriko : 3,
-				Member.Lanzhu   : 7,
-				Member.Mia      : 7,
-			},
-		}
-		
-		set_title_overrides = {
-			Rarity.SR : {
-				Group.Nijigasaki : dict([
-					(0,  "1st Nijigasaki Solo"),
-					(5,  "3rd Nijigasaki Solo"),
-					# (10, "Rainbow Waltz"),
-				])
-			}
-		}
+		from RotationsData.General import member_delays_by_rarity, set_title_overrides
 		
 		cards_per_girl = defaultdict(list)
 
@@ -191,22 +174,22 @@ class CardRotations():
 		for idol in Idols.by_group[group]:
 			default_group_list[idol.member_id] = None
 			
-			if idol.member_id in member_delays[rarity]:
-				if isinstance(member_delays[rarity][idol.member_id], int):
-					cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays[rarity][idol.member_id])
+			if idol.member_id in member_delays_by_rarity[rarity]:
+				if isinstance(member_delays_by_rarity[rarity][idol.member_id], int):
+					cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays_by_rarity[rarity][idol.member_id])
 				else:
-					cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays[rarity][idol.member_id][0])
-					member_delays[rarity][idol.member_id] = member_delays[rarity][idol.member_id][1:]
+					cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays_by_rarity[rarity][idol.member_id][0])
+					member_delays_by_rarity[rarity][idol.member_id] = member_delays_by_rarity[rarity][idol.member_id][1:]
 					
 
 		idols = self.client.get_idols_by_group(group, rarity)
 		for idol in idols:
 			cards_per_girl[idol.member_id].append(idol)
 			
-			if idol.member_id in member_delays[rarity]:
-				if isinstance(member_delays[rarity][idol.member_id], list) and len(member_delays[rarity][idol.member_id]) > 0:
-					cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays[rarity][idol.member_id][0])
-					member_delays[rarity][idol.member_id] = member_delays[rarity][idol.member_id][1:]
+			if idol.member_id in member_delays_by_rarity[rarity]:
+				if isinstance(member_delays_by_rarity[rarity][idol.member_id], list) and len(member_delays_by_rarity[rarity][idol.member_id]) > 0:
+					cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays_by_rarity[rarity][idol.member_id][0])
+					member_delays_by_rarity[rarity][idol.member_id] = member_delays_by_rarity[rarity][idol.member_id][1:]
 			
 		num_rotations = 0
 		for member_id, cards in cards_per_girl.items():
@@ -252,115 +235,12 @@ class CardRotations():
 	# -------------------------------------------------------------------------------------------
 	
 	def get_sr_sets(self, group : Group):
-		skipped_sets = {
-			Group.Nijigasaki : {
-				Member.Rina     : [11, ],
-				Member.Kasumi   : [11, ],
-				Member.Shizuku  : [11, ],
-				Member.Ayumu    : [11, ],
-				Member.Setsuna  : [11, ],
-				Member.Ai       : [11, ],
-				Member.Emma     : [11, ],
-				Member.Kanata   : [11, ],
-				Member.Karin    : [11, ],
-				Member.Shioriko : [1, 2, 3, 5, 6, 13, ],
-				Member.Lanzhu   : [1, 2, 3, 4, 5, 6, 7, 8, 13, ],
-				Member.Mia      : [1, 2, 3, 4, 5, 6, 7, 8, 13, ],
-			}
-		}
+		from RotationsData.SRSets import skipped_sets, idolized_same_set
+		
 		try:
 			skipped_sets = skipped_sets[group]
 		except:
 			skipped_sets = {}
-		
-		idolized_same_set = {
-			Group.Muse : {
-				'A song for You! You? You!!': [
-					'A Song for You! You? You!',
-					'A song for You! You? You!!',
-				],
-				
-				'Mermaid Festa Vol.1' : [
-					'Mermaid festa vol.1',
-				],
-			},
-			
-			Group.Nijigasaki : {
-				'1st Nijigasaki Solo' : [
-					'Yume e no Ippo',
-					'Diamond',
-					'Anata no Risou no Heroine',
-					'Starlight',
-					'Meccha Going!!',
-					'Nemureru Mori ni Ikitai na',
-					'CHASE!',
-					'Evergreen',
-					'Dokipipo\u2606Emotion',
-					'Ketsui no Hikari',
-					'I\'m Still...',
-					'Queendom',
-				],
-				
-				'Exciting Animal' : ['Excited Animal'],
-				
-				# '2nd Niji Solo': [
-				'R3BIRTH 2nd Solo': [
-					'Kaika Sengen',
-					'\u2606Wonderland\u2606',
-					'Audrey',
-					'Wish',
-					'You & I',
-					'My Own Fairy-Tale',
-					'MELODY',
-					'Koe Tsunagou yo',
-					'Tele Telepathy',
-					'Aoi Canaria',
-					'Toy Doll',
-					'Ye Mingzhu',
-				],
-				
-				'3rd Nijigasaki Solo': [
-					'Aion no Uta',
-					'Marchen Star',
-					'Say Good-Bye Namida',
-					'Yagate Hitotsu no Monogatari',
-					'Margaret',
-					'Analog Heart',
-					'Tanoshii no Tensai',
-					'Fire Bird',
-					'LIKE IT! LOVE IT!',
-					'Concentrate!',
-				],
-				
-				'4th Nijigasaki Solo': [
-					'Break The System',
-					'TO BE YOURSELF',
-					'Eieisa',
-					'Turn it Up!',
-					'Diabolic mulier',
-					'Silent Blaze',
-					'Yada!',
-					'Itsu datte for you!',
-					'First Love Again',
-				],
-				
-				'4th Nijigasaki Solo': [
-					'Break The System',
-					'TO BE YOURSELF',
-					'Eieisa',
-					'Turn it Up!',
-					'Diabolic mulier',
-					'Silent Blaze',
-					'Yada!',
-					'Itsu datte for you!',
-					'First Love Again',
-				],
-				
-				'Eien no Isshun': [
-					'Eien no Issyun',
-				],
-			}
-		}
 		try:
 			idolized_same_set = dict([(title.strip(), set_title) for set_title, idolized_titles in idolized_same_set[group].items() for title in idolized_titles])
 		except:
@@ -408,23 +288,7 @@ class CardRotations():
 	# -------------------------------------------------------------------------------------------
 	
 	def get_source_rotation(self, group : Group, source : Source):
-		member_delays = {
-			Source.Event : {
-				Member.Shioriko : 1,
-				Member.Lanzhu   : 1,
-				Member.Mia      : 1,
-			},
-			Source.Festival : {
-				Member.Shioriko : 0,
-				Member.Lanzhu   : 2,
-				Member.Mia      : 2,
-			},
-			Source.Party : {
-				Member.Shioriko : 0,
-				Member.Lanzhu   : 0,
-				Member.Mia      : 0,
-			},
-		}
+		from RotationsData.General import member_delays_by_source
 		
 		cards_per_girl = defaultdict(list)
 
@@ -433,7 +297,7 @@ class CardRotations():
 			default_group_list[idol.member_id] = None
 			
 			try:
-				cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays[source][idol.member_id])
+				cards_per_girl[idol.member_id].extend([CardNonExtant()] * member_delays_by_source[source][idol.member_id])
 			except KeyError:
 				pass
 
@@ -473,14 +337,14 @@ class CardRotations():
 		
 		pending_members = []
 		for idol in idols:
-			if idol.release_date > now:
+			if idol.release_date[Locale.JP] > now:
 				pending_members.append(idol.member_id)
 				
 		if pending_members:
 			previous_idols = self.client.get_newest_idols(group=group, rarity=rarity, source=source,
 				members=pending_members, released_before=now)
 			idols.extend(previous_idols)
-			idols.sort(key=lambda x: x.release_date)
+			idols.sort(key=lambda x: x.release_date[Locale.JP])
 			
 		return idols
 	
@@ -547,7 +411,7 @@ class CardRotations():
 			duplicate = not (idol.member_id in all_idols)
 			
 			# member, card, time_since, highlight
-			elapsed_list.append(IdolElapsed(idol.member_id, idol, now - idol.release_date, duplicate))
+			elapsed_list.append(IdolElapsed(idol.member_id, idol, {locale: now - idol.release_date[locale] for locale in Locale}, duplicate))
 			
 			if duplicate and idol.member_id not in highlighted_idols:
 				highlighted_idols.add(idol.member_id)
@@ -663,9 +527,6 @@ class CardRotations():
 			# 	events_per_month = 1
 			# 	diff_bonus = 14
 			
-			data['event']['start'] = data['event']['start'].strftime('%d %b %Y')
-			data['event']['end']   = data['event']['end'].strftime('%d %b %Y')
-			
 			data['idols'] = []
 			data['idols'].append(f"featured-idol-{data['free'][0].member_id.value}")
 			
@@ -692,15 +553,7 @@ class CardRotations():
 			(48, "Initial SR Mia and Lanzhu"),
 		])
 		
-		now = datetime.now(timezone.utc)
-		
-		events_per_month = 1
 		for banner_id, data in banners.items():
-			data['banner']['age'] = now - data['banner']['start']
-			
-			data['banner']['start'] = data['banner']['start'].strftime('%d %b %Y')
-			data['banner']['end']   = data['banner']['end'].strftime('%d %b %Y')
-			
 			featured_members = []
 			num_urs = sum([1 if card.rarity == Rarity.UR else 0 for card in data['cards']])
 			
@@ -760,10 +613,12 @@ class CardRotations():
 			})
 		
 		return preload_assets
-		
+	
+	def is_doing_full_render(self):
+		return self.args.force or self.args.force_render or self.client.was_database_updated()
 		
 	def due_for_rendering(self, template_filename):
-		if self.args.force or self.args.force_render or self.client.was_database_updated():
+		if self.is_doing_full_render():
 			return True
 		
 		def check(self, template_filename):
@@ -963,13 +818,13 @@ class CardRotations():
 						'history_data'   : history_data[category_tag],
 						'history_info'   : history_category_info[category_tag],
 						'history_flags'  : history_category_flags[category_tag],
-						'member_added'   : member_addition_dates[member],
+						'member_added'   : member_addition_dates,
 					}, minify=not self.args.dev)
 			
 		# -------------------------------------------------------
 		# Card stats
 		
-		if any([self.due_for_rendering("stats_category_topbar.html"), self.due_for_rendering("stats.html")]):
+		if self.due_for_rendering("stats.html"):
 			general_stats, maximums = self.client.get_general_stats()
 			self.renderer.render_and_save("stats.html", "pages/stats.html", {
 				'category_tag'   : 'general',
@@ -986,7 +841,7 @@ class CardRotations():
 					'history_category' : history_category,
 				}, minify=not self.args.dev)
 		
-		if any([self.due_for_rendering("stats_category_topbar.html"), self.due_for_rendering("weighted_overdueness.html")]):
+		if self.due_for_rendering("weighted_overdueness.html"):
 			weighted_overdueness = self.client.get_weighted_overdueness()
 			self.renderer.render_and_save("weighted_overdueness.html", f"pages/stats_overdueness.html", {
 				'weighted_overdueness' : weighted_overdueness,
@@ -1065,6 +920,9 @@ class CardRotations():
 		
 		# -------------------------------------------------------
 		# Main index and layout
+		
+		if self.is_doing_full_render():
+			self.renderer.save_tooltip_data("js/tooltip_data.js")
 		
 		render_time_so_far = time.perf_counter() - render_start_time
 		

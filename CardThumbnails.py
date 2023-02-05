@@ -32,9 +32,9 @@ class CardThumbnails():
 	
 	def load_atlas_metadata(self):
 		self.atlas_metadata = {}
-		if os.path.exists(CardThumbnails.ATLAS_METADATA_FILE):
+		if os.path.exists(self.ATLAS_METADATA_FILE):
 			try:
-				with open(CardThumbnails.ATLAS_METADATA_FILE, "r") as f:
+				with open(self.ATLAS_METADATA_FILE, "r") as f:
 					metadata = json.load(f)
 				
 				for ordinal, data in metadata.items():
@@ -55,10 +55,10 @@ class CardThumbnails():
 		        return obj.value
 		    raise TypeError(f"Type {type(obj)} not serializable")
 			
-		with open(CardThumbnails.ATLAS_METADATA_FILE, "w", encoding="utf8") as output_file:
+		with open(self.ATLAS_METADATA_FILE, "w", encoding="utf8") as output_file:
 			json.dump(self.atlas_metadata, output_file, default=json_serialize)
 			
-		print(f'{Fore.BLUE}{Style.BRIGHT}Saved atlas metadata in {Fore.WHITE}{CardThumbnails.ATLAS_METADATA_FILE}{Style.RESET_ALL}!')
+		print(f'{Fore.BLUE}{Style.BRIGHT}Saved atlas metadata in {Fore.WHITE}{self.ATLAS_METADATA_FILE}{Style.RESET_ALL}!')
 		return True
 		
 		

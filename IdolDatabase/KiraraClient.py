@@ -100,7 +100,10 @@ class KiraraIdol():
 		
 		self.source         = Source(data['source'])
 		
-		self.release_date   = datetime.fromisoformat(data['release_date'])
+		self.release_date   = {
+			Locale.JP : datetime.fromisoformat(data['release_date_jp']),
+			Locale.WW : datetime.fromisoformat(data['release_date_ww']),
+		}
 		
 		try:
 			self.event_title  = data['event_title']
@@ -115,8 +118,11 @@ class KiraraIdol():
 		
 		if self.data:
 			self._process_skill_data()
-		
-		self.modifiers = (Attribute.Unset, Type.Unset, 1, 1)
+	
+	
+	def get_release_date(self, locale : Locale = Locale.JP):
+		return self.release_date[locale]
+	
 	
 	def __str__(self):
 		# idol = Idols.by_member_id[self.member_id]
@@ -128,11 +134,13 @@ class KiraraIdol():
 		# return f"「 {self.get_card_name(True)} 」 {self.attribute.name} {self.type.name} {idol}"
 		return f"{self.member_id.first_name} {self.ordinal}"
 	
+	
 	def get_card_name(self, idolized : bool):
 		if idolized:
 			return self.idolized_name
 		else:
 			return self.normal_name
+	
 	
 	def get_raw_parameters(self, level : int, limit_break : int):
 		if not (level >= 1 and level <= 100):
@@ -195,8 +203,8 @@ class KiraraIdol():
 			
 			effect = Skill.Effect._make(levels[skill_level - 1])
 			effects.append(dotdict({
-				"target_parameter" : SkillTargetParameter(effect.effect_type),
-				"effect_value"     : effect.effect_value / 100,
+				"effect_type"   : SkillEffectType(effect.effect_type),
+				"effect_value"  : effect.effect_value / 100,
 			}))
 		
 		# print(effects)
@@ -258,10 +266,12 @@ class KiraraClient():
 			self.database_path = KiraraClient.DefaultDatabaseFile
 		else:
 			self.database_path = database_file
-			
+		
 		self.initialize()
 
 	def initialize(self):
+		self._initialize_member_addition_dates()
+		
 		self._database_updated = False
 		
 		try:
@@ -273,9 +283,6 @@ class KiraraClient():
 		self.db = self.dbcon.cursor()
 		
 		self._create_tables()
-	
-	def post_update(self):
-		self._initialize_member_addition_dates()
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -405,35 +412,72 @@ class KiraraClient():
 			print(f"  {card['ordinal']:<4} ", end='')
 			
 			idol_info = Idols.by_member_id[card['member']]
+			member    = Member(card['member'])
 			
 			if card['ordinal'] not in existing_ordinals:
 				serialized = {
-					'ordinal'           : card['ordinal'],
-					'json'              : json.dumps(card),
+					'ordinal'  : card['ordinal'],
+					'json'     : json.dumps(card),
 				}
 				query = self._make_insert_query('idols_json', serialized)
 				self.db.execute(query, serialized)
 			
 			ordinal_str = str(card['ordinal']);
 			
-			if card['ordinal'] >= 775 and card['ordinal'] <= 777:
-				source = Source.Gacha.value
-			elif card['ordinal'] >= 778 and card['ordinal'] <= 780:
-				source = Source.Event.value
-				
-			elif 'source' in card:
+			# -------------------------------------------------
+			# Retrieve card source
+			
+			if 'source' in card:
 				source = card['source']
 			elif ordinal_str in self.cards_fallback:
 				source = self.cards_fallback[ordinal_str]['source']
 			else:
 				raise KiraraClientException(f"Card source not determined for ordinal {ordinal_str} in remote data and no fallback found")
 			
-			if 'release_dates' in card and 'jp' in card['release_dates']:
-				release_date = card['release_dates']['jp']
-			elif ordinal_str in self.cards_fallback:
-				release_date = self.cards_fallback[ordinal_str]['release_date']
-			else:
-				raise KiraraClientException(f"Card release date not determined for ordinal {ordinal_str} in remote data and no fallback found")
+			# -------------------------------------------------
+			# Retrieve release date
+			
+			release_dates = {
+				Locale.JP : None,
+				Locale.WW : None,
+			}
+			
+			check_fallbacks = False
+			if 'release_dates' in card:
+				if 'jp' in card['release_dates']:
+					release_dates[Locale.JP] = card['release_dates']['jp']
+				else:
+					check_fallbacks = True
+					
+				if 'en' in card['release_dates']:
+					release_dates[Locale.WW] = card['release_dates']['en']
+				else:
+					check_fallbacks = True
+			
+			if check_fallbacks:
+				if ordinal_str in self.cards_fallback:
+					if release_dates[Locale.JP] == None:
+						release_dates[Locale.JP] = self.cards_fallback[ordinal_str]['release_date_jp']
+						
+					if release_dates[Locale.WW] == None:
+						release_dates[Locale.WW] = self.cards_fallback[ordinal_str]['release_date_ww']
+				
+				# Fallbacks for Shioriko R cards, they don't seem to have global release date
+				released_on_member_addition = [284, 285]
+				if card['ordinal'] in released_on_member_addition:
+					release_dates[Locale.JP] = self.member_addition_dates[Locale.JP][member]['date_added'].isoformat()
+					release_dates[Locale.WW] = self.member_addition_dates[Locale.WW][member]['date_added'].isoformat()
+				
+			if release_dates[Locale.JP] == None or release_dates[Locale.WW] == None:
+				raise KiraraClientException(f"Unable to identify a card release date for ordinal {ordinal_str}.")
+					
+			# Just guarantee release dates don't go before member addition date for some reason
+			for locale in Locale:
+				date = datetime.fromisoformat(release_dates[locale])
+				if date < self.member_addition_dates[locale][member]['date_added']:
+					release_dates[locale] = self.member_addition_dates[locale][member]['date_added'].isoformat()
+			
+			# -------------------------------------------------
 			
 			serialized = {
 				'id'                : card['id'],
@@ -445,7 +489,8 @@ class KiraraClient():
 				'type'              : card['role'],
 				'rarity'            : card['rarity'],
 				'source'            : source,
-				'release_date'      : release_date,
+				'release_date_jp'   : release_dates[Locale.JP],
+				'release_date_ww'   : release_dates[Locale.WW],
 			}
 			query = self._make_insert_query('idols', serialized)
 			self.db.execute(query, serialized)
@@ -510,7 +555,6 @@ class KiraraClient():
 	def update_database(self, forced=False):
 		if not forced and not self.database_needs_update():
 			print(f"  {Fore.BLACK}{Style.BRIGHT}No need to update database right now.{Style.RESET_ALL}")
-			self.post_update()
 			return False
 		
 		print(f"{Fore.BLUE}{Style.BRIGHT}Populating members...{Style.RESET_ALL}")
@@ -533,8 +577,6 @@ class KiraraClient():
 			
 		self.refresh_last_update_time()
 		self._database_updated = True
-		
-		self.post_update()
 		
 		return True
 		
@@ -626,39 +668,22 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _cards_hash(self, ordinals_list):
-		return hash(','.join([str(ordinal) for ordinal in ordinals_list]))
-	
 	def _retrieve_history_data(self):
-		query = "SELECT title_en, title_jp FROM events"
+		query = "SELECT title_ww, title_jp FROM events"
 		self.db.execute(query)
-		known_events = [y for x in self.db.fetchall() for y in (x['title_en'], x['title_jp'])]
+		known_events = [title for event in self.db.fetchall() for title in (event['title_ww'], event['title_jp'])]
 		
-		query = "SELECT * FROM banner_cards ORDER BY ordinal ASC"
+		query = "SELECT cards_hash FROM banners"
 		self.db.execute(query)
-		
-		known_banners_dict = defaultdict(list)
-		for data in self.db.fetchall():
-			known_banners_dict[data['banner_id']].append(data['ordinal'])
-		
-		# known_banners = []
-		known_banners_hashes = []
-		for banner_id, cards in known_banners_dict.items():
-			cards_hash = self._cards_hash(cards)
-			# known_banners.append({
-			# 	'id'    : banner_id,
-			# 	'cards' : cards,
-			# 	'hash'  : cards_hash,
-			# })
-			known_banners_hashes.append(cards_hash)
+		known_banners_hashes = [data['cards_hash'] for data in self.db.fetchall()]
 		
 		load_json = 0
 		
 		if not load_json:
 			hc = HistoryCrawler()
 			history_result = hc.crawl_history(
-				known_events=known_events,
-				known_banners_hashes=known_banners_hashes)
+				known_events         = known_events,
+				known_banners_hashes = known_banners_hashes)
 		else:
 			with open("history.json", "r", encoding="utf-8") as f:
 				history_result = json.load(fp=f)
@@ -667,8 +692,9 @@ class KiraraClient():
 			print(f"  {Fore.MAGENTA}{Style.BRIGHT}Found no new event data. Nothing to do...{Style.RESET_ALL}")
 			return None
 		
-		# with open("history.json", "w", encoding="utf-8") as f:
-		# 	json.dump(history_result, fp=f)
+		# if not load_json:
+		# 	with open("history.json", "w", encoding="utf-8") as f:
+		# 		json.dump(history_result, fp=f)
 		
 		output_data = {
 			'known_events'         : known_events,
@@ -676,6 +702,7 @@ class KiraraClient():
 			'history_result'       : history_result,
 		}
 		return output_data
+		
 	
 	def _update_history_database(self, data):
 		known_events         = data['known_events']
@@ -684,38 +711,44 @@ class KiraraClient():
 		
 		event_data = []
 		for data in history_result['events']:
-			if data['title_en'] in known_events or data['title_jp'] in known_events:
+			if data['title_ww'] in known_events or data['title_jp'] in known_events:
 				continue
 			data['type'] = EventType.from_string(data['type']).value
 			event_data.append(data)
 		
 		banner_data = []
 		for data in history_result['banners']:
-			cards_hash = self._cards_hash(data['cards'])
-			if cards_hash in known_banners_hashes:
+			if data['cards_hash'] in known_banners_hashes:
 				continue
 			
-			banner_start = datetime.fromisoformat(data['start_jp'])
+			banner_start_jp = datetime.fromisoformat(data['start_jp'])
 			
 			card_data = self.get_idols_by_ordinal(data['cards'])
 			
+			# Excludes cards from banners that did not initially release with it
 			accepted_cards = []
 			for card in card_data:
-				delta = banner_start - card.release_date
+				delta = banner_start_jp - card.release_date[Locale.JP]
 				if delta.days > 0 or delta.seconds > 0:
 					continue
 				accepted_cards.append(card.ordinal)
+				
+			# And if all were excluded the banner is rejected as a full re-run
 			if not accepted_cards:
 				continue
 			
+			# But save the number of cards the banner originally had
 			data['original_num_cards'] = len(data['cards'])
 			
+			# Need to recompute hash if cards were rejected and check if the banner is known
 			if len(data['cards']) != len(accepted_cards):
 				data['cards'] = accepted_cards
-				cards_hash = self._cards_hash(data['cards'])
+				cards_hash = HistoryCrawler.hash_ordinals(data['cards'])
 				if cards_hash in known_banners_hashes:
 					continue
 				
+				data['cards_hash'] = cards_hash
+			
 			data['type'] = BannerType.from_string(data['type']).value
 			banner_data.append(data)
 				
@@ -740,7 +773,7 @@ class KiraraClient():
 			self.db.executemany(event_card_query, cards)
 			
 			num_cards += len(cards)
-			# print(f"Added event '{data['title_en']}' with {len(cards)} associated cards to database.")
+			# print(f"Added event '{data['title_ww']}' with {len(cards)} associated cards to database.")
 		
 		print(f"  {Fore.GREEN}{Style.BRIGHT}Added {len(event_data)} events with {num_cards} associated cards to the database.{Style.RESET_ALL}")
 		
@@ -919,7 +952,7 @@ class KiraraClient():
 		if members    != None: fields.append(self._make_where_condition("member_id", members))
 		
 		if released_before != None:
-			fields.append((f"release_date <= ?", [released_before.isoformat()]))
+			fields.append((f"release_date_jp <= ?", [released_before.isoformat()]))
 		
 		if fields:
 			query = f"""SELECT * FROM 'v_idols_with_events_and_banner_info_null_allowed'
@@ -928,7 +961,7 @@ class KiraraClient():
 							WHERE {' AND '.join([x[0] for x in fields])}
 							GROUP BY member_id
 						)
-						ORDER BY release_date ASC"""
+						ORDER BY release_date_jp ASC"""
 			# print(query)
 			self.db.execute(query, [value for x in fields for value in x[1]])
 		else:
@@ -937,7 +970,7 @@ class KiraraClient():
 							SELECT MAX(ordinal) FROM 'v_idols'
 							GROUP BY member_id
 						)
-						ORDER BY release_date ASC"""
+						ORDER BY release_date_jp ASC"""
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())
@@ -1103,7 +1136,7 @@ class KiraraClient():
 		elapsed_per_member = {}
 		all_urs            = self.get_newest_idols(rarity=Rarity.UR)
 		for idol in all_urs:
-			delta = now - idol.release_date
+			delta = now - idol.release_date[Locale.JP]
 			longest_overdue = max(delta.days, longest_overdue)
 			if idol.member_id in all_overdue_members:
 				elapsed_per_member[idol.member_id] = delta
@@ -1182,7 +1215,7 @@ class KiraraClient():
 				found_members.add(member)
 				
 				ur_coefficient = elapsed_per_member[member].days / longest_overdue
-				limited_delta = now - idol.release_date
+				limited_delta = now - idol.release_date[Locale.JP]
 				
 				banner_share = banner_shares[current_banner_type][member.group]
 				banner_share = (1 / banner_share) if banner_share > 0 else 10
@@ -1261,39 +1294,33 @@ class KiraraClient():
 			pass
 			
 		member_release_date = {
-			Member.Shioriko : datetime(2020, 8, 5, 6, 0, tzinfo=timezone.utc),
-			Member.Lanzhu   : datetime(2021, 9, 3, 6, 0, tzinfo=timezone.utc),
-			Member.Mia      : datetime(2021, 9, 3, 6, 0, tzinfo=timezone.utc),
+			Locale.JP : {
+				Member.Shioriko : datetime(2020, 8, 5, 6, 0, tzinfo=timezone.utc),
+				Member.Lanzhu   : datetime(2021, 9, 3, 6, 0, tzinfo=timezone.utc),
+				Member.Mia      : datetime(2021, 9, 3, 6, 0, tzinfo=timezone.utc),
+			},
+			Locale.WW : {
+				Member.Shioriko : datetime(2020, 11, 21, 6, 0, tzinfo=timezone.utc),
+				Member.Lanzhu   : datetime(2021, 9,  3,  6, 0, tzinfo=timezone.utc),
+				Member.Mia      : datetime(2021, 9,  3,  6, 0, tzinfo=timezone.utc),
+			},
 		}
 		
-		sifas_launch_date = datetime(2019, 9, 26, 15, 0, tzinfo=timezone.utc)
+		sifas_launch_date = {
+			Locale.JP : datetime(2019, 9, 26, 15, 0, tzinfo=timezone.utc),
+			Locale.WW : datetime(2020, 2, 25, 15, 0, tzinfo=timezone.utc),
+		}
 		
-		self.member_addition_dates = {}
-		for member in Member:
-			date_added = member_release_date.get(member, sifas_launch_date)
-			game_launch = ((sifas_launch_date - date_added).days == 0)
-			
-			self.member_addition_dates[member] = {
-				'date_added'  : date_added,
-				'game_launch' : game_launch,
-			}
-			
-		# query = """SELECT member_id, min(release_date) AS release_date FROM idols
-		#            WHERE rarity = 20
-		#            GROUP BY member_id
-		#            ORDER BY ordinal ASC"""
-		
-		# self.db.execute(query)
-		
-		# self.member_addition_dates = {}
-		# for data in self.db.fetchall():
-		# 	date_added = datetime.fromisoformat(data['release_date'])
-		# 	game_launch = ((sifas_jp_launch_date - date_added).days == 0)
-			
-		# 	self.member_addition_dates[Member(data['member_id'])] = {
-		# 		'date_added'  : date_added,
-		# 		'game_launch' : game_launch,
-		# 	}
+		self.member_addition_dates = {locale: {} for locale in Locale}
+		for locale in Locale:
+			for member in Member:
+				date_added = member_release_date[locale].get(member, sifas_launch_date[locale])
+				game_launch = ((sifas_launch_date[locale] - date_added).days == 0)
+				
+				self.member_addition_dates[locale][member] = {
+					'date_added'  : date_added,
+					'game_launch' : game_launch,
+				}
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -1307,7 +1334,7 @@ class KiraraClient():
 		
 		query = f"""SELECT * FROM v_idols_with_events_and_banner_info_null_allowed
 					WHERE {' AND '.join([x[0] for x in fields])}
-					ORDER BY release_date ASC"""
+					ORDER BY release_date_jp ASC"""
 		self.db.execute(query, [value for x in fields for value in x[1]])
 		
 		all_idols = self.convert_to_idol_object(self.db.fetchall())
@@ -1332,12 +1359,11 @@ class KiraraClient():
 				if category_rarities != None and idol.rarity not in category_rarities:
 					continue
 				
-				time_since_release = time_now - idol.release_date
-				
+				time_since_release = {locale: time_now - idol.release_date[locale] for locale in Locale}
 				if previous_idol:
-					time_since_previous = idol.release_date - previous_idol.release_date
+					time_since_previous = {locale: idol.release_date[locale] - previous_idol.release_date[locale] for locale in Locale}
 				else:
-					time_since_previous = idol.release_date - self.member_addition_dates[member]['date_added']
+					time_since_previous = {locale: idol.release_date[locale] - self.member_addition_dates[locale][member]['date_added'] for locale in Locale}
 				
 				current_list.append((idol, time_since_release, time_since_previous))
 				
@@ -1378,8 +1404,14 @@ class KiraraClient():
 				events[event_id]['event'] = {
 					'title' : data['event_title'],
 					'type'  : EventType(data['event_type']),
-					'start' : datetime.fromisoformat(data['event_start']),
-					'end'   : datetime.fromisoformat(data['event_end']),
+					'start' : {
+						Locale.JP : datetime.fromisoformat(data['event_start_jp']),
+						Locale.WW : datetime.fromisoformat(data['event_start_ww']),
+					},
+					'end'   : {
+						Locale.JP : datetime.fromisoformat(data['event_end_jp']),
+						Locale.WW : datetime.fromisoformat(data['event_end_ww']),
+					},
 				}
 			
 			card = KiraraIdol(self, data)
@@ -1402,8 +1434,8 @@ class KiraraClient():
 					   members.id,
 					   COUNT(idols.member_id) AS "times_featured"
 				   FROM members
-				   LEFT JOIN idols ON idols.member_id = members.id AND idols.source = ? AND idols.rarity = ?
-				   LEFT JOIN event_cards ON idols.ordinal = event_cards.ordinal
+				   LEFT JOIN idols       ON idols.member_id = members.id AND idols.source = ? AND idols.rarity = ?
+				   LEFT JOIN event_cards ON idols.ordinal   = event_cards.ordinal
 				   GROUP BY members.id
 				   ORDER BY members.id
 				"""
@@ -1444,10 +1476,16 @@ class KiraraClient():
 			banner_id = data['banner_id']
 			if not banners[banner_id]['banner']:
 				banners[banner_id]['banner'] = {
-					'title' : data['banner_title'],
+					# 'title' : data['banner_title_ww'],
 					'type'  : BannerType(data['banner_type']),
-					'start' : datetime.fromisoformat(data['banner_start']),
-					'end'   : datetime.fromisoformat(data['banner_end']),
+					'start' : {
+						Locale.JP : datetime.fromisoformat(data['banner_start_jp']),
+						Locale.WW : datetime.fromisoformat(data['banner_start_ww']),
+					},
+					'end'   : {
+						Locale.JP : datetime.fromisoformat(data['banner_end_jp']),
+						Locale.WW : datetime.fromisoformat(data['banner_end_ww']),
+					},
 				}
 			
 			card = KiraraIdol(self, data)
@@ -1461,7 +1499,6 @@ class KiraraClient():
 				index = self._get_card_member_index(card.ordinal)
 				banners[banner_id]['index'] = max(banners[banner_id]['index'], index)
 			
-		
 		return banners
 		
 	def get_idols_by_source_and_member(self, sources : List[Source] = [], rarity : Rarity = Rarity.UR,
@@ -1469,7 +1506,7 @@ class KiraraClient():
 		if not sources: raise KiraraClientValueError("Sources empty.")
 		
 		if released_before != None:
-			released_before = f"AND release_date <= '{released_before.isoformat()}'"
+			released_before = f"AND release_date_jp <= '{released_before.isoformat()}'"
 		else:
 			released_before = ""
 		
@@ -1535,45 +1572,11 @@ class KiraraClient():
 		
 		return self.convert_to_idol_object(self.db.fetchall())
 	
-	def do_crap(self):
-		import re
-		query = f"SELECT json FROM idols_json ORDER BY ordinal"
-		self.db.execute(query)
-		
-		targets = defaultdict(list)
-		for data in self.db.fetchall():
-			data = json.loads(data['json'])
-			
-			for skill_data in data['passive_skills']:
-				target_id = int(skill_data['target']['id'])
-				target = skill_data['programmatic_target']
-				target = re.sub('<[^<]+?>', '', target).strip()
-				
-				guess = self._determine_skill_target(skill_data['target'], data)
-				targets[target_id].append((target, guess))
-				
-				if skill_data['target_2'] != None:
-					if skill_data['target']['id'] != skill_data['target_2']['id']:
-						print("LOAL", data['ordinal'], skill_data['target_2']['id'], skill_data['levels_2'][0][1], skill_data['name'], skill_data['programmatic_target'])
-				
-				# if target_id == 58 and len(target) > 0:
-				# 	print(data['ordinal'], target_id, skill_data['name'], skill_data['programmatic_target'])
-				
-				# if target_id > 1 and target_id < 50:
-				# 	print(guess, data['ordinal'], target_id, skill_data['name'], skill_data['programmatic_target'])
-		
-		for tid, targets in sorted(targets.items(), key=itemgetter(0)):
-			print(tid)
-			for target, guess in set(targets):
-				print(f"\t{target} {guess}")
-			print("------------------------------------")
 	
-	# -------------------------------------------------------------------------------------------
 			
 
 if __name__ == "__main__":
 	client = KiraraClient()
 	client.cache_all_idols()
-	# client.do_crap()
 	exit()
 	

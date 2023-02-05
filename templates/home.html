@@ -11,7 +11,7 @@
 		Card and event data is retrieved from <a href="https://allstars.kirara.ca/" target="_blank">Kirara All Stars Card Database</a>. They automatically scrape new card and event data which can mean that sometimes the data on their site, and consequently this one, can be incorrect or out of date as a result. A best effort is made and corrections will be made promptly.
 	</p>
 	<p>
-		All card release and event timestamps used on this site are according to the original Japanese server releases.
+		Card release and event timestamps can be toggled between the original Japanese server releases and Global version dates, before acceleration ended. Check the "Use Global Dates" toggle in the settings.
 	</p>
 	<p>
 		If you have feedback, suggestions or error reports regarding this website you can <a href="https://forms.gle/sMK7KSmXDsgmHrvH9" target="_blank" rel="noreferrer noopener">send feedback</a>.
@@ -21,26 +21,19 @@
 			Newest Updates
 		</div>
 		<div class="updates-content">
-			<h4>Mobile Optimisation</h4>
+			<h4>Global Dates and Other Updates!</h4>
 			<div class="news-entry">
 				<p>
-					UR rotation and SR set pages had become unwieldily heavy for some mobile devices in particular. In an effort to optimise performance the rotation grids are now loaded and unloaded on demand which should alleviate the problem.
+					Now you can enable the site to use card release dates from the global server too, alongside the original Japanese dates. Check the settings menu for "Global Dates" option. If you're on the desktop version it can be toggled by pressing the D-key as well.
 				</p>
 				<p>
-					Similar optimisation was applied to event card and gacha banner pages as well.
-				</p>
-			</div>
-			<hr>
-			<h4>New Stats Category: Weighted Overdueness</h4>
-			<div class="news-entry">
-				<p>
-					Check out the new experimental <a href="/#/stats/overdueness">weighted overdueness stats category</a>.
+					Additionally, things are now unloaded on desktop version of the site whenever they go out of view. Hopefully that helps with site performance issues.
 				</p>
 				<p>
-					This category contains an attempt to sort the girls still missing limited cards in the current rotation by an experimental statistical weighted overdueness coefficient which can help estimate the likely recipients of new limited cards.
+					To further improve desktop performance, there is also a new site option to disable all animations in case they make things slow or you just don't like them. Check the "No Animations" setting. If your device or browser is set to use reduced motion they will have been be disabled by default (cannot be re-enabled unless you chance that device/browser setting). Some animations are also disabled by default when browsing the mobile version of the site.
 				</p>
 				<p>
-					However, this is completely experimental and no warranty or guarantee of accuracy is offered!
+					Lastly there was a behind-the-scenes update to how tooltip data is embedded which may result in some performance improvement or at the very least reduces the amount of loaded HTML code.
 				</p>
 			</div>
 		</div>
@@ -58,6 +51,7 @@
 			<li class="keybind-header">General</li>
 			<li><b>Q</b> Switches between idolized and normal card icons.</li>
 			<li><b>W</b> Reverses the order of lists.</li>
+			<li><b>D</b> Switches between Japan server and Global version release dates.</li>
 			<li><b>S</b> Cycles to the next source highlight option. Use with the <b>Shift key</b> to go backwards.</li>
 			<li><b>R</b> Resets above settings back to default.</li>
 			

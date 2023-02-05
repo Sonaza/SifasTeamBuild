@@ -68,6 +68,18 @@ ul
 	}
 }
 
+body:not(.using_ww_dates)
+{
+	.jp-ts { display: inline-block; }
+	.ww-ts { display: none; }
+}
+
+body.using_ww_dates
+{
+	.jp-ts { display: none; }
+	.ww-ts { display: inline-block; }
+}
+
 ul.settings-keybinds
 {
 	li
@@ -167,6 +179,9 @@ a
 		-khtml-user-select: none;
 		-webkit-user-select: none;
 		-o-user-select: none;
+		
+		white-space: nowrap;
+		overflow-x: hidden;
 	}
 	
 	.inner
@@ -486,33 +501,79 @@ a
 			}
 		}
 
-		.revert-button
+		.more-settings
 		{
-			position: absolute;
-			top: -8px;
-			right: -8px;
-			width: 40px;
-			height: 40px;
-			background: url('/img/revert.png') center center no-repeat #501DA4aa;
-			background-size: 24px;
-			filter: drop-shadow(0 1px 1px #000);
-			border-radius: 3px;
-			border: 1px solid #9869E6;
-			transition: all ease-in-out 100ms;
-			cursor: pointer;
-			box-shadow: 0 3px 1px #000a;
-
-			&:hover
+			display: flex;
+			flex-flow: column nowrap;
+			justify-content: left;
+			
+			position: relative;
+			// overflow-y: hidden;
+			
+			padding: 1.3rem 0 0.3rem 0;
+			
+			.more-settings-toggle
 			{
-				background-color: #7B43D6aa;
-				border-color: #D6C1F9;
+				width: 100%;
+				top: 0rem;
+				position: absolute;
+				
+				font-family: 'Montserrat', sans-serif;
+				font-weight: 700;
+				font-size: 10pt;
+				
+				overflow-y: hidden;
+				transition: all ease-in-out 70ms;
+					
+				color: #CDBBF1;
+				cursor: pointer;
+				text-align: center;
+				
+				border: 1px solid transparent;
+				padding: 0.5rem;
+				
+				z-index: 99;
 			}
-
-			&:active
+			
+			&:not(.more-settings-opened)
 			{
-				background-color: #A77AF0aa;
-				top: -5px;
-				box-shadow: 0 0 1px #0008;
+				.more-settings-toggle:hover
+				{
+					color: #fff;
+					text-decoration: underline;
+				}
+			}
+			
+			.more-settings-expando
+			{
+				margin-top: -0.5rem;
+				
+				padding: 0;
+				max-height: 0;
+				overflow-y: hidden;
+				transition: all ease-in-out 160ms;
+				
+				display: flex;
+				flex-flow: column nowrap;
+				justify-content: left;
+				
+				z-index: 999;
+			}
+			
+			&.more-settings-opened
+			{
+				.more-settings-toggle
+				{
+					opacity: 0;
+					pointer-events: none;
+				}
+				
+				.more-settings-expando
+				{
+					overflow-y: inherit;
+					max-height: 300px;
+					margin-top: -1rem;
+				}
 			}
 		}
 	}
@@ -1102,10 +1163,9 @@ select
 	{
 		@for $i from 1 through 12
 		{
-			@include delayed-fade-in($i, $i, 80ms, 9ms);
+			@include delayed-fade-in($i, $i, 170ms, 9ms);
 		}
 	}
-	
 	
 	.card-array 
 	{
@@ -1115,7 +1175,7 @@ select
 			{
 				@for $column from 2 through 7
 				{
-					@include delayed-fade-in($column, $row * 2 + $column - 1, 85ms, 8ms);
+					@include delayed-fade-in($column, $row * 2 + $column - 1, 80ms, 8ms);
 				}
 			}
 		}
@@ -1975,10 +2035,45 @@ body
 	}
 }
 
+span.deferred-loading
+{
+	display: block;
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
+	font-size: 10pt;
+}
+
+.stats-table span.deferred-loading
+{
+	padding: 1.2rem 4rem;
+	opacity: 0.75;
+	color: #54278D;
+}
+
+.card-grid-deferred span.deferred-loading
+{
+	width: 100%;
+	padding: 5rem 3rem;
+	font-size: 13pt;
+	text-align: center;
+	color: #fff;
+	text-shadow: 0 2px 6px #000, 0 1px 2px #000;
+	opacity: 0.8;
+}
+
 ng-include.deferred-load
 {
-	animation-duration: 90ms;
 	animation-name: fade-in;
+	animation-duration: 120ms;
+	animation-fill-mode: backwards;
+}
+
+body.dark-mode
+{
+	.stats-table span.deferred-loading
+	{
+		color: #BD95F1;
+	}
 }
 
 .stats-table
@@ -2492,6 +2587,24 @@ body:not(.order-reversed) .stats-table .st-tbody.reversable
 
 /****************************************************************************/
 
+img.locale-emoji
+{
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin: 0 3px -4px 3px;
+	filter: drop-shadow(0 1px 2px #0008);
+}
+
+img.locale-emoji-20
+{
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 0 3px -4px 3px;
+	filter: drop-shadow(0 1px 2px #0008);
+}
+
 .event-cards-table
 {
 	.event-details
@@ -2553,6 +2666,20 @@ body:not(.order-reversed) .stats-table .st-tbody.reversable
 			&.event-runtime-label
 			{
 				width: 100%;
+				position: relative;
+				
+				img.locale-emoji
+				{
+					margin: 0 6px -4px 0;
+				}
+				
+				span.emoji-placeholder
+				{
+					display: inline-block;
+					width: 16px;
+					height: 16px;
+					margin: 0 6px 0 0;
+				}
 			}
 
 			&.sbl-addition
@@ -2976,6 +3103,7 @@ $cell-margin: 5px;
 			padding: 0.5rem 1rem;
 			background: #F6EEFB;
 			border: 1px solid #CDA5E3;
+			font-weight: 500;
 			
 			p
 			{

@@ -1,10 +1,16 @@
 from aenum import Enum
 
 class dotdict(dict):
-    """dot.notation access to dictionary attributes"""
-    __getattr__ = dict.get
-    __setattr__ = dict.__setitem__
-    __delattr__ = dict.__delitem__
+	"""dot.notation access to dictionary attributes"""
+	__getattr__ = dict.get
+	__setattr__ = dict.__setitem__
+	__delattr__ = dict.__delitem__
+
+class Locale(Enum):
+	_init_ = 'value locale'
+	
+	JP = 1, 'Japan'
+	WW = 2, 'Global'
 
 class Rarity(Enum):
 	_init_ = 'value max_level'
@@ -187,12 +193,13 @@ class SkillTarget(Enum):
 	SameSubunit   = 9
 	Self          = 10
 	
-class SkillTargetParameter(Enum):
-	Stamina   = 9
-	Appeal    = 10
-	Technique = 11
+class SkillEffectType(Enum):
+	AddStaminaBase   = 9
+	AddAppealBase    = 10
+	AddTechniqueBase = 11
 	
-	BaseAppeal = 26
+	AddAppealBaseBonus = 26
+	ReduceAppealBaseBonus = 84
 	
 class Ordinal(): pass
 class SortingOrder(Enum):

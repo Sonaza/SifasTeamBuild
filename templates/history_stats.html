@@ -42,11 +42,20 @@
 	<h2>{{ member.first_name }} &mdash; {{ history_info[0] }}</h2>
 	<p>
 		{{ history_info[1] }}
-		{% if member_added['game_launch'] %}
-			{{ member.first_name }} was introduced in the game with its launch on {{ member_added['date_added'] | format_datestring(long_month=True) }}.
-		{% else %}
-			{{ member.first_name }} was introduced in the game on {{ member_added['date_added'] | format_datestring(long_month=True) }}.
-		{% endif %}
+		<span class="jp-ts">
+			{% if member_added[Locale.JP][member]['game_launch'] %}
+				{{ member.first_name }} was introduced in the game with its launch on {{ member_added[Locale.JP][member]['date_added'] | format_datestring(long_month=True) }}.
+			{% else %}
+				{{ member.first_name }} was introduced in the game on {{ member_added[Locale.JP][member]['date_added'] | format_datestring(long_month=True) }}.
+			{% endif %}
+		</span>
+		<span class="ww-ts">
+			{% if member_added[Locale.WW][member]['game_launch'] %}
+				{{ member.first_name }} was introduced in the game with its launch on {{ member_added[Locale.WW][member]['date_added'] | format_datestring(long_month=True) }}.
+			{% else %}
+				{{ member.first_name }} was introduced in the game on {{ member_added[Locale.WW][member]['date_added'] | format_datestring(long_month=True) }}.
+			{% endif %}
+		</span>
 	</p>
 	<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
 	
@@ -62,8 +71,10 @@
 				<div class="st-th st-cell-50 idol-identity idol-bg-color-dim">
 					<div class="idol-icon idol-icon-32-border"></div>
 					<div class="idol-name">
-						<span class="hide-narrow-1400">{{ member.full_name }} Card History</span>
-						<span class="show-narrow-1400">{{ member.first_name }} Card History</span>
+						<span class="hide-narrow-1400-ib">{{ member.full_name }} Card History</span>
+						<span class="show-narrow-1400-ib">{{ member.first_name }} Card History</span>
+						<span class="jp-ts"><img src="/img/emoji_flag_jp.png" class="locale-emoji-20" alt="JP" title="Using Japanese Dates"></span>
+						<span class="ww-ts"><img src="/img/emoji_globe.png" class="locale-emoji-20" alt="WW" title="Using Global Dates"></span>
 					</div>
 				</div>
 			</div>
@@ -72,16 +83,22 @@
 				{% for card, time_since_release, time_since_previous in history_data %}
 					<div class="st-tr idol-{{ member.value }}" data-index="{{ loop.index }}">
 						<div class="st-td st-cell-17-5">
-							{{ card.release_date | format_datestring(ordinalize=False) }}
+							<span class="jp-ts">{{ card.release_date[Locale.JP] | format_datestring(ordinalize=False) }}</span>
+							<span class="ww-ts">{{ card.release_date[Locale.WW] | format_datestring(ordinalize=False) }}</span>
 						</div>
 						<div class="st-td st-cell-17-5">
-							{{ time_since_release.days | format_years_days }}
+							<span class="jp-ts">{{ time_since_release[Locale.JP].days | format_years_days }}</span>
+							<span class="ww-ts">{{ time_since_release[Locale.WW].days | format_years_days }}</span>
 						</div>
 						{% if time_since_previous != None %}
 							{% set title_text = 'the previous card' if loop.index != 1 else 'the character\'s introduction' %}
-							<div class="st-td st-cell-15 time-inbetween with-data {{ 'character-addition-interval' | conditional_css(loop.index == 1) }}"
-								title="This card released {{ time_since_previous.days | format_delta_days }} after {{ title_text }}.">
-								{{ time_since_previous.days | format_delta_days }}
+							<div class="st-td st-cell-15 time-inbetween with-data {{ 'character-addition-interval' | conditional_css(loop.index == 1) }}">
+								<span class="jp-ts" title="This card released {{ time_since_previous[Locale.JP].days | format_delta_days }} after {{ title_text }}.">
+								{{ time_since_previous[Locale.JP].days | format_delta_days }}
+								</span>
+								<span class="ww-ts" title="This card released {{ time_since_previous[Locale.WW].days | format_delta_days }} after {{ title_text }}.">
+									{{ time_since_previous[Locale.WW].days | format_delta_days }}
+								</span>
 							</div>
 						{% else %}
 							<div class="st-td st-cell-15 time-inbetween">
@@ -91,21 +108,7 @@
 						<div class="st-td st-cell-50 card-details">
 							<div class="thumbnail">
 								<div class="thumbnail-wrapper tooltip-data"
-									data-member-id="{{ member.value }}"
-									data-member-name="{{ member.full_name }}"
-									data-card-status="1"
-									data-card-ordinal="{{ card.ordinal }}"
-									data-card-rarity="{{ card.rarity.value }}"
-									data-card-attribute="{{ card.attribute.value }}"
-									data-card-type="{{ card.type.value }}"
-									data-card-title-normal="{{ card.get_card_name(False) | e }}"
-									data-card-title-idolized="{{ card.get_card_name(True) | e }}"
-									data-card-source="{{ get_card_source_label(card) }}"
-									data-card-release-date="{{ card.release_date | format_datestring(long_month=True) }}"
-									data-card-event="{{ card.event_title or '' | e }}"
-									data-stats-tooltip="1"
-									ng-mouseover="toggleTooltip($event, true)"
-									ng-mouseleave="toggleTooltip($event, false)">
+									{{ render_included("tooltip_data_attributes.html", card=card, card_status=1, stats_tooltip=True) }}>
 									<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }}-{{ get_atlas_plane(card.ordinal) }} card-{{ card.ordinal }}">
 										<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 									</a>

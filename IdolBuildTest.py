@@ -2,6 +2,7 @@ from operator import itemgetter
 from enum import Enum
 from typing import Dict, List
 from IdolDatabase import *
+from dataclasses import dataclass
 
 client = KiraraClient()
 
@@ -11,24 +12,42 @@ name_length = 25
 
 # -------------------------------------------------------------
 
-class InsightSkill():
-	def __init__(self, skill_target : SkillTarget, target_parameter : SkillTargetParameter, effect_value : float):
-		self.skill_target     = skill_target
-		self.target_parameter = target_parameter
-		self.effect_value     = effect_value
+@dataclass
+class InsightSkill:
+	skill_target  : SkillTarget
+	effect_type   : SkillEffectType
+	effect_value  : float
 
 class InsightSkills():
-	Appeal_S_All       = InsightSkill(SkillTarget.All,            SkillTargetParameter.Appeal, effect_value = 1.0)
-	Appeal_S_Strategy  = InsightSkill(SkillTarget.SameStrategy,   SkillTargetParameter.Appeal, effect_value = 1.0)
-	Appeal_M_Strategy  = InsightSkill(SkillTarget.SameStrategy,   SkillTargetParameter.Appeal, effect_value = 2.0)
-	Appeal_S_Group     = InsightSkill(SkillTarget.Group,          SkillTargetParameter.Appeal, effect_value = 1.0)
-	Appeal_M_Group     = InsightSkill(SkillTarget.Group,          SkillTargetParameter.Appeal, effect_value = 2.0)
-	Appeal_S_Attribute = InsightSkill(SkillTarget.SameAttribute,  SkillTargetParameter.Appeal, effect_value = 1.0)
-	Appeal_M_Attribute = InsightSkill(SkillTarget.SameAttribute,  SkillTargetParameter.Appeal, effect_value = 2.0)
-	Appeal_S_Year      = InsightSkill(SkillTarget.SameYear,       SkillTargetParameter.Appeal, effect_value = 1.0)
-	Appeal_M_Year      = InsightSkill(SkillTarget.SameYear,       SkillTargetParameter.Appeal, effect_value = 2.0)
-	Appeal_S_School    = InsightSkill(SkillTarget.SameSchool,     SkillTargetParameter.Appeal, effect_value = 1.0)
-	Appeal_M_School    = InsightSkill(SkillTarget.SameSchool,     SkillTargetParameter.Appeal, effect_value = 2.0)
+	Appeal_S_All       = InsightSkill(SkillTarget.All,            SkillEffectType.AddAppealBase, effect_value = 1.0)
+	Appeal_S_Strategy  = InsightSkill(SkillTarget.SameStrategy,   SkillEffectType.AddAppealBase, effect_value = 1.0)
+	Appeal_M_Strategy  = InsightSkill(SkillTarget.SameStrategy,   SkillEffectType.AddAppealBase, effect_value = 2.0)
+	Appeal_S_Group     = InsightSkill(SkillTarget.Group,          SkillEffectType.AddAppealBase, effect_value = 1.0)
+	Appeal_M_Group     = InsightSkill(SkillTarget.Group,          SkillEffectType.AddAppealBase, effect_value = 2.0)
+	Appeal_S_Attribute = InsightSkill(SkillTarget.SameAttribute,  SkillEffectType.AddAppealBase, effect_value = 1.0)
+	Appeal_M_Attribute = InsightSkill(SkillTarget.SameAttribute,  SkillEffectType.AddAppealBase, effect_value = 2.0)
+	Appeal_S_Year      = InsightSkill(SkillTarget.SameYear,       SkillEffectType.AddAppealBase, effect_value = 1.0)
+	Appeal_M_Year      = InsightSkill(SkillTarget.SameYear,       SkillEffectType.AddAppealBase, effect_value = 2.0)
+	Appeal_S_School    = InsightSkill(SkillTarget.SameSchool,     SkillEffectType.AddAppealBase, effect_value = 1.0)
+	Appeal_M_School    = InsightSkill(SkillTarget.SameSchool,     SkillEffectType.AddAppealBase, effect_value = 2.0)
+
+@dataclass
+class SongInfo:
+	song_attribute    : Attribute
+	
+	gimmick_target_attributes : List[Attribute] 
+	gimmick_effect_type       : SkillEffectType
+	gimmick_effect_value      : float
+	
+	@staticmethod
+	def make_attribute_gimmick(song_attribute : Attribute, effect_type : SkillEffectType, effect_value : float):
+		return SongInfo(
+			song_attribute            = song_attribute,
+			gimmick_target_attributes = [attribute for attribute in Attribute.get_valid() if attribute != song_attribute],
+			gimmick_effect_type       = effect_type,
+			gimmick_effect_value      = effect_value,
+		)
+		
 
 class IdolUnit(IdolBase):
 	def __init__(self, card_ordinal : int, identifier : str, limit_break : int = 5):
@@ -53,7 +72,7 @@ class IdolUnit(IdolBase):
 		self.accessories    = []
 
 		self.bond_board = None
-		self.song_modifier = None
+		self.song_info = None
 		self.team_modifiers = [0, 0, 0]
 		
 		self.max_level = self.data.rarity.max_level
@@ -144,8 +163,8 @@ class IdolUnit(IdolBase):
 
 	# ---------------------------------------------
 
-	def set_song_modifiers(self, matching_attribute = Attribute.Unset, modifiers = (1, 1)):
-		self.song_modifiers = (matching_attribute, modifiers[0], modifiers[1])
+	def set_song_info(self, song_info : SongInfo):
+		self.song_info = song_info
 		self._update_parameters()
 		return self
 
@@ -165,68 +184,22 @@ class IdolUnit(IdolBase):
 
 		# print(self.identifier, "BASE", self.base_appeal, self.base_stamina, self.base_technique)
 
-		if self.song_modifier != None:
-			if self.song_modifier[0] != Attribute.Unset:
-				if self.song_modifier[0] == self.data.attribute:
-					# On-attribute matching bonus
-					matching_bonus = self.song_modifier[1]
-
-					if self.bond_board != None:
-						matching_bonus += self.bond_board[BondParameter.AttributeBonus] * 0.01
-
-					self.base_appeal    *= matching_bonus
-					self.base_stamina   *= matching_bonus
-					self.base_technique *= matching_bonus
-
-				elif self.song_modifier[0] != self.data.attribute:
-					# Off-attribute song appeal penalty
-					self.base_appeal    *= self.song_modifier[2]
-
-		# Adjust insights, assuming best in slot appeal
-		# num_insight_slots = self.data.data['max_passive_skill_slot']
-		# appeal_insight_skills = self.num_insight_slots * 2
-		
-		self.passive_multiplier = [0, 0, 0]
-		
-		# for index in range(self.num_insight_slots):
-		# 	try:
-		# 		skill = self.insight_skills[index]
-		# 	except IndexError:
-		# 		break
-				
-		# 	if skill.target_parameter   == SkillTargetParameter.Appeal:
-		# 		self.passive_multiplier[0] += skill.effect_value
-		# 	elif skill.target_parameter == SkillTargetParameter.Stamina:
-		# 		self.passive_multiplier[1] += skill.effect_value
-		# 	elif skill.target_parameter == SkillTargetParameter.Technique:
-		# 		self.passive_multiplier[2] += skill.effect_value
-
-		# passive_target, passive_effects = self.data.get_passive_skill_effect(self.max_passive_skill_level)
-		# if passive_target != SkillTarget.Group:
-		# 	for effect in passive_effects:
-		# 		if effect['target_parameter']   == SkillTargetParameter.Appeal:
-		# 			self.passive_multiplier[0] += effect['effect_value']
-		# 		elif effect['target_parameter'] == SkillTargetParameter.Stamina:
-		# 			self.passive_multiplier[1] += effect['effect_value']
-		# 		elif effect['target_parameter'] == SkillTargetParameter.Technique:
-		# 			self.passive_multiplier[2] += effect['effect_value']
-
-		# Adjust appeal and technique per the buffs
-		self.sheet_appeal    = math.floor(self.base_appeal)    * (1 + (self.passive_multiplier[0] + self.team_modifiers[0]) * 0.01)
-		self.sheet_stamina   = math.floor(self.base_stamina)   * (1 + (self.passive_multiplier[1] + self.team_modifiers[1]) * 0.01)
-		self.sheet_technique = math.floor(self.base_technique) * (1 + (self.passive_multiplier[2] + self.team_modifiers[2]) * 0.01)
+		# Adjust stats per the buffs
+		self.sheet_appeal    = math.floor(self.base_appeal)    * (1 + (self.team_modifiers[0]) * 0.01)
+		self.sheet_stamina   = math.floor(self.base_stamina)   * (1 + (self.team_modifiers[1]) * 0.01)
+		self.sheet_technique = math.floor(self.base_technique) * (1 + (self.team_modifiers[2]) * 0.01)
 
 		base_crit_power = 150
 		crit_power_multiplier = 0
 
 		for accessory in self.accessories:
-			appeal, stamina, technique = accessory.get_parameters()
-			self.sheet_appeal    += appeal
+			AddAppealBase, stamina, technique = accessory.get_parameters()
+			self.sheet_appeal    += AddAppealBase
 			self.sheet_stamina   += stamina
 			self.sheet_technique += technique
 
 			if accessory.attribute == self.data.attribute:
-				self.sheet_appeal    += appeal * 0.1
+				self.sheet_appeal    += AddAppealBase * 0.1
 				self.sheet_stamina   += stamina * 0.1
 				self.sheet_technique += technique * 0.1
 
@@ -238,7 +211,31 @@ class IdolUnit(IdolBase):
 		self.sheet_appeal    = int(self.sheet_appeal)
 		self.sheet_stamina   = int(self.sheet_stamina)
 		self.sheet_technique = int(self.sheet_technique)
-
+		
+		if self.song_info != None:
+			# Attribute matching bonus
+			if self.song_info.song_attribute == self.data.attribute:
+				# Base matching bonus is +20% to all stats
+				matching_bonus = 1.2
+				
+				if self.bond_board != None:
+					matching_bonus += self.bond_board[BondParameter.AttributeBonus] * 0.01
+					
+				self.sheet_appeal    *= matching_bonus
+				self.sheet_stamina   *= matching_bonus
+				self.sheet_technique *= matching_bonus
+			
+			# Song Gimmick
+			if self.data.attribute in self.song_info.gimmick_target_attributes:
+				if self.song_info.gimmick_effect_type == SkillEffectType.ReduceAppealBaseBonus:
+					self.sheet_appeal    *= (1 - self.song_info.gimmick_effect_value)
+				else:
+					raise Exception("Not implemented: " + self.song_info.gimmick_effect_type)
+					
+		self.sheet_appeal    = int(self.sheet_appeal)
+		self.sheet_stamina   = int(self.sheet_stamina)
+		self.sheet_technique = int(self.sheet_technique)
+		
 		# print(self.identifier, "SHEET", self.sheet_appeal, self.sheet_stamina, self.sheet_technique)
 
 		#---------------------------------------------------------
@@ -268,7 +265,7 @@ class IdolUnit(IdolBase):
 	def __str__(self):
 		global name_length
 		return f'{self.identifier + " " + self.first_name:<{name_length}} Lv.{self.max_level} (LB{self.limit_break}) |   {self.sheet_appeal:5d} appeal, {self.sheet_stamina:5d} stamina, {self.sheet_technique:5d} technique  |  {self.effective_appeal:6.0f} effective appeal |  Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.has_crit_sense)]})'
-		# return f'    {self.identifier + " " + self.first_name:<{name_length}}    Effective Appeal {self.effective_appeal:5.0f}    Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.crit_sense)]})'
+		# return f'    {self.identifier + " " + self.first_name:<{name_length}}    Effective appeal {self.effective_appeal:5.0f}    Crit Rate {self.crit_rate * 100:5.2f}% ({[" ", "×"][int(self.crit_sense)]})'
 		# return f'{self.identifier + " " + self.first_name:<{name_length}}  | {self.effective_appeal:5.0f}   | {self.crit_rate * 100:5.2f}% | ({[" ", "×"][int(self.crit_sense)]})'
 
 	def __lt__(self, other):
@@ -357,7 +354,7 @@ class IdolTeam():
 		
 		raise IdolError("Something was not tested")
 			
-	def calculate_stats(self):
+	def calculate_stats(self, song_info : Optional[SongInfo] = None):
 		self.units_per_strategy = self.get_units_per_strategy()
 
 		for strategy, units in self.units_per_strategy.items():
@@ -370,35 +367,34 @@ class IdolTeam():
 		for unit_a_index, unit_a in self.units.items():
 			passive_target, passive_effects = unit_a.data.get_passive_skill_effect(unit_a.max_passive_skill_level) 
 			for unit_b_index, unit_b in self.units.items():
+				if unit_b_index not in passive_multipliers:
+					passive_multipliers[unit_b_index] = [0, 0, 0]
+				
 				skill_applies = self.test_if_skill_applies(passive_target, unit_a_index, unit_b_index)
 				if skill_applies:
-					if unit_b_index not in passive_multipliers:
-						passive_multipliers[unit_b_index] = [0, 0, 0]
-					
 					for effect in passive_effects:
-						if effect['target_parameter']   == SkillTargetParameter.Appeal:
-							passive_multipliers[unit_b_index][0] += effect['effect_value']
-						elif effect['target_parameter'] == SkillTargetParameter.Stamina:
-							passive_multipliers[unit_b_index][1] += effect['effect_value']
-						elif effect['target_parameter'] == SkillTargetParameter.Technique:
-							passive_multipliers[unit_b_index][2] += effect['effect_value']
+						if effect.effect_type   == SkillEffectType.AddAppealBase:
+							passive_multipliers[unit_b_index][0] += effect.effect_value
+						elif effect.effect_type == SkillEffectType.AddStaminaBase:
+							passive_multipliers[unit_b_index][1] += effect.effect_value
+						elif effect.effect_type == SkillEffectType.AddTechniqueBase:
+							passive_multipliers[unit_b_index][2] += effect.effect_value
 				
 				for skill in unit_a.insight_skills:
 					skill_applies = self.test_if_skill_applies(skill.skill_target, unit_a_index, unit_b_index)
 					# print(skill, unit_a_index, unit_b_index)
 					if skill_applies:
-						if unit_b_index not in passive_multipliers:
-							passive_multipliers[unit_b_index] = [0, 0, 0]
-						
-						if skill.target_parameter   == SkillTargetParameter.Appeal:
+						if skill.effect_type   == SkillEffectType.AddAppealBase:
 							passive_multipliers[unit_b_index][0] += skill.effect_value
-						elif skill.target_parameter == SkillTargetParameter.Stamina:
+						elif skill.effect_type == SkillEffectType.AddStaminaBase:
 							passive_multipliers[unit_b_index][1] += skill.effect_value
-						elif skill.target_parameter == SkillTargetParameter.Technique:
+						elif skill.effect_type == SkillEffectType.AddTechniqueBase:
 							passive_multipliers[unit_b_index][2] += skill.effect_value
 		
 		for unit_index, multipliers in passive_multipliers.items():
 			self.units[unit_index].set_team_modifiers(multipliers)
+			self.units[unit_index].set_song_info(song_info)
+			
 			# print(self.units[unit_index].get_identifier(), multipliers)
 		
 		for strategy, units in self.units_per_strategy.items():
@@ -444,21 +440,34 @@ the_best_team.set_all_units([
 		.set_bond_board(**{ 'bond_level': 120, 'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.AttributeBonus ] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 4),
 
-	# Party Shio
-	IdolUnit(477, "Party", limit_break = 5) \
-		.set_bond_board(**{ 'bond_level': 123, 'board_level': 120, 'unlocked_tiles' : [] }) \
-	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
-	# Fes3 Nozo
+	# # Party Shio
+	# IdolUnit(477, "Party", limit_break = 5) \
+	# 	.set_bond_board(**{ 'bond_level': 123, 'board_level': 120, 'unlocked_tiles' : [] }) \
+	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	# # Fes3 Nozo
 	# IdolUnit(728, "Fes3", limit_break = 5) \
 	# 	.set_bond_board(**{ 'bond_level': 266, 'board_level': 260, 'unlocked_tiles' : True }) \
 	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
-	# Thanksgiving Nozo
-	IdolUnit(577, "Thanksgiving", limit_break = 5) \
-		.set_bond_board(**{ 'bond_level': 266, 'board_level': 260, 'unlocked_tiles' : True }) \
+	# # Party Kotori
+	# IdolUnit(514, "Party", limit_break = 5) \
+	# 	.set_bond_board(**{ 'bond_level': 91,  'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.Technique, BondParameter.AttributeBonus ] }) \
+	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	    
+	# Party Maki
+	IdolUnit(755, "Party", limit_break = 5) \
+		.set_bond_board(**{ 'bond_level': 100, 'board_level': 60, 'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.AttributeBonus ] }) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Attribute] * 4),
+	# Lightning Nozo
+	IdolUnit(839, "Lightning", limit_break = 5) \
+		.set_bond_board(**{ 'bond_level': 270, 'board_level': 260, 'unlocked_tiles' : True }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 3),
-	# Party Koto
-	IdolUnit(514, "Party", limit_break = 5) \
-		.set_bond_board(**{ 'bond_level': 91,  'board_level': 60,  'unlocked_tiles' : [ BondParameter.Appeal, BondParameter.Technique, BondParameter.AttributeBonus ] }) \
+	# # Fes3 Maru
+	# IdolUnit(782, "Fes3", limit_break = 5) \
+	# 	.set_bond_board(**{ 'bond_level': 124, 'board_level': 120, 'unlocked_tiles' : True }) \
+	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	# Fes2 You
+	IdolUnit(393, "Fes2", limit_break = 5) \
+		.set_bond_board(**{ 'bond_level': 103, 'board_level': 80,  'unlocked_tiles' : [BondParameter.CritPower] }) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 
 	# Initial Kanan
@@ -473,9 +482,6 @@ the_best_team.set_all_units([
 	IdolUnit(629, "Party", limit_break = 1) \
 		.set_bond_board(**{ 'bond_level': 50,  'board_level': 30,  'unlocked_tiles' : [] }) \
 		.set_insight_skills([InsightSkills.Appeal_M_Group] * 4),
-
-	# # Fes3 Nozo
-	# IdolUnit(728, "Fes3").set_bond_board(**{ 'bond_level': 261, 'board_level': 260, 'unlocked_tiles' : [ BondParameter.AttributeBonus ] }),
 ])
 
 the_best_team.set_accessories({
@@ -485,7 +491,7 @@ the_best_team.set_accessories({
 		Accessories.Bracelet.get(Attribute.Smile, Rarity.UR),
 	],
 	Strategy.Green : [
-		Accessories.Brooch.get(Attribute.Natural, Rarity.UR),
+		Accessories.Brooch.get(Attribute.Smile,   Rarity.UR),
 		Accessories.Bangle.get(Attribute.Pure,    Rarity.UR),
 		Accessories.Bangle.get(Attribute.Active,  Rarity.UR),
 	],
@@ -496,7 +502,8 @@ the_best_team.set_accessories({
 	],
 })
 
-the_best_team.calculate_stats()
+song_info = SongInfo.make_attribute_gimmick(Attribute.Smile, SkillEffectType.ReduceAppealBaseBonus, 0.25)
+the_best_team.calculate_stats(song_info)
 
 # strats = the_best_team.get_units_per_strategy()
 # print(strats)

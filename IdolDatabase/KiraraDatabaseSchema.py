@@ -70,7 +70,8 @@ schemas = [
 	    `type`              INTEGER,
 	    `rarity`            INTEGER,
 	    `source`            INTEGER,
-	    `release_date`      TEXT,
+	    `release_date_jp`   TEXT,
+	    `release_date_ww`   TEXT,
 	    FOREIGN KEY(`member_id`)    REFERENCES members(`id`),
 	    FOREIGN KEY(`attribute`)    REFERENCES attributes(`id`),
 	    FOREIGN KEY(`type`)         REFERENCES types(`id`),
@@ -81,12 +82,13 @@ schemas = [
 	'''CREATE TABLE `events` (
 		`id`                INTEGER UNIQUE NOT NULL,
 	    `type`              INTEGER,
-	    `title_en`          TEXT UNIQUE,
-	    `start_en`          TEXT,
-	    `end_en`            TEXT,
 	    `title_jp`          TEXT UNIQUE,
 	    `start_jp`          TEXT,
 	    `end_jp`            TEXT,
+	    `title_ww`          TEXT UNIQUE,
+	    `start_ww`          TEXT,
+	    `end_ww`            TEXT,
+	    `cards_hash`        TEXT,
 	    PRIMARY KEY(`id` AUTOINCREMENT)
 	)''',
 	
@@ -107,7 +109,11 @@ schemas = [
 	    `title_jp`           TEXT,
 	    `start_jp`           TEXT,
 	    `end_jp`             TEXT,
+	    `title_ww`           TEXT,
+	    `start_ww`           TEXT,
+	    `end_ww`             TEXT,
 	    `original_num_cards` INTEGER,
+	    `cards_hash`         TEXT,
 	    PRIMARY KEY(`id` AUTOINCREMENT)
 	)''',
 	
@@ -160,81 +166,104 @@ schemas = [
 	'''CREATE VIEW v_idols_with_events AS
 	    SELECT
 	        v_idols.*,
-	        events.id AS event_id,
-	        events.title_en AS event_title
+			events.id                  AS event_id,
+			events.title_ww            AS event_title
 	    FROM v_idols
 	    LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
-	    LEFT JOIN events      ON events.id = event_cards.event_id
+	    LEFT JOIN events      ON events.id           = event_cards.event_id
 	''',
 	
 	'''CREATE VIEW v_idols_with_event_info AS
 	    SELECT
 	        v_idols.*,
-	        events.id AS event_id,
-	        events.type AS event_type,
-	        events.title_en AS event_title,
-	        events.start_jp AS event_start,
-	        events.end_jp AS event_end
+			events.id                  AS event_id,
+			events.type                AS event_type,
+			
+			events.title_ww            AS event_title,
+			
+			events.start_jp            AS event_start_jp,
+			events.end_jp              AS event_end_jp,
+			events.start_ww            AS event_start_ww,
+			events.end_ww              AS event_end_ww
 	    FROM v_idols
-	    LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
-	    INNER JOIN events      ON events.id = event_cards.event_id
+	    LEFT JOIN event_cards  ON event_cards.ordinal = v_idols.ordinal
+	    INNER JOIN events      ON events.id           = event_cards.event_id
 	''',
 	
 	'''CREATE VIEW v_idols_with_banner_info AS
 	    SELECT
 	        v_idols.*,
-	        banners.id AS banner_id,
-	        banners.type AS banner_type,
-	        banners.title_jp AS banner_title,
-	        banners.start_jp AS banner_start,
-	        banners.end_jp AS banner_end,
-	        banners.original_num_cards AS banner_num_cards
+			banners.id                 AS banner_id,
+			banners.type               AS banner_type,
+	        
+			banners.start_jp           AS banner_start_jp,
+			banners.end_jp             AS banner_end_jp,
+			
+			banners.start_ww           AS banner_start_ww,
+			banners.end_ww             AS banner_end_ww,
+	        
+			banners.original_num_cards AS banner_num_cards
 	    FROM v_idols
-	    LEFT JOIN banner_cards ON banner_cards.ordinal = v_idols.ordinal
-	    INNER JOIN banners      ON banners.id = banner_cards.banner_id
+	    LEFT JOIN banner_cards  ON banner_cards.ordinal = v_idols.ordinal
+	    INNER JOIN banners      ON banners.id           = banner_cards.banner_id
 	''',
 	
 	'''CREATE VIEW v_idols_with_events_and_banner_info AS
 	    SELECT
 			v_idols.*,
-			events.id AS event_id,
-			events.type AS event_type,
-			events.title_en AS event_title,
-			events.start_jp AS event_start,
-			events.end_jp AS event_end,
-			banners.id AS banner_id,
-			banners.type AS banner_type,
-			banners.title_jp AS banner_title,
-			banners.start_jp AS banner_start,
-			banners.end_jp AS banner_end,
+			events.id                  AS event_id,
+			events.type                AS event_type,
+			
+			events.title_ww            AS event_title,
+			events.start_jp            AS event_start_jp,
+			events.end_jp              AS event_end_jp,
+			events.start_ww            AS event_start_ww,
+			events.end_ww              AS event_end_ww,
+			
+			banners.id                 AS banner_id,
+			banners.type               AS banner_type,
+			
+			banners.start_jp           AS banner_start_jp,
+			banners.end_jp             AS banner_end_jp,
+			
+			banners.start_ww           AS banner_start_ww,
+			banners.end_ww             AS banner_end_ww,
+			
 			banners.original_num_cards AS banner_num_cards
 		FROM v_idols
-		LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
-		LEFT JOIN events      ON events.id = event_cards.event_id
+		LEFT JOIN event_cards  ON event_cards.ordinal  = v_idols.ordinal
+		LEFT JOIN events       ON events.id            = event_cards.event_id
 		LEFT JOIN banner_cards ON banner_cards.ordinal = v_idols.ordinal
-		LEFT JOIN banners      ON banners.id = banner_cards.banner_id
+		LEFT JOIN banners      ON banners.id           = banner_cards.banner_id
 		WHERE (events.id not null OR banners.id not null)
 	''',
 	
 	'''CREATE VIEW v_idols_with_events_and_banner_info_null_allowed AS
 	    SELECT
 			v_idols.*,
-			events.id AS event_id,
-			events.type AS event_type,
-			events.title_en AS event_title,
-			events.start_jp AS event_start,
-			events.end_jp AS event_end,
-			banners.id AS banner_id,
-			banners.type AS banner_type,
-			banners.title_jp AS banner_title,
-			banners.start_jp AS banner_start,
-			banners.end_jp AS banner_end,
+			events.id                  AS event_id,
+			events.type                AS event_type,
+			
+			events.title_ww            AS event_title,
+			events.start_jp            AS event_start,
+			events.end_jp              AS event_end,
+			events.start_ww            AS event_start_ww,
+			events.end_ww              AS event_end_ww,
+			
+			banners.id                 AS banner_id,
+			banners.type               AS banner_type,
+			
+			banners.start_jp           AS banner_start_jp,
+			banners.end_jp             AS banner_end_jp,
+			banners.start_ww           AS banner_start_ww,
+			banners.end_ww             AS banner_end_ww,
+			
 			banners.original_num_cards AS banner_num_cards
 		FROM v_idols
-		LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
-		LEFT JOIN events      ON events.id = event_cards.event_id
+		LEFT JOIN event_cards  ON event_cards.ordinal  = v_idols.ordinal
+		LEFT JOIN events       ON events.id            = event_cards.event_id
 		LEFT JOIN banner_cards ON banner_cards.ordinal = v_idols.ordinal
-		LEFT JOIN banners      ON banners.id = banner_cards.banner_id
+		LEFT JOIN banners      ON banners.id           = banner_cards.banner_id
 	''',
 	
 ]

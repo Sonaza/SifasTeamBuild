@@ -38,19 +38,7 @@
 										{% if card %}
 											<div class="card-array-cell idol-bg-color-dark">
 												<div class="grid-icon tooltip-data"
-													data-member-id="{{ member_id.value }}"
-													data-member-name="{{ member_id.full_name }}"
-													data-card-ordinal="{{ card.ordinal }}"
-													data-card-rarity="{{ card.rarity.value }}"
-													data-card-attribute="{{ card.attribute.value }}"
-													data-card-type="{{ card.type.value }}"
-													data-card-title-normal="{{ card.get_card_name(False) | e }}"
-													data-card-title-idolized="{{ card.get_card_name(True) | e }}"
-													data-card-source="{{ get_card_source_label(card) }}"
-													data-card-release-date="{{ card.release_date | format_datestring(long_month=True) }}"
-													data-card-event="{{ card.event_title or '' | e }}"
-													ng-mouseover="toggleTooltip($event, true)"
-													ng-mouseleave="toggleTooltip($event, false)">
+													{{ render_included("tooltip_data_attributes.html", card=card, card_status=1) }}>
 													<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank">
 														<span class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }}-{{ get_atlas_plane(card.ordinal) }} card-{{ card.ordinal }}">
 															<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>

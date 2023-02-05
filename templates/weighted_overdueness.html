@@ -1,4 +1,4 @@
-{{ include_page("templates/stats_category_topbar.html") }}
+{{ include_static("stats_category_topbar.html") }}
 
 <div class="main-content-inner">
 	<h2>Weighted Overdueness</h2>
@@ -41,7 +41,7 @@
 						</div>
 						
 						{% if is_valid_card(card) %}
-							<div class="st-td st-cell-17-5 card-release-elapsed" title="Released on {{ card.release_date | format_datestring }}">
+							<div class="st-td st-cell-17-5 card-release-elapsed" title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
 								<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[source] }}" class="history-link">
 									{{ data['last_limited_ur'].days | format_days }}
 								</a>
@@ -50,21 +50,7 @@
 							<div class="st-td st-cell-35 card-details">
 								<div class="thumbnail">
 									<div class="thumbnail-wrapper tooltip-data"
-										data-member-id="{{ member.value }}"
-										data-member-name="{{ member.full_name }}"
-										data-card-status="1"
-										data-card-ordinal="{{ card.ordinal }}"
-										data-card-rarity="{{ card.rarity.value }}"
-										data-card-attribute="{{ card.attribute.value }}"
-										data-card-type="{{ card.type.value }}"
-										data-card-title-normal="{{ card.get_card_name(False) | e }}"
-										data-card-title-idolized="{{ card.get_card_name(True) | e }}"
-										data-card-source="{{ get_card_source_label(card) }}"
-										data-card-release-date="{{ card.release_date | format_datestring(long_month=True) }}"
-										data-card-event="{{ card.event_title or '' | e }}"
-										data-stats-tooltip="1"
-										ng-mouseover="toggleTooltip($event, true)"
-										ng-mouseleave="toggleTooltip($event, false)">
+										{{ render_included("tooltip_data_attributes.html", card=card, card_status=1, stats_tooltip=True) }}>
 										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }}-{{ get_atlas_plane(card.ordinal) }} card-{{ card.ordinal }}">
 											<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 										</a>

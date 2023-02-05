@@ -98,7 +98,9 @@
 							<?php /* <span class="new-tag">[NEW]</span> */ ?>
 						</ul>
 					</div>
-					<div class="settings-wrapper unfocus-target" ng-class="sidebarToggleActive(settings_visible)">
+					<div class="settings-wrapper unfocus-target" ng-class="sidebarToggleActive(settings_visible)"
+						ng-mouseenter="settingsMouseEnter($event)"
+						ng-mouseleave="settingsMouseLeave($event)">
 						<div class="settings ng-cloak">
 							<h3 class="show-mobile">Settings</h3>
 							<div pill-button model="settings.use_idolized_thumbnails">
@@ -116,11 +118,24 @@
 									<option selected disabled>Loading...</option>
 								</select>
 							</div>
-							<div pill-button model="settings.show_tooltips">
-								Tooltips
+							<div pill-button model="settings.global_dates">
+								Use Global Dates
 							</div>
-							<div pill-button model="settings.dark_mode">
-								Dark Mode
+							<div class="more-settings" ng-class="{'more-settings-opened': is_in_mobile_mode() || more_settings_opened}">
+								<div class="more-settings-toggle" ng-click="open_more_settings()">
+									More &#x25BC;
+								</div>
+								<div class="more-settings-expando">
+									<div pill-button model="settings.show_tooltips">
+										Show Tooltips
+									</div>
+									<div pill-button model="settings.dark_mode">
+										Dark Mode
+									</div>
+									<div pill-button model="settings.disable_motion" ng-if="!prefers_reduced_motion() && !is_in_mobile_mode()">
+										No Animations
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -130,7 +145,7 @@
 				<div id="main-inner">
 					<div class="main-content" ng-view>
 						<noscript>
-							{{ include_page("templates/noscript_notice.html") }}
+							{{ include_static("noscript_notice.html") }}
 						</noscript>
 					</div>
 				</div>
@@ -169,7 +184,7 @@
 			</div>
 		</div>
 	</footer>
-	<script type="text/ng-template" id="pages/home.html">{{ include_page('public/pages/home.html', minify=True) }}</script>
+	<script type="text/ng-template" id="pages/home.html">{{ include_static('public/pages/home.html', minify=True, root_directory='') }}</script>
 	{% if cmd_args.dev %}
 		<script src="/js/vendor/angular/angular.js"></script>
 		<script src="/js/vendor/angular/angular-route.js"></script>
@@ -181,6 +196,7 @@
 		<script src="/js/vendor/angular/angular-sanitize.min.js"></script> #}
 		<script src="{{ cache_buster('/js/vendor/angular/angular-combined.min.js') }}"></script>
 	{% endif %}
+	<script src="{{ cache_buster('/js/tooltip_data.js') }}"></script>
 	<script src="{{ cache_buster('/js/public.js') }}"></script>
 </body>
 </html>

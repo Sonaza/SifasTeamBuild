@@ -1,6 +1,8 @@
 import os
 import platform
 import htmlmin
+import json
+import base64
 from datetime import datetime, timezone
 from IdolDatabase import *
 
@@ -77,28 +79,29 @@ class Utility:
 		return f"{hashvalue:06x}"
 
 	@staticmethod
-	def cache_buster(output_directory, filename):
-		full_path = os.path.normpath(output_directory + '/' + filename)
-		if not os.path.exists(full_path):
-			print(f"Cache busting path {full_path} does not exist!")
-			return filename
+	def cache_buster(root_directory, filepath):
+		full_filepath = os.path.normpath(root_directory + '/' + filepath).replace("\\", "/")
+		if not os.path.exists(full_filepath):
+			print(f"Cache busting path {full_filepath} does not exist!")
+			return filepath
 			
-		name, ext = os.path.splitext(filename)
-		buster = Utility.get_file_modifyhash(full_path)
+		name, ext = os.path.splitext(filepath)
+		buster = Utility.get_file_modifyhash(full_filepath)
 		return f"{name}.{buster}{ext}"
 		
 	@staticmethod
-	def include_page(filepath, minify=False):
-		if not os.path.exists(filepath):
-			return f"<h1>Error: {filepath} does not exist.</h1>"
+	def include_static(filename, minify=False, root_directory="templates"):
+		full_filepath = os.path.join(root_directory, filename).replace("\\", "/")
+		if not os.path.exists(full_filepath):
+			return f"<h1>Error: {full_filepath} does not exist.</h1>"
 		
-		with open(filepath, encoding="utf8") as f:
+		with open(full_filepath, encoding="utf8") as f:
 			data = f.read()
 			if minify:
 				data = htmlmin.minify(data, remove_empty_space=True)
 			return data
 			
-		return f"<h1>Error: Failed to open {filepath}.</h1>"
+		return f"<h1>Error: Failed to open {full_filepath}.</h1>"
 		
 	@staticmethod
 	def get_card_source_label(card):
@@ -126,6 +129,47 @@ class Utility:
 			day = f"{Utility.ordinalize(day)} of"
 		
 		return f"{day} {month} {year}"
+	
+	# ----------------------------------------------------------
+		
+	@staticmethod
+	def serialize_card(card):
+		data = {
+			'm' : [ card.member_id.value, card.member_id.full_name ],
+			'd' : [ card.ordinal, card.rarity.value, card.attribute.value, card.type.value ],
+			't' : [ card.get_card_name(False), card.get_card_name(True) ],
+			's' : Utility.get_card_source_label(card),
+			'r' : [ Utility.format_datestring(card.release_date[Locale.JP], long_month=True) ],
+		}
+		
+		if card.release_date[Locale.JP] != card.release_date[Locale.WW]:
+			data['r'].append(Utility.format_datestring(card.release_date[Locale.WW], long_month=True))
+		
+		if card.event_title:
+			data['e'] = card.event_title
+			
+		return data
+	
+	@staticmethod
+	def serialize_member(member):
+		data = {
+			'm' : [ member.value, member.full_name ],
+		}
+		return data
+	
+	@staticmethod
+	def base64encode_json(data):
+		serialized = json.dumps(data, separators=(',', ':'))
+		return base64.b64encode(serialized.encode('utf-8')).decode('utf-8')
+		
+	@staticmethod
+	def card_to_base64(card):
+		return Utility.base64encode_json(Utility.serialize_card(card))
+		
+	@staticmethod
+	def member_to_base64(member):
+		return Utility.base64encode_json(Utility.serialize_member(card))
+		
 		
 if __name__ == "__main__":
 	print(Utility.get_method_list())

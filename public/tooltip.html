@@ -28,9 +28,17 @@
 			<th>Related Event</th>
 			<td>[[ data.card_event ]]</td>
 		</tr>
-		<tr>
-			<th>Release Date</th>
-			<td>[[ data.card_release_date ]]</td>
+		<tr ng-if="data.card_release.length == 1">
+			<th>Release Date <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP"> <img src="/img/emoji_globe.png" class="locale-emoji" alt="WW"></th>
+			<td>[[ data.card_release[0] ]]</td>
+		</tr>
+		<tr ng-if="data.card_release.length == 2">
+			<th>Release Date <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP"></th>
+			<td>[[ data.card_release[0] ]]</td>
+		</tr>
+		<tr ng-if="data.card_release.length == 2">
+			<th>Release Date <img src="/img/emoji_globe.png" class="locale-emoji" alt="WW"></th>
+			<td>[[ data.card_release[1] ]]</td>
 		</tr>
 		<tr class="card-kirara-link" ng-if="is_in_mobile_mode() && data.card_ordinal != undefined">
 			<td colspan="2">

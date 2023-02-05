@@ -1,4 +1,4 @@
-{{ include_page("templates/stats_category_topbar.html") }}
+{{ include_static("stats_category_topbar.html") }}
 
 {% if category_tag == 'general' %}
 
@@ -92,13 +92,17 @@
 				<div class="stats-table {{ 'with-source' | conditional_css(data.show_source) }}">
 					<div class="st-tr st-thead">
 						<div class="st-th st-cell-30">{{ group.display_name }} Members</div>
-						<div class="st-th st-cell-70">Most Recent Card</div>
+						<div class="st-th st-cell-70">
+							Most Recent Card
+							<span class="jp-ts"><img src="/img/emoji_flag_jp.png" class="locale-emoji-20" alt="JP" title="Using Japanese Dates"></span>
+							<span class="ww-ts"><img src="/img/emoji_globe.png" class="locale-emoji-20" alt="WW" title="Using Global Dates"></span>
+						</div>
 					</div>
 					
 					<div class="st-tbody reversable">
 						{% for member, card, time_since, highlight in data.cards %}
 							<div class="st-tr idol-{{ member.value }} {{ 'empty-row' | conditional_css(not is_valid_card(card)) }} 
-								{{ 'highlight-idol' | conditional_css(highlight) }} {{ 'highlight-new' | conditional_css(is_valid_card(card) and (time_since.days <= 0)) }}" data-index="{{ loop.index }}">
+								{{ 'highlight-idol' | conditional_css(highlight) }} {{ 'highlight-new' | conditional_css(is_valid_card(card) and (time_since[Locale.JP].days <= 0)) }}" data-index="{{ loop.index }}">
 								<div class="st-td st-cell-30 idol-identity">
 									<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
 									<div class="idol-name">
@@ -118,35 +122,43 @@
 									{% endif %}
 								</div>
 								{% if is_valid_card(card) %}
-									<div class="st-td st-cell-20 card-release-elapsed" title="Released on {{ card.release_date | format_datestring }}">
+									<div class="st-td st-cell-20 card-release-elapsed">
 										{% if category_tag not in ['limited', 'nonlimited', 'ur', 'sr', 'all']: %}
 											<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[card.source] }}" class="history-link">
-												{{ time_since.days | format_days }}
+												{% if time_since[Locale.JP] != time_since[Locale.WW]: %}
+													<span class="jp-ts" title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
+														{{ time_since[Locale.JP].days | format_days }}
+													</span>
+													<span class="ww-ts" title="Released on {{ card.release_date[Locale.WW] | format_datestring }}">
+														{{ time_since[Locale.WW].days | format_days }}
+													</span>
+												{% else: %}
+													<span title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
+														{{ time_since[Locale.JP].days | format_days }}
+													</span>
+												{% endif %}
 											</a>
 										{% else %}
 											<a href="#/history/{{ member.first_name.lower() }}/{{ category_tag }}" class="history-link">
-												{{ time_since.days | format_days }}
+												{% if time_since[Locale.JP] != time_since[Locale.WW]: %}
+													<span class="jp-ts" title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
+														{{ time_since[Locale.JP].days | format_days }}
+													</span>
+													<span class="ww-ts" title="Released on {{ card.release_date[Locale.WW] | format_datestring }}">
+														{{ time_since[Locale.WW].days | format_days }}
+													</span>
+												{% else: %}
+													<span title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
+														{{ time_since[Locale.JP].days | format_days }}
+													</span>
+												{% endif %}
 											</a>
 										{% endif %}
 									</div>
 									<div class="st-td st-cell-50 card-details">
 										<div class="thumbnail">
 											<div class="thumbnail-wrapper tooltip-data"
-												data-member-id="{{ member.value }}"
-												data-member-name="{{ member.full_name }}"
-												data-card-status="1"
-												data-card-ordinal="{{ card.ordinal }}"
-												data-card-rarity="{{ card.rarity.value }}"
-												data-card-attribute="{{ card.attribute.value }}"
-												data-card-type="{{ card.type.value }}"
-												data-card-title-normal="{{ card.get_card_name(False) | e }}"
-												data-card-title-idolized="{{ card.get_card_name(True) | e }}"
-												data-card-source="{{ get_card_source_label(card) }}"
-												data-card-release-date="{{ card.release_date | format_datestring(long_month=True) }}"
-												data-card-event="{{ card.event_title or '' | e }}"
-												data-stats-tooltip="1"
-												ng-mouseover="toggleTooltip($event, true)"
-												ng-mouseleave="toggleTooltip($event, false)">
+												{{ render_included("tooltip_data_attributes.html", card=card, card_status=1, stats_tooltip=True) }}>
 												<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="card-thumbnail group-{{ card.group_id.value }}-{{ card.rarity.value }}-{{ get_atlas_plane(card.ordinal) }} card-{{ card.ordinal }}">
 													<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
 												</a>
