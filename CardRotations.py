@@ -585,10 +585,11 @@ class CardRotations():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _get_preload_assets(self):
+	def get_preload_assets(self):
 		preload_assets = []
 		preload_asset_files = [
 			self.css_settings.output_file,
+			os.path.join(CardRotations.OutputDirectory, "js/vendor/angular/angular-combined.min.js"),
 			os.path.join(CardRotations.OutputDirectory, "js/public.js"),
 			os.path.join(CardRotations.OutputDirectory, "js/tooltip_data.js"),
 		]
@@ -615,6 +616,8 @@ class CardRotations():
 				'type'   : ext_types[ext],
 				'rel'    : rel,
 			})
+			
+		print(preload_assets)
 		
 		return preload_assets
 	
@@ -923,11 +926,10 @@ class CardRotations():
 		# -------------------------------------------------------
 		# .htaccess
 		
-		preload_assets = self._get_preload_assets()
-		if self.due_for_rendering("template.htaccess"):
-			self.renderer.render_and_save("template.htaccess", ".htaccess", {
-				'preloads' : preload_assets
-			}, minify=False, generated_note=True)
+		preload_assets = self.get_preload_assets()
+		self.renderer.render_and_save("template.htaccess", ".htaccess", {
+			'preloads' : preload_assets
+		}, minify=False, generated_note=True)
 		
 		# -------------------------------------------------------
 		# Main index and layout
