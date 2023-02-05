@@ -71,8 +71,9 @@
 				<div class="st-th st-cell-50 idol-identity idol-bg-color-dim">
 					<div class="idol-icon idol-icon-32-border"></div>
 					<div class="idol-name">
-						<span class="hide-narrow-1400-ib">{{ member.full_name }} Card History</span>
-						<span class="show-narrow-1400-ib">{{ member.first_name }} Card History</span><span class="jp-ts"><img src="/img/emoji_flag_jp.png" class="locale-emoji-20" alt="JP" title="Using Japanese Dates"></span><span class="ww-ts"><img src="/img/emoji_globe.png" class="locale-emoji-20" alt="WW" title="Using Global Dates"></span>
+						{{ member.first_name }} Card History
+						<span class="jp-ts"><img src="/img/emoji_flag_jp.png" class="locale-emoji-20" alt="JP" title="Using Japanese Dates"></span>
+						<span class="ww-ts"><img src="/img/emoji_globe.png" class="locale-emoji-20" alt="WW" title="Using Global Dates"></span>
 					</div>
 				</div>
 			</div>
@@ -90,13 +91,16 @@
 						</div>
 						{% if time_since_previous != None %}
 							{% set title_text = 'the previous card' if loop.index != 1 else 'the character\'s introduction' %}
+							{% set dates_differ = (time_since_previous[Locale.JP] != time_since_previous[Locale.WW]) %}
 							<div class="st-td st-cell-15 time-inbetween with-data {{ 'character-addition-interval' | conditional_css(loop.index == 1) }}">
-								<span class="jp-ts" title="This card released {{ time_since_previous[Locale.JP].days | format_delta_days }} after {{ title_text }}.">
-								{{ time_since_previous[Locale.JP].days | format_delta_days }}
+								<span class="{{ 'jp-ts' | conditional_css(dates_differ) }}" title="This card released {{ time_since_previous[Locale.JP].days | format_delta_days }} after {{ title_text }}.">
+									{{ time_since_previous[Locale.JP].days | format_delta_days }}
 								</span>
-								<span class="ww-ts" title="This card released {{ time_since_previous[Locale.WW].days | format_delta_days }} after {{ title_text }}.">
-									{{ time_since_previous[Locale.WW].days | format_delta_days }}
-								</span>
+								{% if dates_differ: %}
+									<span class="ww-ts" title="This card released {{ time_since_previous[Locale.WW].days | format_delta_days }} after {{ title_text }}.">
+										{{ time_since_previous[Locale.WW].days | format_delta_days }}
+									</span>
+								{% endif %}
 							</div>
 						{% else %}
 							<div class="st-td st-cell-15 time-inbetween">

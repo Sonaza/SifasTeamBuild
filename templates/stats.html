@@ -93,7 +93,9 @@
 					<div class="st-tr st-thead">
 						<div class="st-th st-cell-30">{{ group.display_name }} Members</div>
 						<div class="st-th st-cell-70">
-							Most Recent Card&nbsp;<span class="jp-ts"><img src="/img/emoji_flag_jp.png" class="locale-emoji-20" alt="JP" title="Using Japanese Dates"></span><span class="ww-ts"><img src="/img/emoji_globe.png" class="locale-emoji-20" alt="WW" title="Using Global Dates"></span>
+							Most Recent Card
+							<span class="jp-ts"><img src="/img/emoji_flag_jp.png" class="locale-emoji-20" alt="JP" title="Using Japanese Dates"></span>
+							<span class="ww-ts"><img src="/img/emoji_globe.png" class="locale-emoji-20" alt="WW" title="Using Global Dates"></span>
 						</div>
 					</div>
 					
@@ -121,37 +123,23 @@
 								</div>
 								{% if is_valid_card(card) %}
 									<div class="st-td st-cell-20 card-release-elapsed">
+										
 										{% if category_tag not in ['limited', 'nonlimited', 'ur', 'sr', 'all']: %}
 											<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[card.source] }}" class="history-link">
-												{% if time_since[Locale.JP] != time_since[Locale.WW]: %}
-													<span class="jp-ts" title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
-														{{ time_since[Locale.JP].days | format_days }}
-													</span>
-													<span class="ww-ts" title="Released on {{ card.release_date[Locale.WW] | format_datestring }}">
-														{{ time_since[Locale.WW].days | format_days }}
-													</span>
-												{% else: %}
-													<span title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
-														{{ time_since[Locale.JP].days | format_days }}
-													</span>
-												{% endif %}
-											</a>
 										{% else %}
 											<a href="#/history/{{ member.first_name.lower() }}/{{ category_tag }}" class="history-link">
-												{% if time_since[Locale.JP] != time_since[Locale.WW]: %}
-													<span class="jp-ts" title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
-														{{ time_since[Locale.JP].days | format_days }}
-													</span>
-													<span class="ww-ts" title="Released on {{ card.release_date[Locale.WW] | format_datestring }}">
-														{{ time_since[Locale.WW].days | format_days }}
-													</span>
-												{% else: %}
-													<span title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
-														{{ time_since[Locale.JP].days | format_days }}
-													</span>
-												{% endif %}
-											</a>
 										{% endif %}
+										
+											{% set dates_differ = (time_since[Locale.JP] != time_since[Locale.WW]) %}
+											<span class="{{ 'jp-ts' | conditional_css(dates_differ) }}" title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
+												{{ time_since[Locale.JP].days | format_days }}
+											</span>
+											{% if dates_differ: %}
+												<span class="ww-ts" title="Released on {{ card.release_date[Locale.WW] | format_datestring }}">
+													{{ time_since[Locale.WW].days | format_days }}
+												</span>
+											{% endif %}
+										</a>
 									</div>
 									<div class="st-td st-cell-50 card-details">
 										<div class="thumbnail">
