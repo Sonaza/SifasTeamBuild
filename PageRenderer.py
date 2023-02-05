@@ -26,9 +26,10 @@ class PageRenderer():
 	
 	def save_tooltip_data(self, output_filename):
 		output_filepath = os.path.join(self.parent.OutputDirectory, output_filename).replace("\\", "/")
+		output_space = 145
 		
 		print()
-		print(f"{Fore.YELLOW}Saving tooltip data                        ->  {Fore.CYAN}{Style.BRIGHT}{output_filepath}{Style.RESET_ALL}                 ...  ", end='')
+		print(f"{f'{Fore.YELLOW}Saving     {Fore.WHITE}{Style.BRIGHT}tooltip data{Style.RESET_ALL}                    ->  {Fore.CYAN}{Style.BRIGHT}{output_filepath}':<{output_space}}{Style.RESET_ALL} ...  ", end='')
 		
 		with open(output_filepath, "w", encoding="utf-8") as output_file:
 			output_file.write("GLOBAL_TOOLTIP_DATA=")
@@ -246,8 +247,8 @@ class PageRenderer():
 			output_filename = output_filename,
 			output_basepath = output_basepath)
 		
-		num_slashes = output_filename.count('/')
-		output_space = 115 + max(0, num_slashes - 1) * 10
+		# num_slashes = output_filename.count('/')
+		output_space = 145 # + max(0, num_slashes - 1) * 10
 		
 		print(f"{f'{Fore.YELLOW}Rendering  {Fore.WHITE}{Style.BRIGHT}{template_filename:<30}{Style.RESET_ALL}  ->  {Fore.CYAN}{Style.BRIGHT}{output_filename}':<{output_space}}{Style.RESET_ALL} ...  ", end='')
 		

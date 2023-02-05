@@ -617,8 +617,6 @@ class CardRotations():
 				'rel'    : rel,
 			})
 			
-		print(preload_assets)
-		
 		return preload_assets
 	
 	def is_doing_full_render(self):
