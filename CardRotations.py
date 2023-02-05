@@ -590,6 +590,7 @@ class CardRotations():
 		preload_asset_files = [
 			self.css_settings.output_file,
 			os.path.join(CardRotations.OutputDirectory, "js/public.js"),
+			os.path.join(CardRotations.OutputDirectory, "js/tooltip_data.js"),
 		]
 		preload_asset_files.extend(glob(os.path.join(CardRotations.OutputDirectory, "img/thumbnails/atlas_*_30_*_idolized.webp")))
 		
