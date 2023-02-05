@@ -84,7 +84,8 @@ class CardRotations():
 			self.processor.watch_changes()
 			exit()
 			
-		self.renderer = PageRenderer(self)
+		if not os.path.exists("assets/css/idols.css"):
+			raise Exception("Generated idols.css does not exist! Run tools/generate_idols_css.py")
 		
 		if self.args.dev:
 			print("------ BUILDING IN DEV MODE ------")
@@ -101,9 +102,11 @@ class CardRotations():
 		
 		self.client = KiraraClient()
 		self.client.update_database(forced=self.args.force)
-			
-		if not os.path.exists("assets/css/idols.css"):
-			raise Exception("Generated idols.css does not exist! Run tools/generate_idols_css.py")
+		
+		self.renderer = PageRenderer(self)
+		if not self.renderer.render_history_loaded_successfully():
+			print("Render history load failed, a full render is required!")
+			self.args.force_render = True
 			
 		if not os.path.exists("public/js/tooltip_data.js"):
 			print("Tooltip data file does not exist, a full render is required!")

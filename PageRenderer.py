@@ -132,9 +132,14 @@ class PageRenderer():
 	
 	def reset_render_history(self):
 		self.render_history = {}
+	
+	def render_history_loaded_successfully(self):
+		return self.render_history_loaded
 		
 	def load_render_history(self):
 		self.render_history = {}
+		self.render_history_loaded = False
+		
 		if os.path.exists(self.RENDER_HISTORY_FILE):
 			try:
 				with open(self.RENDER_HISTORY_FILE, "r") as f:
@@ -144,6 +149,8 @@ class PageRenderer():
 					data['last_used'] = datetime.fromisoformat(data['last_used'])
 					data['output']    = set(data['output'])
 					data['embedded']  = set(data['embedded'])
+					
+				self.render_history_loaded = True
 			except:
 				self.render_history = {}
 		
