@@ -20,6 +20,9 @@ Redirect 301 /index.html /
 {% for item in preloads %}
 	Header add Link "<{{ item['path'] }}>;rel={{ item['rel'] }};as={{ item['type'] }}"{% endfor %}
 	
+	Header add Link "</img/emoji_flag_jp.png>;rel=preload;as=image"
+	Header add Link "</img/emoji_globe.png>;rel=preload;as=image"
+	
 	Header add Link "</css/fonts/Roboto-Regular-Latin.woff2>;rel=preload;as=font;crossorigin"
 	Header add Link "</css/fonts/Roboto-Bold-Latin.woff2>;rel=preload;as=font;crossorigin"
 	Header add Link "</css/fonts/Montserrat-Regular-latin.woff2>;rel=preload;as=font;crossorigin"
