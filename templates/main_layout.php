@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="app">
+<html ng-app="app" lang="en">
 <head>
 	<title ng-bind-html="title">SIFAS Card Rotations</title>
 	<meta charset="utf-8">
