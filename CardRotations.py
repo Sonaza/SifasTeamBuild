@@ -853,6 +853,13 @@ class CardRotations():
 			}, minify=not self.args.dev)
 		
 		# -------------------------------------------------------
+		# Save tooltip data cache
+		# Must be after all card pages have been rendered but before preloads!
+		
+		if self.is_doing_full_render():
+			self.renderer.save_tooltip_data("js/tooltip_data.js")
+		
+		# -------------------------------------------------------
 		# Index page
 		
 		if self.due_for_rendering("home.html"):
@@ -915,9 +922,6 @@ class CardRotations():
 		
 		# -------------------------------------------------------
 		# .htaccess
-		
-		if self.is_doing_full_render():
-			self.renderer.save_tooltip_data("js/tooltip_data.js")
 		
 		preload_assets = self._get_preload_assets()
 		if self.due_for_rendering("template.htaccess"):
