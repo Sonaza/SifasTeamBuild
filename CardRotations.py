@@ -916,6 +916,9 @@ class CardRotations():
 		# -------------------------------------------------------
 		# .htaccess
 		
+		if self.is_doing_full_render():
+			self.renderer.save_tooltip_data("js/tooltip_data.js")
+		
 		preload_assets = self._get_preload_assets()
 		if self.due_for_rendering("template.htaccess"):
 			self.renderer.render_and_save("template.htaccess", ".htaccess", {
@@ -924,9 +927,6 @@ class CardRotations():
 		
 		# -------------------------------------------------------
 		# Main index and layout
-		
-		if self.is_doing_full_render():
-			self.renderer.save_tooltip_data("js/tooltip_data.js")
 		
 		render_time_so_far = time.perf_counter() - render_start_time
 		
