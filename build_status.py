@@ -5,10 +5,11 @@ os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 import json
 from datetime import datetime, timezone, timedelta
-from IdolDatabase.Config import Config
+# from IdolDatabase.Config import Config
 
 try:
-	status_file = open(Config.BUILD_STATUS_FILE, "r+")
+	# status_file = open(Config.BUILD_STATUS_FILE, "r+")
+	status_file = open("build.status", "r+")
 except FileNotFoundError:
 	print("Build status file missing or unreadable.")
 	exit(-1337)
