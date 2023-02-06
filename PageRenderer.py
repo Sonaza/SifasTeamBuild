@@ -13,8 +13,6 @@ from Utility import *
 import CardValidity
 
 class PageRenderer():
-	RENDER_HISTORY_FILE = "render_history.json"
-	
 	included_pages = set()
 	tooltip_data = {
 		'cards'   : {},
@@ -141,9 +139,9 @@ class PageRenderer():
 		self.render_history = {}
 		self.render_history_loaded = False
 		
-		if os.path.exists(self.RENDER_HISTORY_FILE):
+		if os.path.exists(Config.RENDER_HISTORY_FILE):
 			try:
-				with open(self.RENDER_HISTORY_FILE, "r") as f:
+				with open(Config.RENDER_HISTORY_FILE, "r") as f:
 					self.render_history = json.load(f)
 				
 				for template, data in self.render_history.items():
@@ -168,7 +166,7 @@ class PageRenderer():
 		        return list(obj)
 		    raise TypeError(f"Type {type(obj)} not serializable")
 		
-		with open(self.RENDER_HISTORY_FILE, "w") as f:
+		with open(Config.RENDER_HISTORY_FILE, "w") as f:
 			json.dump(self.render_history, f, default=json_serialize)
 		
 		return True

@@ -276,7 +276,7 @@ class HistoryCrawler:
 	
 	def load_data_fallback(self):
 		try:
-			with open(Config.CARD_DATA_FALLBACK, "r", encoding="utf-8") as f:
+			with open(Config.DATA_FALLBACK_FILE, "r", encoding="utf-8") as f:
 				self.fallback_data = json.load(fp=f)
 				f.close()
 			return True
@@ -287,7 +287,7 @@ class HistoryCrawler:
 	
 	def save_data_fallback(self):
 		try:
-			with open(Config.CARD_DATA_FALLBACK, "w", encoding="utf-8") as f:
+			with open(Config.DATA_FALLBACK_FILE, "w", encoding="utf-8") as f:
 				json.dump(self.fallback_data, fp=f)
 			return True
 			

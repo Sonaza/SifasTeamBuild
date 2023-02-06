@@ -8,7 +8,8 @@
             ],
             "folder_exclude_patterns":
             [
-                "wanha"
+                "wanha",
+                "res"
             ],
 			"path": "."
 		}
@@ -31,39 +32,32 @@
 			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev --colored-output 0",
 
 			"env": {"PYTHONIOENCODING": "utf-8"},
-
+			
+			// "target": "ansi_color_build",
+			// "syntax": "Packages/ANSIescape/ANSI.tmLanguage",
+			
 			"working_dir": "$project_path",
-			"quiet": false
-		},
-		{
-			"name": "Python Dev Build Force Render",
-			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -fr --colored-output 0",
-
-			"env": {"PYTHONIOENCODING": "utf-8"},
-
-			"working_dir": "$project_path",
-			"quiet": false
-		},
-		{
-			"name": "Python Dev Build Force Update",
-			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -f --colored-output 0",
-
-			"env": {"PYTHONIOENCODING": "utf-8"},
-
-			"working_dir": "$project_path",
-			"quiet": false
-		},
-		{
-			"name": "Python Dev Build Rebuild Atlas",
-			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -ra --colored-output 0",
-
-			"env": {"PYTHONIOENCODING": "utf-8"},
-
-			"working_dir": "$project_path",
-			"quiet": false
+			"quiet": false,
+			
+			"variants":
+            [
+                {
+                    "name": "Force Render",
+                    "shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -fr --colored-output 0"
+                },
+                {
+                    "name": "Force Update",
+                    "shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -f --colored-output 0"
+                },
+                {
+                    "name": "Force Update, History from File",
+                    "shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -f -hf --colored-output 0"
+                },
+                {
+                    "name": "Rebuild Atlas",
+                    "shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -ra --colored-output 0"
+                },
+            ]
 		}
 	]
 }

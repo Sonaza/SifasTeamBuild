@@ -251,8 +251,6 @@ class KiraraIdol():
 #-----------------------------------------------------------------------------------------------------------------------
 
 class KiraraClient():
-	DefaultDatabaseFile = "idols.sqlite"
-	
 	Endpoints = {
 		'id_list'    : "https://allstars.kirara.ca/api/private/cards/id_list.json",
 		'by_id'      : "https://allstars.kirara.ca/api/private/cards/id/{}.json",
@@ -262,11 +260,7 @@ class KiraraClient():
 	# -------------------------------------------------------------------------------------------
 
 	def __init__(self, database_file = None):
-		if database_file == None:
-			self.database_path = KiraraClient.DefaultDatabaseFile
-		else:
-			self.database_path = database_file
-		
+		self.database_path = Config.DATABASE_FILE
 		self.initialize()
 
 	def initialize(self):
@@ -552,7 +546,7 @@ class KiraraClient():
 	def was_database_updated(self):
 		return self._database_updated
 	
-	def update_database(self, forced=False):
+	def update_database(self, forced=False, load_history_from_file=False):
 		if not forced and not self.database_needs_update():
 			print(f"  {Fore.BLACK}{Style.BRIGHT}No need to update database right now.{Style.RESET_ALL}")
 			return False
@@ -562,7 +556,7 @@ class KiraraClient():
 		
 		print()
 		print(f"{Fore.BLUE}{Style.BRIGHT}Retrieving events and banners data...{Style.RESET_ALL}")
-		history_data = self._retrieve_history_data()
+		history_data = self.retrieve_history_data(load_from_file=load_history_from_file)
 		
 		self.cards_fallback = self._load_cards_data_fallback()
 		
@@ -573,7 +567,7 @@ class KiraraClient():
 		if history_data:
 			print()
 			print(f"{Fore.BLUE}{Style.BRIGHT}Updating events and banners database...{Style.RESET_ALL}")
-			self._update_history_database(history_data)
+			self.update_history_database(history_data)
 			
 		self.refresh_last_update_time()
 		self._database_updated = True
@@ -582,7 +576,7 @@ class KiraraClient():
 		
 	def _load_cards_data_fallback(self):
 		try:
-			with open(Config.CARD_DATA_FALLBACK, "r", encoding="utf-8") as f:
+			with open(Config.DATA_FALLBACK_FILE, "r", encoding="utf-8") as f:
 				return json.load(fp=f)
 		except Exception as e:
 			print(f"  {Fore.RED}Failed to load sources fallback file: {e}{Style.RESET_ALL}")
@@ -668,7 +662,32 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _retrieve_history_data(self):
+	def append_to_history_data(self, new_entries):
+		try:
+			with open(Config.HISTORY_CRAWL_FILE, "r", encoding="utf-8") as file:
+				history_data = json.load(fp=file)
+		except:
+			with open(Config.HISTORY_CRAWL_FILE, "w", encoding="utf-8") as file:
+				json.dump(new_entries, fp=file)
+			return
+		
+		known_event_hashes  = set([event['cards_hash'] for event in history_data['events']])
+		for event in new_entries['events']:
+			if event['cards_hash'] in known_event_hashes: continue
+			history_data['events'].append(event)
+		history_data['events'].sort(key=itemgetter('start_jp'))
+			
+		known_banner_hashes = set([banner['cards_hash'] for banner in history_data['banners']])
+		for banner in new_entries['banners']:
+			if banner['cards_hash'] in known_banner_hashes: continue
+			history_data['banners'].append(banner)
+		history_data['banners'].sort(key=itemgetter('start_jp'))
+		
+		with open(Config.HISTORY_CRAWL_FILE, "w", encoding="utf-8") as file:
+			json.dump(history_data, fp=file)
+	
+	
+	def retrieve_history_data(self, load_from_file=False):
 		query = "SELECT title_ww, title_jp FROM events"
 		self.db.execute(query)
 		known_events = [title for event in self.db.fetchall() for title in (event['title_ww'], event['title_jp'])]
@@ -677,34 +696,37 @@ class KiraraClient():
 		self.db.execute(query)
 		known_banners_hashes = [data['cards_hash'] for data in self.db.fetchall()]
 		
-		load_json = 0
-		
-		if not load_json:
+		if not load_from_file:
 			hc = HistoryCrawler()
-			history_result = hc.crawl_history(
+			new_history_entries = hc.crawl_history(
 				known_events         = known_events,
 				known_banners_hashes = known_banners_hashes)
+			
+			self.append_to_history_data(new_history_entries)
+			
 		else:
-			with open("history.json", "r", encoding="utf-8") as f:
-				history_result = json.load(fp=f)
-		
-		if not history_result:
-			print(f"  {Fore.MAGENTA}{Style.BRIGHT}Found no new event data. Nothing to do...{Style.RESET_ALL}")
+			print(f"  {Fore.YELLOW}{Style.BRIGHT}Loading history data from file{Style.RESET_ALL}  ...  ", end='')
+			try:
+				with open(Config.HISTORY_CRAWL_FILE, "r", encoding="utf-8") as file:
+					new_history_entries = json.load(fp=file)
+				print(f"{Fore.GREEN}{Style.BRIGHT}Success!{Style.RESET_ALL}")
+			except:
+				print(f"{Fore.RED}{Style.BRIGHT}Failed!   Proceeding without history data.{Style.RESET_ALL}")
 			return None
 		
-		# if not load_json:
-		# 	with open("history.json", "w", encoding="utf-8") as f:
-		# 		json.dump(history_result, fp=f)
+		if not new_history_entries['events'] and not new_history_entries['banners']:
+			print(f"  {Fore.MAGENTA}{Style.BRIGHT}Found no new event data. Nothing to do...{Style.RESET_ALL}")
+			return None
 		
 		output_data = {
 			'known_events'         : known_events,
 			'known_banners_hashes' : known_banners_hashes,
-			'history_result'       : history_result,
+			'history_result'       : new_history_entries,
 		}
 		return output_data
 		
 	
-	def _update_history_database(self, data):
+	def update_history_database(self, data):
 		known_events         = data['known_events']
 		known_banners_hashes = data['known_banners_hashes']
 		history_result       = data['history_result']

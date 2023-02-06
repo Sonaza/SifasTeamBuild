@@ -5,7 +5,7 @@ import os
 from colorama import Fore, Style
 from collections import namedtuple
 
-from IdolDatabase.Config import Config
+from IdolDatabase import Config
 from Utility import Utility
 
 AtlasMetadata = namedtuple('AtlasMetadata', 'group rarity atlas_plane coordinates')
@@ -15,8 +15,6 @@ def chunked(seq, size):
 		yield seq[x:x+size]
 
 class CardThumbnails():
-	ATLAS_METADATA_FILE = "atlas_metadata.json"
-	
 	def __init__(self, client, output_directory):
 		self.client = client
 		self.output_directory = output_directory
@@ -32,10 +30,10 @@ class CardThumbnails():
 	
 	def load_atlas_metadata(self):
 		self.atlas_metadata = {}
-		if os.path.exists(self.ATLAS_METADATA_FILE):
+		if os.path.exists(Config.ATLAS_METADATA_FILE):
 			try:
-				with open(self.ATLAS_METADATA_FILE, "r") as f:
-					metadata = json.load(f)
+				with open(Config.ATLAS_METADATA_FILE, "r") as input_file:
+					metadata = json.load(input_file)
 				
 				for ordinal, data in metadata.items():
 					self.atlas_metadata[int(ordinal)] = AtlasMetadata(Group(data[0]), Rarity(data[1]), data[2], data[3])
@@ -44,6 +42,7 @@ class CardThumbnails():
 			except:
 				self.atlas_metadata = {}
 		return False
+		
 		
 	def save_atlas_metadata(self):
 		if not isinstance(self.atlas_metadata, dict):
@@ -55,10 +54,10 @@ class CardThumbnails():
 		        return obj.value
 		    raise TypeError(f"Type {type(obj)} not serializable")
 			
-		with open(self.ATLAS_METADATA_FILE, "w", encoding="utf8") as output_file:
+		with open(Config.ATLAS_METADATA_FILE, "w", encoding="utf8") as output_file:
 			json.dump(self.atlas_metadata, output_file, default=json_serialize)
 			
-		print(f'{Fore.BLUE}{Style.BRIGHT}Saved atlas metadata in {Fore.WHITE}{self.ATLAS_METADATA_FILE}{Style.RESET_ALL}!')
+		print(f'{Fore.BLUE}{Style.BRIGHT}Saved atlas metadata in {Fore.WHITE}{Config.ATLAS_METADATA_FILE}{Style.RESET_ALL}!')
 		return True
 		
 		

@@ -1,7 +1,7 @@
 {
 	"name": "SIFAS Card Rotations",
 	"short_name": "SIFAS Card Rotations",
-	"description": "View card rotations and related statistics.",
+	"description": "Love Live SIF All Stars card rotations and related statistics.",
 	"start_url": "/",
 	"display": "standalone",
 	"background_color": "#1C0943",

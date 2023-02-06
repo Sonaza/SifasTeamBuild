@@ -49,6 +49,9 @@ class CardRotations():
 		self.parser.add_argument("-a", "--auto", help="Flags this update as having been done automatically.",
 							action="store_true")
 		
+		self.parser.add_argument("-hf", "--history-from-file", help="Loads history from file instead of doing a crawl.",
+							action="store_true")
+		
 		self.parser.add_argument("-dev", help="Flags it as developing build.",
 							action="store_true")
 		
@@ -100,8 +103,8 @@ class CardRotations():
 		print("Current Working Directory", os.getcwd())
 		print()
 		
-		self.client = KiraraClient()
-		self.client.update_database(forced=self.args.force)
+		self.client = KiraraClient(database_file=Config.DATABASE_FILE)
+		self.client.update_database(forced=self.args.force, load_history_from_file=self.args.history_from_file)
 		
 		self.renderer = PageRenderer(self)
 		if not self.renderer.render_history_loaded_successfully():
@@ -996,7 +999,7 @@ if __name__ == "__main__":
 		
 		build_exception = e
 	
-	output_file = open("build.status", "w")
+	output_file = open(Config.BUILD_STATUS_FILE, "w")
 	json.dump(buildstatus, output_file)
 	output_file.close()
 	
