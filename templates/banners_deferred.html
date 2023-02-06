@@ -1,11 +1,13 @@
-<h2>Gacha Banners</h2>
-<p>
-	List of gacha banners and their featured rate-up cards, excluding events and reruns.
-	For event gacha check <a href="/#/event_cards">the event cards page</a>.
-</p>
-<p>
-	Initial cards of the release commemoration banner are not included on this page as this banner did not have featured rate-up cards.
-</p>
+<div class="main-content-inner">
+	<h2>Gacha Banners</h2>
+	<p>
+		List of gacha banners with their featured rate-up cards, excluding events and reruns.
+		For the event gacha check <a href="/#/event_cards">the event cards page</a>.
+	</p>
+	<p>
+		Initial cards of the release commemoration banner are not included on this page as this banner did not have featured rate-up cards.
+	</p>
+</div>
 
 <p class="show-mobile show-narrow-1400"><b>Hint:</b> You can scroll the table horizontally if it doesn't fit on screen.</p>
 
@@ -13,16 +15,6 @@
 	<label>
 		Filter Banners <span class="hide-mobile">(E)</span>
 	</label>
-{# 	<select ng-model="filter_settings.filter" class="select-box-hidden">
-		<option ng-value="-1">&mdash; Show All &mdash;</option>
-		{% for group in Group %}
-			<optgroup label="{{ group.display_name }}">
-				{% for idol in Idols.by_group[group] %}
-					<option ng-value="{{ idol.member_id.value }}">{{ idol.member_id.full_name }}</option>
-				{% endfor %}
-			</optgroup>
-		{% endfor %}
-	</select> #}
 	<div class="settings-select-box">
 		<div class="select-box-backdrop" ng-click="toggleSelectBox($event)" ng-if="select_box_options_opened"></div>
 		<div class="select-box-current" ng-click="toggleSelectBox($event)">
