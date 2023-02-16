@@ -291,7 +291,7 @@ class RotationsGenerator:
 		
 	def run_generators(self):
 		for generator_name, generator in self.generators.items():
-			print(f"──────── {generator.generator_display_name + ' ':─<110}")
+			print(f"──────── {generator.generator_display_name + ' ':─<60}")
 			print()
 			with print_indent(4):
 				if generator.due_for_rendering():
