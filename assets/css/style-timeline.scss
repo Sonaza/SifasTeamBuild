@@ -10,6 +10,8 @@ $timeline-thumbnail-size: 36px;
 $timeline-scrollbar-height: 35px;
 
 $event-colors: #61B424 #2F9CD5;
+// $event-banner-colors: #7B9A64 #6792A8;
+$event-banner-colors: #6DC882 #71C0C7;
 $banner-colors: #BA71F7 #F64D91 #E5A201 #CECEB6;
 
 $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 210 201 207 205 212 208 206 204 211;
@@ -279,6 +281,7 @@ body.hide-tooltips #timeline-date-label
 	}
 	
 	.timeline-entry .event-highlight,
+	.timeline-entry .event-banner-highlight,
 	.timeline-entry .banner-highlight
 	{
 		position: absolute;
@@ -287,8 +290,9 @@ body.hide-tooltips #timeline-date-label
 		pointer-events: none;
 		display: none;
 	}
-	&.show-events .timeline-entry .event-highlight   { display: block; }
-	&.show-banners .timeline-entry .banner-highlight { display: block; }
+	&.show-events .timeline-entry .event-highlight        { display: block; }
+	&.show-events .timeline-entry .event-banner-highlight { display: block; }
+	&.show-banners .timeline-entry .banner-highlight      { display: block; }
 	
 	.timeline-scroller
 	{
@@ -604,6 +608,39 @@ body.hide-tooltips #timeline-date-label
 		}
 	}
 	
+	.timeline-entry .event-banner-highlight
+	{
+		@each $color in $event-banner-colors
+		{
+			$event-index: index($event-banner-colors, $color);
+			&.event-#{$event-index}
+			{
+				box-shadow: 0 0 5px #{$color}aa, 0 0 0 1px #{$color}aa;
+				background: linear-gradient(to right, #{$color + '66'} 0%,
+					                                  #{$color + '50'} 5%,
+					                                  #{$color + '10'} 50%,
+					                                  #{$color + '00'} 80%,
+					                                  #{$color + '30'} 85%,
+					                                  #{$color + '55'} 100%),
+							repeating-linear-gradient(60deg,
+									#{$color + '10'} 0px, #{$color + '10'} 9px, #{$color + '00'} 10px, #{$color + '00'} 19px),
+							repeating-linear-gradient(-60deg,
+									#{$color + '15'} 0px, #{$color + '10'} 9px, #{$color + '00'} 10px, #{$color + '00'} 19px);
+				
+				&.hovered
+				{
+					box-shadow: 0 0 5px #{$color}aa, 0 0 0 1px #{$color}cc !important; 
+				}
+			}
+		}
+		opacity: 0.7;
+		transition: all ease-out 120ms;
+		&.hovered
+		{
+			opacity: 1;
+		}
+	}
+	
 	.timeline-entry .banner-highlight
 	{
 		@each $color in $banner-colors
@@ -633,7 +670,28 @@ body.order-reversed .timeline-scroller .timeline-entries
 {
 	flex-direction: row-reverse !important;
 	
-	.banner-highlight
+	.timeline-entry .event-banner-highlight
+	{
+		@each $color in $event-banner-colors
+		{
+			$event-index: index($event-banner-colors, $color);
+			&.event-#{$event-index}
+			{
+				background: linear-gradient(to right, #{$color + '66'} 0%,
+					                                  #{$color + '50'} 5%,
+					                                  #{$color + '10'} 50%,
+					                                  #{$color + '00'} 80%,
+					                                  #{$color + '30'} 85%,
+					                                  #{$color + '55'} 100%),
+							repeating-linear-gradient(-60deg,
+									#{$color + '10'} 0px, #{$color + '10'} 9px, #{$color + '00'} 10px, #{$color + '00'} 19px),
+							repeating-linear-gradient(60deg,
+									#{$color + '15'} 0px, #{$color + '10'} 9px, #{$color + '00'} 10px, #{$color + '00'} 19px);
+			}
+		}
+	}
+	
+	.timeline-entry .banner-highlight
 	{
 		@each $color in $banner-colors
 		{

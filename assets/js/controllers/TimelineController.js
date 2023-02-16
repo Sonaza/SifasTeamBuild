@@ -373,6 +373,7 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		}
 			
 		deferred_unloads_halted = true;
+		$scope.position_update_halted = true;
 		
 		$timeout(() => {
 			$scope.jump_to_position($scope.timeline_settings.target_month);
@@ -381,6 +382,12 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		$timeout(() => {
 			$scope.jump_to_position($scope.timeline_settings.target_month);
 			deferred_unloads_halted = false;
+			
+			$timeout(() =>
+			{
+				$scope.position_update_halted = false;
+				$scope.update_timeline_position_param();
+			});
 		}, 100);
 	});
 	
@@ -538,6 +545,9 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	$scope.position_update_timeout = undefined;
 	$scope.$on("$includeContentLoaded", function(event, templateName)
 	{
+		if ($scope.position_update_halted)
+			return;
+		
 		if ($rootScope.settings.order_reversed)
 		{
 			$timeout.cancel($scope.position_update_timeout);

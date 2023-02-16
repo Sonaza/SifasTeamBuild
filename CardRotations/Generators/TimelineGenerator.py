@@ -120,12 +120,21 @@ class TimelineGenerator(GeneratorBase):
 					current_bucket[days_from_start].sort(key=lambda x: -x.rarity.value)
 				
 				# --------------------------------------------------------------
-					
+				
 				if idol.event.id:
-					if idol.source == Source.Event and idol.event.id not in timeline['events']:
+					if idol.event.id not in timeline['events']:
+						timeline['events'][idol.event.id] = {
+							'event'    : None,
+							'banner'   : None,
+							'summary'  : None,
+						}
+					
+					event_bucket = timeline['events'][idol.event.id]
+					
+					if idol.source == Source.Event and not timeline['events'][idol.event.id]['event']:
 						idol.event.start[locale] = idol.event.start[locale].replace(hour=0, minute=0, second=0)
 						idol.event.end[locale]   = idol.event.end[locale].replace(hour=0, minute=0, second=0)
-						timeline['events'][idol.event.id] = {
+						event_bucket['event'] = {
 							'info'            : idol.event,
 							'duration'        : (idol.event.end[locale] - idol.event.start[locale]).days + 1,
 							'days_from_start' : (idol.event.start[locale] - entry_info[release_month]['start']).days,
@@ -134,11 +143,38 @@ class TimelineGenerator(GeneratorBase):
 								'end'  : (idol.event.end[locale],   (idol.event.end[locale].year, idol.event.end[locale].month, idol.event.end[locale].day)),
 							},
 						}
+					
+					if idol.source == Source.Gacha and not timeline['events'][idol.event.id]['banner']:
+						idol.event.start[locale] = idol.event.start[locale].replace(hour=0, minute=0, second=0)
+						# idol.event.end[locale]   = idol.event.end[locale].replace(hour=0, minute=0, second=0)
+						idol.release_date[locale]   = idol.release_date[locale].replace(hour=0, minute=0, second=0)
+						event_bucket['banner'] = {
+							'info'            : idol.event,
+							'duration'        : (idol.event.start[locale] - idol.release_date[locale]).days + 1,
+							'days_from_start' : (idol.release_date[locale] - entry_info[release_month]['start']).days,
+							'timespan' : {
+								'start': (idol.release_date[locale], (idol.release_date[locale].year, idol.release_date[locale].month, idol.release_date[locale].day)),
+								'end'  : (idol.event.start[locale],  (idol.event.start[locale].year, idol.event.start[locale].month, idol.event.start[locale].day)),
+							},
+						}
+					
+					if not event_bucket['summary'] and event_bucket['event'] and event_bucket['banner']:
+						full_start = event_bucket['banner']['timespan']['start'][0]
+						full_end   = event_bucket['event']['timespan']['end'][0]
+						event_bucket['summary'] = {
+							'info'            : idol.event,
+							'duration'        : (full_end - full_start).days + 1,
+							'days_from_start' : (full_start - entry_info[release_month]['start']).days,
+							'timespan' : {
+								'start': (full_start, (full_start.year, full_start.month, full_start.day)),
+								'end'  : (full_end,   (full_end.year, full_end.month, full_end.day)),
+							},
+						}
 						
-						start_key = idol.event.start[locale].strftime("%Y-%m")
+						start_key = full_start.strftime("%Y-%m")
 						entry_info[start_key]['events'].add(idol.event.id)
 						
-						end_key = idol.event.end[locale].strftime("%Y-%m")
+						end_key = full_end.strftime("%Y-%m")
 						if end_key not in entry_info:           entry_info[end_key] = {}
 						if 'events' not in entry_info[end_key]: entry_info[end_key]['events']  = set()
 						entry_info[end_key]['events'].add(idol.event.id)
@@ -180,14 +216,13 @@ class TimelineGenerator(GeneratorBase):
 				featured_member = events[event_id]['free'][0].member_id
 				event_gacha_urs = [card.member_id for card in events[event_id]['gacha'] if card.rarity == Rarity.UR]
 				metadata_json['events'][event_id] = {
-					'title'        : event_data['info'].title,
+					'title'        : event_data['summary']['info'].title,
 					'featured'     : featured_member,
 					'gacha'        : event_gacha_urs,
-					# 'members'      : Utility.concat([card.member_id.name for card in events[event_id]['free']], separator=', '),
-					'type'         : event_data['info'].type,
-					'start_offset' : event_data['days_from_start'],
-					'duration'     : event_data['duration'],
-					'timespan'     : event_data['timespan'],
+					'type'         : event_data['summary']['info'].type,
+					'start_offset' : event_data['summary']['days_from_start'],
+					'duration'     : event_data['summary']['duration'],
+					'timespan'     : event_data['summary']['timespan'],
 				}
 				
 			banners = self.banners_generator.get_banners_with_cards()

@@ -14,6 +14,7 @@ from collections import defaultdict, namedtuple
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Dict, Any, Union
 
+from . import DBUtility
 
 from .Skill import Skill
 from .SkillEnum import ST, TT
@@ -85,6 +86,9 @@ class KiraraNameSubstitutions():
 	
 # 	skill_effects : List[SkillEffect] = field(init = False, default_factory=list)
 
+class KiraraIdolLazyLoadable():
+	def __bool__(self):
+		return False
 
 class KiraraIdol():
 	def __init__(self, client, data):
@@ -97,7 +101,6 @@ class KiraraIdol():
 	
 	def build_from_database_row(self, data):
 		self.ordinal        = data['ordinal']
-		self.id             = data['id']
 		
 		self.member_id      = Member(data['member_id'])
 		self.group_id       = Group(data['group_id'])
@@ -114,46 +117,50 @@ class KiraraIdol():
 		
 		self.release_date   = self.make_locale_datepair(data, 'release_date')
 		
-		self.build_event_info(data)
-		self.build_banner_info(data)
+		if 'event_id' in data:
+			self.event = self.process_card_metadata(MetadataType.Event, data)
+		else:
+			self.event = KiraraIdolLazyLoadable()
+			
+		if 'banner_id' in data:
+			self.banner = self.process_card_metadata(MetadataType.Banner, data)
+		else:
+			self.banner = KiraraIdolLazyLoadable()
 		
 		try:
 			self.data = json.loads(data['json'])
 		except (IndexError, json.JSONDecodeError):
-			self.data = {}
-			# self.data = KiraraIdolLazyLoader()
+			self.data = KiraraIdolLazyLoadable()
+			
+	
+	def __getattribute__(self, attr):
+		if isinstance(super().__getattribute__(attr), KiraraIdolLazyLoadable):
+			lazy_data = self._client.check_lazy_loaders(self, attr)
+			setattr(self, attr, lazy_data)
+			
+		return super().__getattribute__(attr)
 	
 	def has_locale_datepair(self, data, key):
 		return all([(key + locale.suffix) in data.keys() and data[key + locale.suffix] != None for locale in Locale])
 		
 	def make_locale_datepair(self, data, key):
-		return {locale: datetime.fromisoformat(data[key + locale.suffix]) for locale in Locale}
+		if self.has_locale_datepair(data, key):
+			return {locale: datetime.fromisoformat(data[key + locale.suffix]) for locale in Locale}
+		else:
+			return None
 	
-	def build_event_info(self, data):
-		self.event = dotdict({
-			'id'       : Utility.getter(data, 'event_id',    None),
-			'type'     : Utility.getter(data, 'event_type',  None, EventType),
-			'title'    : Utility.getter(data, 'event_title', None),
-			'start'    : None,
-			'end'      : None,
-		})
+	def process_card_metadata(self, metadata_type : MetadataType, data):
+		assert(isinstance(metadata_type, MetadataType))
 		
-		if self.has_locale_datepair(data, 'event_start') and self.has_locale_datepair(data, 'event_end'):
-			self.event.start = self.make_locale_datepair(data, 'event_start')
-			self.event.end   = self.make_locale_datepair(data, 'event_end')
-	
-	def build_banner_info(self, data):
-		self.banner = dotdict({
-			'id'       : Utility.getter(data, 'banner_id',    None),
-			'type'     : Utility.getter(data, 'banner_type',  None, BannerType),
-			'title'    : Utility.getter(data, 'banner_title', None),
-			'start'    : None,
-			'end'      : None,
+		metadata = dotdict({
+			'id'       : Utility.getter(data, metadata_type.prefix + 'id',    None),
+			'type'     : Utility.getter(data, metadata_type.prefix + 'type',  None, metadata_type.category_type),
+			'title'    : Utility.getter(data, metadata_type.prefix + 'title', None),
+			'start'    : self.make_locale_datepair(data, metadata_type.prefix + 'start'),
+			'end'      : self.make_locale_datepair(data, metadata_type.prefix + 'end'),
 		})
-		
-		if self.has_locale_datepair(data, 'banner_start') and self.has_locale_datepair(data, 'banner_end'):
-			self.banner.start = self.make_locale_datepair(data, 'banner_start')
-			self.banner.end   = self.make_locale_datepair(data, 'banner_end')
+			
+		return metadata
 	
 	# ----------------------------------------------------------
 	
@@ -305,8 +312,8 @@ class KiraraClient():
 			self.dbcon = sqlite.connect(self.database_path)
 		except:
 			raise KiraraClientException("Failed to open database connection.")
-			
-		self.dbcon.row_factory = sqlite.Row
+		
+		self.dbcon.row_factory = DBUtility.Row
 		self.db = self.dbcon.cursor()
 		
 		self._create_tables()
@@ -315,6 +322,8 @@ class KiraraClient():
 	
 	def _create_tables(self):
 		from .KiraraDatabaseSchema import schemas
+		
+		self.db.execute("BEGIN TRANSACTION")
 		for schema in schemas:
 			try:
 				self.db.execute(schema)
@@ -325,6 +334,7 @@ class KiraraClient():
 				if not ('already exists' in error_str):
 					print(schema)
 					raise e
+		self.db.execute("COMMIT")
 				
 		self.dbcon.commit()
 	
@@ -334,11 +344,8 @@ class KiraraClient():
 		query = "SELECT value FROM parameters WHERE key = 'last_database_update'"
 		self.db.execute(query)
 		
-		data = self.db.fetchone()
-		if data == None:
-			return None
-		
 		try:
+			data = self.db.fetchone()
 			last_update = datetime.fromisoformat(data['value'])
 		except:
 			return None
@@ -363,27 +370,6 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _make_insert_query(self, table, data=None, keys=None, update_insert=False):
-		if keys == None:
-			if data == None: raise KiraraClientValueError("Data can't be None if keys are not explicitly defined.")
-			keys = data.keys()
-		
-		columns = ', '.join(keys)
-		values = ', '.join([f":{key}"  for key in keys])
-		
-		if update_insert:
-			return f"""INSERT OR REPLACE INTO {table} ({columns}) VALUES ({values})"""
-		else:
-			return f"""INSERT INTO {table} ({columns}) VALUES ({values})"""
-		
-	def _get_enum_values(self, enum_list):
-		return [x.value for x in enum_list]
-	
-	def _make_where_placeholders(self, data):
-		return ', '.join(['?'] * len(data))
-	
-	# -------------------------------------------------------------------------------------------
-		
 	def cache_all_idols(self, rescrape_days):
 		missing_ordinals = self.get_missing_ordinals()
 		if missing_ordinals:
@@ -392,14 +378,16 @@ class KiraraClient():
 				for index, ordinals_chunk in enumerate(chunked(missing_ordinals, 20)):
 					print(f"{Fore.YELLOW}{Style.BRIGHT}Batch {index + 1:>2}{Fore.WHITE}  : {Utility.concat(ordinals_chunk, separator=', ', last_separator=' and ')}")
 					self.query_idol_data_by_ordinal(ordinals_chunk, rescrape=False)
+					time.sleep(0.2)
 		
-		rescrape_ordinals = self.get_ordinals_to_rescrape(rescrape_days, missing_ordinals)
-		if rescrape_ordinals:
-			print(f"  {Fore.CYAN}{Style.BRIGHT}Rescraping for updates{Fore.WHITE}  : {len(rescrape_ordinals)} idols{Style.RESET_ALL}")
-			with print_indent(4):
-				for index, ordinals_chunk in enumerate(chunked(rescrape_ordinals, 20)):
-					print(f"{Fore.YELLOW}{Style.BRIGHT}Batch {index + 1:>2}{Fore.WHITE}  : {Utility.concat(ordinals_chunk, separator=', ', last_separator=' and ')}")
-					self.query_idol_data_by_ordinal(ordinals_chunk, rescrape=True)
+		# rescrape_ordinals = self.get_ordinals_to_rescrape(rescrape_days, missing_ordinals)
+		# if rescrape_ordinals:
+		# 	print(f"  {Fore.CYAN}{Style.BRIGHT}Rescraping for updates{Fore.WHITE}  : {len(rescrape_ordinals)} idols{Style.RESET_ALL}")
+		# 	with print_indent(4):
+		# 		for index, ordinals_chunk in enumerate(chunked(rescrape_ordinals, 20)):
+		# 			print(f"{Fore.YELLOW}{Style.BRIGHT}Batch {index + 1:>2}{Fore.WHITE}  : {Utility.concat(ordinals_chunk, separator=', ', last_separator=' and ')}")
+		# 			self.query_idol_data_by_ordinal(ordinals_chunk, rescrape=True)
+		# 			time.sleep(0.2)
 	
 	
 	def get_missing_ordinals(self):
@@ -435,18 +423,17 @@ class KiraraClient():
 	def query_idol_data_by_ordinal(self, requested_ordinals : List[int], rescrape : bool = False):
 		assert isinstance(requested_ordinals, list)
 		
-		query = f"""SELECT ordinal, json FROM idols_json
-					WHERE ordinal IN ({self._make_where_placeholders(requested_ordinals)})"""
+		query = f"""SELECT ordinal, json, hash FROM idols_json
+					WHERE ordinal IN ({DBUtility.where_placeholders(requested_ordinals)})"""
 		self.db.execute(query, requested_ordinals)
 		
 		existing_idols_data = {}
 		
 		existing_ordinals = []
-		for ordinal, json_data in self.db.fetchall():
+		for ordinal, json_data, json_data_hash in self.db.fetchall():
 			ordinal = int(ordinal)
 			existing_ordinals.append(ordinal)
 			
-			json_data_hash = hashlib.sha1(json_data.encode('utf-8')).hexdigest()
 			try:
 				json_data_parsed = json.loads(json_data)
 			except json.JSONDecodeError:
@@ -463,15 +450,15 @@ class KiraraClient():
 		
 		if not rescrape and existing_ordinals:
 			if requested_ordinals:
-				print("  Some idols were already present in database JSON archive.")
+				print("  Some idols were already present in the JSON archive. Not re-querying them again.")
 			else:
-				print("  All idols were already present in database JSON archive. No need to query Kirara database.")
+				print("  All idols were already present in the JSON archive. No need to query Kirara database.")
 		
 		elif rescrape:
 			if len(requested_ordinals) == len(existing_ordinals):
-				print("  All rescraped idols were present in database JSON archive.")
+				print("  All rescraped idols were present in the JSON archive.")
 			else:
-				print("  Some rescraped idols were not present in database JSON archive.")
+				print("  Some rescraped idols were not present in the JSON archive. They will be added.")
 		
 		# -------------------------------------------
 		
@@ -480,12 +467,10 @@ class KiraraClient():
 		if requested_ordinals:
 			print(f"  {Fore.BLUE}{Style.BRIGHT}Requesting data from Kirara database...{Style.RESET_ALL}")
 			
-			# url = KiraraClient.Endpoints['by_ordinal'].format(','.join([str(x) for x in requested_ordinals]))
 			url = KiraraClient.Endpoints['by_ordinal'].format(Utility.concat(requested_ordinals))
 			r = requests.get(url, headers={
 				'User-Agent' : Config.USER_AGENT,
 			})
-			# print("Request result code:", r.status_code)
 			
 			if r.status_code == 404:
 				raise KiraraClientNotFound(f"No result with given ordinals: {list(requested_ordinals)}")
@@ -506,17 +491,17 @@ class KiraraClient():
 			if not Utility.contains_all(result_ordinals, requested_ordinals):
 				partial_result = [ordinal for ordinal in requested_ordinals if ordinal not in result_ordinals]
 				raise KiraraClientPartialResult(f"Partial result with given ordinals. Missing: {partial_result}")
-			
-			# time.sleep(0.5)
 		
 		print_indent.add(4)
+		
+		self.db.execute("BEGIN TRANSACTION")
 		
 		if not rescrape and existing_idols_data:
 			print("  Restoring old cached idol data:")
 			for index, (ordinal, existing_idol) in enumerate(existing_idols_data.items()):
 				print(f"{Fore.WHITE}{ordinal:>4}{Style.RESET_ALL}", end='  ')
 				self.update_idol_database_entry(ordinal, existing_idol['data'])
-				if (index + 1) % 5 == 0 and (index + 1) != len(existing_idols_data): print()
+				if (index + 1) % 5 == 0 and (index + 1) < len(existing_idols_data): print()
 			print()
 		
 		for index, (ordinal, idol_data) in enumerate(requested_idols_data.items()):
@@ -524,18 +509,20 @@ class KiraraClient():
 			
 			update_entry = True
 			if rescrape or ordinal not in existing_ordinals:
+				
+				json_data_dumped = json.dumps(idol_data)
 				serialized = {
 					'ordinal'  : ordinal,
-					'json'     : json.dumps(idol_data),
+					'json'     : json_data_dumped,
+					'hash'     : hashlib.sha1(json_data_dumped.encode('utf-8')).hexdigest(),
 				}
-				json_data_hash = hashlib.sha1(serialized['json'].encode('utf-8')).hexdigest()
 				
-				if ordinal not in existing_ordinals or json_data_hash != existing_idols_data[ordinal]['hash']:
-					query = self._make_insert_query('idols_json', serialized, update_insert=True)
+				if ordinal not in existing_ordinals or serialized['hash'] != existing_idols_data[ordinal]['hash']:
+					query = DBUtility.make_insert_query('idols_json', serialized, insert_type=DBUtility.InsertType.Update)
 					self.db.execute(query, serialized)
 				
 				if rescrape:
-					if json_data_hash == existing_idols_data[ordinal]['hash']:
+					if serialized['hash'] == existing_idols_data[ordinal]['hash']:
 						print(f"{Fore.BLACK}{Style.BRIGHT}(OK){Style.RESET_ALL}", end='  ')
 						update_entry = False
 					else:
@@ -546,6 +533,8 @@ class KiraraClient():
 			
 			if (index + 1) % 5 == 0 and (index + 1) < len(requested_idols_data):
 				print()
+		
+		self.db.execute("COMMIT")
 		
 		print_indent.reduce(4)
 		
@@ -619,7 +608,6 @@ class KiraraClient():
 		# -------------------------------------------------
 		
 		serialized = {
-			'id'                : idol_data['id'],
 			'ordinal'           : idol_data['ordinal'],
 			'member_id'         : idol_data['member'],
 			'normal_name'       : idol_data['normal_appearance']['name'].strip(),
@@ -631,7 +619,7 @@ class KiraraClient():
 			'release_date_jp'   : release_dates[Locale.JP],
 			'release_date_ww'   : release_dates[Locale.WW],
 		}
-		query = self._make_insert_query('idols', serialized, update_insert=overwrite)
+		query = DBUtility.make_insert_query('idols', serialized, insert_type=DBUtility.InsertType.Update)
 		self.db.execute(query, serialized)
 	
 	# -------------------------------------------------------------------------------------------
@@ -646,20 +634,22 @@ class KiraraClient():
 		
 		self.populate_members_and_metadata()
 		
-		# print()
-		# print(f"{Fore.BLUE}{Style.BRIGHT}Retrieving events and banners data...{Style.RESET_ALL}")
-		# history_data = self.retrieve_history_data(load_from_file=load_history_from_file)
+		print()
+		print(f"{Fore.BLUE}{Style.BRIGHT}Retrieving events and banners data...{Style.RESET_ALL}")
+		history_data = self.retrieve_history_data(load_from_file=load_history_from_file)
 		
 		self.cards_fallback = self.load_cards_data_fallback()
+		
+		# self.update_json_hashes()
 		
 		print()
 		print(f"{Fore.BLUE}{Style.BRIGHT}Updating idol database...{Style.RESET_ALL}")
 		self.cache_all_idols(rescrape_days=rescrape_days)
 		
-		# if history_data:
-		# 	print()
-		# 	print(f"{Fore.BLUE}{Style.BRIGHT}Updating events and banners database...{Style.RESET_ALL}")
-		# 	self.update_history_database(history_data)
+		if history_data:
+			print()
+			print(f"{Fore.BLUE}{Style.BRIGHT}Updating events and banners database...{Style.RESET_ALL}")
+			self.update_history_database(history_data)
 			
 		self.refresh_last_update_time()
 		self.database_was_updated = True
@@ -673,20 +663,29 @@ class KiraraClient():
 		except Exception as e:
 			print(f"  {Fore.RED}Failed to load sources fallback file: {e}{Style.RESET_ALL}")
 			return {}
+		
 			
+	def update_json_hashes(self):
+		query = "SELECT * FROM idols_json WHERE hash is NULL"
+		self.db.execute(query)
+		
+		for data in self.db.fetchall():
+			serialized = {
+				'ordinal'  : data.ordinal,
+				'json'     : data.json,
+				'hash'     : hashlib.sha1(data.json.encode('utf-8')).hexdigest(),
+			}
+			
+			query = DBUtility.make_insert_query('idols_json', serialized, insert_type=DBUtility.InsertType.Update)
+			self.db.execute(query, serialized)
+			print("Fixed", data.ordinal)
+		
+		self.dbcon.commit()
+		
 	# -------------------------------------------------------------------------------------------
 	
 	def populate_members_and_metadata(self):
 		anything_changed = False
-		
-		def executemany(query, data):
-			for d in data:
-				try:
-					self.db.execute(query, d)
-					anything_changed = True
-				except sqlite.IntegrityError as e:
-					if not 'UNIQUE constraint failed' in str(e):
-						print(e)
 		
 		data = []
 		for d in Attribute.get_valid():
@@ -695,8 +694,10 @@ class KiraraClient():
 				'name'       : d.name,
 			})
 		
-		query = self._make_insert_query("attributes", data[0])
-		executemany(query, data)
+		query = DBUtility.make_insert_query("attributes", data[0], insert_type=DBUtility.InsertType.Ignore)
+		self.db.executemany(query, data)
+		if self.db.rowcount > 0:
+			anything_changed = True
 		
 		# ---------------------
 		
@@ -708,8 +709,10 @@ class KiraraClient():
 				'full_name'  : d.full_name,
 			})
 		
-		query = self._make_insert_query("types", data[0])
-		executemany(query, data)
+		query = DBUtility.make_insert_query("types", data[0], insert_type=DBUtility.InsertType.Ignore)
+		self.db.executemany(query, data)
+		if self.db.rowcount > 0:
+			anything_changed = True
 		
 		# ---------------------
 		
@@ -721,8 +724,10 @@ class KiraraClient():
 				'name'       : d.display_name,
 			})
 		
-		query = self._make_insert_query("groups", data[0])
-		executemany(query, data)
+		query = DBUtility.make_insert_query("groups", data[0], insert_type=DBUtility.InsertType.Ignore)
+		self.db.executemany(query, data)
+		if self.db.rowcount > 0:
+			anything_changed = True
 		
 		# ---------------------
 		
@@ -733,8 +738,10 @@ class KiraraClient():
 				'name'       : d.display_name,
 			})
 		
-		query = self._make_insert_query("subunits", data[0])
-		executemany(query, data)
+		query = DBUtility.make_insert_query("subunits", data[0], insert_type=DBUtility.InsertType.Ignore)
+		self.db.executemany(query, data)
+		if self.db.rowcount > 0:
+			anything_changed = True
 		
 		# ---------------------
 		
@@ -748,8 +755,10 @@ class KiraraClient():
 				'subunit_id' : member.subunit.value,
 			})
 		
-		query = self._make_insert_query("members", member_data[0])
-		executemany(query, member_data)
+		query = DBUtility.make_insert_query("members", member_data[0], insert_type=DBUtility.InsertType.Ignore)
+		self.db.executemany(query, member_data)
+		if self.db.rowcount > 0:
+			anything_changed = True
 		
 		# ---------------------
 		
@@ -884,12 +893,12 @@ class KiraraClient():
 			ordinals = data['cards']
 			del data['cards']
 			
-			event_query = self._make_insert_query('events', data)
+			event_query = DBUtility.make_insert_query('events', data)
 			self.db.execute(event_query, data)
 			
 			cards = [{'event_id': self.db.lastrowid, 'ordinal': ordinal} for ordinal in ordinals]
 			
-			event_card_query = self._make_insert_query('event_cards', cards[0])
+			event_card_query = DBUtility.make_insert_query('event_cards', cards[0])
 			self.db.executemany(event_card_query, cards)
 			
 			num_cards += len(cards)
@@ -905,12 +914,12 @@ class KiraraClient():
 			ordinals = data['cards']
 			del data['cards']
 			
-			event_query = self._make_insert_query('banners', data)
+			event_query = DBUtility.make_insert_query('banners', data)
 			self.db.execute(event_query, data)
 			
 			cards = [{'banner_id': self.db.lastrowid, 'ordinal': ordinal} for ordinal in ordinals]
 			
-			event_card_query = self._make_insert_query('banner_cards', cards[0])
+			event_card_query = DBUtility.make_insert_query('banner_cards', cards[0])
 			self.db.executemany(event_card_query, cards)
 			
 			num_cards += len(cards)
@@ -995,6 +1004,49 @@ class KiraraClient():
 			return data_columns[column_type]
 	
 	# -------------------------------------------------------------------------------------------
+
+	def check_lazy_loaders(self, idol, attr):
+		if attr == 'data':
+			return self.lazy_load_json(idol)
+		
+		if attr == 'event':
+			return self.lazy_load_event(idol)
+		
+		if attr == 'banner':
+			return self.lazy_load_banner(idol)
+		
+		return None
+	
+	def lazy_load_json(self, idol):
+		query = "SELECT json FROM idols_json WHERE ordinal = ?"
+		self.db.execute(query, [idol.ordinal])
+		
+		try:
+			return json.loads(self.db.fetchone().json)
+		except:
+			return {}
+	
+	def lazy_load_event(self, idol):
+		query = "SELECT * FROM v_event_info WHERE ordinal = ?"
+		self.db.execute(query, [idol.ordinal])
+		
+		event_data = self.db.fetchone()
+		if event_data != None:
+			return idol.process_card_metadata(MetadataType.Event, event_data)
+		else:
+			return idol.process_card_metadata(MetadataType.Event, {})
+	
+	def lazy_load_banner(self, idol):
+		query = "SELECT * FROM v_banner_info WHERE ordinal = ?"
+		self.db.execute(query, [idol.ordinal])
+		
+		banner_data = self.db.fetchone()
+		if banner_data != None:
+			return idol.process_card_metadata(MetadataType.Banner, banner_data)
+		else:
+			return idol.process_card_metadata(MetadataType.Banner, {})
+	
+	# -------------------------------------------------------------------------------------------
 	
 	def get_idols(self, member : Member = None,
 			type : Type = None, attribute : Attribute = None,
@@ -1057,7 +1109,7 @@ class KiraraClient():
 		
 	def _make_where_condition(self, column, data):
 		if isinstance(data, list):
-			return (f"{column} IN ({self._make_where_placeholders(data)})", [x.value for x in data])
+			return (f"{column} IN ({DBUtility.where_placeholders(data)})", [x.value for x in data])
 		else:
 			return (f"{column} = ?", [data.value])
 	
@@ -1562,7 +1614,7 @@ class KiraraClient():
 				   GROUP BY members.id
 				   ORDER BY members.id
 				"""
-		self.db.execute(query, self._get_enum_values([Source.Event, Rarity.UR]))
+		self.db.execute(query, DBUtility.get_enum_values([Source.Event, Rarity.UR]))
 		
 		return dict((Member(x['id']), x['times_featured']) for x in self.db.fetchall())
 	
@@ -1687,10 +1739,10 @@ class KiraraClient():
 		if with_json:
 			query = f"""SELECT v_idols.*, idols_json.json FROM v_idols
 						LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
-						WHERE v_idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
+						WHERE v_idols.ordinal IN ({DBUtility.where_placeholders(ordinals)})"""
 		else:
 			query = f"""SELECT * FROM v_idols
-						WHERE v_idols.ordinal IN ({self._make_where_placeholders(ordinals)})"""
+						WHERE v_idols.ordinal IN ({DBUtility.where_placeholders(ordinals)})"""
 		self.db.execute(query, ordinals)
 		
 		return self.convert_to_idol_object(self.db.fetchall())

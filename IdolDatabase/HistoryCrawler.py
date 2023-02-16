@@ -418,7 +418,7 @@ class HistoryCrawler:
 				
 		for cards_hash, banner_data_by_locale in banners_data_by_card_hash.items():
 			if not ('en' in banner_data_by_locale and 'jp' in banner_data_by_locale):
-				print("Missing banner data for one locale!", banner_data_by_locale)
+				# print("Missing banner data for one locale!", banner_data_by_locale)
 				# raise HistoryCrawlerException("Missing banner data for one locale!")
 				continue
 			

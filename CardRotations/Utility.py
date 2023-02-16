@@ -144,6 +144,12 @@ class Utility:
 			return str(last_separator).join(str(separator).join([str(x) for x in iterable]).rsplit(separator, 1))
 	
 	@staticmethod
+	def concat_with_format(format_info, iterable, *args, **kwargs):
+		format_key, format_string = format_info
+		formatted = [format_string.format(**{format_key: value}) for value in iterable]
+		return Utility.concat(formatted, *args, **kwargs)
+	
+	@staticmethod
 	def sort_by_key_order(data, key_order):
 		return [(key, data[key]) for key in key_order if key in data]
 		
@@ -196,13 +202,6 @@ class Utility:
 		return data
 	
 	@staticmethod
-	def serialize_member(member):
-		data = {
-			'm' : [ member.value, member.full_name ],
-		}
-		return data
-	
-	@staticmethod
 	def base64encode_json(data):
 		serialized = json.dumps(data, separators=(',', ':'))
 		return base64.b64encode(serialized.encode('utf-8')).decode('utf-8')
@@ -214,7 +213,35 @@ class Utility:
 	@staticmethod
 	def member_to_base64(member):
 		return Utility.base64encode_json(Utility.serialize_member(card))
+	
+	# ----------------------------------------------------------
+	
+	@staticmethod
+	def dbgprint(*args, **kwargs):
+		longest_key      = max([4] + [len(key) + 3 for key in kwargs.keys()])
+		longest_typeinfo = max(
+			[10] +
+			[len(f"({type(value).__name__})") for value in args] +
+			[len(f"({type(value).__name__})") for value in kwargs.values()]
+		)
 		
+		for index, value in enumerate(args):
+			tag = f"P[{index}]"
+			type_info = f"({type(value).__name__})"
+			print(f"{tag:<{longest_key}} {type_info:>{longest_typeinfo}} =  ", end='')
+			if isinstance(value, str):
+				print(f'"{value}"')
+			else:
+				print(value)
 		
-if __name__ == "__main__":
-	print(Utility.get_method_list())
+		for key, value in kwargs.items():
+			tag = f"K[{key}]"
+			type_info = f"({type(value).__name__})"
+			print(f"{tag:<{longest_key}} {type_info:>{longest_typeinfo}} =  ", end='')
+			if isinstance(value, str):
+				print(f'"{value}"')
+			else:
+				print(value)
+
+import builtins
+builtins.dbgprint = Utility.dbgprint

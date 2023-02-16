@@ -14,6 +14,7 @@ schemas = [
 	'''CREATE TABLE `idols_json` (
 	    `ordinal`           INTEGER UNIQUE,
 	    `json`              TEXT,
+	    `hash`              TEXT,
 	    PRIMARY KEY(`ordinal`)
 	) WITHOUT ROWID''',
 	
@@ -62,7 +63,6 @@ schemas = [
 	# Idols table
 	'''CREATE TABLE `idols` (
 	    `ordinal`           INTEGER UNIQUE NOT NULL,
-	    `id`                INTEGER UNIQUE NOT NULL,
 	    `member_id`         INTEGER,
 	    `normal_name`       TEXT,
 	    `idolized_name`     TEXT,
@@ -75,7 +75,7 @@ schemas = [
 	    FOREIGN KEY(`member_id`)    REFERENCES members(`id`),
 	    FOREIGN KEY(`attribute`)    REFERENCES attributes(`id`),
 	    FOREIGN KEY(`type`)         REFERENCES types(`id`),
-	    PRIMARY KEY(`ordinal`, `id`)
+	    PRIMARY KEY(`ordinal`)
 	) WITHOUT ROWID''',
 	
 	# Events table
@@ -98,7 +98,7 @@ schemas = [
 	    `ordinal`           INTEGER NOT NULL,
 	    CONSTRAINT `event_id_ordinal` UNIQUE(`event_id`, `ordinal`),
 	    FOREIGN KEY(`event_id`)     REFERENCES events(`id`)      ON DELETE CASCADE,
-	    FOREIGN KEY(`ordinal`)      REFERENCES idols(`ordinal`),
+	    FOREIGN KEY(`ordinal`)      REFERENCES idols(`ordinal`)  ON DELETE CASCADE,
 	    PRIMARY KEY(`event_id`, `ordinal`)
 	)''',
 	
@@ -123,7 +123,7 @@ schemas = [
 	    `ordinal`           INTEGER NOT NULL,
 	    CONSTRAINT `banner_id_ordinal` UNIQUE(`banner_id`, `ordinal`),
 	    FOREIGN KEY(`banner_id`)    REFERENCES banners(`id`)      ON DELETE CASCADE,
-	    FOREIGN KEY(`ordinal`)      REFERENCES idols(`ordinal`),
+	    FOREIGN KEY(`ordinal`)      REFERENCES idols(`ordinal`)   ON DELETE CASCADE,
 	    PRIMARY KEY(`banner_id`, `ordinal`)
 	)''',
 	
@@ -163,6 +163,9 @@ schemas = [
 	    INNER JOIN members    ON idols.member_id = members.id
 	''',
 	
+	# -----------------------------------------
+	# Views about events
+	
 	'''CREATE VIEW v_idols_with_events AS
 	    SELECT
 	        v_idols.*,
@@ -171,6 +174,22 @@ schemas = [
 	    FROM v_idols
 	    LEFT JOIN event_cards ON event_cards.ordinal = v_idols.ordinal
 	    LEFT JOIN events      ON events.id           = event_cards.event_id
+	''',
+	
+	'''CREATE VIEW v_event_info AS
+	    SELECT
+	    	event_cards.ordinal        AS ordinal,
+			events.id                  AS event_id,
+			events.type                AS event_type,
+			
+			events.title_ww            AS event_title,
+			
+			events.start_jp            AS event_start_jp,
+			events.end_jp              AS event_end_jp,
+			events.start_ww            AS event_start_ww,
+			events.end_ww              AS event_end_ww
+		FROM events
+		LEFT JOIN event_cards ON events.id = event_cards.event_id
 	''',
 	
 	'''CREATE VIEW v_idols_with_event_info AS
@@ -207,6 +226,26 @@ schemas = [
 	    LEFT JOIN events       ON events.id           = event_cards.event_id
 	''',
 	
+	# -----------------------------------------
+	# Views about banners
+	
+	'''CREATE VIEW v_banner_info AS
+	    SELECT
+	    	banner_cards.ordinal       AS ordinal,
+			banners.id                 AS banner_id,
+			banners.type               AS banner_type,
+	        
+			banners.start_jp           AS banner_start_jp,
+			banners.end_jp             AS banner_end_jp,
+			
+			banners.start_ww           AS banner_start_ww,
+			banners.end_ww             AS banner_end_ww,
+	        
+			banners.original_num_cards AS banner_num_cards
+	    FROM banners
+		LEFT JOIN banner_cards ON banners.id = banner_cards.banner_id
+	''',
+	
 	'''CREATE VIEW v_idols_with_banner_info AS
 	    SELECT
 	        v_idols.*,
@@ -240,8 +279,11 @@ schemas = [
 			banners.original_num_cards AS banner_num_cards
 	    FROM v_idols
 	    LEFT JOIN banner_cards  ON banner_cards.ordinal = v_idols.ordinal
-	    LEFT JOIN banners      ON banners.id           = banner_cards.banner_id
+	    LEFT JOIN banners       ON banners.id           = banner_cards.banner_id
 	''',
+	
+	# -----------------------------------------
+	# Views about events and banners
 	
 	'''CREATE VIEW v_idols_with_event_info_and_banner_info AS
 	    SELECT

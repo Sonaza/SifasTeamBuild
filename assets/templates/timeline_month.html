@@ -6,7 +6,7 @@
 	<div class="group group-{{ group.tag }}">
 		
 		{% for event_id in entry_info[release_month]['events']: %}
-			{% set event_data = timeline['events'][event_id] %}
+			{% set event_data = timeline['events'][event_id]['event'] %}
 			{% if event_data['timespan']['start'][0].month == entry_info[release_month]['start'].month: %}
 				{% set left_offset = (event_data['days_from_start'] * timeline_day_width) + timeline_day_width / 2 %}
 				{% set event_width = ((event_data['duration']) * timeline_day_width) - timeline_day_width %}
@@ -15,6 +15,17 @@
 					style="width:{{ event_width }}px"></div>
 			{% endif %}
 		{% endfor %}
+		{% for event_id in entry_info[release_month]['events']: %}
+			{% set event_data = timeline['events'][event_id]['banner'] %}
+			{% if event_data['timespan']['start'][0].month == entry_info[release_month]['start'].month and event_data['duration'] > 1: %}
+				{% set left_offset = (event_data['days_from_start'] * timeline_day_width) + timeline_day_width / 2 %}
+				{% set event_width = ((event_data['duration']) * timeline_day_width) - timeline_day_width %}
+				<div class="event-banner-highlight event-{{ event_data['info'].type.value }} tl-events-id-{{ event_id }}"
+					left-right-flipper="{{ left_offset }}px" condition="settings.order_reversed"
+					style="width:{{ event_width }}px"></div>
+			{% endif %}
+		{% endfor %}
+		
 		{% for banner_id in entry_info[release_month]['banners']: %}
 			{% set banner_data = timeline['banners'][banner_id] %}
 			{% if banner_data['timespan']['start'][0].month == entry_info[release_month]['start'].month: %}

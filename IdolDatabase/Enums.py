@@ -247,3 +247,8 @@ class BannerType(Enum):
 				ret.append(e)
 		return ret
 	
+class MetadataType(Enum):
+	_init_ = 'value prefix category_type'
+	
+	Event  = 1, 'event_',  EventType
+	Banner = 2, 'banner_', BannerType

@@ -16,7 +16,9 @@
 	<li><a href="#/banners"       ng-class="classActive('/banners')">Gacha Banners</a></li>
 	<li><a href="#/stats"         ng-class="classActive('/stats')">Card Stats</a></li>
 	<li><a href="#/history"       ng-class="classActive('/history')">Card History</a></li>
-	{# <li class="spacer"></li> #}
-	{# <li><a href="#/timeline/[[ settings.global_dates ? 'ww' : 'jp' ]]" ng-class="classActive('/timeline')">Timeline <span class="new-tag">[NEW]</span></a></li> #}
+	{% if cmd_args.dev %}
+		<li class="spacer"></li>
+		<li><a href="#/timeline/[[ settings.global_dates ? 'ww' : 'jp' ]]" ng-class="classActive('/timeline')">Timeline <span class="new-tag">[NEW]</span></a></li>
+	{% endif %}
 	{# <span class="new-tag">[NEW]</span> #}
 </ul>

@@ -101,8 +101,7 @@ class RotationsGenerator:
 		self.args = self.parser.parse_args()
 		
 		# Only strip on windows for Sublime Text, somehow it still displays in console?
-		colorama_init(autoreset=True, strip=not self.args.colored_output)
-		
+		colorama_init(autoreset=True, strip=not self.args.colored_output)		
 		sys.stdout = stdout_wrapper()
 		
 		self.resource_processor_settings = dotdict(
