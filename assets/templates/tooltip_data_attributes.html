@@ -1,0 +1,19 @@
+data-card-status="{{ card_status }}"
+
+{% if card_status == 1: %}
+
+	data-card-data="{{ embed_card_tooltip(card) }}"
+	
+{% elif card_status == 2 or card_status == 3: %}
+
+	data-card-data="{{ member.value }}"
+	ng-click="openMobileTooltip($event)"
+	
+{% endif %}
+	
+{% if anchoring is defined %}
+	data-anchoring="{{ anchoring }}"
+{% endif %}
+
+ng-mouseover="toggleTooltip($event, true)"
+ng-mouseleave="toggleTooltip($event, false)"

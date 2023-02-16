@@ -1,0 +1,65 @@
+
+@media screen and (hover: none) 
+{
+	
+	#timeline
+	{
+		overflow-x: scroll !important;
+	}
+	
+}
+
+
+@media screen and (max-width: 900px)
+       //,screen and (hover: none)
+{
+	
+
+#timeline-date-tooltip.mobile-tooltip
+{
+	// z-index: 999999;
+	// top: 30px !important;
+	// left: 30px !important;
+	// right: 30px !important;
+	
+}
+
+	
+#timeline
+{
+	
+	.timeline-entry
+	{
+		&.timeline-members
+		{
+			width: 50px;
+			
+			.idol-identity
+			{
+				justify-content: center;
+				
+				span.idol-icon
+				{
+					margin: 0;
+				}
+				
+				span.idol-name
+				{
+					display: none;
+				}	
+			}
+		}
+		
+		.header
+		{
+			&.primary
+			{
+				font-size: 0;
+			}
+		}
+		
+	}
+	
+}
+	
+}

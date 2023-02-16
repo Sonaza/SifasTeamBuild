@@ -1,3 +1,5 @@
+import Config
+
 import re
 import requests
 import time
@@ -11,10 +13,8 @@ from colorama import Fore
 from colorama import Style
 
 try:
-	from .Config import Config
 	from .Enums import *
 except:
-	from Config import Config
 	from Enums import *
 	
 	from colorama import init as colorama_init

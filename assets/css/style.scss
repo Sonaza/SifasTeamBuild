@@ -41,6 +41,12 @@ h4 { font-size: 16pt; }
 h5 { font-size: 13pt; }
 h6 { font-size: 10pt; }
 
+h2 sup {
+	font-size: 10pt;
+	font-weight: 400;
+	text-shadow: none;
+}
+
 hr
 {
 	margin: 0 0 1em 0;
@@ -101,6 +107,26 @@ ul.settings-keybinds
 		{
 			padding-top: 0;
 		}
+		
+		ul
+		{
+			margin: 0.7rem 0 0.7rem 0.7rem;
+			padding: 0 0 0 0.5rem;
+			border-left: 2px solid #ddd;
+			
+			li
+			{
+				padding-left: 0.5rem;
+				
+				&.keybind-subpage-header
+				{
+					margin-top: 0.4rem;
+					font-family: 'Montserrat', sans-serif;
+					font-weight: 700;
+					color: #481E9F;
+				}
+			}
+		}
 	}
 
 	b
@@ -129,14 +155,14 @@ ul.settings-keybinds
 	color: #fff;
 	font-size: 9pt;
 	text-shadow: 0 0 2px #000,
-	             0 0 2px #000,
-	             0 0 1px #000,
-	             0 0 2px #000,
-	             0 0 4px #000,
-	             0 0 2px #000,
-	             0 0 2px #000,
-	             0 0 2px #000,
-	             0 0 2px #000;
+				 0 0 2px #000,
+				 0 0 1px #000,
+				 0 0 2px #000,
+				 0 0 4px #000,
+				 0 0 2px #000,
+				 0 0 2px #000,
+				 0 0 2px #000,
+				 0 0 2px #000;
 }
 
 b
@@ -451,9 +477,9 @@ a
 			border-left: 4px solid #B292F4;
 			padding-left: 1.1rem;
 			text-shadow: 1px  1px #000a,
-			            -1px -1px #000a,
-			             1px -1px #000a,
-			            -1px  1px #000a;
+						-1px -1px #000a,
+						 1px -1px #000a,
+						-1px  1px #000a;
 
 			&:hover
 			{
@@ -972,10 +998,32 @@ select
 						line-height: 1.6em;
 						text-align: justify;
 					}
+					
+					.main-content-inner-widest
+					{
+						max-width: none;
+						line-height: 1.6em;
+						text-align: justify;
+					}
 				}
 			}
 		}
 	}
+}
+
+@media screen and (min-width: 2050px)
+{
+	#main-outer-wrapper #main-wrapper { margin: 0 7vw 0 7vw; }
+}
+
+@media screen and (min-width: 2200px)
+{
+	#main-outer-wrapper #main-wrapper { margin: 0 12vw 0 12vw; }
+}
+
+@media screen and (min-width: 2800px)
+{
+	#main-outer-wrapper #main-wrapper { margin: 0 16vw 0 16vw; }
 }
 
 /*************************************/
@@ -1157,7 +1205,7 @@ select
 
 @mixin delayed-fade-in($index, $multi, $duration, $delay)
 {
-	&:nth-child($index) .card-thumbnail
+	&:nth-child(#{$index}) .card-thumbnail
 	{
 		animation: #{$duration} linear #{($multi - 1) * $delay} 1 normal backwards running thumbnail-fade-in;
 	}
@@ -1178,7 +1226,7 @@ select
 	{
 		@for $row from 2 through 5
 		{
-			.card-array-row:nth-child($row) .card-array-cell
+			.card-array-row:nth-child(#{$row}) .card-array-cell
 			{
 				@for $column from 2 through 7
 				{
@@ -1756,6 +1804,11 @@ select
 		}
 	}
 	
+	&.timeline-settings
+	{
+		max-width: none;
+	}
+
 	.pill-button
 	{
 		margin: 0 0.5rem 0 0;
@@ -2807,9 +2860,9 @@ img.locale-emoji-20
 					&.idol-name
 					{
 						text-shadow: 1px  1px #000a,
-						            -1px -1px #000a,
-						             1px -1px #000a,
-						            -1px  1px #000a;
+									-1px -1px #000a,
+									 1px -1px #000a,
+									-1px  1px #000a;
 					}
 				}
 
@@ -2820,7 +2873,7 @@ img.locale-emoji-20
 					background: #481E9F;
 					border-bottom: 4px solid #6A3EC4;
 					box-shadow: 0 1px 2px 1px #3337,
-					            inset 0 0 3px 2px #fffa;
+								inset 0 0 3px 2px #fffa;
 				}
 
 				&.active
@@ -2830,14 +2883,14 @@ img.locale-emoji-20
 					background: #6C37D9;
 					border-bottom: 4px solid;
 					box-shadow: 0 1px 2px 1px #3337,
-					            inset 0 0 0 3px #fff8;
+								inset 0 0 0 3px #fff8;
 
 					&:hover
 					{
 						color: #fff;
 						background: #BA98FF;
 						box-shadow: 0 1px 2px 1px #3337,
-					                inset 0 0 3px 3px #fffe;
+									inset 0 0 3px 3px #fffe;
 						// border-bottom: 4px solid #fff !important;
 					}
 				}
@@ -2914,6 +2967,7 @@ img.locale-emoji-20
 .history-group-wrapper
 {
 	width: 100%;
+	max-width: 1220px;
 	display: flex;
 	flex-flow: row wrap;
 	justify-content: center;
@@ -3045,9 +3099,9 @@ $cell-margin: 5px;
 					{
 						min-width: 50%;
 						text-shadow: 1px  1px #000a,
-						            -1px -1px #000a,
-						             1px -1px #000a,
-						            -1px  1px #000a;
+									-1px -1px #000a,
+									 1px -1px #000a,
+									-1px  1px #000a;
 					}
 				}
 				
@@ -3126,8 +3180,14 @@ $cell-margin: 5px;
 		}
 	}
 	
-	
 }
+
+
+
+
+/**************************************************************************************
+ * Misc
+ */
 
 .show-mobile
 {

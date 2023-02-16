@@ -1,0 +1,93 @@
+<div class="main-content-inner-widest">
+	<h2>Timeline &mdash; {{ locale.locale }}</h2>
+	<p>
+		Overall timeline view displaying the relative release dates of all cards on the {{ locale.adjective }} game version.<br>
+		Starting from 30th July 2021, the global and Japanese release schedule has been synchronized, thereafter both versions receiving new content updates simultaneously.
+	</p>
+</div>
+
+<div class="page-settings-bar event-card-settings timeline-settings">
+	<label>
+		Jump to
+	</label>
+	<select ng-model="timeline_settings.target_month" ng-change="jump_to_changed()">
+		<optgroup label="[[ year ]]" ng-repeat="year in timeline_timespan.years | reverse : settings.order_reversed">
+			<option value="[[ year ]]-[[ (month[0] < 10 ? '0' : '') + month[0] ]]" ng-repeat="month in timeline_timespan.months_in_years[year] | reverse : settings.order_reversed">
+				[[ month[1] ]] [[ year ]]
+			</option>
+		</optgroup>
+	</select>
+	<div pill-button model="settings.timeline_show_events" keybind="E">
+		Highlight Events
+	</div>
+	<div pill-button model="settings.timeline_show_banners" keybind="B">
+		Highlight Banners
+	</div>
+	<label>
+		Display <span class="hide-mobile">(F)</span>
+	</label>
+	<select ng-model="timeline_settings.display_mode">
+		<option ng-value="0">All Cards</option>
+		<option ng-value="1">UR Only</option>
+		<option ng-value="2">SR Only</option>
+	</select>
+</div>
+
+<div id="timeline-container">
+	<div class="timeline-stripes" ng-class="[highlight_stripes()]">
+		{% for group, members in Idols.member_order_by_group.items(): %}
+			<div class="group group-{{ group.tag }}">
+				{% for member in members: %}
+					<div class="idol-row idol-{{ member.value }} idol-timeline-stripe"></div>
+				{% endfor %}
+			</div>
+		{% endfor %}
+	</div>
+	<div class="timeline-scrollbar scrollbar-top" scrollbar="#timeline"></div>
+	<div id="timeline" ng-class="[timeline_classes(), highlight_stripes()]" data-timeline-data="{{ metadata_json | e }}">
+		<div class="timeline-scroller">
+			<div class="timeline-entry timeline-members">
+				<div class="header primary">
+					Members
+				</div>
+				{% for group, members in Idols.member_order_by_group.items(): %}
+					<div class="group group-{{ group.tag }}">
+						{% for member in members: %}
+							<div class="idol-row idol-{{ member.value }}">
+								<div class="idol-bg-color-dark idol-identity">
+									<span class="fancy"></span>
+									<span class="idol-icon idol-icon-32-border"></span>
+									<span class="idol-name">{{ member.first_name }}</span>
+								</div>
+							</div>
+						{% endfor %}
+					</div>
+				{% endfor %}
+				<div class="header primary">
+					Members
+				</div>
+			</div>
+			<div class="timeline-entries">
+				{% for release_month, timeline_month in timeline['entries'].items(): %}
+					<div class="timeline-entry month days-{{ entry_info[release_month]['days'] }}"
+						id="timeline-month-{{ release_month }}"
+						data-month-key="{{ release_month }}"
+						data-events="{{ concat(entry_info[release_month]['events']) }}"
+						data-banners="{{ concat(entry_info[release_month]['banners']) }}"
+						data-equivalent-month="{{ monthly_equivalence[release_month] }}"
+						data-month-days="{{ entry_info[release_month]['days'] }}"
+						data-month-start="{{ entry_info[release_month]['start'].day }}"
+						data-month-number="{{ entry_info[release_month]['start'].month }}"
+						data-month-name="{{ entry_info[release_month]['start'].strftime('%B %Y') }}"
+						deferred-load="timeline{{ locale.suffix }}_{{ release_month }}"></div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="timeline-scrollbar scrollbar-bottom" scrollbar="#timeline"></div>
+	<div id="timeline-date-highlight"></div>
+	<div id="timeline-indicator-line"></div>
+</div>
+<div id="timeline-date-tooltip" ng-class="{'mobile-tooltip': mobile_mode()}"
+	tooltip="tooltip_data" tooltip-template="tooltips/timeline_tooltip.html"></div>
+<div id="timeline-autoscroll-origin"></div>

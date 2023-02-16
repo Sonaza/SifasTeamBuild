@@ -7,10 +7,10 @@ class dotdict(dict):
 	__delattr__ = dict.__delitem__
 
 class Locale(Enum):
-	_init_ = 'value locale'
+	_init_ = 'value locale adjective suffix'
 	
-	JP = 1, 'Japan'
-	WW = 2, 'Global'
+	JP = 1, 'Japan',  'Japanese', '_jp'
+	WW = 2, 'Global', 'global',   '_ww'
 
 class Rarity(Enum):
 	_init_ = 'value max_level'
@@ -207,6 +207,8 @@ class SortingOrder(Enum):
 	Descending = 2
 	
 class EventType(Enum):
+	_init_ = 'value'
+	
 	Unset    = 0
 	Story    = 1
 	Exchange = 2

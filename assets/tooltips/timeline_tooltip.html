@@ -1,0 +1,37 @@
+<div class="item header">
+	[[ data.current_date ]]
+</div>
+
+<div class="item banner" ng-if="data.launch_day">
+	<div class="title launch-title">[[ data.launch_day ]] SIFAS Launched Today! <img src="/img/nozoclap.gif" alt=""></div>
+	<div class="title banner-4"><span>Launch Banner</span> Release Commemoration Banner</div>
+</div>
+
+<div class="item" ng-repeat="(event_id, event) in data.events">
+	<div class="title event-[[ event.type.id ]]">
+		<span>[[ event.type.display_name ]] Event</span>
+		[[ event.title ]]
+	</div>
+	<div class="members">
+		<div class="featured-member">
+			<span class="idol-[[ event.featured.id ]] idol-bg-color-tl">[[ event.featured.first_name ]] Event</span>
+		</div>
+		<div class="gacha-members">
+			<span class="idol-[[ member.id ]] idol-bg-color-tl" ng-repeat="member in event.gacha">[[ member.first_name ]]</span>
+			<span>Gacha</span>
+		</div>
+	</div>
+	<div class="runtime">
+		[[ event.timespan.start[0] ]] &mdash; [[ event.timespan.end[0] ]]
+	</div>
+</div>
+
+<div class="item" ng-repeat="(banner_id, banner) in data.banners">
+	<div class="title banner-[[ banner.type.id ]]">
+		<span>[[ banner.type.display_name ]] Banner</span>
+		[[ banner.title ]]
+	</div>
+	<div class="runtime">
+		[[ banner.timespan.start[0] ]] &mdash; [[ banner.timespan.end[0] ]]
+	</div>
+</div>

@@ -1,0 +1,2 @@
+import Config
+import CardRotations.IdolBuildTest

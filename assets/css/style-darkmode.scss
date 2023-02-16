@@ -39,6 +39,16 @@ ul.settings-keybinds
 			color: #D6C2FF;
 			border-bottom: 1px solid #A445DB;
 		}
+		
+		ul
+		{
+			border-left: 2px solid #502767;
+			
+			li.keybind-subpage-header
+			{
+				color: #D6C2FF;
+			}
+		}
 	}
 
 	b

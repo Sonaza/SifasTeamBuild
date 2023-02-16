@@ -1,4 +1,4 @@
-#!/usr/bin/python3.7
+#!/usr/bin/python3
 
 import os
 os.chdir(os.path.dirname(os.path.abspath(__file__)))

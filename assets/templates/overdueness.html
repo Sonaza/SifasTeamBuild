@@ -1,0 +1,90 @@
+{{ include("stats_category_topbar.html", static=True) }}
+
+<div class="main-content-inner-wide" style="max-width: 1000px">
+	<h2>Statistical Overdueness</h2>
+	<p>
+		Below is an attempt to sort the girls still missing limited cards in the current rotation by an experimental statistical weighted overdueness algorithm.
+	</p>
+	<p>
+		This algorithm takes into account the recency of any UR of that girl and the recency of their last limited card, rating this against all girls. The weight is adjusted by the frequency of releases by group in the most recent limited banners and finally by whether they have already received a card in the current rotation. The girl considered the most overdue is first in the list.
+	</p>
+</div>
+<p class="show-mobile"><b>Hint:</b> You can scroll the tables horizontally if they don't fit on screen.</p>
+
+{% for source, overdueness in weighted_overdueness.items() %}
+
+	<div class="stats-category-group overdueness source-{{ source.value }}">
+		<div class="stats-table">
+			<div class="st-tr st-thead">
+				<div class="st-th st-cell-20">{{ source.display_name }} Cards</div>
+				<div class="st-th st-cell-17-5">Last UR</div>
+				<div class="st-th st-cell-52-5">Last Limited UR</div>
+				<div class="st-th st-cell-10" title="The weighted overdueness coefficient. These values don't confer any meaning and are only meant to be comparable between each other. There are no absolute limits and negative values are possible if the girl is about to receive a card soon." style="text-decoration: underline dotted; cursor: help;">Value</div>
+			</div>
+			
+			<div class="st-tbody">
+				{% for member, data in overdueness.items() %}
+					{% set card = data['last_limited_card'] %}
+					{% set expected_delta = data['num_urs'][1] - data['num_urs'][0] %}
+					<div class="st-tr idol-{{ member.value }}" data-index="{{ loop.index }}">
+						<div class="st-td st-cell-20 idol-identity">
+							<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
+							<div class="idol-name">
+								{{ member.first_name }}
+							</div>
+						</div>
+						
+						<div class="st-td st-cell-17-5 card-release-elapsed">
+							<a href="#/history/{{ member.first_name.lower() }}/ur" class="history-link">
+								{{ data['last_any_ur'].days | format_days }}
+							</a>
+						</div>
+						
+						{% if is_valid_card(card) %}
+							<div class="st-td st-cell-17-5 card-release-elapsed" title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
+								<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[source] }}" class="history-link">
+									{{ data['last_limited_ur'].days | format_days }}
+								</a>
+							</div>
+							
+							<div class="st-td st-cell-35 card-details">
+								<div class="thumbnail">
+									<div class="thumbnail-wrapper tooltip-data"
+										{{ include("tooltip_data_attributes.html", card=card, card_status=1, anchoring=1) }}>
+										<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="{{ card_thumbnail_classes(card) }}">
+											<span class="source-indicator source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+										</a>
+									</div>
+								</div>
+								<div class="card-link">
+									<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ellipsis=".card-details" class="card-link-idolized" target="_blank">{{ card.get_card_name(True) }}</a>
+								</div>
+							</div>
+						{% else %} 
+							<div class="st-td st-cell-17-5">
+								Never
+							</div>
+							<div class="st-td st-cell-35" style="color: #aaa;">
+								&mdash;
+							</div>
+						{% endif %}
+						
+						<div class="st-td st-cell-10" style="text-align: right">
+							{{ '{:0.1f}'.format(data['weighted_value']) }}
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+{% endfor %}
+
+<div class="main-content-inner-wide" style="max-width: 1000px">
+	<p style="font-size:1.4rem;padding-bottom:0.3rem">
+		<b>Please note:</b> This is completely experimental pseudo-scientific nonsense and no guarantee of accuracy is offered!
+	</p>
+	<p>
+		It is entirely possible none of the girls listed here are next in line for a limited card or that it is a girl considered the most unlikely. <s>They probably make the intern-kun pick the girl by darts anyway.</s>
+	</p>
+</div>

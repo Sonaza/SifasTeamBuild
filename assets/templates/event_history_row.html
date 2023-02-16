@@ -1,0 +1,69 @@
+{% set event = event_data['event'] %}
+{% set member = event_data['free'][0].member_id %}
+<div class="st-td st-cell-event-title event-details">
+	<div class="event-title">
+		<span class="event-title-label" ellipsis=".event-title" title="{{ event['title'] | e }}">
+			<span>{{ event_row_index }}.</span> {{ event['title'] | e }}
+		</span>
+		<span class="event-title-type">
+			({{ event['type'].name }})
+		</span>
+	</div>
+	<div class="event-runtime">
+		{% if event['start'][Locale.JP] != event['start'][Locale.WW]: %}
+			<span class="event-runtime-label jp-ts">
+				<img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP" title="Using Japanese Dates">
+				{{ event['start'][Locale.JP] | format_datestring }} &mdash;
+				{{ event['end'][Locale.JP]   | format_datestring }}
+			</span>
+			<span class="event-runtime-label ww-ts">
+				<img src="/img/emoji_globe.png" class="locale-emoji" alt="WW" title="Using Global Dates">
+				{{ event['start'][Locale.WW] | format_datestring }} &mdash;
+				{{ event['end'][Locale.WW]   | format_datestring }}
+			</span>
+		{% else: %}
+			<span class="event-runtime-label">
+				<span class="emoji-placeholder"></span>
+				{{ event['start'][Locale.JP] | format_datestring }} &mdash;
+				{{ event['end'][Locale.JP]   | format_datestring }}
+			</span>
+		{% endif %}
+		{% if event_data['sbl'] is defined: %}
+			<span class="sbl-addition">
+				(SBL {{ event_data['sbl'] }})
+			</span>
+		{% endif %}
+	</div>
+</div>
+<div class="st-td st-cell-event-featured event-featured idol-identity idol-{{ member.value }}">
+	<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
+	<div class="idol-name">{{ member.first_name }}</div>
+</div>
+<div class="st-td st-cell-event-cards card-details">
+	<div class="flex-wrapper">
+		{% for card in event_data['free']: %}
+			<div class="thumbnail tooltip-data"
+				{{ include("tooltip_data_attributes.html", card=card, card_status=1) }}>
+				<div class="thumbnail-wrapper">
+					<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="{{ card_thumbnail_classes(card) }}">
+						<span class="source-indicator idol-{{ card.member_id.value }} source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+					</a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>
+<div class="st-td st-cell-event-cards card-details">
+	<div class="flex-wrapper">
+		{% for card in event_data['gacha']: %}
+			<div class="thumbnail tooltip-data"
+				{{ include("tooltip_data_attributes.html", card=card, card_status=1) }}>
+				<div class="thumbnail-wrapper">
+					<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="{{ card_thumbnail_classes(card) }}">
+						<span class="source-indicator idol-{{ card.member_id.value }} source-{{ card.source.value }} group-{{ card.group_id.value }}"></span>
+					</a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</div>

@@ -9,27 +9,21 @@
             "folder_exclude_patterns":
             [
                 "wanha",
-                "res"
+                "res",
+                "public/js/vendor"
             ],
 			"path": "."
 		}
 	],
+	"syntax_override": {
+		"\\.html$": ["Jinja2", "Syntaxes", "HTML (Jinja2)"]
+	},
 	"build_systems":
 	[
 		{
-			"name": "Python Build Current File",
-			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "pipenv run python -u \"$file\"",
-
-			"env": {"PYTHONIOENCODING": "utf-8"},
-
-			"working_dir": "$project_path",
-			"quiet": false
-		},
-		{
 			"name": "Python Dev Build",
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-			"shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev --colored-output 0",
+			"shell_cmd": "pipenv run python -u \"$project_path\\BuildCardRotations.py\" --dev --no-colored-output",
 
 			"env": {"PYTHONIOENCODING": "utf-8"},
 			
@@ -43,21 +37,53 @@
             [
                 {
                     "name": "Force Render",
-                    "shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -fr --colored-output 0"
+                    "shell_cmd": "pipenv run python -u \"$project_path\\BuildCardRotations.py\" --dev --force-render --no-colored-output"
                 },
                 {
                     "name": "Force Update",
-                    "shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -f --colored-output 0"
+                    "shell_cmd": "pipenv run python -u \"$project_path\\BuildCardRotations.py\" --dev --force-build --no-colored-output"
                 },
                 {
                     "name": "Force Update, History from File",
-                    "shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -f -hf --colored-output 0"
+                    "shell_cmd": "pipenv run python -u \"$project_path\\BuildCardRotations.py\" --dev --force-build --history-from-file --no-colored-output"
                 },
                 {
                     "name": "Rebuild Atlas",
-                    "shell_cmd": "pipenv run python -u \"$project_path\\CardRotations.py\" -dev -ra --colored-output 0"
+                    "shell_cmd": "pipenv run python -u \"$project_path\\BuildCardRotations.py\" --dev -ra --no-colored-output"
+                },
+                {
+                    "name": "Force Render, Production Build",
+                    "shell_cmd": "pipenv run python -u \"$project_path\\BuildCardRotations.py\" --force-render --no-colored-output"
                 },
             ]
-		}
+		},
+		{
+			"name": "Python IDOL BUILD TEST",
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"shell_cmd": "pipenv run python -u \"$project_path\\BuildIdolTest.py\"",
+			
+			"env": {"PYTHONIOENCODING": "utf-8"},
+
+			"working_dir": "$project_path",
+			"quiet": false,
+		},
+		{
+			"name": "Python Only Current File",
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"shell_cmd": "pipenv run python -u \"$file\"",
+
+			"env": {"PYTHONIOENCODING": "utf-8"},
+
+			"working_dir": "$project_path",
+			"quiet": false
+		},
+		// {
+		// 	"name": "Vagrant SSH Test",
+		// 	"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+		// 	"shell_cmd": "plink -l vagrant -pw vagrant -P 2222 -batch 127.0.0.1 ./build.sh",
+
+		// 	"working_dir": "F:\\vagrant",
+		// 	"quiet": false,
+		// },
 	]
 }

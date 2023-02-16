@@ -19,6 +19,8 @@ for size in [16, 32, 48, 64, 128]:
 	
 	for icon in icons:
 		name, ext = os.path.splitext(os.path.basename(icon))
+		name = name.split('-')
+		name = f"{name[0]}-{name[1]}"
 		target_path = f'{size}/{name}{border}{ext}'
 		
 		if os.path.exists(target_path):

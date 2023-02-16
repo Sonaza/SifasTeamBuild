@@ -6,13 +6,15 @@ def generate_idols_css(output_file):
 		1, 2, 3, 4, 5, 6, 7, 8, 9,                                   # Muse
 		101, 102, 103, 104, 105, 106, 107, 108, 109,                 # Aqours
 		201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212,  # Nijigasaki
-		301, 302, 303, 304, 305, 306, 307, 308, 309,                 # Liella
+		# 301, 302, 303, 304, 305, 306, 307, 308, 309,                 # Liella
+		# 401, 402, 403, 404, 405, 406,                                # Hasunosora
 	]
 	idol_colors = list(zip(idols, [
 		'f39801', '1eb8ec', 'abadac', '2c72b7', 'fef102', 'e93421', '925da3', '23ac3a', 'ec6f9b', 
 		'f28100', 'f39c95', '63c0ad', 'e70014', '67aadf', '9f9f9f', 'fee202', '6458a4', 'ee6da6', 
 		'f0939e', 'f7f064', '81c6ef', '034099', 'eb6001', 'ba8ec1', 'da363f', '6cbd61', 'a8aaa9', '2c9e7e', 'd6d5ca', 'f8c8c4', 
-		'ff7f27', 'a0fff9', 'ff6e90', '74f466', '0000a0', 'fff442', 'ff3535', 'b2ffdd', 'ff51c4',
+		# 'ff7f27', 'a0fff9', 'ff6e90', '74f466', '0000a0', 'fff442', 'ff3535', 'b2ffdd', 'ff51c4',
+		# 'f8b500', '5383c3', '68be8d', 'ba2636', 'e7609e', 'c8c2c6',
 	]))
 
 	attributes = [1, 2, 3, 4, 5, 6]
@@ -26,11 +28,15 @@ def generate_idols_css(output_file):
 	# icon_sizes = [16, 32, 48, 64, 128]
 	icon_sizes = [16, 32, 48]
 
-	def darken(hex, m):
+	def darken(hex, m, a=None):
 		r = int(int(hex[0:2], 16) * m)
 		g = int(int(hex[2:4], 16) * m)
 		b = int(int(hex[4:6], 16) * m)
-		return f'{r:02x}{g:02x}{b:02x}'
+		if a == None:
+			return f'{r:02x}{g:02x}{b:02x}'
+		else:
+			return f'{r:02x}{g:02x}{b:02x}{int(a * 255):02x}'
+			
 
 	css = []
 
@@ -106,7 +112,9 @@ def generate_idols_css(output_file):
 		
 		line = f"               .idol-{idol:<10} .idol-bg-color-dim,"
 		css.append(line)
-		line = f"body.dark-mode .idol-{idol:<10} .idol-bg-color {{ background-color: #{darken(color, 0.7)} !important; }}"
+		line = f"body.dark-mode .idol-{idol:<10} .idol-bg-color," # {{ background-color: #{darken(color, 0.7)} !important; }}"
+		css.append(line)
+		line = f"               .idol-{idol}.idol-bg-color-tl   {{ background-color: #{darken(color, 0.7)} !important; }}"
 		css.append(line)
 		
 		line = f"               .idol-{idol:<10} .idol-bg-color-dim.bg-color-highlight,"
@@ -191,6 +199,23 @@ def generate_idols_css(output_file):
 	for idol, color in idol_colors:
 		line = f".idol-{idol:<3} .idol-bg-glow-border {{ box-shadow: inset 0 0 1px 1px #{color}44 !important; }}"
 		css.append(line)
+		
+	# stripe_height = 8
+	# stripe_darken = 0.4
+	# stripe_alpha = 0.7
+	for idol, color in idol_colors:
+		stripe_height = 8
+		stripe_darken = 0.4
+		stripe_alpha = 0.7
+		line = f"                      .idol-{idol}.idol-timeline-stripe {{ background: linear-gradient(to bottom, #0000 { 50 - stripe_height // 2 - 1 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 - stripe_height // 2 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 + stripe_height // 2 }%, #0000 { 50 + stripe_height // 2 + 1 }%); }}"
+		css.append(line)
+		
+		stripe_height = 12
+		stripe_darken = 0.6
+		stripe_alpha = 0.9
+		line = f".highlight-stripe-{idol:<3} .idol-{idol}.idol-timeline-stripe {{ background: linear-gradient(to bottom, #0000 { 50 - stripe_height // 2 - 1 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 - stripe_height // 2 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 + stripe_height // 2 }%, #0000 { 50 + stripe_height // 2 + 1 }%); }}"
+		css.append(line)
+		
 
 	css_code = '\n'.join(css)
 		

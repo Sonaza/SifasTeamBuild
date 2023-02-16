@@ -1,8 +1,10 @@
+import Config
 import requests
 import json
 import time
 import sqlite3 as sqlite
 import math
+import hashlib
 from operator import itemgetter
 from datetime import datetime, timezone
 
@@ -12,8 +14,11 @@ from collections import defaultdict, namedtuple
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Dict, Any, Union
 
+
 from .Skill import Skill
 from .SkillEnum import ST, TT
+
+from CardRotations.Utility import Utility
 
 try:
 	from backports.datetime_fromisoformat import MonkeyPatch
@@ -21,7 +26,7 @@ try:
 except Exception as e:
 	pass
 
-from .Config import Config
+# from .Config import Config
 from .Enums import *
 from .Idols import *
 from .HistoryCrawler import *
@@ -80,10 +85,17 @@ class KiraraNameSubstitutions():
 	
 # 	skill_effects : List[SkillEffect] = field(init = False, default_factory=list)
 
+
 class KiraraIdol():
 	def __init__(self, client, data):
 		self._client        = client
 		
+		self.build_from_database_row(data)
+		
+		if self.data:
+			self._process_skill_data()
+	
+	def build_from_database_row(self, data):
 		self.ordinal        = data['ordinal']
 		self.id             = data['id']
 		
@@ -100,29 +112,50 @@ class KiraraIdol():
 		
 		self.source         = Source(data['source'])
 		
-		self.release_date   = {
-			Locale.JP : datetime.fromisoformat(data['release_date_jp']),
-			Locale.WW : datetime.fromisoformat(data['release_date_ww']),
-		}
+		self.release_date   = self.make_locale_datepair(data, 'release_date')
 		
-		try:
-			self.event_title  = data['event_title']
-		except:
-			self.event_title  = None
+		self.build_event_info(data)
+		self.build_banner_info(data)
 		
 		try:
 			self.data = json.loads(data['json'])
 		except (IndexError, json.JSONDecodeError):
 			self.data = {}
 			# self.data = KiraraIdolLazyLoader()
+	
+	def has_locale_datepair(self, data, key):
+		return all([(key + locale.suffix) in data.keys() and data[key + locale.suffix] != None for locale in Locale])
 		
-		if self.data:
-			self._process_skill_data()
+	def make_locale_datepair(self, data, key):
+		return {locale: datetime.fromisoformat(data[key + locale.suffix]) for locale in Locale}
 	
+	def build_event_info(self, data):
+		self.event = dotdict({
+			'id'       : Utility.getter(data, 'event_id',    None),
+			'type'     : Utility.getter(data, 'event_type',  None, EventType),
+			'title'    : Utility.getter(data, 'event_title', None),
+			'start'    : None,
+			'end'      : None,
+		})
+		
+		if self.has_locale_datepair(data, 'event_start') and self.has_locale_datepair(data, 'event_end'):
+			self.event.start = self.make_locale_datepair(data, 'event_start')
+			self.event.end   = self.make_locale_datepair(data, 'event_end')
 	
-	def get_release_date(self, locale : Locale = Locale.JP):
-		return self.release_date[locale]
+	def build_banner_info(self, data):
+		self.banner = dotdict({
+			'id'       : Utility.getter(data, 'banner_id',    None),
+			'type'     : Utility.getter(data, 'banner_type',  None, BannerType),
+			'title'    : Utility.getter(data, 'banner_title', None),
+			'start'    : None,
+			'end'      : None,
+		})
+		
+		if self.has_locale_datepair(data, 'banner_start') and self.has_locale_datepair(data, 'banner_end'):
+			self.banner.start = self.make_locale_datepair(data, 'banner_start')
+			self.banner.end   = self.make_locale_datepair(data, 'banner_end')
 	
+	# ----------------------------------------------------------
 	
 	def __str__(self):
 		# idol = Idols.by_member_id[self.member_id]
@@ -266,7 +299,7 @@ class KiraraClient():
 	def initialize(self):
 		self._initialize_member_addition_dates()
 		
-		self._database_updated = False
+		self.database_was_updated = False
 		
 		try:
 			self.dbcon = sqlite.connect(self.database_path)
@@ -330,14 +363,18 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _make_insert_query(self, table, data=None, keys=None):
+	def _make_insert_query(self, table, data=None, keys=None, update_insert=False):
 		if keys == None:
 			if data == None: raise KiraraClientValueError("Data can't be None if keys are not explicitly defined.")
 			keys = data.keys()
 		
 		columns = ', '.join(keys)
 		values = ', '.join([f":{key}"  for key in keys])
-		return f"""INSERT INTO {table} ({columns}) VALUES ({values})"""
+		
+		if update_insert:
+			return f"""INSERT OR REPLACE INTO {table} ({columns}) VALUES ({values})"""
+		else:
+			return f"""INSERT INTO {table} ({columns}) VALUES ({values})"""
 		
 	def _get_enum_values(self, enum_list):
 		return [x.value for x in enum_list]
@@ -346,33 +383,105 @@ class KiraraClient():
 		return ', '.join(['?'] * len(data))
 	
 	# -------------------------------------------------------------------------------------------
+		
+	def cache_all_idols(self, rescrape_days):
+		missing_ordinals = self.get_missing_ordinals()
+		if missing_ordinals:
+			print(f"  {Fore.YELLOW}{Style.BRIGHT}Missing from database{Fore.WHITE}   : {len(missing_ordinals)} idols{Style.RESET_ALL}")
+			with print_indent(4):
+				for index, ordinals_chunk in enumerate(chunked(missing_ordinals, 20)):
+					print(f"{Fore.YELLOW}{Style.BRIGHT}Batch {index + 1:>2}{Fore.WHITE}  : {Utility.concat(ordinals_chunk, separator=', ', last_separator=' and ')}")
+					self.query_idol_data_by_ordinal(ordinals_chunk, rescrape=False)
+		
+		rescrape_ordinals = self.get_ordinals_to_rescrape(rescrape_days, missing_ordinals)
+		if rescrape_ordinals:
+			print(f"  {Fore.CYAN}{Style.BRIGHT}Rescraping for updates{Fore.WHITE}  : {len(rescrape_ordinals)} idols{Style.RESET_ALL}")
+			with print_indent(4):
+				for index, ordinals_chunk in enumerate(chunked(rescrape_ordinals, 20)):
+					print(f"{Fore.YELLOW}{Style.BRIGHT}Batch {index + 1:>2}{Fore.WHITE}  : {Utility.concat(ordinals_chunk, separator=', ', last_separator=' and ')}")
+					self.query_idol_data_by_ordinal(ordinals_chunk, rescrape=True)
 	
-	def _query_idol_data_by_ordinal(self, requested_ordinals):
+	
+	def get_missing_ordinals(self):
+		url = KiraraClient.Endpoints['id_list']
+		r = requests.get(url, headers={
+			'User-Agent' : Config.USER_AGENT,
+		})
+		if r.status_code != 200:
+			raise KiraraClientException("Endpoint status not OK")
+		
+		response_data = r.json()
+		if 'result' not in response_data:
+			raise KiraraClientException("Response data does not contain result")
+		
+		idols_data = response_data['result']
+		print(f"  {Fore.YELLOW}{Style.BRIGHT}Received {len(idols_data)} ordinals from Kirara database.")
+		
+		existing_ordinals = set([x[0] for x in self.db.execute("SELECT ordinal FROM 'idols'")])
+		return [int(card['ordinal']) for card in idols_data if card['ordinal'] not in existing_ordinals]
+		
+		
+	def get_ordinals_to_rescrape(self, rescrape_days, excluded_ordinals=[]):
+		if rescrape_days <= 0:
+			return []
+			
+		scrape_threshold = datetime.now(tz=timezone.utc) - timedelta(days=rescrape_days, hours=1)
+		
+		query = "SELECT ordinal FROM idols WHERE release_date_jp >= ?"
+		self.db.execute(query, [scrape_threshold.isoformat()])
+		return [int(data['ordinal']) for data in self.db.fetchall() if int(data['ordinal']) not in excluded_ordinals]
+	
+	
+	def query_idol_data_by_ordinal(self, requested_ordinals : List[int], rescrape : bool = False):
 		assert isinstance(requested_ordinals, list)
 		
-		query = f"""SELECT * FROM idols_json
+		query = f"""SELECT ordinal, json FROM idols_json
 					WHERE ordinal IN ({self._make_where_placeholders(requested_ordinals)})"""
 		self.db.execute(query, requested_ordinals)
 		
-		idols_data = []
+		existing_idols_data = {}
 		
 		existing_ordinals = []
 		for ordinal, json_data in self.db.fetchall():
+			ordinal = int(ordinal)
 			existing_ordinals.append(ordinal)
-			idols_data.append(json.loads(json_data))
-			requested_ordinals.remove(ordinal)
+			
+			json_data_hash = hashlib.sha1(json_data.encode('utf-8')).hexdigest()
+			try:
+				json_data_parsed = json.loads(json_data)
+			except json.JSONDecodeError:
+				raise KiraraClientException("JSON from the database could not be parsed.")
+			
+			existing_idols_data[ordinal] = {
+				'hash' : json_data_hash,
+				'data' : json_data_parsed,
+			}
+			
+			if rescrape == False:
+				requested_ordinals.remove(ordinal)
 		
-		# print("existing_ordinals", existing_ordinals)
-		if existing_ordinals:
+		
+		if not rescrape and existing_ordinals:
 			if requested_ordinals:
-				print("  Some idols were already present in database json archive.")
+				print("  Some idols were already present in database JSON archive.")
 			else:
-				print("  All idols were already present in database json archive. No need to query Kirara database.")
+				print("  All idols were already present in database JSON archive. No need to query Kirara database.")
+		
+		elif rescrape:
+			if len(requested_ordinals) == len(existing_ordinals):
+				print("  All rescraped idols were present in database JSON archive.")
+			else:
+				print("  Some rescraped idols were not present in database JSON archive.")
+		
+		# -------------------------------------------
+		
+		requested_idols_data = {}
 		
 		if requested_ordinals:
 			print(f"  {Fore.BLUE}{Style.BRIGHT}Requesting data from Kirara database...{Style.RESET_ALL}")
 			
-			url = KiraraClient.Endpoints['by_ordinal'].format(','.join([str(x) for x in requested_ordinals]))
+			# url = KiraraClient.Endpoints['by_ordinal'].format(','.join([str(x) for x in requested_ordinals]))
+			url = KiraraClient.Endpoints['by_ordinal'].format(Utility.concat(requested_ordinals))
 			r = requests.get(url, headers={
 				'User-Agent' : Config.USER_AGENT,
 			})
@@ -388,193 +497,176 @@ class KiraraClient():
 			if 'result' not in response_data:
 				raise KiraraClientException("Response data does not contain result")
 		
-			idols_data.extend(response_data['result'])
-		
-			result_ordinals = set()
-			for card in idols_data:
-				result_ordinals.add(card['ordinal'])
+			for idol_data in sorted(response_data['result'], key=itemgetter('ordinal')):
+				ordinal = int(idol_data['ordinal'])
+				requested_idols_data[ordinal] = idol_data
 			
-			if not all(x in result_ordinals for x in requested_ordinals):
-				partial_result = [x for x in requested_ordinals if x in result_ordinals]
+			result_ordinals = set(requested_idols_data.keys())
+			
+			if not Utility.contains_all(result_ordinals, requested_ordinals):
+				partial_result = [ordinal for ordinal in requested_ordinals if ordinal not in result_ordinals]
 				raise KiraraClientPartialResult(f"Partial result with given ordinals. Missing: {partial_result}")
 			
-			time.sleep(0.5)
+			# time.sleep(0.5)
 		
-		print()
-		print(f"{Fore.YELLOW}{Style.BRIGHT}Processing query results...{Style.RESET_ALL}")
-		for card in sorted(idols_data, key=itemgetter('ordinal')):
-			print(f"  {card['ordinal']:<4} ", end='')
+		print_indent.add(4)
+		
+		if not rescrape and existing_idols_data:
+			print("  Restoring old cached idol data:")
+			for index, (ordinal, existing_idol) in enumerate(existing_idols_data.items()):
+				print(f"{Fore.WHITE}{ordinal:>4}{Style.RESET_ALL}", end='  ')
+				self.update_idol_database_entry(ordinal, existing_idol['data'])
+				if (index + 1) % 5 == 0 and (index + 1) != len(existing_idols_data): print()
+			print()
+		
+		for index, (ordinal, idol_data) in enumerate(requested_idols_data.items()):
+			print(f"{Fore.WHITE}{ordinal:>4}{Style.RESET_ALL}", end=' ')
 			
-			idol_info = Idols.by_member_id[card['member']]
-			member    = Member(card['member'])
-			
-			if card['ordinal'] not in existing_ordinals:
+			update_entry = True
+			if rescrape or ordinal not in existing_ordinals:
 				serialized = {
-					'ordinal'  : card['ordinal'],
-					'json'     : json.dumps(card),
+					'ordinal'  : ordinal,
+					'json'     : json.dumps(idol_data),
 				}
-				query = self._make_insert_query('idols_json', serialized)
-				self.db.execute(query, serialized)
-			
-			ordinal_str = str(card['ordinal']);
-			
-			# -------------------------------------------------
-			# Retrieve card source
-			
-			if 'source' in card:
-				source = card['source']
-			elif ordinal_str in self.cards_fallback:
-				source = self.cards_fallback[ordinal_str]['source']
-			else:
-				raise KiraraClientException(f"Card source not determined for ordinal {ordinal_str} in remote data and no fallback found")
-			
-			# -------------------------------------------------
-			# Retrieve release date
-			
-			release_dates = {
-				Locale.JP : None,
-				Locale.WW : None,
-			}
-			
-			check_fallbacks = False
-			if 'release_dates' in card:
-				if 'jp' in card['release_dates']:
-					release_dates[Locale.JP] = card['release_dates']['jp']
-				else:
-					check_fallbacks = True
-					
-				if 'en' in card['release_dates']:
-					release_dates[Locale.WW] = card['release_dates']['en']
-				else:
-					check_fallbacks = True
-			
-			if check_fallbacks:
-				if ordinal_str in self.cards_fallback:
-					if release_dates[Locale.JP] == None:
-						release_dates[Locale.JP] = self.cards_fallback[ordinal_str]['release_date_jp']
-						
-					if release_dates[Locale.WW] == None:
-						release_dates[Locale.WW] = self.cards_fallback[ordinal_str]['release_date_ww']
+				json_data_hash = hashlib.sha1(serialized['json'].encode('utf-8')).hexdigest()
 				
-				# Fallbacks for Shioriko R cards, they don't seem to have global release date
-				released_on_member_addition = [284, 285]
-				if card['ordinal'] in released_on_member_addition:
-					release_dates[Locale.JP] = self.member_addition_dates[Locale.JP][member]['date_added'].isoformat()
-					release_dates[Locale.WW] = self.member_addition_dates[Locale.WW][member]['date_added'].isoformat()
+				if ordinal not in existing_ordinals or json_data_hash != existing_idols_data[ordinal]['hash']:
+					query = self._make_insert_query('idols_json', serialized, update_insert=True)
+					self.db.execute(query, serialized)
 				
-			if release_dates[Locale.JP] == None or release_dates[Locale.WW] == None:
-				raise KiraraClientException(f"Unable to identify a card release date for ordinal {ordinal_str}.")
-					
-			# Just guarantee release dates don't go before member addition date for some reason
-			for locale in Locale:
-				date = datetime.fromisoformat(release_dates[locale])
-				if date < self.member_addition_dates[locale][member]['date_added']:
-					release_dates[locale] = self.member_addition_dates[locale][member]['date_added'].isoformat()
+				if rescrape:
+					if json_data_hash == existing_idols_data[ordinal]['hash']:
+						print(f"{Fore.BLACK}{Style.BRIGHT}(OK){Style.RESET_ALL}", end='  ')
+						update_entry = False
+					else:
+						print(f"{Fore.GREEN}{Style.BRIGHT}(!!){Style.RESET_ALL}", end='  ')
 			
-			# -------------------------------------------------
+			if update_entry:
+				self.update_idol_database_entry(ordinal, idol_data, overwrite=rescrape)
 			
-			serialized = {
-				'id'                : card['id'],
-				'ordinal'           : card['ordinal'],
-				'member_id'         : card['member'],
-				'normal_name'       : card['normal_appearance']['name'].strip(),
-				'idolized_name'     : card['idolized_appearance']['name'].strip(),
-				'attribute'         : card['attribute'],
-				'type'              : card['role'],
-				'rarity'            : card['rarity'],
-				'source'            : source,
-				'release_date_jp'   : release_dates[Locale.JP],
-				'release_date_ww'   : release_dates[Locale.WW],
-			}
-			query = self._make_insert_query('idols', serialized)
-			self.db.execute(query, serialized)
+			if (index + 1) % 5 == 0 and (index + 1) < len(requested_idols_data):
+				print()
+		
+		print_indent.reduce(4)
 		
 		print()
 		print("  OK!")
-		
-		# for card in sorted(data['result'], key=itemgetter('ordinal')):
-		
-		# card_skills = {}
-		
-		# fields = ["parameter", "values", "target", "target_data"]
-		# query_fields = ', '.join([f"'{name}'" for name in fields])
-		# query_keys   = ', '.join([f":{name}"  for name in fields])
-		
-		# for card in data['result']:
-		# 	card_skills[card['ordinal']] = [(None, None), (None, None)]
-			
-		# 	passive_skill = card['passive_skills'][0]
-			
-		# 	targets_data = [passive_skill['target'], passive_skill['target_2']]
-		# 	levels_data = [passive_skill['levels'], passive_skill['levels_2']]
-			
-		# 	for skill_index, target_data, levels in zip([0, 1], targets_data, levels_data):
-		# 		if target_data == None or levels == None:
-		# 			assert(target_data == None and levels == None)
-		# 			break
-				
-		# 		parameter = levels[0][1]
-		# 		values = [x[2] for x in levels]
-				
-		# 		# print(target_data)
-		# 		target = self.determine_skill_target(target_data, card).value
-				
-		# 		serialized = {
-		# 			'parameter'   : parameter,
-		# 			'values'      : json.dumps(values),
-		# 			'target'      : target,
-		# 			'target_data' : json.dumps(target_data),
-		# 		}
-				
-		# 		query = "INSERT INTO 'skills_passive' ({}) VALUES ({})".format(query_fields, query_keys)
-		# 		self.db.execute(query, serialized)
-				
-		# 		passive_id = self.db.lastrowid
-		# 		print(passive_id)
-				
-		# 		card_skills[card['ordinal']][skill_index] = (passive_id, serialized)
-		
-		# query_data = []
 		
 		self.dbcon.commit()
 		print("Processing complete!")
 		
 		return True
+		
+	
+	def update_idol_database_entry(self, ordinal : int, idol_data : Dict[Any, Any], overwrite : bool = False):
+		ordinal_str = str(idol_data['ordinal']);
+		
+		# -------------------------------------------------
+		# Retrieve card source
+		
+		if 'source' in idol_data:
+			source = idol_data['source']
+		elif ordinal_str in self.cards_fallback:
+			source = self.cards_fallback[ordinal_str]['source']
+		else:
+			raise KiraraClientException(f"Card source not determined for ordinal {ordinal_str} in remote data and no fallback found")
+		
+		# -------------------------------------------------
+		# Retrieve release date
+		
+		release_dates = {
+			Locale.JP : None,
+			Locale.WW : None,
+		}
+		
+		member    = Member(idol_data['member'])
+		
+		check_fallbacks = False
+		if 'release_dates' in idol_data:
+			if 'jp' in idol_data['release_dates']:
+				release_dates[Locale.JP] = idol_data['release_dates']['jp']
+			else:
+				check_fallbacks = True
+				
+			if 'en' in idol_data['release_dates']:
+				release_dates[Locale.WW] = idol_data['release_dates']['en']
+			else:
+				check_fallbacks = True
+		
+		if check_fallbacks:
+			if ordinal_str in self.cards_fallback:
+				if release_dates[Locale.JP] == None:
+					release_dates[Locale.JP] = self.cards_fallback[ordinal_str]['release_date_jp']
+					
+				if release_dates[Locale.WW] == None:
+					release_dates[Locale.WW] = self.cards_fallback[ordinal_str]['release_date_ww']
+			
+			# Fallbacks for Shioriko R cards, they don't seem to have global release date
+			released_on_member_addition = [284, 285]
+			if idol_data['ordinal'] in released_on_member_addition:
+				release_dates[Locale.JP] = self.member_addition_dates[Locale.JP][member]['date_added'].isoformat()
+				release_dates[Locale.WW] = self.member_addition_dates[Locale.WW][member]['date_added'].isoformat()
+			
+		if release_dates[Locale.JP] == None or release_dates[Locale.WW] == None:
+			raise KiraraClientException(f"Unable to identify a card release date for ordinal {ordinal_str}.")
+				
+		# Just guarantee release dates don't go before member addition date for some reason
+		for locale in Locale:
+			date = datetime.fromisoformat(release_dates[locale])
+			if date < self.member_addition_dates[locale][member]['date_added']:
+				release_dates[locale] = self.member_addition_dates[locale][member]['date_added'].isoformat()
+		
+		# -------------------------------------------------
+		
+		serialized = {
+			'id'                : idol_data['id'],
+			'ordinal'           : idol_data['ordinal'],
+			'member_id'         : idol_data['member'],
+			'normal_name'       : idol_data['normal_appearance']['name'].strip(),
+			'idolized_name'     : idol_data['idolized_appearance']['name'].strip(),
+			'attribute'         : idol_data['attribute'],
+			'type'              : idol_data['role'],
+			'rarity'            : idol_data['rarity'],
+			'source'            : source,
+			'release_date_jp'   : release_dates[Locale.JP],
+			'release_date_ww'   : release_dates[Locale.WW],
+		}
+		query = self._make_insert_query('idols', serialized, update_insert=overwrite)
+		self.db.execute(query, serialized)
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def was_database_updated(self):
-		return self._database_updated
+	def database_updated(self):
+		return self.database_was_updated
 	
-	def update_database(self, forced=False, load_history_from_file=False):
-		if not forced and not self.database_needs_update():
+	def update_database(self, forced_update=False, load_history_from_file=False, rescrape_days=14):
+		if not forced_update and not self.database_needs_update():
 			print(f"  {Fore.BLACK}{Style.BRIGHT}No need to update database right now.{Style.RESET_ALL}")
 			return False
 		
-		print(f"{Fore.BLUE}{Style.BRIGHT}Populating members...{Style.RESET_ALL}")
-		self._populate_members_and_metadata()
+		self.populate_members_and_metadata()
 		
-		print()
-		print(f"{Fore.BLUE}{Style.BRIGHT}Retrieving events and banners data...{Style.RESET_ALL}")
-		history_data = self.retrieve_history_data(load_from_file=load_history_from_file)
+		# print()
+		# print(f"{Fore.BLUE}{Style.BRIGHT}Retrieving events and banners data...{Style.RESET_ALL}")
+		# history_data = self.retrieve_history_data(load_from_file=load_history_from_file)
 		
-		self.cards_fallback = self._load_cards_data_fallback()
+		self.cards_fallback = self.load_cards_data_fallback()
 		
 		print()
 		print(f"{Fore.BLUE}{Style.BRIGHT}Updating idol database...{Style.RESET_ALL}")
-		self._cache_all_idols()
+		self.cache_all_idols(rescrape_days=rescrape_days)
 		
-		if history_data:
-			print()
-			print(f"{Fore.BLUE}{Style.BRIGHT}Updating events and banners database...{Style.RESET_ALL}")
-			self.update_history_database(history_data)
+		# if history_data:
+		# 	print()
+		# 	print(f"{Fore.BLUE}{Style.BRIGHT}Updating events and banners database...{Style.RESET_ALL}")
+		# 	self.update_history_database(history_data)
 			
 		self.refresh_last_update_time()
-		self._database_updated = True
+		self.database_was_updated = True
 		
 		return True
 		
-	def _load_cards_data_fallback(self):
+	def load_cards_data_fallback(self):
 		try:
 			with open(Config.DATA_FALLBACK_FILE, "r", encoding="utf-8") as f:
 				return json.load(fp=f)
@@ -584,11 +676,14 @@ class KiraraClient():
 			
 	# -------------------------------------------------------------------------------------------
 	
-	def _populate_members_and_metadata(self):
+	def populate_members_and_metadata(self):
+		anything_changed = False
+		
 		def executemany(query, data):
 			for d in data:
 				try:
 					self.db.execute(query, d)
+					anything_changed = True
 				except sqlite.IntegrityError as e:
 					if not 'UNIQUE constraint failed' in str(e):
 						print(e)
@@ -659,6 +754,9 @@ class KiraraClient():
 		# ---------------------
 		
 		self.dbcon.commit()
+		
+		if anything_changed:
+			print(f"{Fore.BLUE}{Style.BRIGHT}Populated members and metadata...{Style.RESET_ALL}")
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -822,44 +920,36 @@ class KiraraClient():
 		self.dbcon.commit()
 	
 	# -------------------------------------------------------------------------------------------
-		
-	def _cache_all_idols(self):
-		url = KiraraClient.Endpoints['id_list']
-		r = requests.get(url, headers={
-			'User-Agent' : Config.USER_AGENT,
-		})
-		if r.status_code != 200:
-			raise KiraraClientException("Endpoint status not OK")
-		
-		response_data = r.json()
-		if 'result' not in response_data:
-			raise KiraraClientException("Response data does not contain result")
-		
-		idols_data = response_data['result']
-		print(f"  {Fore.YELLOW}{Style.BRIGHT}Received {len(idols_data)} ordinals from Kirara database.")
-		
-		missing_ordinals = []
-		existing_ordinals = set([x[0] for x in self.db.execute("SELECT ordinal FROM 'idols'")])
-		for card in idols_data:
-			if card['ordinal'] not in existing_ordinals:
-				missing_ordinals.append(card['ordinal'])
-		
-		print(f"  Missing {len(missing_ordinals)} idols in the local database.{Style.RESET_ALL}")
-				
-		for ordinals_chunk in chunked(missing_ordinals, 20):
-			print("Querying ordinals: ", ', '.join([str(x) for x in ordinals_chunk]))
-			self._query_idol_data_by_ordinal(ordinals_chunk)
 	
-	# -------------------------------------------------------------------------------------------
-	
+	def get_idol_ordinals_with_json(self):
+		query = f"""SELECT v_idols.ordinal AS ordinal, v_idols.member_id AS member_id, idols_json.json AS json FROM 'v_idols'
+					LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
+					ORDER BY v_idols.ordinal"""
+					
+		self.db.execute(query)
+		
+		result = []
+		for data in self.db.fetchall():
+			try:
+				result.append((
+					data['ordinal'],
+					data['member_id'],
+					json.loads(data['json']),
+				))
+			except json.JSONDecodeError:
+				pass
+		
+		return result
+		
+		
 	def get_all_idols(self, with_json = False):
 		if with_json:
 			query = f"""SELECT v_idols.*, idols_json.json FROM 'v_idols'
 						LEFT JOIN idols_json ON v_idols.ordinal = idols_json.ordinal
-						ORDER BY ordinal"""
+						ORDER BY v_idols.ordinal"""
 		else:
 			query = f"""SELECT * FROM v_idols
-						ORDER BY ordinal"""
+						ORDER BY v_idols.ordinal"""
 					
 		self.db.execute(query)
 		return self.convert_to_idol_object(self.db.fetchall())
@@ -911,7 +1001,8 @@ class KiraraClient():
 			group : Group = None, subunit : Subunit = None,
 			source : Source = None,	rarity : Rarity = None,
 			min_rarity : Rarity = None, max_rarity : Rarity = None,
-			group_by = None, order_by = Ordinal, order = SortingOrder.Ascending):
+			group_by = None, order_by = Ordinal, order = SortingOrder.Ascending,
+			with_event_info = False, with_banner_info = False):
 	
 		fields = []
 		if member     != None: fields.append(self._make_where_condition("member_id",  member))
@@ -931,14 +1022,22 @@ class KiraraClient():
 		else:
 			order = "DESC"
 		
+		database_view = 'v_idols_with_events'
+		if with_event_info and with_banner_info:
+			database_view = 'v_idols_with_event_info_and_banner_info_null_allowed'
+		elif with_event_info:
+			database_view = 'v_idols_with_event_info_null_allowed'
+		elif with_banner_info:
+			database_view = 'v_idols_with_banner_info_null_allowed'
+		
 		if fields:
-			query = f"""SELECT * FROM 'v_idols_with_events'
+			query = f"""SELECT * FROM '{database_view}'
 						WHERE {' AND '.join([x[0] for x in fields])} {group_by}
 						ORDER BY {order_by} {order}"""
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:
-			query = f"""SELECT * FROM 'v_idols_with_events'
+			query = f"""SELECT * FROM '{database_view}'
 						{group_by}
 						ORDER BY {order_by} {order}"""
 			self.db.execute(query)
@@ -977,7 +1076,7 @@ class KiraraClient():
 			fields.append((f"release_date_jp <= ?", [released_before.isoformat()]))
 		
 		if fields:
-			query = f"""SELECT * FROM 'v_idols_with_events_and_banner_info_null_allowed'
+			query = f"""SELECT * FROM 'v_idols_with_event_info_and_banner_info_null_allowed'
 						WHERE ordinal IN (
 							SELECT MAX(ordinal) FROM 'v_idols'
 							WHERE {' AND '.join([x[0] for x in fields])}
@@ -987,7 +1086,7 @@ class KiraraClient():
 			# print(query)
 			self.db.execute(query, [value for x in fields for value in x[1]])
 		else:
-			query = f"""SELECT * FROM 'v_idols_with_events_and_banner_info_null_allowed'
+			query = f"""SELECT * FROM 'v_idols_with_event_info_and_banner_info_null_allowed'
 						WHERE ordinal IN (
 							SELECT MAX(ordinal) FROM 'v_idols'
 							GROUP BY member_id
@@ -1256,7 +1355,8 @@ class KiraraClient():
 					else:
 						weighted_value *= 1.15
 						
-				weighted_value **= current_rotation_coefficient.get(member, 1)
+				if weighted_value > 0:	
+					weighted_value **= current_rotation_coefficient.get(member, 1)
 				
 				weighted_overdueness[current_source][member] = {
 					'last_any_ur'       : elapsed_per_member[member],
@@ -1290,7 +1390,8 @@ class KiraraClient():
 					else:
 						weighted_value *= 1.25
 						
-				weighted_value **= current_rotation_coefficient.get(member, 1)
+				if weighted_value > 0:	
+					weighted_value **= current_rotation_coefficient.get(member, 1)
 				
 				weighted_overdueness[current_source][member] = {
 					'last_any_ur'       : elapsed_per_member[member],
@@ -1354,7 +1455,7 @@ class KiraraClient():
 		fields = []
 		fields.append(self._make_where_condition("member_id", member))
 		
-		query = f"""SELECT * FROM v_idols_with_events_and_banner_info_null_allowed
+		query = f"""SELECT * FROM v_idols_with_event_info_and_banner_info_null_allowed
 					WHERE {' AND '.join([x[0] for x in fields])}
 					ORDER BY release_date_jp ASC"""
 		self.db.execute(query, [value for x in fields for value in x[1]])

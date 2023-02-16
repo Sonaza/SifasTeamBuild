@@ -1,0 +1,29 @@
+
+.scrollbar
+{
+	.scrollbar-groove
+	{
+		position: relative;
+		
+		.scrollbar-slider
+		{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			user-select: none;
+			
+			cursor: grab;
+		}
+	}
+	
+	&.dragging
+	{
+		cursor: grabbing;
+		
+		.scrollbar-slider
+		{
+			cursor: grabbing;		
+		}
+	}
+	
+}

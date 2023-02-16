@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+	<title>Crawler Info &mdash; SIFAS Card Rotations</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+ 	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css">
+	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://sifas-cards.sonaza.com/">
+	<meta property="og:title" content="SIFAS Card Rotations">
+	<meta property="og:site_name" content="SIFAS Card Rotations">
+	<meta property="og:description" content="View card rotations and related statistics.">
+	<meta property="og:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
+	<link rel="icon" href="/favicon.ico">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_180.png">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_256.png" sizes="256x256">
+	<link rel="apple-touch-icon" href="/img/favicon_tile_512.png" sizes="512x512">
+	<link rel="shortcut icon" href="/img/favicon_tile_192.png">
+</head>
+</head>
+<body>
+	<div id="header">
+		<div id="header-inner">
+			<div>
+				<h2>
+					SIFAS Card Rotations &mdash; Crawler Info
+				</h2>
+			</div>
+		</div>
+	</div>
+	<div id="main-outer-wrapper">
+		<div id="main-wrapper">
+			<div id="side-nav" ng-mousedown="tap_unfocus($event)" ng-class="anySideBarToggleActive()">
+				<div class="side-nav-inner">
+					<div class="nav-wrapper unfocus-target" ng-class="sidebarToggleActive(navigation_visible)">
+						<ul ng-controller="NavController">
+							<li><a href="/">&laquo; Back to Home</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<div id="main">
+				<div id="main-inner">
+					<div class="main-content">
+						<div class="main-content-inner">
+							<h1>SIFAS Card Rotations Crawler Info</h1>
+							<p>
+								This page details information about the sifas-cards crawler.
+							</p>
+							<h2>Crawled pages</h2>
+							<p>
+								This website uses a programmatic crawler to request data from <a href="https://allstars.kirara.ca/" target="_blank">Kirara All Stars Card Database</a>.
+							</p>
+							<p>
+								Card data is requested via the official API endpoints as documented at <a href="https://github.com/summertriangle-dev/arposandra/wiki/API-(Cards)" target="_blank">here</a>.
+							</p>
+							<p>
+								Card data is requested based on the list of ordinals given by the API endpoint. From this list only the ordinals that are missing from the local cache database are requested for in detail, and any newly added ordinals from the past 14 days will be re-requested alongside to check for any data changes.
+							</p>
+							<p>
+								Additionally event and scouting banner history data is parsed from the HTML code on both
+								<a href="https://allstars.kirara.ca/jp/history/" target="_blank">allstars.kirara.ca/jp/history</a> and
+								<a href="https://allstars.kirara.ca/en/history/" target="_blank">allstars.kirara.ca/en/history</a>.
+								
+								The number of pages queried is limited to until no new data is found, this generally means only the first page is hit on either address.
+							</p>
+							<h2>Frequency</h2>
+							<p>
+								This crawler automatically visits the aforementioned pages only once per day a few minutes past 6:00 UTC.
+							</p>
+							<p>
+								Additional requests may be performed manually in case there are errors present in the local database and cache, and during development of features.
+								Predicting the frequency of requests made in that case is difficult but reasonable efforts are taken to limit number of queries.
+							</p>
+							<h2>Thank you</h2>
+							<p>
+								If you're the admin of Kirara All Stars Card Database, I thank you for your website.
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer id="footer">
+		<div id="footer-top">
+			<div class="footer-top-inner">
+				<div style="width:25%">
+					Website created by Sonaza
+				</div>
+				<div style="width:50%">
+					For use with <a href="https://lovelive-as-global.com/" target="_blank" rel="noreferrer noopener">Love Live School Idol Festival All Stars</a>
+				</div>
+				<div style="width:25%">
+					<a href="https://forms.gle/sMK7KSmXDsgmHrvH9" target="_blank" rel="noreferrer noopener">Send Feedback</a>
+				</div>
+			</div>
+		</div>
+		<div id="footer-bottom">
+			<div class="details">
+				Data is retrieved from <a href="https://allstars.kirara.ca/" target="_blank">Kirara All Stars Card Database</a>
+			</div>
+			<div class="disclaimer">
+				This website is not affiliated with Love Live!, Mynet Inc., SUNRISE Inc., Bushiroad Inc. or any other associated company.
+			</div>
+		</div>
+	</footer>
+</body>
+</html>
