@@ -4,7 +4,6 @@ app.factory('LocationKeys', ($rootScope, $location, SiteRoutes) =>
 	class LocationKeysService
 	{
 		stored_keys = {}
-		#internal = {};
 		
 		constructor()
 		{

@@ -20,11 +20,11 @@ class BannersGenerator(GeneratorBase):
 				'banner_id'        : banner_id,
 				'banner_data'      : banner_data,
 				'banner_row_index' : banner_index + 1,
-			}, minify=not self.args.dev)
+			}, minify_html=not self.args.dev)
 			
 		self.render_and_save("banners.html", "pages/banners.html", {
 			'banners_with_cards' : banners_with_cards,
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 		
 		return True
 	

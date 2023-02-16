@@ -41,7 +41,7 @@ class CardStatsGenerator(GeneratorBase):
 		self.render_and_save("stats.html", "pages/stats.html", {
 			'category_tag'   : 'general',
 			'general_stats'  : general_stats,
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 		
 		card_stats, category_info, category_has_empty_rows = self.get_card_stats()
 		for category_tag in card_stats.keys():
@@ -51,14 +51,14 @@ class CardStatsGenerator(GeneratorBase):
 				'category_info'    : category_info[category_tag],
 				'has_empty_rows'   : category_has_empty_rows[category_tag],
 				'history_category' : self.history_category,
-			}, minify=not self.args.dev)
+			}, minify_html=not self.args.dev)
 	
 	
 		weighted_overdueness = self.client.get_weighted_overdueness()
 		self.render_and_save("overdueness.html", f"pages/stats_overdueness.html", {
 			'weighted_overdueness' : weighted_overdueness,
 			'history_category'     : self.history_category,
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 	
 		return True
 		

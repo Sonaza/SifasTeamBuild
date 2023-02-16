@@ -291,7 +291,7 @@ class RotationsGenerator:
 		
 	def run_generators(self):
 		for generator_name, generator in self.generators.items():
-			print(f"──────── {generator.generator_display_name + ' ':─<60}")
+			print(f"──────── {generator.generator_display_name + ' ':─<70}")
 			print()
 			with print_indent(4):
 				if generator.due_for_rendering():
@@ -318,7 +318,7 @@ class RotationsGenerator:
 		self.renderer.render_and_save("build_id_template.js", "../assets/js/build_id.js",
 		{
 			'build_id' : random_build_id,
-		}, minify=not self.args.dev)
+		})
 		print()
 		
 		# -------------------------------------------------------
@@ -330,7 +330,7 @@ class RotationsGenerator:
 		# Index page
 		
 		if self.due_for_rendering("home.html"):
-			self.renderer.render_and_save("home.html", "pages/home.html", {}, minify=not self.args.dev)
+			self.renderer.render_and_save("home.html", "pages/home.html", {}, minify_html=not self.args.dev)
 		
 		# -------------------------------------------------------
 		# Save tooltip data cache
@@ -344,7 +344,7 @@ class RotationsGenerator:
 		
 		self.processor.process_all_resources(
 			force  = self.is_doing_full_render() or not self.processor.processor_history_loaded_successfully(),
-			minify = not self.args.dev)
+			minify=not self.args.dev)
 		
 		# -------------------------------------------------------
 		# Error Pages
@@ -354,43 +354,43 @@ class RotationsGenerator:
 				'error_code'   : 400,
 				'error_status' : 'Bad Request',
 				'error_text'   : "The server is unable to handle the malformed request made by your browser.",
-			}, minify=True)
+			}, minify_html=True)
 			
 			self.renderer.render_and_save("error.html", "error/403.html", {
 				'error_code'   : 403,
 				'error_status' : 'Forbidden',
 				'error_text'   : "You are not permitted to access this resource. Move along, citizen.",
-			}, minify=True)
+			}, minify_html=True)
 			
 			self.renderer.render_and_save("error.html", "error/404.html", {
 				'error_code'   : 404,
 				'error_status' : 'Not Found',
 				'error_text'   : "Whoopsie! Whatever it is you're looking for at this URL does not exist.<br><br>If a page links here directly or you think something should have been here please send feedback.",
-			}, minify=True)
+			}, minify_html=True)
 			
 			self.renderer.render_and_save("error.html", "error/410.html", {
 				'error_code'   : 410,
 				'error_status' : 'Gone',
 				'error_text'   : "Whoopsie! Whatever it is you're looking for at this URL is permanently gone.",
-			}, minify=True)
+			}, minify_html=True)
 			
 			self.renderer.render_and_save("error.html", "error/500.html", {
 				'error_code'   : 500,
 				'error_status' : 'Server Error',
 				'error_text'   : "The server encountered an unrecoverable error while processing your request.<br><br>Please try again later.",
-			}, minify=True)
+			}, minify_html=True)
 			
 			self.renderer.render_and_save("error.html", "error/503.html", {
 				'error_code'   : 503,
 				'error_status' : 'Unavailable',
 				'error_text'   : "Service is temporarily unavailable. Please try again later.",
-			}, minify=True)
+			}, minify_html=True)
 		
 		# -------------------------------------------------------
 		# Crawler Info
 		
 		if self.due_for_rendering("crawler.html"):
-			self.renderer.render_and_save("crawler.html", "crawler.html", {}, minify=True)
+			self.renderer.render_and_save("crawler.html", "crawler.html", {}, minify_html=True)
 		
 		# -------------------------------------------------------
 		# .htaccess
@@ -398,7 +398,7 @@ class RotationsGenerator:
 		preload_assets = self.get_preload_assets()
 		self.renderer.render_and_save("template.htaccess", ".htaccess", {
 			'preloads' : preload_assets
-		}, minify=False, generated_note=True)
+		}, generated_note=True)
 		
 		# -------------------------------------------------------
 		# Main index and layout
@@ -412,7 +412,7 @@ class RotationsGenerator:
 			'last_data_update' : last_data_update,
 			'render_time'      : f"{render_time_so_far:0.2f}s",
 			'preloads'         : preload_assets,
-		}, minify=False, output_basepath='')
+		}, minify_html=False, output_basepath='')
 		
 		# -------------------------------------------------------
 		# File cleanup

@@ -21,7 +21,7 @@ class BasicRotationsGenerator(GeneratorBase):
 				self.render_and_save("deferred_card_grid.html", f"pages/deferred/{rotation_set_label}_{group.tag}_{rotation_index}.html", {
 					'rotation_index'     : rotation_index,
 					'card_rotation'      : card_rotation,
-				}, minify=not self.args.dev)
+				}, minify_html=not self.args.dev)
 		
 	def generate_and_render(self):
 		# General UR rotations
@@ -33,7 +33,7 @@ class BasicRotationsGenerator(GeneratorBase):
 			'page_title'         : 'UR Rotations',
 			'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
 			                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.''',
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('ur', ur_rotations)
 	
 		# Festival UR rotations
@@ -44,7 +44,7 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Festival UR Rotations',
 			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('festival', festival_rotations)
 	
 		# Party UR rotations
@@ -55,7 +55,7 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Party UR Rotations',
 			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('party', party_rotations)
 	
 		# Event UR rotations
@@ -66,7 +66,7 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Event UR Rotations',
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('event', event_rotations)
 	
 		# SR Sets
@@ -77,7 +77,7 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
 			'page_description'   : '''SR cards organised into sets by costume or other common theme.''',
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('sr', sr_sets)
 		return True
 

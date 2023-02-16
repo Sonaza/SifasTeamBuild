@@ -173,9 +173,6 @@
 		<script src="/js/vendor/angular/angular-sanitize.js"></script>
 		<script src="/js/vendor/angular/angular-cookies.js"></script>
 	{% else %}
-		{# <script src="/js/vendor/angular/angular.min.js"></script>
-		<script src="/js/vendor/angular/angular-route.min.js"></script>
-		<script src="/js/vendor/angular/angular-sanitize.min.js"></script> #}
 		<script src="{{ cache_buster('/js/vendor/angular/angular-combined.min.js') }}"></script>
 	{% endif %}
 	<script src="{{ cache_buster('/js/tooltip_data.js') }}"></script>

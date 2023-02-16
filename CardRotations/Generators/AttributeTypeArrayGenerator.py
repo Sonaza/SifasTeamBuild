@@ -20,7 +20,7 @@ class AttributeTypeArrayGenerator(GeneratorBase):
 		for data in idol_arrays:
 			self.render_and_save("attribute_type_array.html", f"pages/idol_arrays_{data[0].tag}.html", {
 				'idol_arrays'        : [ data ],
-			}, minify=not self.args.dev)
+			}, minify_html=not self.args.dev)
 		return True
 		
 	def get_attribute_type_array(self, group : Group):

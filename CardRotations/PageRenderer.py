@@ -276,8 +276,16 @@ class PageRenderer():
 		if output_basepath == None:
 			output_basepath = Config.OUTPUT_DIRECTORY
 		return Utility.join_path(output_basepath, output_filename, normalize=True)
-		
-	def render_and_save(self, template_filename, output_filename, data, minify=True, output_basepath=None, generated_note=False, dependencies=[]):
+	
+	@staticmethod
+	def can_minify_as_html(filename):
+		minifiable_extensions = ['.html', '.php']
+		for extension in minifiable_extensions:
+			if filename.endswith(extension):
+				return True
+		return False
+	
+	def render_and_save(self, template_filename, output_filename, data, minify_html=True, output_basepath=None, generated_note=False, dependencies=[]):
 		try:
 			template = self.jinja.get_template(template_filename)
 		except jinja2.exceptions.TemplateNotFound:
@@ -303,7 +311,7 @@ class PageRenderer():
 		for filename in dependencies:
 			self.mark_rendered(Utility.join_path(filename), full_output_filepath)
 		
-		if minify:
+		if minify_html and self.can_minify_as_html(template_filename):
 			rendered_output = htmlmin.minify(rendered_output, remove_empty_space=True)
 		
 		with open(full_output_filepath, "w", encoding="utf8") as f:

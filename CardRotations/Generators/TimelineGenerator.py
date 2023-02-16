@@ -31,7 +31,7 @@ class TimelineGenerator(GeneratorBase):
 						'entry_info'          : entry_info,
 						'timeline_day_width'       : self.timeline_day_width,
 						'timeline_thumbnail_width' : self.timeline_thumbnail_width,
-					}, minify=not self.args.dev)
+					}, minify_html=not self.args.dev)
 				
 			self.render_and_save("timeline.html", f"pages/timeline{locale.suffix}.html", {
 					'metadata_json'       : metadata_json,
@@ -39,7 +39,7 @@ class TimelineGenerator(GeneratorBase):
 					'timeline'            : timeline,
 					'entry_info'          : entry_info,
 					'monthly_equivalence' : monthly_equivalence if locale == Locale.JP else Utility.swap_keys_and_values(monthly_equivalence),
-				}, minify=not self.args.dev)
+				}, minify_html=not self.args.dev)
 		
 		return True
 		

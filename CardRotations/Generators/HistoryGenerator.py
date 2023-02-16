@@ -29,7 +29,7 @@ class HistoryGenerator(GeneratorBase):
 	# 	return any([self.due_for_rendering(), self.due_for_rendering()])
 
 	def generate_and_render(self):
-		self.render_and_save("history_frontpage.html", "pages/history.html", {}, minify=not self.args.dev)
+		self.render_and_save("history_frontpage.html", "pages/history.html", {}, minify_html=not self.args.dev)
 		
 		member_addition_dates = self.client.get_member_addition_dates()
 		history_per_member, history_category_info, history_category_flags = self.get_card_history_per_member()
@@ -41,7 +41,7 @@ class HistoryGenerator(GeneratorBase):
 					'history_info'   : history_category_info[category_tag],
 					'history_flags'  : history_category_flags[category_tag],
 					'member_added'   : member_addition_dates,
-				}, minify=not self.args.dev)
+				}, minify_html=not self.args.dev)
 		return True
 
 	def get_card_history_per_member(self):

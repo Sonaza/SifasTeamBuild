@@ -20,12 +20,12 @@ class EventHistoryGenerator(GeneratorBase):
 				'event_id'        : event_id,
 				'event_data'      : event_data,
 				'event_row_index' : event_index + 1,
-			}, minify=not self.args.dev)
+			}, minify_html=not self.args.dev)
 		
 		self.render_and_save("event_history.html", "pages/event_history.html", {
 			'events_with_cards'    : events_with_cards,
 			'zero_feature_members' : zero_feature_members,
-		}, minify=not self.args.dev)
+		}, minify_html=not self.args.dev)
 		
 		return True
 
