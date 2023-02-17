@@ -728,12 +728,13 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 				const item_ids  = timeline_month.getAttribute('data-' + category).split(',');
 				for (const item_id of item_ids)
 				{
-					const event_data = $scope.timeline_data[category][item_id];
-					if (!event_data)
+					if (!$scope.timeline_data[category][item_id])
 						continue
 					
-					const start = Utility.zip_isodate(event_data['timespan']['start'][1]);
-					const end   = Utility.zip_isodate(event_data['timespan']['end'][1]);
+					const item_data = Object.assign({}, $scope.timeline_data[category][item_id]);
+					
+					const start = Utility.zip_isodate(item_data.timespan.start[1]);
+					const end   = Utility.zip_isodate(item_data.timespan.end[1]);
 					
 					if ((start.month == end.month && (hovered_day >= start.day && hovered_day <= end.day)) ||
 						(start.month != end.month && (
@@ -742,7 +743,19 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 						))
 					{
 						hovered_ids[category].push(item_id);
-						tooltip_data[category].push(event_data);
+						
+						if (category == 'events')
+						{
+							if (start.year == end.year)
+							{
+								item_data.timespan.banner.start[0] = item_data.timespan.banner.start[0].replace(start.year, '');
+								item_data.timespan.event.start[0] = item_data.timespan.event.start[0].replace(start.year, '');
+								item_data.timespan.banner.end[0] = item_data.timespan.banner.end[0].replace(start.year, '');
+								item_data.timespan.event.end[0] = item_data.timespan.event.end[0].replace(start.year, '');
+							}
+						}
+						
+						tooltip_data[category].push(item_data);
 					}
 				}
 				

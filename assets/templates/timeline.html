@@ -33,18 +33,20 @@
 	</select>
 </div>
 
-<div id="timeline-container">
-	<div class="timeline-stripes" ng-class="[highlight_stripes()]">
+<div id="timeline-container" ng-class="[highlight_stripes()]">
+	<div class="timeline-stripes">
 		{% for group, members in Idols.member_order_by_group.items(): %}
 			<div class="group group-{{ group.tag }}">
 				{% for member in members: %}
-					<div class="idol-row idol-{{ member.value }} idol-timeline-stripe"></div>
+					<div class="idol-row idol-{{ member.value }} idol-timeline-stripe">
+						<div class="inner"></div>
+					</div>
 				{% endfor %}
 			</div>
 		{% endfor %}
 	</div>
 	<div class="timeline-scrollbar scrollbar-top" scrollbar="#timeline"></div>
-	<div id="timeline" ng-class="[timeline_classes(), highlight_stripes()]" data-timeline-data="{{ metadata_json | e }}">
+	<div id="timeline" ng-class="[timeline_classes()]" data-timeline-data="{{ metadata_json | e }}">
 		<div class="timeline-scroller">
 			<div class="timeline-entry timeline-members">
 				<div class="header primary">

@@ -22,7 +22,15 @@
 		</div>
 	</div>
 	<div class="runtime">
-		[[ event.timespan.start[0] ]] &mdash; [[ event.timespan.end[0] ]]
+		<div ng-if="event.timespan.banner.start[0] != event.timespan.event.start[0]">
+			<span>Banner</span> [[ event.timespan.banner.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]]
+		</div>
+		<div ng-if="event.timespan.banner.start[0] != event.timespan.event.start[0]">
+			<span>Event</span> [[ event.timespan.event.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]]
+		</div>
+		<div ng-if="event.timespan.banner.start[0] == event.timespan.event.start[0]">
+			<span>Event &amp; Banner</span> [[ event.timespan.event.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]]
+		</div>
 	</div>
 </div>
 

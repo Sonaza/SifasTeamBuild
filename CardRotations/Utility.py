@@ -119,20 +119,25 @@ class Utility:
 		return (platform.system() == "Windows" or 'CYGWIN_NT' in platform.system())
 
 	@staticmethod
-	def format_datestring(date, long_month = False, ordinalize = True, with_utc_time = False):
-		day_format   = '%#d' if Utility.is_windows() else '%-d'
-		month_format = '%B' if long_month else '%b'
+	def format_datestring(date, long_month = False, ordinalize = True, with_year = True, with_utc_time = False):
+		day_format      = '%#d' if Utility.is_windows() else '%-d'
+		month_format    = '%B' if long_month else '%b'
+		year_format     = '%Y'
+		utc_time_format = '%H:%M %Z'
 		
-		format_string = f'{day_format} {month_format} %Y'
-		if with_utc_time:
-			format_string = f'{format_string} %H:%M %Z'
+		date_format_segments = [
+			day_format,
+			month_format,
+		]
 		
-		day, month, year = date.strftime(format_string).split(' ', 2)
+		if with_year:     date_format_segments.append(year_format)
+		if with_utc_time: date_format_segments.append(utc_time_format)
 		
+		date_formatted = [date.strftime(format_string) for format_string in date_format_segments]
 		if ordinalize:
-			day = f"{Utility.ordinalize(day)}"
+			date_formatted[0] = Utility.ordinalize(date_formatted[0])
 		
-		return f"{day} {month} {year}"
+		return Utility.concat(date_formatted, separator=' ')
 	
 	@staticmethod
 	def concat(iterable, separator=',', last_separator=None):

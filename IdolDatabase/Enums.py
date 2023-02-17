@@ -180,6 +180,17 @@ class Source(Enum):
 		return Enum.__getattribute__(self, attr)
 	
 	
+class SortingOrder(Enum):
+	Ascending  = 1
+	Descending = 2
+	
+class Ordinal(): pass
+class ReleaseDate():
+	locale = None
+	def __init__(self, locale):
+		assert(isinstance(locale, Locale))
+		self.locale = locale
+	
 class SkillTarget(Enum):
 	Unknown       = 0
 	All           = 1
@@ -200,11 +211,6 @@ class SkillEffectType(Enum):
 	
 	AddAppealBaseBonus = 26
 	ReduceAppealBaseBonus = 84
-	
-class Ordinal(): pass
-class SortingOrder(Enum):
-	Ascending  = 1
-	Descending = 2
 	
 class EventType(Enum):
 	_init_ = 'value'

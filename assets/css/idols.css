@@ -1175,63 +1175,63 @@ body.dark-mode .idol-212:hover  .idol-border-color-dim.border-color-highlight-ho
 .idol-210 .idol-bg-glow-border { box-shadow: inset 0 0 1px 1px #2c9e7e44 !important; }
 .idol-211 .idol-bg-glow-border { box-shadow: inset 0 0 1px 1px #d6d5ca44 !important; }
 .idol-212 .idol-bg-glow-border { box-shadow: inset 0 0 1px 1px #f8c8c444 !important; }
-                      .idol-1.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #613c00b2 46%, #613c00b2 54%, #0000 55%); }
-.highlight-stripe-1   .idol-1.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #915b00e5 44%, #915b00e5 56%, #0000 57%); }
-                      .idol-2.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #0c495eb2 46%, #0c495eb2 54%, #0000 55%); }
-.highlight-stripe-2   .idol-2.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #126e8de5 44%, #126e8de5 56%, #0000 57%); }
-                      .idol-3.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #444544b2 46%, #444544b2 54%, #0000 55%); }
-.highlight-stripe-3   .idol-3.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #666767e5 44%, #666767e5 56%, #0000 57%); }
-                      .idol-4.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #112d49b2 46%, #112d49b2 54%, #0000 55%); }
-.highlight-stripe-4   .idol-4.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #1a446de5 44%, #1a446de5 56%, #0000 57%); }
-                      .idol-5.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #656000b2 46%, #656000b2 54%, #0000 55%); }
-.highlight-stripe-5   .idol-5.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #989001e5 44%, #989001e5 56%, #0000 57%); }
-                      .idol-6.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #5d140db2 46%, #5d140db2 54%, #0000 55%); }
-.highlight-stripe-6   .idol-6.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #8b1f13e5 44%, #8b1f13e5 56%, #0000 57%); }
-                      .idol-7.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #3a2541b2 46%, #3a2541b2 54%, #0000 55%); }
-.highlight-stripe-7   .idol-7.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #573761e5 44%, #573761e5 56%, #0000 57%); }
-                      .idol-8.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #0e4417b2 46%, #0e4417b2 54%, #0000 55%); }
-.highlight-stripe-8   .idol-8.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #156722e5 44%, #156722e5 56%, #0000 57%); }
-                      .idol-9.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #5e2c3eb2 46%, #5e2c3eb2 54%, #0000 55%); }
-.highlight-stripe-9   .idol-9.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #8d425de5 44%, #8d425de5 56%, #0000 57%); }
-                      .idol-101.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #603300b2 46%, #603300b2 54%, #0000 55%); }
-.highlight-stripe-101 .idol-101.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #914d00e5 44%, #914d00e5 56%, #0000 57%); }
-                      .idol-102.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #613e3bb2 46%, #613e3bb2 54%, #0000 55%); }
-.highlight-stripe-102 .idol-102.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #915d59e5 44%, #915d59e5 56%, #0000 57%); }
-                      .idol-103.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #274c45b2 46%, #274c45b2 54%, #0000 55%); }
-.highlight-stripe-103 .idol-103.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #3b7367e5 44%, #3b7367e5 56%, #0000 57%); }
-                      .idol-104.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #5c0008b2 46%, #5c0008b2 54%, #0000 55%); }
-.highlight-stripe-104 .idol-104.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #8a000ce5 44%, #8a000ce5 56%, #0000 57%); }
-                      .idol-105.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #294459b2 46%, #294459b2 54%, #0000 55%); }
-.highlight-stripe-105 .idol-105.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #3d6685e5 44%, #3d6685e5 56%, #0000 57%); }
-                      .idol-106.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #3f3f3fb2 46%, #3f3f3fb2 54%, #0000 55%); }
-.highlight-stripe-106 .idol-106.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #5f5f5fe5 44%, #5f5f5fe5 56%, #0000 57%); }
-                      .idol-107.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #655a00b2 46%, #655a00b2 54%, #0000 55%); }
-.highlight-stripe-107 .idol-107.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #988701e5 44%, #988701e5 56%, #0000 57%); }
-                      .idol-108.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #282341b2 46%, #282341b2 54%, #0000 55%); }
-.highlight-stripe-108 .idol-108.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #3c3462e5 44%, #3c3462e5 56%, #0000 57%); }
-                      .idol-109.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #5f2b42b2 46%, #5f2b42b2 54%, #0000 55%); }
-.highlight-stripe-109 .idol-109.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #8e4163e5 44%, #8e4163e5 56%, #0000 57%); }
-                      .idol-201.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #603a3fb2 46%, #603a3fb2 54%, #0000 55%); }
-.highlight-stripe-201 .idol-201.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #90585ee5 44%, #90585ee5 56%, #0000 57%); }
-                      .idol-202.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #626028b2 46%, #626028b2 54%, #0000 55%); }
-.highlight-stripe-202 .idol-202.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #94903ce5 44%, #94903ce5 56%, #0000 57%); }
-                      .idol-203.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #334f5fb2 46%, #334f5fb2 54%, #0000 55%); }
-.highlight-stripe-203 .idol-203.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #4d768fe5 44%, #4d768fe5 56%, #0000 57%); }
-                      .idol-204.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #01193db2 46%, #01193db2 54%, #0000 55%); }
-.highlight-stripe-204 .idol-204.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #01265be5 44%, #01265be5 56%, #0000 57%); }
-                      .idol-205.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #5e2600b2 46%, #5e2600b2 54%, #0000 55%); }
-.highlight-stripe-205 .idol-205.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #8d3900e5 44%, #8d3900e5 56%, #0000 57%); }
-                      .idol-206.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #4a384db2 46%, #4a384db2 54%, #0000 55%); }
-.highlight-stripe-206 .idol-206.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #6f5573e5 44%, #6f5573e5 56%, #0000 57%); }
-                      .idol-207.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #571519b2 46%, #571519b2 54%, #0000 55%); }
-.highlight-stripe-207 .idol-207.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #822025e5 44%, #822025e5 56%, #0000 57%); }
-                      .idol-208.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #2b4b26b2 46%, #2b4b26b2 54%, #0000 55%); }
-.highlight-stripe-208 .idol-208.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #40713ae5 44%, #40713ae5 56%, #0000 57%); }
-                      .idol-209.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #434443b2 46%, #434443b2 54%, #0000 55%); }
-.highlight-stripe-209 .idol-209.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #646665e5 44%, #646665e5 56%, #0000 57%); }
-                      .idol-210.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #113f32b2 46%, #113f32b2 54%, #0000 55%); }
-.highlight-stripe-210 .idol-210.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #1a5e4be5 44%, #1a5e4be5 56%, #0000 57%); }
-                      .idol-211.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #555550b2 46%, #555550b2 54%, #0000 55%); }
-.highlight-stripe-211 .idol-211.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #807f79e5 44%, #807f79e5 56%, #0000 57%); }
-                      .idol-212.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 45%, #63504eb2 46%, #63504eb2 54%, #0000 55%); }
-.highlight-stripe-212 .idol-212.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 43%, #947875e5 44%, #947875e5 56%, #0000 57%); }
+                      .idol-1.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #613c00b2 45%, #613c00b2 55%, #0000 56%); }
+ .idol-1.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #c27900cc 40%, #c27900cc 60%, #0000 61%); }
+                      .idol-2.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #0c495eb2 45%, #0c495eb2 55%, #0000 56%); }
+ .idol-2.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #1893bccc 40%, #1893bccc 60%, #0000 61%); }
+                      .idol-3.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #444544b2 45%, #444544b2 55%, #0000 56%); }
+ .idol-3.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #888a89cc 40%, #888a89cc 60%, #0000 61%); }
+                      .idol-4.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #112d49b2 45%, #112d49b2 55%, #0000 56%); }
+ .idol-4.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #235b92cc 40%, #235b92cc 60%, #0000 61%); }
+                      .idol-5.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #656000b2 45%, #656000b2 55%, #0000 56%); }
+ .idol-5.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #cbc001cc 40%, #cbc001cc 60%, #0000 61%); }
+                      .idol-6.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #5d140db2 45%, #5d140db2 55%, #0000 56%); }
+ .idol-6.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #ba291acc 40%, #ba291acc 60%, #0000 61%); }
+                      .idol-7.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #3a2541b2 45%, #3a2541b2 55%, #0000 56%); }
+ .idol-7.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #744a82cc 40%, #744a82cc 60%, #0000 61%); }
+                      .idol-8.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #0e4417b2 45%, #0e4417b2 55%, #0000 56%); }
+ .idol-8.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #1c892ecc 40%, #1c892ecc 60%, #0000 61%); }
+                      .idol-9.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #5e2c3eb2 45%, #5e2c3eb2 55%, #0000 56%); }
+ .idol-9.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #bc587ccc 40%, #bc587ccc 60%, #0000 61%); }
+                      .idol-101.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #603300b2 45%, #603300b2 55%, #0000 56%); }
+ .idol-101.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #c16700cc 40%, #c16700cc 60%, #0000 61%); }
+                      .idol-102.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #613e3bb2 45%, #613e3bb2 55%, #0000 56%); }
+ .idol-102.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #c27c77cc 40%, #c27c77cc 60%, #0000 61%); }
+                      .idol-103.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #274c45b2 45%, #274c45b2 55%, #0000 56%); }
+ .idol-103.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #4f998acc 40%, #4f998acc 60%, #0000 61%); }
+                      .idol-104.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #5c0008b2 45%, #5c0008b2 55%, #0000 56%); }
+ .idol-104.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #b80010cc 40%, #b80010cc 60%, #0000 61%); }
+                      .idol-105.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #294459b2 45%, #294459b2 55%, #0000 56%); }
+ .idol-105.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #5288b2cc 40%, #5288b2cc 60%, #0000 61%); }
+                      .idol-106.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #3f3f3fb2 45%, #3f3f3fb2 55%, #0000 56%); }
+ .idol-106.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #7f7f7fcc 40%, #7f7f7fcc 60%, #0000 61%); }
+                      .idol-107.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #655a00b2 45%, #655a00b2 55%, #0000 56%); }
+ .idol-107.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #cbb401cc 40%, #cbb401cc 60%, #0000 61%); }
+                      .idol-108.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #282341b2 45%, #282341b2 55%, #0000 56%); }
+ .idol-108.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #504683cc 40%, #504683cc 60%, #0000 61%); }
+                      .idol-109.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #5f2b42b2 45%, #5f2b42b2 55%, #0000 56%); }
+ .idol-109.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #be5784cc 40%, #be5784cc 60%, #0000 61%); }
+                      .idol-201.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #603a3fb2 45%, #603a3fb2 55%, #0000 56%); }
+ .idol-201.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #c0757ecc 40%, #c0757ecc 60%, #0000 61%); }
+                      .idol-202.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #626028b2 45%, #626028b2 55%, #0000 56%); }
+ .idol-202.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #c5c050cc 40%, #c5c050cc 60%, #0000 61%); }
+                      .idol-203.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #334f5fb2 45%, #334f5fb2 55%, #0000 56%); }
+ .idol-203.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #679ebfcc 40%, #679ebfcc 60%, #0000 61%); }
+                      .idol-204.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #01193db2 45%, #01193db2 55%, #0000 56%); }
+ .idol-204.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #02337acc 40%, #02337acc 60%, #0000 61%); }
+                      .idol-205.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #5e2600b2 45%, #5e2600b2 55%, #0000 56%); }
+ .idol-205.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #bc4c00cc 40%, #bc4c00cc 60%, #0000 61%); }
+                      .idol-206.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #4a384db2 45%, #4a384db2 55%, #0000 56%); }
+ .idol-206.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #94719acc 40%, #94719acc 60%, #0000 61%); }
+                      .idol-207.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #571519b2 45%, #571519b2 55%, #0000 56%); }
+ .idol-207.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #ae2b32cc 40%, #ae2b32cc 60%, #0000 61%); }
+                      .idol-208.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #2b4b26b2 45%, #2b4b26b2 55%, #0000 56%); }
+ .idol-208.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #56974dcc 40%, #56974dcc 60%, #0000 61%); }
+                      .idol-209.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #434443b2 45%, #434443b2 55%, #0000 56%); }
+ .idol-209.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #868887cc 40%, #868887cc 60%, #0000 61%); }
+                      .idol-210.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #113f32b2 45%, #113f32b2 55%, #0000 56%); }
+ .idol-210.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #237e64cc 40%, #237e64cc 60%, #0000 61%); }
+                      .idol-211.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #555550b2 45%, #555550b2 55%, #0000 56%); }
+ .idol-211.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #abaaa1cc 40%, #abaaa1cc 60%, #0000 61%); }
+                      .idol-212.idol-timeline-stripe { background: linear-gradient(to bottom, #0000 44%, #63504eb2 45%, #63504eb2 55%, #0000 56%); }
+ .idol-212.idol-timeline-stripe .inner { background: linear-gradient(to bottom, #0000 39%, #c6a09ccc 40%, #c6a09ccc 60%, #0000 61%); }

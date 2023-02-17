@@ -204,16 +204,17 @@ def generate_idols_css(output_file):
 	# stripe_darken = 0.4
 	# stripe_alpha = 0.7
 	for idol, color in idol_colors:
-		stripe_height = 8
+		stripe_height = 10
 		stripe_darken = 0.4
 		stripe_alpha = 0.7
 		line = f"                      .idol-{idol}.idol-timeline-stripe {{ background: linear-gradient(to bottom, #0000 { 50 - stripe_height // 2 - 1 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 - stripe_height // 2 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 + stripe_height // 2 }%, #0000 { 50 + stripe_height // 2 + 1 }%); }}"
 		css.append(line)
 		
-		stripe_height = 12
-		stripe_darken = 0.6
-		stripe_alpha = 0.9
-		line = f".highlight-stripe-{idol:<3} .idol-{idol}.idol-timeline-stripe {{ background: linear-gradient(to bottom, #0000 { 50 - stripe_height // 2 - 1 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 - stripe_height // 2 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 + stripe_height // 2 }%, #0000 { 50 + stripe_height // 2 + 1 }%); }}"
+		stripe_height = 20
+		stripe_darken = 0.8
+		stripe_alpha = 0.8
+		# line = f".highlight-stripe-{idol:<3} .idol-{idol}.idol-timeline-stripe .inner {{ background: linear-gradient(to bottom, #0000 { 50 - stripe_height // 2 - 1 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 - stripe_height // 2 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 + stripe_height // 2 }%, #0000 { 50 + stripe_height // 2 + 1 }%); }}"
+		line = f" .idol-{idol}.idol-timeline-stripe .inner {{ background: linear-gradient(to bottom, #0000 { 50 - stripe_height // 2 - 1 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 - stripe_height // 2 }%, #{darken(color, stripe_darken, a=stripe_alpha)} { 50 + stripe_height // 2 }%, #0000 { 50 + stripe_height // 2 + 1 }%); }}"
 		css.append(line)
 		
 

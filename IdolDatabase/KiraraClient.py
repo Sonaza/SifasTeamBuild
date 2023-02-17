@@ -981,27 +981,45 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def _get_column_from_type(self, column_type, prefix = None):
-		if column_type == None:
+	def _get_column_from_type(self, column, prefix = None):
+		if column == None:
 			return ""
-			
-		data_columns = {
-			Member    : 'member_id',
-			Group     : 'group_id',
-			Subunit   : 'subunit_id',
-			Type      : 'type',
-			Attribute : 'attribute',
-			Rarity    : 'rarity',
-			Source    : 'source',
-			Ordinal   : 'ordinal',
+		
+		if isinstance(column, str):
+			if prefix:
+				return f"{prefix} {column}"
+			else:
+				return column
+		
+		if isinstance(column, type):
+			column_type = column
+		else:
+			column_type = type(column)
+		
+		column_types = {
+			Member       : 'member_id',
+			Group        : 'group_id',
+			Subunit      : 'subunit_id',
+			Type         : 'type',
+			Attribute    : 'attribute',
+			Rarity       : 'rarity',
+			Source       : 'source',
+			Ordinal      : 'ordinal',
+			ReleaseDate  : 'release_date'
 		}
-		if column_type not in data_columns:
+		
+		if column_type not in column_types:
 			raise KiraraClientException("Column not found or valid")
 		
+		column_name = column_types[column_type]
+		
+		if isinstance(column, ReleaseDate):
+			column_name += column.locale.suffix
+		
 		if prefix:
-			return f"{prefix} {data_columns[column_type]}"
+			return f"{prefix} {column_name}"
 		else:
-			return data_columns[column_type]
+			return column_name
 	
 	# -------------------------------------------------------------------------------------------
 
@@ -1053,7 +1071,7 @@ class KiraraClient():
 			group : Group = None, subunit : Subunit = None,
 			source : Source = None,	rarity : Rarity = None,
 			min_rarity : Rarity = None, max_rarity : Rarity = None,
-			group_by = None, order_by = Ordinal, order = SortingOrder.Ascending,
+			group_by = None, order_by = Ordinal, sorting_order = SortingOrder.Ascending,
 			with_event_info = False, with_banner_info = False):
 	
 		fields = []
@@ -1068,11 +1086,11 @@ class KiraraClient():
 		if max_rarity != None: fields.append(("rarity <= ?",    [max_rarity.value]))
 		
 		group_by = self._get_column_from_type(group_by, "GROUP BY")
-		order_by = self._get_column_from_type(order_by)
-		if order == SortingOrder.Ascending:
-			order = "ASC"
+		order_by = self._get_column_from_type(order_by, "ORDER BY")
+		if sorting_order == SortingOrder.Ascending:
+			sorting_order = "ASC"
 		else:
-			order = "DESC"
+			sorting_order = "DESC"
 		
 		database_view = 'v_idols_with_events'
 		if with_event_info and with_banner_info:
@@ -1085,13 +1103,15 @@ class KiraraClient():
 		if fields:
 			query = f"""SELECT * FROM '{database_view}'
 						WHERE {' AND '.join([x[0] for x in fields])} {group_by}
-						ORDER BY {order_by} {order}"""
+						{order_by} {sorting_order}"""
+			
+			print(query)
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:
 			query = f"""SELECT * FROM '{database_view}'
 						{group_by}
-						ORDER BY {order_by} {order}"""
+						{order_by} {sorting_order}"""
 			self.db.execute(query)
 			
 		return self.convert_to_idol_object(self.db.fetchall())

@@ -193,7 +193,7 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 				
 				&.gacha-members
 				{
-					gap: 0 0.25rem;
+					gap: 0 0.15rem;
 					
 					:last-child
 					{
@@ -205,7 +205,26 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 			.idol-bg-color-tl
 			{
 				color: #fff;
+				display: inline-block !important;
 				padding: 2px 4px;
+			}
+		}
+			
+		.runtime
+		{
+			div
+			{
+				margin: 2px 0 0 0;
+				
+				span
+				{
+					min-width: 3.5rem;
+					background: #eee;
+					display: inline-block !important;
+					padding: 2px 4px;
+					margin: 0 5px 0 0;
+					text-align: center;
+				}
 			}
 		}
 	}
@@ -248,7 +267,15 @@ body.hide-tooltips #timeline-date-label
 		{
 			width: 100%;
 			height: $timeline-thumbnail-size;
-			transition: background linear 100ms;
+			// transition: background linear 100ms;
+			
+			.inner
+			{
+				width: 100%;
+				height: 100%;
+				transition: opacity ease-out 50ms;
+				opacity: 0;
+			}
 		}
 	}
 }
@@ -355,7 +382,7 @@ body.hide-tooltips #timeline-date-label
 				
 				box-shadow: inset -1px 0 2px 1px #0003;
 				
-				transition: filter ease-out 100ms, box-shadow ease-out 100ms;
+				transition: filter ease-in 100ms, box-shadow ease-in 100ms;
 				
 				span.idol-icon
 				{
@@ -512,6 +539,8 @@ body.hide-tooltips #timeline-date-label
 								width: 80px;
 								height: 80px;
 								
+								box-shadow: 0 0 5px 5px #000a;
+								
 								$offset: (80px - $timeline-thumbnail-size) / -2;
 								transform: translate($offset, $offset) scale(#{$timeline-thumbnail-size / 80px});
 								z-index: 0;
@@ -572,8 +601,16 @@ body.hide-tooltips #timeline-date-label
 
 @each $member-id in $member-ids
 {
-	#timeline.highlight-stripe-#{$member-id}
+	#timeline-container.highlight-stripe-#{$member-id}
 	{
+		.timeline-stripes .idol-row.idol-#{$member-id}
+		{
+			.inner
+			{
+				opacity: 1;
+			}
+		}
+		
 		.timeline-members .idol-row.idol-#{$member-id} .idol-identity
 		{
 			filter: brightness(1.2);
