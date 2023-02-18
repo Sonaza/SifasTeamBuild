@@ -4,17 +4,24 @@
 RUN_AS_USER="sonaza.com"
 
 if [ "$(whoami)" != $RUN_AS_USER ]; then
-	
 	echo "$(whoami) is not the correct user. Running script as another user..."
 	
-	sudo -u $RUN_AS_USER -H sh -c "./build.sh $*"
+	exec sudo -u $RUN_AS_USER -H -s bash -c "./deploy.sh $*"
 	exit 0
-	
 fi
 
-echo "Checking for updates..."
+eval "$(ssh-agent -s)" &> /dev/null
+ssh-add ~/.ssh/github_ed25519 &> /dev/null
 
+echo
+echo "Checking for updates..."
 git remote update
+
+if [ $? -ne 0 ]; then
+	echo "An error occurred. Deploy has been aborted."
+	exit 1
+fi
+
 LOCAL=$(git rev-parse @)
 REMOTE=$(git rev-parse @{u})
 BASE=$(git merge-base @ @{u})
@@ -44,3 +51,6 @@ elif [ $LOCAL = $BASE ]; then
 fi
 
 echo "Deploy finished."
+echo
+
+exit 0
