@@ -745,7 +745,7 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	
 	$scope.update_timeline_indicator = () =>
 	{
-		if (!$scope.mouse.target)
+		if (!$scope.mouse.target || !$scope.mouse.target.closest)
 			return;
 		
 		if ($scope.grabscroll.active || $scope.grabscroll.has_momentum)

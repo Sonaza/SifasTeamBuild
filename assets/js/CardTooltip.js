@@ -121,7 +121,6 @@ class CardTooltip
 		
 		if (Utility.mobile_mode())
 		{
-			// tooltip_element.addClass('mobile-card-tooltip');
 			tooltip.style.inset = '';
 			return;
 		}
