@@ -84,9 +84,17 @@ Redirect 301 /index.html /
 	RewriteRule ^(pages)/(.+)\.([a-z0-9]{6})\.(html)$ $1/$2.$4 [L]
 	RewriteRule ^(pages/(.+))/(.+)\.([a-z0-9]{6})\.(html)$ $1/$2.$4 [L]
 	
+	<IfModule mod_maxminddb.c>
+		RewriteCond %{REQUEST_FILENAME} !-f
+		RewriteCond %{MM_COUNTRY_CODE} ^(FI|CL)$
+		RewriteRule ^(img/yay-hd)/(.+)$ img/yay/$2 [L]
+	</IfModule>
+	
 	RewriteCond %{THE_REQUEST} ^GET.*index\.php [NC]
 	RewriteRule (.*?)index\.php/*(.*) /$1$2 [R=301,NE,L]
+	
 </IfModule>
+
 
 <IfModule mod_authz_core.c>
 	<FilesMatch "(^#.*#|\.(bak|conf|dist|fla|in[ci]|log|orig|psd|sh|sql|sw[op])|~)$">
