@@ -52,19 +52,21 @@
 				<div class="header primary">
 					Members
 				</div>
-				{% for group, members in Idols.member_order_by_group.items(): %}
-					<div class="group group-{{ group.tag }}">
-						{% for member in members: %}
-							<div class="idol-row idol-{{ member.value }}">
-								<div class="idol-bg-color-dark idol-identity">
-									<span class="fancy"></span>
-									<span class="idol-icon idol-icon-32-border"></span>
-									<span class="idol-name">{{ member.first_name }}</span>
+				<div class="inner">
+					{% for group, members in Idols.member_order_by_group.items(): %}
+						<div class="group group-{{ group.tag }}">
+							{% for member in members: %}
+								<div class="idol-row idol-{{ member.value }}">
+									<div class="idol-bg-color-dark idol-identity">
+										<span class="fancy"></span>
+										<span class="idol-icon idol-icon-32-border"></span>
+										<span class="idol-name">{{ member.first_name }}</span>
+									</div>
 								</div>
-							</div>
-						{% endfor %}
-					</div>
-				{% endfor %}
+							{% endfor %}
+						</div>
+					{% endfor %}
+				</div>
 				<div class="header primary">
 					Members
 				</div>
@@ -80,8 +82,15 @@
 						data-month-days="{{ entry_info[release_month]['days'] }}"
 						data-month-start="{{ entry_info[release_month]['start'].day }}"
 						data-month-number="{{ entry_info[release_month]['start'].month }}"
-						data-month-name="{{ entry_info[release_month]['start'].strftime('%B %Y') }}"
-						deferred-load="timeline{{ locale.suffix }}_{{ release_month }}"></div>
+						data-month-name="{{ entry_info[release_month]['start'].strftime('%B %Y') }}">
+							<div class="header">
+								{{ entry_info[release_month]['start'].strftime('%B %Y') }}
+							</div>
+							<div class="inner" deferred-load="timeline{{ locale.suffix }}_{{ release_month }}"></div>
+							<div class="header">
+								{{ entry_info[release_month]['start'].strftime('%B %Y') }}
+							</div>
+						</div>
 				{% endfor %}
 			</div>
 		</div>

@@ -380,14 +380,14 @@ class KiraraClient():
 					self.query_idol_data_by_ordinal(ordinals_chunk, rescrape=False)
 					time.sleep(0.2)
 		
-		# rescrape_ordinals = self.get_ordinals_to_rescrape(rescrape_days, missing_ordinals)
-		# if rescrape_ordinals:
-		# 	print(f"  {Fore.CYAN}{Style.BRIGHT}Rescraping for updates{Fore.WHITE}  : {len(rescrape_ordinals)} idols{Style.RESET_ALL}")
-		# 	with print_indent(4):
-		# 		for index, ordinals_chunk in enumerate(chunked(rescrape_ordinals, 20)):
-		# 			print(f"{Fore.YELLOW}{Style.BRIGHT}Batch {index + 1:>2}{Fore.WHITE}  : {Utility.concat(ordinals_chunk, separator=', ', last_separator=' and ')}")
-		# 			self.query_idol_data_by_ordinal(ordinals_chunk, rescrape=True)
-		# 			time.sleep(0.2)
+		rescrape_ordinals = self.get_ordinals_to_rescrape(rescrape_days, missing_ordinals)
+		if rescrape_ordinals:
+			print(f"  {Fore.CYAN}{Style.BRIGHT}Rescraping for updates{Fore.WHITE}  : {len(rescrape_ordinals)} idols{Style.RESET_ALL}")
+			with print_indent(4):
+				for index, ordinals_chunk in enumerate(chunked(rescrape_ordinals, 20)):
+					print(f"{Fore.YELLOW}{Style.BRIGHT}Batch {index + 1:>2}{Fore.WHITE}  : {Utility.concat(ordinals_chunk, separator=', ', last_separator=' and ')}")
+					self.query_idol_data_by_ordinal(ordinals_chunk, rescrape=True)
+					time.sleep(0.2)
 	
 	
 	def get_missing_ordinals(self):
@@ -1104,8 +1104,6 @@ class KiraraClient():
 			query = f"""SELECT * FROM '{database_view}'
 						WHERE {' AND '.join([x[0] for x in fields])} {group_by}
 						{order_by} {sorting_order}"""
-			
-			print(query)
 			values = [value for x in fields for value in x[1]]
 			self.db.execute(query, values)
 		else:

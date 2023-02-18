@@ -4,7 +4,7 @@ import htmlmin
 import json
 import base64
 from glob import glob
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from IdolDatabase import *
 
 from typing import List, Optional, Tuple, Dict, Any, Union
@@ -214,10 +214,12 @@ class Utility:
 	@staticmethod
 	def card_to_base64(card):
 		return Utility.base64encode_json(Utility.serialize_card(card))
-		
+	
+	# ----------------------------------------------------------
+	
 	@staticmethod
-	def member_to_base64(member):
-		return Utility.base64encode_json(Utility.serialize_member(card))
+	def timedelta_float(delta : timedelta, unit = str):
+		return delta / timedelta(**{ unit: 1 })
 	
 	# ----------------------------------------------------------
 	

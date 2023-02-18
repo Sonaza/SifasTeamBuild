@@ -20,7 +20,7 @@ class TimelineGenerator(GeneratorBase):
 	timeline_thumbnail_width = 36
 		
 	def generate_and_render(self):
-		timeline_for_locale, monthly_equivalence = self.get_card_timeline()
+		timeline_for_locale, member_birthdays, monthly_equivalence = self.get_card_timeline()
 		for locale in Locale:
 			timeline, entry_info, metadata_json = timeline_for_locale[locale]
 			for release_month, timeline_month in timeline['entries'].items():
@@ -29,6 +29,7 @@ class TimelineGenerator(GeneratorBase):
 						'timeline_month'      : timeline_month,
 						'timeline'            : timeline,
 						'entry_info'          : entry_info,
+						'member_birthdays'    : member_birthdays,
 						'timeline_day_width'       : self.timeline_day_width,
 						'timeline_thumbnail_width' : self.timeline_thumbnail_width,
 					}, minify_html=not self.args.dev)
@@ -42,6 +43,20 @@ class TimelineGenerator(GeneratorBase):
 				}, minify_html=not self.args.dev)
 		
 		return True
+	
+	@staticmethod
+	def make_timeline_entry_dataset(entry_info, start_time, end_time, month_start):
+		start_time = start_time.replace(hour=0, minute=0, second=0)
+		end_time   = end_time.replace(hour=0, minute=0, second=0)
+		return {
+			'info'            : entry_info,
+			'duration'        : math.ceil(Utility.timedelta_float(end_time - start_time, 'days')) + 1,
+			'days_from_start' : math.floor(Utility.timedelta_float(start_time - month_start, 'days')),
+			'timespan' : {
+				'start': (start_time, (start_time.year, start_time.month, start_time.day)),
+				'end'  : (end_time,   (end_time.year, end_time.month, end_time.day)),
+			},
+		}
 		
 	
 	def get_card_timeline(self):
@@ -78,9 +93,9 @@ class TimelineGenerator(GeneratorBase):
 		
 		for locale in Locale:
 			timeline = {
-				'events'  : {},
-				'banners' : {},
-				'entries' : {},
+				'events'    : {},
+				'banners'   : {},
+				'entries'   : {},
 			}
 			entry_info = {}
 			for idol in sorted(idols_data, key=lambda idol: idol.release_date[locale]):
@@ -113,9 +128,10 @@ class TimelineGenerator(GeneratorBase):
 					if 'banners' not in entry_info[release_month]:
 						entry_info[release_month]['banners'] = set()
 						
-				current_bucket = timeline['entries'][release_month][idol.group_id][idol.member_id]
+				current_bucket     = timeline['entries'][release_month][idol.group_id][idol.member_id]
+				current_entry_info = entry_info[release_month]
 				
-				days_from_start = (release_date - entry_info[release_month]['start']).days
+				days_from_start = (release_date - current_entry_info['start']).days
 				if days_from_start not in current_bucket:
 					current_bucket[days_from_start] = []
 					
@@ -136,53 +152,33 @@ class TimelineGenerator(GeneratorBase):
 					event_bucket = timeline['events'][idol.event.id]
 					
 					if idol.source == Source.Event and not event_bucket['event']:
-						idol.event.start[locale] = idol.event.start[locale].replace(hour=0, minute=0, second=0)
-						idol.event.end[locale]   = idol.event.end[locale].replace(hour=0, minute=0, second=0)
-						event_bucket['event'] = {
-							'info'            : idol.event,
-							'duration'        : (idol.event.end[locale] - idol.event.start[locale]).days + 1,
-							'days_from_start' : (idol.event.start[locale] - entry_info[release_month]['start']).days,
-							'timespan' : {
-								'start': (idol.event.start[locale], (idol.event.start[locale].year, idol.event.start[locale].month, idol.event.start[locale].day)),
-								'end'  : (idol.event.end[locale],   (idol.event.end[locale].year, idol.event.end[locale].month, idol.event.end[locale].day)),
-							},
-						}
+						event_bucket['event'] = self.make_timeline_entry_dataset(
+							entry_info  = idol.event,
+							start_time  = idol.event.start[locale],
+							end_time    = idol.event.end[locale],
+							month_start = current_entry_info['start'])
 					
-					recheck_things = False
 					if idol.source == Source.Gacha and not event_bucket['banner']:
-						idol.event.start[locale] = idol.event.start[locale].replace(hour=0, minute=0, second=0)
-						# idol.event.end[locale]   = idol.event.end[locale].replace(hour=0, minute=0, second=0)
-						idol.release_date[locale]   = idol.release_date[locale].replace(hour=0, minute=0, second=0)
-						
-						if not event_bucket['banner'] or idol.release_date[locale] < event_bucket['banner']['timeline']['start'][0]:
-							recheck_things = True
-							event_bucket['banner'] = {
-								'info'            : idol.event,
-								'duration'        : (idol.event.start[locale] - idol.release_date[locale]).days + 1,
-								'days_from_start' : (idol.release_date[locale] - entry_info[release_month]['start']).days,
-								'timespan' : {
-									'start': (idol.release_date[locale], (idol.release_date[locale].year, idol.release_date[locale].month, idol.release_date[locale].day)),
-									'end'  : (idol.event.start[locale],  (idol.event.start[locale].year, idol.event.start[locale].month, idol.event.start[locale].day)),
-								},
-							}
+						event_bucket['banner'] = self.make_timeline_entry_dataset(
+							entry_info  = idol.event,
+							start_time  = idol.release_date[locale],       # Idol release date is banner's start
+							end_time    = idol.event.start[locale],        # Banner highlight should end at event's start
+							month_start = current_entry_info['start'])
 					
-					if (not event_bucket['summary'] or recheck_things) and event_bucket['event'] and event_bucket['banner']:
-						full_start   = event_bucket['banner']['timespan']['start'][0]
-						full_end     = event_bucket['event']['timespan']['end'][0]
-						event_bucket['summary'] = {
-							'info'            : idol.event,
-							'duration'        : (full_end - full_start).days + 1,
-							'days_from_start' : (full_start - entry_info[release_month]['start']).days,
-							'timespan' : {
-								'start': (full_start, (full_start.year, full_start.month, full_start.day)),
-								'end'  : (full_end,   (full_end.year, full_end.month, full_end.day)),
-							},
-						}
+					if not event_bucket['summary'] and event_bucket['event'] and event_bucket['banner']:
+						sumary_start = event_bucket['banner']['timespan']['start'][0]
+						summary_end  = event_bucket['event']['timespan']['end'][0]
 						
-						start_key = full_start.strftime("%Y-%m")
+						event_bucket['summary'] = self.make_timeline_entry_dataset(
+							entry_info  = idol.event,
+							start_time  = sumary_start,
+							end_time    = summary_end,
+							month_start = current_entry_info['start'])
+						
+						start_key = sumary_start.strftime("%Y-%m")
 						entry_info[start_key]['events'].add(idol.event.id)
 						
-						end_key = full_end.strftime("%Y-%m")
+						end_key = summary_end.strftime("%Y-%m")
 						if end_key not in entry_info:           entry_info[end_key] = {}
 						if 'events' not in entry_info[end_key]: entry_info[end_key]['events']  = set()
 						entry_info[end_key]['events'].add(idol.event.id)
@@ -191,18 +187,12 @@ class TimelineGenerator(GeneratorBase):
 				
 				allowed_sources = [Source.Spotlight, Source.Gacha, Source.Festival, Source.Party]
 				if idol.banner.id and idol.source in allowed_sources and idol.banner.id not in timeline['banners']:
-					idol.banner.start[locale] = idol.banner.start[locale].replace(hour=0, minute=0, second=0)
-					idol.banner.end[locale]   = idol.banner.end[locale].replace(hour=0, minute=0, second=0)
-					timeline['banners'][idol.banner.id] = {
-						'info'            : idol.banner,
-						'duration'        : (idol.banner.end[locale] - idol.banner.start[locale]).days + 1,
-						'days_from_start' : (idol.banner.start[locale] - entry_info[release_month]['start']).days,
-						'timespan' : {
-							'start': (idol.banner.start[locale], (idol.banner.start[locale].year, idol.banner.start[locale].month, idol.banner.start[locale].day)),
-							'end'  : (idol.banner.end[locale],   (idol.banner.end[locale].year, idol.banner.end[locale].month, idol.banner.end[locale].day)),
-						},
-					}
-					
+					timeline['banners'][idol.banner.id] = self.make_timeline_entry_dataset(
+						entry_info  = idol.banner,
+						start_time  = idol.banner.start[locale],
+						end_time    = idol.banner.end[locale],
+						month_start = current_entry_info['start'])
+						
 					start_key = idol.banner.start[locale].strftime("%Y-%m")
 					entry_info[start_key]['banners'].add(idol.banner.id)
 					
@@ -263,5 +253,15 @@ class TimelineGenerator(GeneratorBase):
 			metadata_json = json.dumps(metadata_json, separators=(',', ':'), default=json_serialize)
 			
 			timeline_for_locale[locale] = (timeline, entry_info, metadata_json)
-		return timeline_for_locale, monthly_equivalence
+		
+		member_birthdays = {}
+		for month in range(12):
+			member_birthdays[month + 1] = {member: member.birthday for member in Member.get_month_birthdays(month + 1)}
+		
+		# for month, birthdays in member_birthdays.items():
+		# 	print(month, birthdays)
+		
+		# exit()
+		
+		return timeline_for_locale, member_birthdays, monthly_equivalence
 	

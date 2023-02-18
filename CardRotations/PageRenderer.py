@@ -136,7 +136,6 @@ class PageRenderer():
 			'embed_card_tooltip'     : embed_card_tooltip,
 			
 			'card_to_base64'         : Utility.card_to_base64,
-			'member_to_base64'       : Utility.member_to_base64,
 			
 			# Generic utility
 			'concat'                 : Utility.concat,

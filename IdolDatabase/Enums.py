@@ -1,4 +1,5 @@
 from aenum import Enum
+from collections import namedtuple
 
 class dotdict(dict):
 	"""dot.notation access to dictionary attributes"""
@@ -87,63 +88,65 @@ class Subunit(Enum):
 	Rebirth      = 10, "R3BIRTH"
 	
 #	Liella       = 11, "Liella"
-	
+
+Birthday = namedtuple('Birthday', 'month day')
+
 class Member(Enum):
-	_init_ = 'value full_name group year subunit'
+	_init_ = 'value full_name birthday group year subunit'
 	
 	# ------------ Otonokizaka / µ's ------------
-	Hanayo   = 8,   "Hanayo Koizumi",     Group.Muse, Year.First, Subunit.Printemps
-	Rin      = 5,   "Rin Hoshizora",      Group.Muse, Year.First, Subunit.Lilywhite
-	Maki     = 6,   "Maki Nishikino",     Group.Muse, Year.First, Subunit.Bibi
+	Hanayo   = 8,   "Hanayo Koizumi",     Birthday( 1, 17),  Group.Muse, Year.First, Subunit.Printemps
+	Rin      = 5,   "Rin Hoshizora",      Birthday(11,  1),  Group.Muse, Year.First, Subunit.Lilywhite
+	Maki     = 6,   "Maki Nishikino",     Birthday( 4, 19),  Group.Muse, Year.First, Subunit.Bibi
 
-	Honoka   = 1,   "Honoka Kousaka",     Group.Muse, Year.Second, Subunit.Printemps
-	Kotori   = 3,   "Kotori Minami",      Group.Muse, Year.Second, Subunit.Printemps
-	Umi      = 4,   "Umi Sonoda",         Group.Muse, Year.Second, Subunit.Lilywhite
+	Honoka   = 1,   "Honoka Kousaka",     Birthday( 8,  3),  Group.Muse, Year.Second, Subunit.Printemps
+	Kotori   = 3,   "Kotori Minami",      Birthday( 9, 12),  Group.Muse, Year.Second, Subunit.Printemps
+	Umi      = 4,   "Umi Sonoda",         Birthday( 3, 15),  Group.Muse, Year.Second, Subunit.Lilywhite
 
-	Nozomi   = 7,   "Nozomi Toujou",      Group.Muse, Year.Third, Subunit.Lilywhite
-	Eli      = 2,   "Eli Ayase",          Group.Muse, Year.Third, Subunit.Bibi
-	Nico     = 9,   "Nico Yazawa",        Group.Muse, Year.Third, Subunit.Bibi
+	Nozomi   = 7,   "Nozomi Toujou",      Birthday( 6,  9),  Group.Muse, Year.Third, Subunit.Lilywhite
+	Eli      = 2,   "Eli Ayase",          Birthday(10, 21),  Group.Muse, Year.Third, Subunit.Bibi
+	Nico     = 9,   "Nico Yazawa",        Birthday( 7, 22),  Group.Muse, Year.Third, Subunit.Bibi
 
 	# ------------ Uranohoshi / Aqours ------------
-	Hanamaru = 107, "Hanamaru Kunikida",  Group.Aqours, Year.First, Subunit.Azalea
-	Yoshiko  = 106, "Yoshiko Tsushima",   Group.Aqours, Year.First, Subunit.Guiltykiss
-	Ruby     = 109, "Ruby Kurosawa",      Group.Aqours, Year.First, Subunit.Cyaron
+	Hanamaru = 107, "Hanamaru Kunikida",  Birthday( 3,  4),  Group.Aqours, Year.First, Subunit.Azalea
+	Yoshiko  = 106, "Yoshiko Tsushima",   Birthday( 7, 13),  Group.Aqours, Year.First, Subunit.Guiltykiss
+	Ruby     = 109, "Ruby Kurosawa",      Birthday( 9, 21),  Group.Aqours, Year.First, Subunit.Cyaron
 
-	Chika    = 101, "Chika Takami",       Group.Aqours, Year.Second, Subunit.Cyaron
-	Riko     = 102, "Riko Sakurauchi",    Group.Aqours, Year.Second, Subunit.Guiltykiss
-	You      = 105, "You Watanabe",       Group.Aqours, Year.Second, Subunit.Cyaron
+	Chika    = 101, "Chika Takami",       Birthday( 8,  1),  Group.Aqours, Year.Second, Subunit.Cyaron
+	Riko     = 102, "Riko Sakurauchi",    Birthday( 9, 19),  Group.Aqours, Year.Second, Subunit.Guiltykiss
+	You      = 105, "You Watanabe",       Birthday( 4, 17),  Group.Aqours, Year.Second, Subunit.Cyaron
 
-	Kanan    = 103, "Kanan Matsuura",     Group.Aqours, Year.Third, Subunit.Azalea
-	Dia      = 104, "Dia Kurosawa",       Group.Aqours, Year.Third, Subunit.Azalea
-	Mari     = 108, "Mari Ohara",         Group.Aqours, Year.Third, Subunit.Guiltykiss
+	Kanan    = 103, "Kanan Matsuura",     Birthday( 2, 10),  Group.Aqours, Year.Third, Subunit.Azalea
+	Dia      = 104, "Dia Kurosawa",       Birthday( 1,  1),  Group.Aqours, Year.Third, Subunit.Azalea
+	Mari     = 108, "Mari Ohara",         Birthday( 6, 13),  Group.Aqours, Year.Third, Subunit.Guiltykiss
 
 	# ------------ Nijigasaki ------------
-	Rina     = 209, "Rina Tennouji",      Group.Nijigasaki, Year.First, Subunit.Quartz
-	Kasumi   = 202, "Kasumi Nakasu",      Group.Nijigasaki, Year.First, Subunit.Quartz
-	Shizuku  = 203, "Shizuku Ousaka",     Group.Nijigasaki, Year.First, Subunit.Azuna
-	Shioriko = 210, "Shioriko Mifune",    Group.Nijigasaki, Year.First, Subunit.Rebirth
+	Rina     = 209, "Rina Tennouji",      Birthday(11, 13),  Group.Nijigasaki, Year.First, Subunit.Quartz
+	Kasumi   = 202, "Kasumi Nakasu",      Birthday( 1, 23),  Group.Nijigasaki, Year.First, Subunit.Quartz
+	Shizuku  = 203, "Shizuku Ousaka",     Birthday( 4,  3),  Group.Nijigasaki, Year.First, Subunit.Azuna
+	Shioriko = 210, "Shioriko Mifune",    Birthday(10,  5),  Group.Nijigasaki, Year.First, Subunit.Rebirth
 
-	Ayumu    = 201, "Ayumu Uehara",       Group.Nijigasaki, Year.Second, Subunit.Azuna
-	Setsuna  = 207, "Setsuna Yuuki",      Group.Nijigasaki, Year.Second, Subunit.Azuna
-	Ai       = 205, "Ai Miyashita",       Group.Nijigasaki, Year.Second, Subunit.Diverdiva
-	Lanzhu   = 212, "Lanzhu Zhong",       Group.Nijigasaki, Year.Second, Subunit.Rebirth
+	Ayumu    = 201, "Ayumu Uehara",       Birthday( 3,  1),  Group.Nijigasaki, Year.Second, Subunit.Azuna
+	Setsuna  = 207, "Setsuna Yuuki",      Birthday( 8,  8),  Group.Nijigasaki, Year.Second, Subunit.Azuna
+	Ai       = 205, "Ai Miyashita",       Birthday( 5, 30),  Group.Nijigasaki, Year.Second, Subunit.Diverdiva
+	Lanzhu   = 212, "Lanzhu Zhong",       Birthday( 2, 15),  Group.Nijigasaki, Year.Second, Subunit.Rebirth
 
-	Emma     = 208, "Emma Verde",         Group.Nijigasaki, Year.Third, Subunit.Quartz
-	Kanata   = 206, "Kanata Konoe",       Group.Nijigasaki, Year.Third, Subunit.Quartz
-	Karin    = 204, "Karin Asaka",        Group.Nijigasaki, Year.Third, Subunit.Diverdiva
-	Mia      = 211, "Mia Taylor",         Group.Nijigasaki, Year.Third, Subunit.Rebirth
+	Emma     = 208, "Emma Verde",         Birthday( 2,  5),  Group.Nijigasaki, Year.Third, Subunit.Quartz
+	Kanata   = 206, "Kanata Konoe",       Birthday(12, 16),  Group.Nijigasaki, Year.Third, Subunit.Quartz
+	Karin    = 204, "Karin Asaka",        Birthday( 6, 29),  Group.Nijigasaki, Year.Third, Subunit.Diverdiva
+	Mia      = 211, "Mia Taylor",         Birthday(12,  6),  Group.Nijigasaki, Year.Third, Subunit.Rebirth
 
 	# ------------ Liella ------------
-#	Kanon    = 301, "Kanon Shibuya",      Group.Liella, Year.Second, Subunit.Liella
-#	Keke     = 302, "Keke Tang",          Group.Liella, Year.Second, Subunit.Liella
-#	Chisato  = 303, "Chisato Arashi",     Group.Liella, Year.Second, Subunit.Liella
-#	Sumire   = 304, "Sumire Heanna",      Group.Liella, Year.Second, Subunit.Liella
-#	Ren      = 305, "Ren Hazuki",         Group.Liella, Year.Second, Subunit.Liella
+#	Kanon    = 301, "Kanon Shibuya",      Birthday( 5,  1),  Group.Liella, Year.Second, Subunit.Liella
+#	Keke     = 302, "Keke Tang",          Birthday( 7, 17),  Group.Liella, Year.Second, Subunit.Liella
+#	Chisato  = 303, "Chisato Arashi",     Birthday( 2, 25),  Group.Liella, Year.Second, Subunit.Liella
+#	Sumire   = 304, "Sumire Heanna",      Birthday( 9, 28),  Group.Liella, Year.Second, Subunit.Liella
+#	Ren      = 305, "Ren Hazuki",         Birthday(11, 24),  Group.Liella, Year.Second, Subunit.Liella
 
-#	Kinako   = 306, "Kinako Sakurakoji",  Group.Liella, Year.First, Subunit.Liella
-#	Mei      = 307, "Mei Yoneme",         Group.Liella, Year.First, Subunit.Liella
-#	Shiki    = 308, "Shiki Wakana",       Group.Liella, Year.First, Subunit.Liella
-#	Natsumi  = 309, "Natsumi Onitsuka",   Group.Liella, Year.First, Subunit.Liella
+#	Kinako   = 306, "Kinako Sakurakoji",  Birthday( 4, 10),  Group.Liella, Year.First, Subunit.Liella
+#	Mei      = 307, "Mei Yoneme",         Birthday(10, 29),  Group.Liella, Year.First, Subunit.Liella
+#	Shiki    = 308, "Shiki Wakana",       Birthday( 6, 17),  Group.Liella, Year.First, Subunit.Liella
+#	Natsumi  = 309, "Natsumi Onitsuka",   Birthday( 8, 13),  Group.Liella, Year.First, Subunit.Liella
 			
 	def __getattr__(self, attr):
 		if attr == "first_name":
@@ -153,6 +156,15 @@ class Member(Enum):
 			return self.full_name.split(' ', 1)[1]
 			
 		return Enum.__getattribute__(self, attr)
+	
+	@classmethod
+	def get_month_birthdays(cls, month):
+		return [member for member in cls if member.birthday.month == month]
+	
+	@classmethod
+	def find_by_birthday(cls, month, day):
+		return [member for member in cls if member.birthday.month == month and member.birthday.day == day]
+
 
 class Source(Enum):
 	_init_ = 'value display_name'

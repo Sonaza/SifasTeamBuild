@@ -1,34 +1,29 @@
-<div class="header">
-	{{ entry_info[release_month]['start'].strftime('%B %Y') }}
-</div>
+{% set current_month_start  = entry_info[release_month]['start'] %}
+{% set current_month_number = current_month_start.month %}
+{% set current_month_days   = entry_info[release_month]['days'] %}
+
 {% for group, member_data in timeline_month.items(): %}
 
 	<div class="group group-{{ group.tag }}">
 		
 		{% for event_id in entry_info[release_month]['events']: %}
-			{% set event_data = timeline['events'][event_id]['event'] %}
-			{% if event_data['timespan']['start'][0].month == entry_info[release_month]['start'].month: %}
-				{% set left_offset = (event_data['days_from_start'] * timeline_day_width) + timeline_day_width / 2 %}
-				{% set event_width = ((event_data['duration']) * timeline_day_width) - timeline_day_width %}
-				<div class="event-highlight event-{{ event_data['info'].type.value }} tl-events-id-{{ event_id }}"
-					left-right-flipper="{{ left_offset }}px" condition="settings.order_reversed"
-					style="width:{{ event_width }}px"></div>
-			{% endif %}
-		{% endfor %}
-		{% for event_id in entry_info[release_month]['events']: %}
-			{% set event_data = timeline['events'][event_id]['banner'] %}
-			{% if event_data['timespan']['start'][0].month == entry_info[release_month]['start'].month and event_data['duration'] > 1: %}
-				{% set left_offset = (event_data['days_from_start'] * timeline_day_width) + timeline_day_width / 2 %}
-				{% set event_width = ((event_data['duration']) * timeline_day_width) - timeline_day_width %}
-				<div class="event-banner-highlight event-{{ event_data['info'].type.value }} tl-events-id-{{ event_id }}"
-					left-right-flipper="{{ left_offset }}px" condition="settings.order_reversed"
-					style="width:{{ event_width }}px"></div>
-			{% endif %}
+			
+			{% for highlight_type in ['event', 'banner']: %}
+				{% set event_data = timeline['events'][event_id][highlight_type] %}
+				
+				{% if event_data['timespan']['start'][0].month == current_month_number and event_data['duration'] > 1: %}
+					{% set left_offset = (event_data['days_from_start'] * timeline_day_width) + timeline_day_width / 2 %}
+					{% set event_width = ((event_data['duration']) * timeline_day_width) - timeline_day_width %}
+					<div class="event-{{ highlight_type }}-highlight event-{{ event_data['info'].type.value }} tl-events-id-{{ event_id }}"
+						left-right-flipper="{{ left_offset }}px" condition="settings.order_reversed"
+						style="width:{{ event_width }}px"></div>
+				{% endif %}
+			{% endfor %}
 		{% endfor %}
 		
 		{% for banner_id in entry_info[release_month]['banners']: %}
 			{% set banner_data = timeline['banners'][banner_id] %}
-			{% if banner_data['timespan']['start'][0].month == entry_info[release_month]['start'].month: %}
+			{% if banner_data['timespan']['start'][0].month == current_month_number: %}
 				{% set left_offset = (banner_data['days_from_start'] * timeline_day_width) + timeline_day_width / 2 %}
 				{% set banner_width = ((banner_data['duration']) * timeline_day_width) - timeline_day_width %}
 				<div class="banner-highlight banner-{{ banner_data['info'].type.value }} tl-banners-id-{{ banner_id }}"
@@ -37,17 +32,27 @@
 			{% endif %}
 		{% endfor %}
 		
-		{% for member, cards in member_data.items(): %}
+		{% for member, cards_data in member_data.items(): %}
 			<div class="idol-row idol-{{ member.value }}" data-idol-id="{{ member.value }}">
-				{% for days_from_start, cards in cards.items(): %}
-					
+				
+				{% if member in member_birthdays[current_month_number]: %}
+					{% set birthday = member_birthdays[current_month_number][member] %}
+					{% if birthday.day >= current_month_start.day and birthday.day <= current_month_start.day + current_month_days - 1 %}
+						{% set left_offset = ((birthday.day - current_month_start.day) * timeline_day_width) + (timeline_day_width / 2) - ((timeline_thumbnail_width) / 2) %}
+						<div class="member-birthday birthday-day-{{ birthday.day }}"
+							left-right-flipper="{{ left_offset }}px" condition="settings.order_reversed"></div>
+					{% endif %}
+				{% endif %}
+				
+				{% for days_from_start, cards in cards_data.items(): %}
+										
 					{% set left_offset = (days_from_start * timeline_day_width) + (timeline_day_width / 2) - ((timeline_thumbnail_width * len(cards)) / 2) %}
-					<div class="thumbnail-set thumbnail-day-{{ entry_info[release_month]['start'].day + days_from_start }}"
+					<div class="thumbnail-set thumbnail-day-{{ current_month_start.day + days_from_start }} set-{{ len(cards) }}"
 						left-right-flipper="{{ left_offset }}px" condition="settings.order_reversed"
 						style="width:{{ timeline_thumbnail_width * len(cards) }}px;">
 						
 						{% for card in cards: %}
-							<div class="thumbnail card-rarity-{{ card.rarity.value }}" data-month-day="{{ entry_info[release_month]['start'].day + days_from_start }}">
+							<div class="thumbnail card-rarity-{{ card.rarity.value }}" data-month-day="{{ current_month_start.day + days_from_start }}">
 								<div class="thumbnail-wrapper tooltip-data"
 									{{ include("tooltip_data_attributes.html", card=card, card_status=1, anchoring=2) }}>
 									<a href="https://allstars.kirara.ca/card/{{ card.ordinal }}" ng-click="openMobileTooltip($event)" target="_blank" class="{{ card_thumbnail_classes(card) }}">
@@ -66,6 +71,3 @@
 	</div>
 	
 {% endfor %}
-<div class="header">
-	{{ entry_info[release_month]['start'].strftime('%B %Y') }}
-</div>

@@ -91,6 +91,17 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 	gap: 0.1rem;
 	padding-right: 1rem;
 	
+		
+	.birthday-cake
+	{
+		position: absolute;
+		width: 60px;
+		height: 60px;
+		top: -25px;
+		right: 15px;
+		filter: drop-shadow(0 -2px 2px #0007);
+	}
+	
 	div.item
 	{
 		display: flex;
@@ -214,16 +225,83 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 		{
 			div
 			{
-				margin: 2px 0 0 0;
+				margin: 4px 0 0 0;
 				
 				span
 				{
-					min-width: 3.5rem;
-					background: #eee;
 					display: inline-block !important;
-					padding: 2px 4px;
-					margin: 0 5px 0 0;
+					padding: 0 4px;
+					color: #777;
+				}
+			}
+		}
+		
+		&.birthday
+		{
+			.idol-identity
+			{
+				width: 100%;
+				
+				// display: flex;
+				// flex-flow: row nowrap;
+				// justify-content: center;
+				// align-items: center;
+				position: relative;
+				
+				display: grid;
+				grid-template-columns: 28px 1fr 28px;
+				grid-template-rows: 1fr;
+				grid-column-gap: 0.9rem;
+				grid-row-gap: 0px;
+				
+				> span
+				{
+					display: block;
+					align-self: center;
+				}
+				
+				padding: 0.4rem 1.3rem;
+				
+				border-radius: 4px;
+				
+				box-shadow: inset -1px 0 2px 1px #0003;
+				
+				span.idol-icon
+				{
+					// width: 28px;
+					height: 28px;
+					border-radius: 4px;
+					background-size: contain;
+					background-position: center;
+					background-repeat: no-repeat;
 					text-align: center;
+					filter: drop-shadow(0 0 2px #3337);
+				}
+				
+				span.idol-name
+				{
+					font-family: 'Montserrat', sans-serif;
+					font-weight: 700;
+					color: #fff;
+					text-align: center;
+				}
+				
+				span.idol-yay
+				{
+					// width: 28px;
+					height: 28px;
+					background: center center no-repeat;
+					background-size: contain;
+					border-radius: 5px;
+					filter: drop-shadow(0 0 2px #333c);
+				}
+			}
+						
+			@each $member-id in $member-ids
+			{
+				&.idol-#{$member-id} span.idol-yay
+				{
+					background-image: url('/img/yay-hd/yay-#{$member-id}.png');
 				}
 			}
 		}
@@ -295,6 +373,13 @@ body.hide-tooltips #timeline-date-label
 	flex-flow: row nowrap;
 	align-items: stretch;
 	
+	cursor: grab;
+	
+	&.dragging
+	{
+		cursor: grabbing;
+	}
+	
 	user-select: none;
 	
 	&.autoscrolling
@@ -307,7 +392,7 @@ body.hide-tooltips #timeline-date-label
 		}
 	}
 	
-	.timeline-entry .event-highlight,
+	.timeline-entry .event-event-highlight,
 	.timeline-entry .event-banner-highlight,
 	.timeline-entry .banner-highlight
 	{
@@ -317,9 +402,16 @@ body.hide-tooltips #timeline-date-label
 		pointer-events: none;
 		display: none;
 	}
-	&.show-events .timeline-entry .event-highlight        { display: block; }
+	&.show-events .timeline-entry .event-event-highlight        { display: block; }
 	&.show-events .timeline-entry .event-banner-highlight { display: block; }
 	&.show-banners .timeline-entry .banner-highlight      { display: block; }
+	
+	// .timeline-entry .member-birthday
+	// {
+	// 	display: none;
+	// 	pointer-events: none;
+	// }
+	// &.show-birthdays .timeline-entry .member-birthday     { display: block; }
 	
 	.timeline-scroller
 	{
@@ -342,7 +434,15 @@ body.hide-tooltips #timeline-date-label
 	.timeline-entry
 	{
 		flex-shrink: 0;
-		border-right: 2px solid #858585;
+		border-left: 1px solid #977FA6;
+		border-right: 1px solid #977FA6;
+		box-shadow: inset 0 0 5px 3px #130D16;
+		
+		display: grid;
+		grid-template-columns: 1fr;
+		grid-template-rows: $timeline-thumbnail-size 1fr $timeline-thumbnail-size;
+		grid-column-gap: 0px;
+		grid-row-gap: 0px;
 		
 		&:nth-child(odd) .header
 		{
@@ -355,11 +455,6 @@ body.hide-tooltips #timeline-date-label
 			background: url('/img/timeline-background.png') #8E5DB2;
 		}
 		
-		.header:first-child
-		{
-			
-		}
-		
 		&.timeline-members
 		{
 			width: 155px;
@@ -370,6 +465,8 @@ body.hide-tooltips #timeline-date-label
 			z-index: 89999;
 			box-shadow: 5px 0 5px #0006;
 			background: #000a;
+			
+			cursor: auto;
 			
 			.idol-identity
 			{
@@ -442,7 +539,7 @@ body.hide-tooltips #timeline-date-label
 			display: flex;
 			flex-flow: column nowrap;
 			
-			> div
+			> div.group
 			{
 				flex-shrink: 0;
 			}
@@ -497,13 +594,12 @@ body.hide-tooltips #timeline-date-label
 			padding: 0.6rem 0;
 			
 			border-top: 2px solid #A792CE;
-			&:nth-child(1),
-			&:nth-child(2)
+			&:nth-child(1)
 			{
 				border-top: none;
 			}
 			
-			&:nth-child(2)
+			&:nth-child(1)
 			{
 				padding: 1.5rem 0 0.6rem 0;
 			}
@@ -513,7 +609,16 @@ body.hide-tooltips #timeline-date-label
 				width: 100%;
 				height: $timeline-thumbnail-size;
 				
-				// position: relative;
+				.member-birthday
+				{
+					position: absolute;
+					width: $timeline-thumbnail-size;
+					height: $timeline-thumbnail-size;
+					background: url('/img/emoji_cake_120.png') center center no-repeat;
+					background-size: #{$timeline-thumbnail-size - 10px};
+					transition: background-size ease-out 100ms;
+					filter: drop-shadow(0 -1px 3px #000a);
+				}
 				
 				.thumbnail-set
 				{
@@ -521,6 +626,15 @@ body.hide-tooltips #timeline-date-label
 					display: flex;
 					flex-flow: row nowrap;
 					justify-content: center;
+					
+					&.set-1 .card-thumbnail
+					{
+						box-shadow: 0 0 3px 5px #000a;
+					}
+					&.set-2 .card-thumbnail
+					{
+						box-shadow: 0 0 2px 1px #0005;
+					}
 					
 					.thumbnail
 					{
@@ -538,8 +652,6 @@ body.hide-tooltips #timeline-date-label
 								display: inline-block;
 								width: 80px;
 								height: 80px;
-								
-								box-shadow: 0 0 5px 5px #000a;
 								
 								$offset: (80px - $timeline-thumbnail-size) / -2;
 								transform: translate($offset, $offset) scale(#{$timeline-thumbnail-size / 80px});
@@ -574,13 +686,23 @@ body.hide-tooltips #timeline-date-label
 		{
 			@for $day from 1 through 31
 			{
-				&.day-hovered-#{$day} .thumbnail-set.thumbnail-day-#{$day}
+				&.day-hovered-#{$day}
 				{
-					.thumbnail:not(:hover) .thumbnail-wrapper .card-thumbnail
+					.member-birthday.birthday-day-#{$day}
 					{
-						// $offset: (80px - $enlarged-size) / -2 - 1px;
-						// transform: translate($offset, $offset) scale(#{$enlarged-size / 80px});
-						box-shadow: 0 0 0 3px #000a, 0 0 9px 5px #FFFCD0, 0 0 13px #000a;
+						background-size: #{$timeline-thumbnail-size - 5px};
+						filter: drop-shadow(0 0 2px #FFFCD0aa);
+						z-index: 99999;
+					}
+					
+					.thumbnail-set.thumbnail-day-#{$day}
+					{
+						.thumbnail:not(:hover) .thumbnail-wrapper .card-thumbnail
+						{
+							// $offset: (80px - $enlarged-size) / -2 - 1px;
+							// transform: translate($offset, $offset) scale(#{$enlarged-size / 80px});
+							box-shadow: 0 0 0 3px #000a, 0 0 9px 5px #FFFCD0, 0 0 13px #000a;
+						}
 					}
 				}
 			}
@@ -621,7 +743,7 @@ body.hide-tooltips #timeline-date-label
 
 .timeline-scroller .timeline-entries
 {
-	.timeline-entry .event-highlight
+	.timeline-entry .event-event-highlight
 	{
 		@each $color in $event-colors
 		{

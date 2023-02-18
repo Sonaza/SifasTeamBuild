@@ -2,12 +2,18 @@
 	[[ data.current_date ]]
 </div>
 
+<img src="/img/emoji_cake_120.png" class="birthday-cake" alt="" ng-if="data.birthdays.length > 0">
+
 <div class="item banner" ng-if="data.launch_day">
-	<div class="title launch-title">[[ data.launch_day ]] SIFAS Launched Today! <img src="/img/nozoclap.gif" alt=""></div>
-	<div class="title banner-4"><span>Launch Banner</span> Release Commemoration Banner</div>
+	<div class="title launch-title">
+		[[ data.launch_day ]] SIFAS Launched Today! <img src="/img/nozoclap.gif" alt="">
+	</div>
+	<div class="title banner-4">
+		<span>Launch Banner</span> Release Commemoration Banner
+	</div>
 </div>
 
-<div class="item" ng-repeat="(event_id, event) in data.events">
+<div class="item event" ng-repeat="(event_id, event) in data.events">
 	<div class="title event-[[ event.type.id ]]">
 		<span>[[ event.type.display_name ]] Event</span>
 		[[ event.title ]]
@@ -23,23 +29,33 @@
 	</div>
 	<div class="runtime">
 		<div ng-if="event.timespan.banner.start[0] != event.timespan.event.start[0]">
-			<span>Banner</span> [[ event.timespan.banner.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]]
+			[[ event.timespan.banner.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]] <span>(Banner)</span>
 		</div>
 		<div ng-if="event.timespan.banner.start[0] != event.timespan.event.start[0]">
-			<span>Event</span> [[ event.timespan.event.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]]
+			[[ event.timespan.event.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]] <span>(Event)</span>
 		</div>
 		<div ng-if="event.timespan.banner.start[0] == event.timespan.event.start[0]">
-			<span>Event &amp; Banner</span> [[ event.timespan.event.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]]
+			[[ event.timespan.event.start[0] ]] &mdash; [[ event.timespan.event.end[0] ]] <span>(Event and Banner)</span>
 		</div>
 	</div>
 </div>
 
-<div class="item" ng-repeat="(banner_id, banner) in data.banners">
+<div class="item banner" ng-repeat="(banner_id, banner) in data.banners">
 	<div class="title banner-[[ banner.type.id ]]">
 		<span>[[ banner.type.display_name ]] Banner</span>
 		[[ banner.title ]]
 	</div>
 	<div class="runtime">
-		[[ banner.timespan.start[0] ]] &mdash; [[ banner.timespan.end[0] ]]
+		<div>
+			[[ banner.timespan.start[0] ]] &mdash; [[ banner.timespan.end[0] ]]
+		</div>
+	</div>
+</div>
+
+<div class="item birthday idol-[[ member.id ]]" ng-repeat="member in data.birthdays">
+	<div class="idol-bg-color-dark idol-identity">
+		<span class="idol-icon idol-icon-32-border"></span>
+		<span class="idol-name" ng-bind-html="member_birthday_phrase[member.id].format(member.first_name)"></span>
+		<span class="idol-yay"></span>
 	</div>
 </div>

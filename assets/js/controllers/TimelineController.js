@@ -42,12 +42,57 @@ app.filter('reverse', function()
 	};
 });
 
+const member_birthday_phrase = {
+	8   :  "It's Hanayo's birthday!<br>Have a riceball?",       // Hanayo
+	5   :  "It's Rin's birthday, nya!",                         // Rin
+	6   :  "Geez, I guess it's Maki's birthday!",               // Maki
+	
+	1   :  "It's Honoka's birthday,<br>faito da yo!",           // Honoka
+	3   :  "It's Kotori's birthday,<br>chun chun!",             // Kotori
+	4   :  "It's Umi's birthday,<br>love arrow shoot!",         // Umi
+	
+	7   :  "It's Nozomi's birthday,<br>how spiritual!",         // Nozomi
+	2   :  "It's Eli's birthday, harasho!",                     // Eli
+	9   :  "It's Nico's birthday,<br>Nico-Nico-nii!",           // Nico
+	
+	
+	107 :  "It's Hanamaru's birthday, zura!",                   // Hanamaru
+	106 :  "It's Yohane's birthday,<br>little demons gather!",  // Yoshiko
+	109 :  "It's Ruby's birthday, eek!",                        // Ruby
+	
+	101 :  "It's Chika's birthday, mikans yay!",                // Chika
+	102 :  "It's Riko's birthday, yay!",                        // Riko
+	105 :  "It's You's birthday, yousoro!",                     // You
+	
+	103 :  "It's Kanan's birthday, let's hug!",                 // Kanan
+	104 :  "It's Dia's birthday, desu wa!",                     // Dia
+	108 :  "It's Mari's birthday, shiny!",                      // Mari
+	
+	
+	209 :  "Rina-chan board says:<br>It's my birthday!",        // Rina
+	202 :  "It's Kasumi's birthday!<br>I am cute, right?",      // Kasumi
+	203 :  "It's Shizuku's birthday, yay!",                     // Shizuku
+	210 :  "It's Shioriko's birthday!",                         // Shioriko
+	
+	201 :  "It's Ayumu's birthday, ayu-pyon!",                  // Ayumu
+	207 :  "Let's get fired up,<br>it's Setsuna's birthday!",   // Setsuna
+	205 :  "It's Ai's birthdai, geddit?",                       // Ai
+	212 :  "It's Lanzhu's birthday, praise me!",                // Lanzhu
+	
+	208 :  "È il compleanno di Emma, evviva!",                  // Emma
+	206 :  "It's Kanata's birthday... Zzz...",                  // Kanata
+	204 :  "Keep your eyes on Karin,<br>it's her birthday!",    // Karin
+	211 :  "It's Mia's birthday, baby-chan!",                   // Mia
+}
+
 app.controller('TimelineController', function($rootScope, $scope, $route, $routeParams, $location, $window, $timeout, LocationKeys)
 {
 	const date_format = '{} {}';
 	const hovered_day_format = 'day-hovered-{}';
 	const hovered_item_class_format = '.tl-{}-id-{}';
-
+	
+	$scope.member_birthday_phrase = member_birthday_phrase;
+	
 	const CardDisplayMode =
 	{
 		SHOW_ALL     : 0,
@@ -123,6 +168,11 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		if ($scope.autoscroll.active)
 		{
 			output.push('autoscrolling');
+		}
+		
+		if ($scope.grabscroll.active)
+		{
+			output.push('dragging');
 		}
 		
 		return output.join(' ');
@@ -210,6 +260,105 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	
 	$scope.set_indicator_opacity(0);
 	
+	$scope.restore_highlights = () =>
+	{
+		$scope.current_day.hovered_day = undefined;
+		$scope.update_timeline_indicator();
+		$scope.set_indicator_opacity(1);	
+	}
+	
+	$scope.grabscroll = {
+		active       : false,
+		velocity     : {x: 0, y: 0},
+		last_move    : 0,
+		unhighlit    : false,
+		has_momentum : false,
+		start     : () =>
+		{
+			if (Utility.mobile_mode())
+				return;
+			
+			$scope.grabscroll.unhighlit = false;
+			
+			$scope.$apply(() =>
+			{
+				$scope.grabscroll.active = true;
+			});
+		},
+		stop      : () =>
+		{
+			$scope.grabscroll.has_momentum = ((Date.now() - $scope.grabscroll.last_move) < 70) &&
+				((Math.abs($scope.grabscroll.velocity.x) > 1) || (Math.abs($scope.grabscroll.velocity.y) > 1));
+			
+			$scope.$apply(() =>
+			{
+				$scope.grabscroll.active = false;
+				
+				$timeout(() =>
+				{
+					if (!$scope.grabscroll.has_momentum)
+					{
+						$scope.restore_highlights();
+					}
+				});
+			});
+			
+			
+			if ($scope.grabscroll.has_momentum)
+			{
+				$scope.grabscroll.update_momentum();
+			}
+		},
+		update   : () =>
+		{
+			if (!$scope.grabscroll.active)
+				return;
+			
+			if (!$scope.grabscroll.unhighlit)
+			{
+				$scope.set_indicator_opacity(0);
+				$scope.unhighlight_everything();
+				$scope.grabscroll.unhighlit = true;
+			}
+			
+			$scope.grabscroll.last_move = Date.now();
+			
+			$scope.grabscroll.velocity.x = $scope.mouse.movement.x;
+			$scope.grabscroll.velocity.y = $scope.mouse.movement.y;
+			
+			timeline_element.scrollLeft -= $scope.mouse.movement.x;
+			document.documentElement.scrollTop -= $scope.mouse.movement.y;	
+		},
+		update_momentum  : () =>
+		{
+			if ($scope.grabscroll.active)
+			{
+				$scope.restore_highlights();
+				$scope.grabscroll.has_momentum = false;
+				return;
+			}
+			
+			$scope.grabscroll.velocity.x *= 0.85;
+			$scope.grabscroll.velocity.y *= 0.85;
+			
+			// console.log("GRAB MOMENTUM!", $scope.grabscroll.velocity);
+			
+			timeline_element.scrollLeft -= $scope.grabscroll.velocity.x;
+			document.documentElement.scrollTop -= $scope.grabscroll.velocity.y;
+			
+			const threshold = 0.2;
+			if (Math.abs($scope.grabscroll.velocity.x) < threshold || 
+				Math.abs($scope.grabscroll.velocity.y) < threshold)
+			{
+				$scope.restore_highlights();
+				$scope.grabscroll.has_momentum = false;
+				return;
+			}
+			
+			setTimeout(() => { $scope.grabscroll.update_momentum(); }, 15);
+		},
+	};
+	
 	$scope.autoscroll = {
 		active   : false,
 		origin   : undefined,
@@ -290,38 +439,63 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	};
 	angular.element($window).on('mousedown mouseup', ($event) =>
 	{
-		if ($event.button != 1) // Middle mouse
-			return;
-		
-		if ($scope.autoscroll.active && $event.target.closest('.thumbnail'))
+		if ($event.button == 0 && !Utility.mobile_mode()) // Left mouse
 		{
+			if ($scope.grabscroll.active && $event.type == 'mouseup')
+			{
+				$scope.grabscroll.stop();
+				return;
+			}
+			
+			if ($scope.autoscroll.active)
+				return;
+			
+			if (!$event.target.closest('#timeline') || $event.type != 'mousedown')
+				return;
+			
+			if ($event.target.closest('.thumbnail') || $event.target.closest('.timeline-members'))
+				return;
+			
+			$scope.grabscroll.start();
 			$event.preventDefault();
-			return;
 		}
 		
-		// Only stop on mouseup if cursor has moved
-		if ($scope.autoscroll.active && $event.type == 'mouseup')
+		if ($event.button == 1) // Middle mouse
 		{
-			$scope.autoscroll.stop(14);
-			return;
+			if ($scope.autoscroll.active && $event.target.closest('.thumbnail'))
+			{
+				$event.preventDefault();
+				return;
+			}
+			
+			// Only stop on mouseup if cursor has moved
+			if ($scope.autoscroll.active && $event.type == 'mouseup')
+			{
+				$scope.autoscroll.stop(14);
+				return;
+			}
+			
+			if ($scope.grabscroll.active)
+				return;
+			
+			// Autoscrolling is temporarily disabled
+			if ($scope.autoscroll.disable)
+				return;
+			
+			if (!$event.target.closest('#timeline') || $event.type != 'mousedown')
+				return;
+			
+			if (!$scope.autoscroll.active)
+			{
+				$scope.autoscroll.start();
+			}
+			else
+			{
+				$scope.autoscroll.stop();
+			}
+			
+			$event.preventDefault();
 		}
-		
-		// Autoscrolling is temporarily disabled
-		if ($scope.autoscroll.disable)
-			return;
-		
-		if (!$event.target.closest('#timeline') || $event.type != 'mousedown')
-			return;
-		
-		if (!$scope.autoscroll.active)
-		{
-			$scope.autoscroll.start();
-		}
-		else
-		{
-			$scope.autoscroll.stop();
-		}
-		$event.preventDefault();
 	});
 	
 	angular.element($window).on('resize', ($event) =>
@@ -339,6 +513,9 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	{
 		let timeline_members = $event.target.closest('.timeline-members');
 		if (timeline_members)
+			return;
+		
+		if ($scope.grabscroll.active || $scope.grabscroll.has_momentum)
 			return;
 		
 		if ($event.type == 'mouseover')
@@ -392,16 +569,17 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	});
 	
 	$scope.current_day = {
-		'hovered_day' : undefined,
-		'month_elem'  : undefined,
-		'event_data'  : undefined,
-		'hovered_ids' : {},
+		hovered_day : undefined,
+		month_elem  : undefined,
+		event_data  : undefined,
+		hovered_ids : {},
 	};
 	
 	$scope.mouse = {
 		absolute : {x: 0, y: 0},
 		page     : {x: 0, y: 0},
 		target   : undefined,
+		movement : {x: 0, y: 0},
 		relative : (element) =>
 		{
 			const rect = element.getBoundingClientRect();
@@ -412,14 +590,17 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		}
 	};
 	
-	angular.element(timeline_element).on('mousemove', ($event) =>
+	angular.element($window).on('mousemove', ($event) =>
 	{
 		$scope.mouse.absolute.x = $event.clientX;
 		$scope.mouse.absolute.y = $event.clientY;
 		$scope.mouse.page.x     = $event.pageX;
 		$scope.mouse.page.y     = $event.pageY;
 		$scope.mouse.target     = $event.target;
+		$scope.mouse.movement.x = $event.movementX;
+		$scope.mouse.movement.y = $event.movementY;
 		
+		$scope.grabscroll.update();
 		$scope.update_timeline_indicator();
 	});
 	angular.element(timeline_element).on('scroll', ($event) =>
@@ -567,6 +748,9 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		if (!$scope.mouse.target)
 			return;
 		
+		if ($scope.grabscroll.active || $scope.grabscroll.has_momentum)
+			return;
+		
 		let timeline_members = $scope.mouse.target.closest('.timeline-members');
 		if (timeline_members)
 		{
@@ -701,6 +885,7 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 				events        : [],
 				banners       : [],
 				launch_day    : false,
+				birthdays     : [],
 			};
 			
 			if (timeline_month.matches(':first-child'))
@@ -731,7 +916,7 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 					if (!$scope.timeline_data[category][item_id])
 						continue
 					
-					const item_data = Object.assign({}, $scope.timeline_data[category][item_id]);
+					const item_data = Utility.deep_copy($scope.timeline_data[category][item_id]);
 					
 					const start = Utility.zip_isodate(item_data.timespan.start[1]);
 					const end   = Utility.zip_isodate(item_data.timespan.end[1]);
@@ -744,18 +929,20 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 					{
 						hovered_ids[category].push(item_id);
 						
-						if (category == 'events')
-						{
-							if (start.year == end.year)
-							{
-								item_data.timespan.banner.start[0] = item_data.timespan.banner.start[0].replace(start.year, '');
-								item_data.timespan.event.start[0] = item_data.timespan.event.start[0].replace(start.year, '');
-								item_data.timespan.banner.end[0] = item_data.timespan.banner.end[0].replace(start.year, '');
-								item_data.timespan.event.end[0] = item_data.timespan.event.end[0].replace(start.year, '');
-							}
-						}
+						item_data.timespan.start[1] = start;
+						item_data.timespan.end[1] = end;
 						
 						tooltip_data[category].push(item_data);
+						
+						if (tooltip_data[category].length > 1)
+						{
+							tooltip_data[category].sort((a, b) =>
+							{
+								const a_value = a.timespan.start[1].year * 10000 + a.timespan.start[1].month * 100 + a.timespan.start[1].day;
+								const b_value = b.timespan.start[1].year * 10000 + b.timespan.start[1].month * 100 + b.timespan.start[1].day;
+								return a_value - b_value;
+							});
+						}
 					}
 				}
 				
@@ -776,6 +963,24 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 					$scope.current_day.hovered_ids[category] = hovered_ids[category];
 				}
 			}
+			
+			// --------------------------------------------------------------------------------------
+			
+			for (const member of Member.get_month_birthdays(month_number))
+			{
+				if (member.birthday.day == hovered_day)
+				{
+					tooltip_data.birthdays.push(member);
+				}
+			}
+			// for (const [id, member] of Object.entries(Member.members_ordered))
+			// {
+			// 	// if (member.birthday.day % 5 == hovered_day % 5)
+			// 	if (member.id in member_birthday_phrase)
+			// 	{
+			// 		tooltip_data.birthdays.push(member);
+			// 	}
+			// }
 			
 			// --------------------------------------------------------------------------------------
 			
@@ -835,9 +1040,9 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		{
 			if (e.keyCode == 82) // R-key
 			{
-				$scope.timeline_settings.display_mode     = CardDisplayMode.SHOW_ALL;
-				$rootScope.settings.timeline_show_events  = true;
-				$rootScope.settings.timeline_show_banners = true;
+				$scope.timeline_settings.display_mode       = CardDisplayMode.SHOW_ALL;
+				$rootScope.settings.timeline_show_events    = true;
+				$rootScope.settings.timeline_show_banners   = true;
 				return;
 			}
 		}

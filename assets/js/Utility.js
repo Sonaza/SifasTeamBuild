@@ -173,6 +173,16 @@ class Utility
 	/******************************************************
 	 * Stuff
 	 */
+	
+	static shallow_copy(object_to_copy)
+	{
+		return Object.assign({}, object_to_copy);
+	}
+	
+	static deep_copy(object_to_copy)
+	{
+		return structuredClone(object_to_copy);
+	}
 	 
 	static cache_buster(path, buster_string)
 	{
