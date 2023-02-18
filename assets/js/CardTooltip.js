@@ -95,9 +95,7 @@ class CardTooltip
 			}
 		}
 		
-		if (!$scope.tooltip_data.card_status)
-			$scope.tooltip_data.card_status = 1;
-		$scope.tooltip_data.card_status = parseInt($scope.tooltip_data.card_status);
+		$scope.tooltip_data.card_status = Number($scope.tooltip_data.card_status) || 1;
 		
 		let card_data;
 		if ($scope.tooltip_data.card_status == 1)

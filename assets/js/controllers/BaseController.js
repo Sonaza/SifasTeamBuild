@@ -119,6 +119,11 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 				output.push('sidebar-open');
 			}
 			
+			if (Utility.mobile_mode())
+			{
+				output.push('mobile-mode');
+			}
+			
 			return output.join(' ');
 		}
 		

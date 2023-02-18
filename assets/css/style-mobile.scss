@@ -431,7 +431,7 @@ body:not(.dark-mode) #side-nav li a
        screen and (hover: none)
 {
 	
-	#card-tooltip.mobile-card-tooltip
+	body.mobile-mode #card-tooltip
 	{
 		visibility: visible;
 	
