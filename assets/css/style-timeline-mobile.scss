@@ -2,28 +2,46 @@
 @media screen and (hover: none) 
 {
 	
-	#timeline
+#timeline
+{
+	// overflow-x: scroll !important;
+}
+
+#timeline-container
+{
+	
+	#timeline-indicator-line
 	{
-		overflow-x: scroll !important;
+		width: 4px;
+		margin-left: -2px;
+		box-shadow: 0 0 4px 1px #fff5;
+		background: #fff;
+	}
+	
+	#timeline-date-highlight
+	{
+		background: #FFFFFF33;
+		// box-shadow: 0 0 3px #fffa;
 	}
 	
 }
-
-
-@media screen and (max-width: 900px)
-       //,screen and (hover: none)
-{
-	
-
-#timeline-date-tooltip.mobile-tooltip
-{
-	// z-index: 999999;
-	// top: 30px !important;
-	// left: 30px !important;
-	// right: 30px !important;
 	
 }
 
+
+body.mobile-mode #timeline-date-tooltip
+{
+	z-index: 999999;
+	top: auto !important;
+	left: 30px !important;
+	right: 30px !important;
+	bottom: 60px !important;
+}
+
+
+@media screen and (max-width: 900px),
+       screen and (hover: none)
+{
 	
 #timeline
 {
@@ -52,6 +70,8 @@
 		
 		.header
 		{
+			position: sticky;
+			
 			&.primary
 			{
 				font-size: 0;

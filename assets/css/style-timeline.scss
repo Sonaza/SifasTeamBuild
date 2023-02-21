@@ -40,6 +40,7 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 		bottom: #{20px + $timeline-scrollbar-height};
 		z-index: 200;
 		width: 2px;
+		margin-left: -1px;
 		pointer-events: none;
 		z-index: auto;
 		opacity: 0;
@@ -236,22 +237,36 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 			}
 		}
 		
+		@keyframes rotate-center
+		{
+			0%
+			{
+				transform: rotate(0);
+			}
+			
+			100%
+			{
+				transform: rotate(360deg);
+			}
+		}
+
+		
 		&.birthday
 		{
+			position: relative;
+			
 			.idol-identity
 			{
 				width: 100%;
 				
-				// display: flex;
-				// flex-flow: row nowrap;
-				// justify-content: center;
-				// align-items: center;
+				border: 1px solid;
+				
 				position: relative;
 				
 				display: grid;
 				grid-template-columns: 28px 1fr 28px;
 				grid-template-rows: 1fr;
-				grid-column-gap: 0.9rem;
+				grid-column-gap: 0.7rem;
 				grid-row-gap: 0px;
 				
 				> span
@@ -260,7 +275,7 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 					align-self: center;
 				}
 				
-				padding: 0.4rem 1.3rem;
+				padding: 0.4rem 0.9rem 0.4rem 0.8rem;
 				
 				border-radius: 4px;
 				
@@ -268,7 +283,6 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 				
 				span.idol-icon
 				{
-					// width: 28px;
 					height: 28px;
 					border-radius: 4px;
 					background-size: contain;
@@ -288,12 +302,11 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 				
 				span.idol-yay
 				{
-					// width: 28px;
 					height: 28px;
 					background: center center no-repeat;
 					background-size: contain;
 					border-radius: 5px;
-					filter: drop-shadow(0 0 2px #333c);
+					filter: drop-shadow(0 0 2px #222c);
 				}
 			}
 						
@@ -306,6 +319,38 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 			}
 		}
 	}
+}
+
+#timeline-current-month
+{
+	position: fixed;
+	top: -4rem;
+	left: 0;
+	right: 0;
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 700;
+	font-size: 16pt;
+	color: #fff;
+	text-align: center;
+	text-shadow: 0 0 4px #000;
+	z-index: 99999;
+	padding: 0.3rem 0;
+	background: #0006;
+	
+	pointer-events: none;
+	
+	transition: top linear 100ms;
+	display: none;
+	
+	&.visible
+	{
+		top: 1rem;
+	}
+}
+
+body.mobile-mode #timeline-current-month
+{
+	display: block;
 }
 
 body.hide-tooltips #timeline-date-label
@@ -356,6 +401,11 @@ body.hide-tooltips #timeline-date-label
 			}
 		}
 	}
+}
+
+body.mobile-mode .timeline-entries
+{
+	// padding: 0 60px;
 }
 
 #timeline
@@ -548,7 +598,7 @@ body.hide-tooltips #timeline-date-label
 		.header
 		{
 			top: 0;
-			position: sticky;
+			// position: sticky;
 			z-index: 89997;
 			height: $timeline-thumbnail-size;
 			
@@ -653,6 +703,8 @@ body.hide-tooltips #timeline-date-label
 								width: 80px;
 								height: 80px;
 								
+								// transition: box-shadow ease-in 120ms;
+								
 								$offset: (80px - $timeline-thumbnail-size) / -2;
 								transform: translate($offset, $offset) scale(#{$timeline-thumbnail-size / 80px});
 								z-index: 0;
@@ -670,7 +722,8 @@ body.hide-tooltips #timeline-date-label
 								.card-thumbnail
 								{
 									// z-index: 199999 !important;
-								
+									// transition: none;
+									
 									transform: scale(0.9) translate(-24px, -24px);
 									box-shadow: 0 0 10px #0005, 0 0 5px 5px #0005;
 									z-index: 9999;

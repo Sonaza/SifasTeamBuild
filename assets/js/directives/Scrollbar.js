@@ -210,7 +210,7 @@ app.directive('scrollbar', function($parse, $window)
 					if ($event.type == 'touchend')
 					{
 						let identifier_found = false;
-						for (const touch of $event.changedTouches)
+						for (const touch of $event.touches)
 						{
 							if (touch.identifier == scope.touch_scrolling.identifier)
 							{
@@ -219,7 +219,10 @@ app.directive('scrollbar', function($parse, $window)
 							}
 						}
 						if (!identifier_found)
+						{
 							scope.touch_scrolling.active = false;
+							element.removeClass('dragging');
+						}
 					}
 					return;
 				}
@@ -279,10 +282,8 @@ app.directive('scrollbar', function($parse, $window)
 			
 			angular.element($window).on('touchmove', ($event) =>
 			{
-				// console.log("TOUCH MOVE", $event);
-				
 				let current_position = undefined;
-				for (const touch of $event.changedTouches)
+				for (const touch of $event.touches)
 				{
 					if (touch.identifier == scope.touch_scrolling.identifier)
 					{
@@ -297,6 +298,7 @@ app.directive('scrollbar', function($parse, $window)
 				{
 					scope.touch_scrolling.active = false;
 					scope.jumping = false;
+					element.removeClass('dragging');
 					return;
 				}
 				

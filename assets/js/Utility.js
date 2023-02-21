@@ -131,6 +131,36 @@ class Utility
 		return Utility.pluralize(seconds, "second", "seconds") + " ago";
 	}
 	
+	// Wraps a date based on the time only so that relative to the given `now`
+	// the date becomes yesterday, today or tomorrow when crossing midnight.
+	static wrap_date(now, date_value)
+	{
+		const hour = date_value.getHours();
+		const minute = date_value.getMinutes();
+		date_value = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hour, minute);
+		
+		const past   = new Date(date_value.getTime() - 24 * 3600 * 1000);
+		const future = new Date(date_value.getTime() + 24 * 3600 * 1000);
+		
+		const diff_present = Math.abs((now.getTime() - date_value.getTime()) / 1000 / 60);
+		const diff_past    = ((now.getTime() - past.getTime()) / 1000 / 60);
+		const diff_future  = ((future.getTime() - now.getTime()) / 1000 / 60);
+		
+		if (diff_present < diff_past && diff_present < diff_future)
+		{
+			return date_value;
+		}
+		
+		if (diff_past < diff_future)
+		{
+			return past;
+		}
+		else
+		{
+			return future;
+		}
+	}
+	
 	/******************************************************
 	 * Viewport
 	 */
@@ -149,6 +179,18 @@ class Utility
 	        rect.right <= (window.innerWidth || document.documentElement.clientWidth) + rect.width
 	    );
 	}
+
+	static isPartiallyVisibleInParent(parent, child, horizontal_leeway = 0)
+	{
+	    let parent_rect = parent.getBoundingClientRect();
+	    let child_rect = child.getBoundingClientRect();
+	    return (
+	        child_rect.top    >= parent_rect.top  - child_rect.height &&
+	        child_rect.left   >= parent_rect.left - child_rect.width + horizontal_leeway &&
+	        child_rect.bottom <= parent_rect.top  + parent_rect.height + child_rect.height &&
+	        child_rect.right  <= parent_rect.left + parent_rect.width  + child_rect.width
+	    );
+	};
 	
 	/******************************************************
 	 * Styling
@@ -173,6 +215,13 @@ class Utility
 	/******************************************************
 	 * Stuff
 	 */
+	 
+	static distance(a, b)
+	{
+		const diff_x = b.x - a.x;
+		const diff_y = b.y - a.y;
+		return Math.sqrt(diff_x * diff_x + diff_y * diff_y);
+	}
 	
 	static shallow_copy(object_to_copy)
 	{

@@ -1,5 +1,5 @@
 
-app.controller('BaseController', function($rootScope, $scope, $location, $timeout, $parse, $window, $cookies, LocationKeys, SiteRoutes, SiteGlobals)
+app.controller('BaseController', function($rootScope, $scope, $location, $timeout, $parse, $window, $cookies, SiteSettings, LocationKeys, SiteRoutes, SiteGlobals)
 	{
 		angular.element(document.querySelector("body")).removeClass('no-js');
 		
@@ -124,6 +124,11 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 				output.push('mobile-mode');
 			}
 			
+			if (SiteSettings.session_settings.disable_scrolling)
+			{
+				output.push('no-scroll');
+			}
+			
 			return output.join(' ');
 		}
 		
@@ -214,17 +219,19 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 		$scope.settings_visible = false;
 		
 		$scope.header_hidden = false;
-		$scope.hiddenHeaderActive = () =>
+		$scope.hiddenHeaderClass = () =>
 		{
 			if ($scope.navigation_visible || $scope.settings_visible)
 			{
 				return '';
 			}
 			
-			if ($scope.header_hidden)
+			if ($scope.header_hidden || SiteSettings.session_settings.force_hide_header)
 			{
 				return 'header-hidden';
 			}
+			
+			return '';
 		}
 		
 		$scope.scroll_accumulator = 0;
@@ -351,13 +358,13 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 			}
 		}
 		
-		$rootScope.$on("$locationChangeStart", function(event, next, current)
+		$rootScope.$on("$routeChangeStart", function(event, next, current)
 		{ 
 			$scope.handle_expiry(next);
 			$scope.unfocus();
 		});
 		
-		$rootScope.$on('$locationChangeSuccess', (event) =>
+		$rootScope.$on('$routeChangeSuccess', (event) =>
 		{
 			const active_route = SiteRoutes.active_route();
 			if (active_route.path !== '/')

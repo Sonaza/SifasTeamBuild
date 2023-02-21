@@ -44,7 +44,7 @@
 	<link rel="shortcut icon" href="/img/favicon_tile_192.png">
 	<link rel="manifest" href="/manifest.json">
 </head>
-<body ng-controller="BaseController" class="no-js <?= $dark_mode_class; ?>" ng-class="[activeSettingsClass(), hiddenHeaderActive(), scrollDisabler()]" ng-keydown="keydown($event)" tabindex="0" scroll="scroll($event, diff)">
+<body ng-controller="BaseController" class="no-js <?= $dark_mode_class; ?>" ng-class="[activeSettingsClass(), hiddenHeaderClass(), scrollDisabler()]" ng-keydown="keydown($event)" tabindex="0" scroll="scroll($event, diff)">
 	<div id="header" class="{{ 'dev-build' | conditional(cmd_args.dev) }}">
 		<div id="header-inner">
 			<div class="desktop-header">

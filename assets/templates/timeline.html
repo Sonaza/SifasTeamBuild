@@ -99,6 +99,8 @@
 	<div id="timeline-date-highlight"></div>
 	<div id="timeline-indicator-line"></div>
 </div>
+<div id="timeline-current-month"
+	ng-class="current_month_label_class()" ng-bind="current_month_label"></div>
 <div id="timeline-date-tooltip" ng-class="{'mobile-tooltip': mobile_mode()}"
 	tooltip="tooltip_data" tooltip-template="tooltips/timeline_tooltip.html"></div>
 <div id="timeline-autoscroll-origin"></div>
