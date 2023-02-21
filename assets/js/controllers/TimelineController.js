@@ -86,7 +86,11 @@ const member_birthday_phrase =
 	211 :  "Hey Baby-chan,<br>celebrate Mia's birthday!",               // Mia
 }
 
-app.controller('TimelineController', function($rootScope, $scope, $route, $routeParams, $location, $window, $timeout, SiteSettings, LocationKeys)
+app.controller('TimelineController', function(
+		$rootScope, $scope,
+		$route, $routeParams,
+		$location, $window, $timeout,
+		RouteEvent, SiteSettings, LocationKeys)
 {
 	const date_format = '{} {}';
 	const hovered_day_format = 'day-hovered-{}';
@@ -168,12 +172,12 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 			output.push('display-mode-' + $scope.timeline_settings.display_mode);
 		}
 		
-		if ($scope.autoscroll.active)
+		if ($scope.autoscrolling.is_active())
 		{
 			output.push('autoscrolling');
 		}
 		
-		if ($scope.grab_scroll.active)
+		if ($scope.mouse_dragging.is_active())
 		{
 			output.push('dragging');
 		}
@@ -226,7 +230,6 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	
 	$scope.mouse = {
 		absolute : {x: 0, y: 0},
-		page     : {x: 0, y: 0},
 		target   : undefined,
 		movement : {x: 0, y: 0},
 		relative : (element) =>
@@ -239,272 +242,40 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		}
 	};
 	
-	angular.element($window).on('mousemove', ($event) =>
+	RouteEvent.element(window).on('mousemove', ($event) =>
 	{
 		if (!Utility.mobile_mode())
 		{
 			$scope.mouse.absolute.x = $event.clientX;
 			$scope.mouse.absolute.y = $event.clientY;
-			$scope.mouse.page.x     = $event.pageX;
-			$scope.mouse.page.y     = $event.pageY;
 			$scope.mouse.target     = $event.target;
 			$scope.mouse.movement.x = $event.movementX;
 			$scope.mouse.movement.y = $event.movementY;
 		}
 		
-		$scope.grab_scroll.update();
 		$scope.update_timeline_indicator();
 	});
 	
-	$scope.grab_scroll = {
-		active       : false,
-		velocity     : {x: 0, y: 0},
-		last_move    : 0,
-		unhighlit    : false,
-		has_momentum : false,
-		start : () =>
-		{
-			if (Utility.mobile_mode())
-				return;
-			
-			$scope.grab_scroll.unhighlit = false;
-			
-			$scope.$apply(() =>
-			{
-				$scope.grab_scroll.active = true;
-			});
-		},
-		stop : () =>
-		{
-			$scope.grab_scroll.has_momentum = ((Date.now() - $scope.grab_scroll.last_move) < 70) &&
-				((Math.abs($scope.grab_scroll.velocity.x) > 1) || (Math.abs($scope.grab_scroll.velocity.y) > 1));
-			
-			$scope.$apply(() =>
-			{
-				$scope.grab_scroll.active = false;
-				
-				$timeout(() =>
-				{
-					if (!$scope.grab_scroll.has_momentum)
-					{
-						$scope.restore_highlights();
-					}
-				});
-			});
-			
-			
-			if ($scope.grab_scroll.has_momentum)
-			{
-				$scope.grab_scroll.update_momentum();
-			}
-		},
-		update : () =>
-		{
-			if (!$scope.grab_scroll.active)
-				return;
-			
-			if (!$scope.grab_scroll.unhighlit)
-			{
-				$scope.set_indicator_opacity(0);
-				$scope.unhighlight_everything();
-				$scope.grab_scroll.unhighlit = true;
-			}
-			
-			$scope.grab_scroll.last_move = Date.now();
-			
-			$scope.grab_scroll.velocity.x = $scope.mouse.movement.x;
-			$scope.grab_scroll.velocity.y = $scope.mouse.movement.y;
-			
-			timeline_element.scrollLeft -= $scope.mouse.movement.x;
-			document.documentElement.scrollTop -= $scope.mouse.movement.y;	
-		},
-		update_momentum : () =>
-		{
-			if ($scope.grab_scroll.active)
-			{
-				$scope.restore_highlights();
-				$scope.grab_scroll.has_momentum = false;
-				return;
-			}
-			
-			$scope.grab_scroll.velocity.x *= 0.85;
-			$scope.grab_scroll.velocity.y *= 0.85;
-			
-			// console.log("GRAB MOMENTUM!", $scope.grab_scroll.velocity);
-			
-			timeline_element.scrollLeft -= $scope.grab_scroll.velocity.x;
-			document.documentElement.scrollTop -= $scope.grab_scroll.velocity.y;
-			
-			const threshold = 0.2;
-			if (Math.abs($scope.grab_scroll.velocity.x) < threshold || 
-				Math.abs($scope.grab_scroll.velocity.y) < threshold)
-			{
-				$scope.restore_highlights();
-				$scope.grab_scroll.has_momentum = false;
-				return;
-			}
-			
-			setTimeout(() => { $scope.grab_scroll.update_momentum(); }, 15);
-		},
-	};
 	
+	// ----------------------------------------------------------------------------
 	
-	$scope.autoscroll = {
-		active   : false,
-		origin   : undefined,
-		disable  : false,
-		start    : () =>
-		{
-			if (Utility.mobile_mode())
-				return;
-				
-			$scope.autoscroll.origin = {
-				x: $scope.mouse.absolute.x,
-				y: $scope.mouse.absolute.y,
-			}
-			$scope.autoscroll.active = true;
-			
-			const origin_element = document.querySelector('#timeline-autoscroll-origin');
-			if (origin_element)
-			{
-				origin_element.style.left = ($scope.autoscroll.origin.x) + 'px';
-				origin_element.style.top =  ($scope.autoscroll.origin.y) + 'px';
-				origin_element.style.display = 'block';
-			}
-			
-			$scope.autoscroll.update();
-		},
-		stop     : (minimum_delta = 0) =>
-		{
-			if (!Utility.mobile_mode())
-			{
-				if (minimum_delta > 0)
-				{
-					const delta = {
-						x: $scope.mouse.absolute.x - $scope.autoscroll.origin.x,
-						y: $scope.mouse.absolute.y - $scope.autoscroll.origin.y,
-					}
-					if (Math.abs(delta.x) < minimum_delta && Math.abs(delta.y) < minimum_delta)
-					{
-						return;
-					}
-				}
-			}
-			
-			$scope.autoscroll.active = false;
-			
-			const origin_element = document.querySelector('#timeline-autoscroll-origin');
-			if (origin_element)
-			{
-				origin_element.style.display = 'none';
-			}
-		},
-		update  : () =>
-		{
-			if (!$scope.autoscroll.active)
-				return;
-			
-			if (Utility.mobile_mode())
-			{
-				$scope.autoscroll.stop();
-				return;
-			}
-			
-			const delta = {
-				x: $scope.mouse.absolute.x - $scope.autoscroll.origin.x,
-				y: $scope.mouse.absolute.y - $scope.autoscroll.origin.y,
-			}
-			
-			const deadzone = 25;
-			if (Math.abs(delta.x) >= deadzone)
-			{
-				timeline_element.scrollLeft += Math.min(400, Utility.abs_subtract(delta.x, deadzone)) / 2;
-			}
-			if (Math.abs(delta.y) >= deadzone)
-			{
-				document.documentElement.scrollTop += Math.min(200, Utility.abs_subtract(delta.y, deadzone) / 3) / 2;
-			}
-			setTimeout(() => { $scope.autoscroll.update(); }, 15);
-		},
-	};
+	$scope.hovering_timeline = false;
 	
-	angular.element($window).on('mousedown mouseup', ($event) =>
+	$scope.touch_scrolling = new TimelineTouchScrolling($scope, $window, SiteSettings);
+	$scope.mouse_dragging = new TimelineMouseDragging($scope, $window);
+	$scope.autoscrolling = new TimelineMouseAutoscrolling($scope, $window);
+	
+	RouteEvent.element(window).on('mouseover mouseout', ($event) =>
 	{
-		if ($event.button == 0 && !Utility.mobile_mode()) // Left mouse
+		$scope.$apply(() =>
 		{
-			if ($scope.grab_scroll.active && $event.type == 'mouseup')
-			{
-				$scope.grab_scroll.stop();
-				return;
-			}
-			
-			if ($scope.autoscroll.active)
-				return;
-			
-			if (!$event.target.closest('#timeline') || $event.type != 'mousedown')
-				return;
-			
-			if ($event.target.closest('.thumbnail') || $event.target.closest('.timeline-members'))
-				return;
-			
-			$scope.grab_scroll.start();
-			$event.preventDefault();
-		}
+			$scope.hovering_timeline = 
+				$event.target.closest('#timeline') !== null && 
+				$event.target.closest('.timeline-members') === null;
+		});
 		
-		if ($event.button == 1) // Middle mouse
+		if ($event.type == 'mouseout')
 		{
-			if ($scope.autoscroll.active && $event.target.closest('.thumbnail'))
-			{
-				$event.preventDefault();
-				return;
-			}
-			
-			// Only stop on mouseup if cursor has moved
-			if ($scope.autoscroll.active && $event.type == 'mouseup')
-			{
-				$scope.autoscroll.stop(14);
-				return;
-			}
-			
-			if ($scope.grab_scroll.active)
-				return;
-			
-			// Autoscrolling is temporarily disabled
-			if ($scope.autoscroll.disable)
-				return;
-			
-			if (!$event.target.closest('#timeline') || $event.type != 'mousedown')
-				return;
-			
-			if (!$scope.autoscroll.active)
-			{
-				$scope.autoscroll.start();
-			}
-			else
-			{
-				$scope.autoscroll.stop();
-			}
-			
-			$event.preventDefault();
-		}
-	});
-	
-	angular.element(timeline_element).on('mouseover mouseout', ($event) =>
-	{
-		let timeline_members = $event.target.closest('.timeline-members');
-		if (timeline_members)
-			return;
-		
-		if ($scope.grab_scroll.active || $scope.grab_scroll.has_momentum)
-			return;
-		
-		if ($event.type == 'mouseover')
-		{
-			$scope.set_indicator_opacity(1);
-		}
-		else if ($event.type == 'mouseout')
-		{
-			$scope.set_indicator_opacity(0);
 			$scope.unhighlight_everything();
 		}
 	});
@@ -513,11 +284,13 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	
 	$scope.current_mobile_mode = Utility.mobile_mode();
 	
-	angular.element($window).on('resize', ($event) =>
+	RouteEvent.element(window).on('resize', ($event) =>
 	{
-		$scope.autoscroll.stop();
-		$scope.set_indicator_opacity(0);
+		$scope.autoscrolling.stop();
+		
+		$scope.hovering_timeline = false;
 		$scope.unhighlight_everything();
+		
 		date_tooltip.style.left = undefined;
 		date_tooltip.style.top = undefined;
 		date_tooltip.style.bottom = undefined;
@@ -573,6 +346,25 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 	
 	// ----------------------------------------------------------------------------
 	
+	$scope.initialize_mobile_cursor = () =>
+		{	
+		const timeline_rect = timeline_element.getBoundingClientRect();
+		const distance_left = timeline_element.scrollWidth - timeline_element.scrollLeft - timeline_rect.width;
+		
+		if (timeline_element.scrollLeft <= 0)
+		{
+			$scope.mobile_cursor = 0;
+		}
+		else if (distance_left <= 0)
+		{
+			$scope.mobile_cursor = 1;
+		}
+		else
+		{
+			$scope.mobile_cursor = 0.5;
+		}
+	}
+	
 	angular.element(timeline_element).on('scroll', ($event) =>
 	{
 		$scope.$broadcast('refresh-deferred-loads');
@@ -612,12 +404,15 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		const cursor_rect = $scope.get_mobile_cursor_rect();
 		
 		const doc = document.documentElement;
+		const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+		
 		$scope.mouse.absolute.x = cursor_rect.left + $scope.mobile_cursor * cursor_rect.width;
 		$scope.mouse.absolute.y = doc.clientHeight / 2;
-		$scope.mouse.absolute.y = cursor_rect.top + 50 + doc.scrollTop;
+		// $scope.mouse.absolute.y = cursor_rect.top + 50 - scroll_top;
+		$scope.mouse.absolute.y = Math.max(100, Math.min(doc.clientHeight - 100, cursor_rect.top + cursor_rect.height / 2));
 		
-		$scope.mouse.page.x     = $scope.mouse.absolute.x + doc.scrollLeft;
-		$scope.mouse.page.y     = doc.clientHeight / 2 + doc.scrollTop;
+		console.log(cursor_rect.top + cursor_rect.height / 2, $scope.mouse.absolute.y);
+		
 		$scope.mouse.target     = document.elementFromPoint($scope.mouse.absolute.x, $scope.mouse.absolute.y);
 		$scope.mouse.movement.x = 0;
 		$scope.mouse.movement.y = 0;
@@ -625,313 +420,41 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		// console.debug($scope.mouse.target.closest('.month')?.getAttribute('data-month-key'));
 		
 		// $scope.mouse.absolute.x = doc.clientWidth / 2 - 100 + $scope.mobile_cursor
-		// $scope.mouse.page.x     = doc.clientWidth / 2 + doc.scrollLeft;
 		
 		$scope.update_timeline_indicator();
 		$scope.update_timeline_position_param();
-	}
-	
-	// ----------------------------------------------------------------------------
-	// Touch Controls
-	
-	// $scope.$watch('mobile_cursor', function(new_value, old_value)
-	// {
-	// 	$timeout(() =>
-	// 	{
-	// 		$scope.update_mobile_indicator();
-	// 	});
-	// });
-	
-	$scope.touch_scrolling = {
-		active       : false,
-		identifier   : undefined,
-		
-		initial      : {x: 0, y: 0},
-		position     : {x: 0, y: 0},
-		
-		delta        : {x: 0, y: 0},
-		velocity     : {x: 0, y: 0},
-		axis         : false,
-		
-		last_move    : 0,
-		
-		has_momentum : false,
-		start : () =>
-		{
-			$scope.$apply(() =>
-			{
-				$scope.touch_scrolling.active = true;
-				SiteSettings.session_settings.disable_scrolling = true;
-			});
-		},
-		stop : () =>
-		{
-			if (!$scope.touch_scrolling.active)
-				return;
-			
-			$scope.touch_scrolling.has_momentum = ((Date.now() - $scope.touch_scrolling.last_move) < 70) &&
-				((Math.abs($scope.touch_scrolling.delta.x) > 1) || (Math.abs($scope.touch_scrolling.delta.y) > 1));
-				
-			console.log($scope.touch_scrolling.has_momentum, $scope.touch_scrolling.delta);
-			
-			$scope.$apply(() =>
-			{
-				$scope.touch_scrolling.active = false;
-				SiteSettings.session_settings.disable_scrolling = false;
-			});
-			
-			if ($scope.touch_scrolling.has_momentum)
-			{
-				if ($scope.touch_scrolling.axis === false)
-				{
-					const delta_initial = {
-						x: $scope.touch_scrolling.position.x - $scope.touch_scrolling.initial.x,
-						y: $scope.touch_scrolling.position.y - $scope.touch_scrolling.initial.y
-					};
-					
-					if (Math.abs(delta_initial.x) > Math.abs(delta_initial.y))
-					{
-						$scope.touch_scrolling.axis = 1;
-					}
-					else
-					{
-						$scope.touch_scrolling.axis = 2;
-					}
-				}
-				
-				$scope.touch_scrolling.velocity = Utility.shallow_copy($scope.touch_scrolling.delta);
-				$scope.touch_scrolling.update_momentum();
-			}
-			else
-			{
-				$scope.touch_scrolling.axis = false;
-			}
-		},
-		update_mobile_cursor : (delta) =>
-		{
-			if ($scope.touch_scrolling.axis == 2)
-			{
-				return true;
-			}
-			
-			if (timeline_element.scrollLeft <= 0)
-			{
-				const cursor_rect = $scope.get_mobile_cursor_rect();
-				const cursor_increment = -delta / cursor_rect.width;
-			
-				$scope.mobile_cursor += cursor_increment;
-				$scope.mobile_cursor = Math.max(0, Math.min(0.5, $scope.mobile_cursor));
-				$scope.update_mobile_indicator();
-				return ($scope.mobile_cursor >= 0.5);
-			}
-			
-			const timeline_rect = timeline_element.getBoundingClientRect();
-			const distance_left = timeline_element.scrollWidth - timeline_element.scrollLeft - timeline_rect.width;
-			if (distance_left <= 0)
-			{
-				const cursor_rect = $scope.get_mobile_cursor_rect();
-				const cursor_increment = -delta / cursor_rect.width;
-				
-				$scope.mobile_cursor += cursor_increment;
-				$scope.mobile_cursor = Math.max(0.5, Math.min(1, $scope.mobile_cursor));
-				$scope.update_mobile_indicator();
-				return ($scope.mobile_cursor <= 0.5);
-			}
-			
-			return true;
-		},
-		update : (current_position) =>
-		{
-			if (!$scope.touch_scrolling.active)
-				return;
-			
-			$scope.touch_scrolling.delta = {
-				x: current_position.x - $scope.touch_scrolling.position.x,
-				y: current_position.y - $scope.touch_scrolling.position.y,
-			};
-			
-			if ($scope.touch_scrolling.axis === false)
-			{
-				if (Utility.distance(current_position, $scope.touch_scrolling.initial) > 60)
-				{
-					const delta_initial = {
-						x: current_position.x - $scope.touch_scrolling.initial.x,
-						y: current_position.y - $scope.touch_scrolling.initial.y
-					};
-					
-					if (Math.abs(delta_initial.x) > Math.abs(delta_initial.y))
-					{
-						$scope.touch_scrolling.axis = 1;
-					}
-					else
-					{
-						$scope.touch_scrolling.axis = 2;
-					}
-				}
-			}
-			
-			const can_scroll = $scope.touch_scrolling.update_mobile_cursor($scope.touch_scrolling.delta.x);
-			if (can_scroll)
-			{
-				if ($scope.touch_scrolling.axis == 1)
-				{
-					timeline_element.scrollLeft -= $scope.touch_scrolling.delta.x;
-				}
-				if ($scope.touch_scrolling.axis == 2)
-				{
-					document.documentElement.scrollTop -= $scope.touch_scrolling.delta.y;
-				}
-			}
-			
-			$scope.touch_scrolling.position = current_position;
-			
-			$scope.touch_scrolling.last_move = Date.now();
-		},
-		update_momentum : () =>
-		{
-			if ($scope.touch_scrolling.active)
-			{
-				$scope.touch_scrolling.has_momentum = false;
-				$scope.touch_scrolling.axis = false;
-				return;
-			}
-			
-			$scope.touch_scrolling.velocity.x *= 0.96;
-			$scope.touch_scrolling.velocity.y *= 0.96;
-			
-			// console.log("TOUCH MOMENTUM!", $scope.touch_scrolling.velocity);
-			
-			const can_scroll = $scope.touch_scrolling.update_mobile_cursor($scope.touch_scrolling.velocity.x);
-			if (can_scroll)
-			{
-				if ($scope.touch_scrolling.axis == 1)
-				{
-					timeline_element.scrollLeft -= $scope.touch_scrolling.velocity.x;
-				}
-				if ($scope.touch_scrolling.axis == 2)
-				{
-					document.documentElement.scrollTop -= $scope.touch_scrolling.velocity.y;
-				}
-			}
-			
-			const threshold = 0.2;
-			if (($scope.touch_scrolling.axis == 1 && Math.abs($scope.touch_scrolling.velocity.x) < threshold) ||
-				($scope.touch_scrolling.axis == 2 && Math.abs($scope.touch_scrolling.velocity.y) < threshold))
-			{
-				$scope.touch_scrolling.has_momentum = false;
-				$scope.touch_scrolling.axis = false;
-				return;
-			}
-			
-			setTimeout(() => { $scope.touch_scrolling.update_momentum(); }, 7);
-		},
-	};
-	
-	angular.element($window).on('touchstart touchend', ($event) =>
-	{
-		if ($event.type == 'touchend')
-		{
-			if ($scope.touch_scrolling.active)
-			{
-				let identifier_found = false;
-				for (const touch of $event.touches)
-				{
-					if (touch.identifier == $scope.touch_scrolling.identifier)
-					{
-						identifier_found = true;
-						break;
-					}
-				}
-				if (!identifier_found)
-				{
-					// console.log("STOPPING TOUCH SCROLL", $event);
-					$scope.touch_scrolling.stop();
-				}
-			}
-			return;
-		}
-		
-		if ($event.type == 'touchstart')
-		{
-			if (!$event.target.closest('#timeline'))
-				return;
-			
-			$scope.touch_scrolling.identifier = $event.changedTouches[0].identifier;
-			$scope.touch_scrolling.position   = {
-				x: $event.changedTouches[0].clientX,
-				y: $event.changedTouches[0].clientY
-			};
-			
-			$scope.touch_scrolling.initial = Utility.shallow_copy($scope.touch_scrolling.position);
-			
-			$scope.touch_scrolling.start();
-			// console.log("STARTING TOUCH SCROLL", $event);
-			
-			$event.preventDefault();
-		}
-	});
-	
-	angular.element($window).on('touchmove', ($event) =>
-	{
-		let current_position = undefined;
-		for (const touch of $event.touches)
-		{
-			if (touch.identifier == $scope.touch_scrolling.identifier)
-			{
-				current_position = {
-					x: touch.clientX,
-					y: touch.clientY,
-				};
-				break;
-			}
-		}
-		if (current_position === undefined)
-		{
-			$scope.touch_scrolling.stop();
-			return;
-		}
-		
-		if (!$scope.touch_scrolling.active)
-			return;
-		
-		$scope.touch_scrolling.update(current_position);		
-		$event.preventDefault();
-	});
-	
-	$scope.initialize_mobile_cursor = () =>
-	{	
-		const timeline_rect = timeline_element.getBoundingClientRect();
-		const distance_left = timeline_element.scrollWidth - timeline_element.scrollLeft - timeline_rect.width;
-		
-		if (timeline_element.scrollLeft <= 0)
-		{
-			$scope.mobile_cursor = 0;
-		}
-		else if (distance_left <= 0)
-		{
-			$scope.mobile_cursor = 1;
-		}
-		else
-		{
-			$scope.mobile_cursor = 0.5;
-		}
-		
-		if (Utility.mobile_mode())
-		{
-			$scope.set_indicator_opacity(1);
-		}
 	}
 	
 	// -------------------------------------------------------------------
 	
 	const force_hide_header_position = 120;
 	
-	angular.element($window).on('scroll', ($event) =>
+	// const body_element = document.querySelector('body');
+	// RouteEvent.element(window).on('wheel', ($event) =>
+	// {
+	// 	$event.preventDefault();
+	// },
+	// {
+	// 	capture: true,
+	// 	passive: false,
+	// });
+	// RouteEvent.element(window).on('touchmove', ($event) =>
+	// {
+	// 	console.log("SDFLJDSJF")
+	// 	$event.preventDefault();
+	// },
+	// {
+	// 	capture: true,
+	// 	passive: false,
+	// });
+	
+	RouteEvent.element(window).on('scroll', ($event) =>
 	{
 		$scope.update_timeline_indicator();
 		
 		const timeline_rect = timeline_element.getBoundingClientRect();
 		SiteSettings.session_settings.force_hide_header = (timeline_rect.top < force_hide_header_position);
+		
 	});
 	
 	$scope.current_month_label_class = () =>
@@ -1068,16 +591,16 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		hovered_ids : {},
 	};
 	
-	$scope.set_indicator_opacity = (opacity) =>
-	{
-		indicator_line.style.opacity = opacity;
-		date_highlight.style.opacity = opacity;
-		date_tooltip.style.opacity = opacity;
-	};
-	$scope.get_indicator_opacity = () =>
-	{
-		return indicator_line.style.opacity;
-	};
+	// $scope.set_indicator_opacity = (opacity) =>
+	// {
+	// 	indicator_line.style.opacity = opacity;
+	// 	date_highlight.style.opacity = opacity;
+	// 	date_tooltip.style.opacity = opacity;
+	// };
+	// $scope.get_indicator_opacity = () =>
+	// {
+	// 	return indicator_line.style.opacity;
+	// };
 	
 	$scope.unhighlight_everything = () =>
 	{
@@ -1107,14 +630,108 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 				$scope.hovered_idol_id = undefined;
 			});
 		}
+		
+		// $scope.hovering_timeline = false;
 	};
 	
-	$scope.restore_highlights = () =>
+	
+	$scope.indicator_visible_class = () =>
 	{
-		// Must be unset so timeline indicator update sees a changed date
-		$scope.current_day.hovered_day = undefined;
-		$scope.update_timeline_indicator();
-		$scope.set_indicator_opacity(1);	
+		if (!Utility.mobile_mode())
+		{
+			if (!$scope.hovering_timeline)
+			{
+				console.log("NOTdsfssdfdsfsdfdsfdsffdsdsfdsfs!");
+				return false;
+			}
+			
+			if ($scope.autoscrolling.is_active() || $scope.mouse_dragging.is_active())
+			{
+				return false;
+			}
+		}
+		
+		return 'visible';
+	}
+	
+	$scope.tooltip_visible_class = () =>
+	{
+		if (!Utility.mobile_mode())
+		{
+			if (!$scope.hovering_timeline)
+			{
+				return false;
+			}
+			
+			if ($scope.autoscrolling.is_active() || $scope.mouse_dragging.is_active())
+			{
+				return false;
+			}
+		}
+		
+		return 'visible';
+	}
+	
+	$scope.tooltip_mobile_class = () =>
+	{
+		const output = [];
+		
+		const timeline_rect = timeline_element.getBoundingClientRect();
+		if (timeline_rect.top > force_hide_header_position)
+		{
+			output.push('hidden');
+		}
+		
+		const doc = document.documentElement;
+		const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+		const distance_to_view_bottom = (doc.scrollHeight - doc.clientHeight - scroll_top);
+		
+		// console.log("distance_to_view_bottom", distance_to_view_bottom);
+		
+		if (distance_to_view_bottom < 230)
+		{
+			output.push('flipped');
+		}
+		
+		return output.join(' ');
+	}
+	
+	$scope.set_indicator_anchors = (line_anchor, highlight_anchor, tooltip_anchor) =>
+	{
+		indicator_line.style.left = line_anchor.left + "px";
+		date_highlight.style.left = highlight_anchor.left + "px";
+		
+		// if (!Utility.mobile_mode())
+		if (document.documentElement.clientWidth > 900)
+		{
+			date_tooltip.style.left = tooltip_anchor.left + "px";
+			
+			if (tooltip_anchor.top)
+			{
+				date_tooltip.style.top    = tooltip_anchor.top + "px";
+				date_tooltip.style.bottom = 'auto';
+			}
+			
+			if (tooltip_anchor.bottom)
+			{
+				date_tooltip.style.top    = 'auto';
+				date_tooltip.style.bottom = tooltip_anchor.bottom + "px";
+			}
+			
+			if (tooltip_anchor.margin)
+			{
+				date_tooltip.style.marginLeft = tooltip_anchor.margin + "px";
+			}
+			else
+			{
+				date_tooltip.style.marginLeft = 0;
+			}
+		}
+		else
+		{
+			date_tooltip.style.inset = '';
+			date_tooltip.style.marginLeft = 0;
+		}
 	}
 	
 	$scope.update_timeline_indicator = () =>
@@ -1122,24 +739,15 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		if (!$scope.mouse.target || !$scope.mouse.target.closest)
 			return;
 		
-		if ($scope.grab_scroll.active || $scope.grab_scroll.has_momentum)
+		if ($scope.mouse_dragging.is_active() || $scope.autoscrolling.is_active())
 			return;
 		
 		let timeline_members = $scope.mouse.target.closest('.timeline-members');
 		if (timeline_members)
 		{
-			$scope.set_indicator_opacity(0);
+			// $scope.set_indicator_opacity(0);
 			$scope.unhighlight_everything();
 			return;
-		}
-		else if (indicator_line.style.opacity == 0 && $scope.current_day.hovered_day !== undefined 
-			   && $scope.current_day.hovered_day >= 1 && $scope.current_day.hovered_day <= $scope.current_day.month_days)
-		{
-			$scope.set_indicator_opacity(1);
-		}
-		else if (indicator_line.style.opacity == 0 && Utility.mobile_mode())
-		{
-			$scope.set_indicator_opacity(1);
 		}
 		
 		let timeline_month = $scope.mouse.target.closest('.month');
@@ -1160,6 +768,10 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 			});
 		}
 		
+		const line_anchor      = {};
+		const highlight_anchor = {};
+		const tooltip_anchor   = {};
+		
 		const doc = document.documentElement;
 		const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 		
@@ -1172,7 +784,7 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		const timeline_rect = timeline_element.getBoundingClientRect();
 		const timeline_month_rect = timeline_month.getBoundingClientRect();
 		
-		const relative_x  = $scope.mouse.page.x - timeline_month_rect.left;
+		const relative_x  = $scope.mouse.absolute.x - timeline_month_rect.left;
 		const day_width   = timeline_month_rect.width / month_days;
 		
 		let hovered_day;
@@ -1181,7 +793,7 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		const timeline_thumbnail = $scope.mouse.target.closest('.thumbnail');
 		if (!timeline_thumbnail || Utility.mobile_mode())
 		{
-			$scope.autoscroll.disable = false;
+			$scope.autoscrolling.set_disabled(false);
 			
 			offset_day = Math.floor(relative_x / day_width) + month_start;
 			hovered_day = offset_day;
@@ -1190,12 +802,12 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 				hovered_day = month_days - offset_day + 1;
 			}
 			
-			indicator_line.style.left    = ($scope.mouse.absolute.x - timeline_rect.left - 1) + 'px';
-			date_tooltip.style.left      = ($scope.mouse.absolute.x) + 'px';
+			line_anchor.left    = $scope.mouse.absolute.x - timeline_rect.left - 1;
+			tooltip_anchor.left = $scope.mouse.absolute.x;
 		}
 		else
 		{
-			$scope.autoscroll.disable = true;
+			$scope.autoscrolling.set_disabled(true);
 			
 			hovered_day = parseInt(timeline_thumbnail.getAttribute('data-month-day'));
 			offset_day = hovered_day;
@@ -1206,15 +818,14 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 			
 			let pos = ((offset_day - month_start) * day_width + day_width / 2 - timeline_rect.left + timeline_month_rect.left)
 			
-			indicator_line.style.left = pos + 'px';
-			// date_tooltip.style.left   = (timeline_month_rect.left + (offset_day - month_start) * day_width + day_width / 2) + 'px';
-			date_tooltip.style.left = (pos + timeline_rect.left) + 'px';
+			line_anchor.left    = pos;
+			tooltip_anchor.left = pos + timeline_rect.left;
 		}
 		
-		if (hovered_day < 1 || hovered_day > (month_days + month_start))
-		{
-			$scope.set_indicator_opacity(0);
-		}
+		// if (hovered_day < 1 || hovered_day > (month_days + month_start))
+		// {
+		// 	$scope.set_indicator_opacity(0);
+		// }
 		
 		if (!Utility.mobile_mode())
 		{
@@ -1226,18 +837,16 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 			if ($scope.mouse.absolute.y > doc.clientHeight * (0.48 + (distance_to_view_top / doc.clientHeight)))
 			{
 				const margin = timeline_view_height * 0.12;
-				date_tooltip.style.top    = (distance_to_view_top + margin) + 'px';
-				date_tooltip.style.bottom = 'auto';
+				tooltip_anchor.top = distance_to_view_top + margin;
 			}
 			else
 			{
 				const margin = timeline_view_height * 0.08;
-				date_tooltip.style.top    = 'auto';
-				date_tooltip.style.bottom = (Math.max(50, Math.max(0, 200 - distance_to_view_bottom) + margin)) + 'px';
+				tooltip_anchor.bottom = Math.max(50, Math.max(0, 200 - distance_to_view_bottom) + margin);
 			}
 		}
 			
-		date_highlight.style.left   = ((offset_day - month_start) * day_width - timeline_rect.left + timeline_month_rect.left) + 'px';
+		highlight_anchor.left = ((offset_day - month_start) * day_width - timeline_rect.left + timeline_month_rect.left);
 		
 		// If hovered day has changed do some updating
 		if (hovered_day != $scope.current_day.hovered_day)
@@ -1351,14 +960,6 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 					tooltip_data.birthdays.push(member);
 				}
 			}
-			// for (const [id, member] of Object.entries(Member.members_ordered))
-			// {
-			// 	// if (member.birthday.day % 5 == hovered_day % 5)
-			// 	if (member.id in member_birthday_phrase)
-			// 	{
-			// 		tooltip_data.birthdays.push(member);
-			// 	}
-			// }
 			
 			// --------------------------------------------------------------------------------------
 			
@@ -1367,15 +968,16 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 			});
 		}
 		
-		if ($scope.mouse.absolute.x > (doc.clientWidth * 0.66))
+		if (!Utility.mobile_mode() || Utility.mobile_lite_mode())
 		{
-			const date_label_rect = date_tooltip.getBoundingClientRect();
-			date_tooltip.style.marginLeft = -(date_label_rect.right - date_label_rect.left - 2) + 'px';
+			if ($scope.mouse.absolute.x > (doc.clientWidth * 0.68))
+			{
+				const date_label_rect = date_tooltip.getBoundingClientRect();
+				tooltip_anchor.margin = -(date_label_rect.right - date_label_rect.left - 2);
+			}
 		}
-		else
-		{
-			date_tooltip.style.marginLeft = 0;
-		}
+		
+		$scope.set_indicator_anchors(line_anchor, highlight_anchor, tooltip_anchor);
 	}
 	
 	$scope.$on('keydown', (_, e) =>
@@ -1384,10 +986,10 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		
 		if (e.keyCode == 27) // ESC-key
 		{
-			if ($scope.autoscroll.active)
+			if ($scope.autoscrolling.is_active())
 			{
+				$scope.autoscrolling.stop();
 				e.preventDefault();
-				$scope.autoscroll.stop();
 			}
 		}
 		
@@ -1426,7 +1028,7 @@ app.controller('TimelineController', function($rootScope, $scope, $route, $route
 		}
 	});
 	
-	$scope.set_indicator_opacity(0);
+	// $scope.set_indicator_opacity(0);
 	
 	$scope.initialize_mobile_cursor();
 	

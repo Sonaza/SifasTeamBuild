@@ -6,6 +6,10 @@
 	</p>
 </div>
 
+<p class="main-content-inner-widest show-mobile" style="font-weight: 700">
+	This page is really heavy! Usage of the timeline on desktop instead of mobile is strongly recommended.
+</p>
+
 <div class="page-settings-bar event-card-settings timeline-settings">
 	<label>
 		Jump to
@@ -96,11 +100,10 @@
 		</div>
 	</div>
 	<div class="timeline-scrollbar scrollbar-bottom" scrollbar="#timeline"></div>
-	<div id="timeline-date-highlight"></div>
-	<div id="timeline-indicator-line"></div>
+	<div id="timeline-date-highlight" ng-class="indicator_visible_class()"></div>
+	<div id="timeline-indicator-line" ng-class="indicator_visible_class()"></div>
 </div>
-<div id="timeline-current-month"
-	ng-class="current_month_label_class()" ng-bind="current_month_label"></div>
-<div id="timeline-date-tooltip" ng-class="{'mobile-tooltip': mobile_mode()}"
+{# <div id="timeline-current-month" ng-class="current_month_label_class()" ng-bind="current_month_label"></div> #}
+<div id="timeline-date-tooltip" ng-class="[tooltip_visible_class(), tooltip_mobile_class()]"
 	tooltip="tooltip_data" tooltip-template="tooltips/timeline_tooltip.html"></div>
 <div id="timeline-autoscroll-origin"></div>

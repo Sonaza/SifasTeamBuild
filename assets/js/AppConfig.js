@@ -57,9 +57,11 @@ app.config(($interpolateProvider, $routeProvider, $locationProvider, SiteSetting
 })
 
 
-app.run(($rootScope, $window, $templateCache, $http, SiteSettings) =>
+app.run(($rootScope, $window, $templateCache, $http, RouteEvent, SiteSettings) =>
 {
 	$rootScope.settings = SiteSettings.saved_settings;
+	
+	$rootScope.RouteEvent = RouteEvent;
 	
 	$rootScope.mobile_mode = Utility.mobile_mode;
 	$rootScope.prefers_reduced_motion = Utility.prefers_reduced_motion;

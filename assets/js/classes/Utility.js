@@ -69,11 +69,16 @@ class Utility
 	 * Site preferences
 	 */
 	 
+	static mobile_lite_mode = () =>
+	{
+		return document.documentElement.clientWidth > 900
+		       && window.matchMedia("(hover: none)").matches;
+	}
+	 
 	static mobile_mode = () =>
 	{
 		return document.documentElement.clientWidth <= 900
 		       || window.matchMedia("(hover: none)").matches
-		       || window.matchMedia("(any-hover: none)").matches
 		       || window.matchMedia("(pointer: coarse)").matches;
 	}
 

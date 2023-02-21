@@ -5,6 +5,16 @@
 #timeline
 {
 	// overflow-x: scroll !important;
+	
+	// &:not(.no-scroll)
+	// {
+	// 	overflow-x: scroll !important;
+	// }
+	
+	// &.no-scroll
+	// {
+	// 	overflow-x: hidden !important;
+	// }
 }
 
 #timeline-container
@@ -28,21 +38,55 @@
 	
 }
 
+/***********************************************************************************/
+
+@media screen and (min-width: 901px)
+{
+
+body.mobile-mode #timeline-date-tooltip
+{
+	bottom: 60px !important;
+	
+	&.flipped
+	{
+		top: 80px !important;
+		bottom: auto !important;
+	}
+}
+
+}
+
+/***********************************************************************************/
+
+@media screen and (max-width: 900px)
+{
 
 body.mobile-mode #timeline-date-tooltip
 {
 	z-index: 999999;
-	top: auto !important;
-	left: 30px !important;
-	right: 30px !important;
-	bottom: 60px !important;
+	
+	top: auto;
+	left: 30px;
+	right: 30px;
+	bottom: 60px;
+	
+	&.hidden
+	{
+		bottom: -250px;
+	}
+	
+	&.flipped
+	{
+		top: 20px;
+		bottom: auto;
+		
+		&.hidden
+		{
+			top: -250px;
+		}
+	}
 }
 
-
-@media screen and (max-width: 900px),
-       screen and (hover: none)
-{
-	
 #timeline
 {
 	
