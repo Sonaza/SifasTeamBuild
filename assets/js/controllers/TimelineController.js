@@ -311,7 +311,7 @@ app.controller('TimelineController', function(
 			return;
 		
 		$scope.$broadcast('refresh-deferred-loads');
-		
+				
 		const rect = timeline_element.getBoundingClientRect();
 		const distance_left = timeline_element.scrollWidth - timeline_element.scrollLeft - rect.width;
 		
@@ -324,7 +324,7 @@ app.controller('TimelineController', function(
 			})
 			return;
 		}
-			
+		
 		deferred_unloads_halted = true;
 		$scope.position_update_halted = true;
 		
@@ -363,14 +363,6 @@ app.controller('TimelineController', function(
 		{
 			$scope.mobile_cursor = 0.5;
 		}
-		
-		$timeout(() =>
-		{
-			if (Utility.mobile_mode() || Utility.mobile_lite_mode())
-			{
-				$scope.update_mobile_indicator();
-			}
-		}, 50);
 	}
 	
 	RouteEvent.element(timeline_element).on('scroll', ($event) =>
@@ -401,14 +393,19 @@ app.controller('TimelineController', function(
 		const timeline_members_rect = timeline_members_element.getBoundingClientRect();
 		return {
 			top    : timeline_rect.top,
-			left   : timeline_rect.left + timeline_members_rect.width,
-			width  : timeline_rect.width - timeline_members_rect.width,
+			left   : timeline_rect.left + timeline_members_rect.width + 5,
+			width  : timeline_rect.width - timeline_members_rect.width - 5,
 			height : timeline_rect.height,
 		}
 	}
 	
 	$scope.update_mobile_indicator = () =>
 	{
+		if ($scope.mobile_cursor === undefined)
+		{
+			$scope.initialize_mobile_cursor();
+		}
+		
 		const cursor_rect = $scope.get_mobile_cursor_rect();
 		
 		const doc = document.documentElement;
@@ -544,6 +541,8 @@ app.controller('TimelineController', function(
 		window.scrollTo(0, 0);
 	}
 	
+	$scope.mobile_cursor_initialized = false;
+	
 	$scope.position_update_timeout = undefined;
 	$scope.$on("$includeContentLoaded", function(event, templateName)
 	{
@@ -561,6 +560,27 @@ app.controller('TimelineController', function(
 		else
 		{
 			$scope.update_timeline_position_param();
+		}
+		
+		if ((Utility.mobile_mode() || Utility.mobile_lite_mode()))
+		{
+			if ($rootScope.settings.order_reversed)
+			{
+				$timeout.cancel($scope.mobile_cursor_initialize_timeout);
+				$scope.mobile_cursor_initialize_timeout = $timeout(() => 
+				{
+					$scope.update_mobile_indicator();
+					$scope.mobile_cursor_initialized = true;
+				}, 150);
+			}
+			else
+			{
+				$timeout(() =>
+				{
+					$scope.update_mobile_indicator();
+				});
+				$scope.mobile_cursor_initialized = true;
+			}
 		}
 	});
 	
@@ -613,6 +633,11 @@ app.controller('TimelineController', function(
 			if ($scope.autoscrolling.is_active() || $scope.mouse_dragging.is_active())
 				return;
 		}
+		else
+		{
+			if ($scope.mobile_cursor === undefined || !$scope.mobile_cursor_initialized)
+				return;
+		}
 		
 		return 'visible';
 	}
@@ -633,6 +658,9 @@ app.controller('TimelineController', function(
 				return;
 			
 			if ($scope.touch_scrolling.is_active())
+				return;
+			
+			if ($scope.mobile_cursor === undefined || !$scope.mobile_cursor_initialized)
 				return;
 		}
 		
@@ -994,7 +1022,7 @@ app.controller('TimelineController', function(
 	
 	// $scope.set_indicator_opacity(0);
 	
-	$scope.initialize_mobile_cursor();
+	// $scope.initialize_mobile_cursor();
 	
 	// ----------------------
 	
