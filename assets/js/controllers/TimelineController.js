@@ -806,9 +806,11 @@ app.controller('TimelineController', function(
 			
 			offset_day = Math.floor(relative_x / day_width) + month_start;
 			hovered_day = offset_day;
+			
 			if ($rootScope.settings.order_reversed)
 			{
-				hovered_day = month_days - offset_day + 1;
+				const actual_month_days = month_days + month_start - 1;
+				hovered_day = actual_month_days - offset_day + month_start;
 			}
 			
 			line_anchor.left    = $scope.mouse.absolute.x - timeline_rect.left - 1;
@@ -822,7 +824,8 @@ app.controller('TimelineController', function(
 			offset_day = hovered_day;
 			if ($rootScope.settings.order_reversed)
 			{
-				offset_day  = month_days - hovered_day + 1;
+				const actual_month_days = month_days + month_start - 1;
+				offset_day  = actual_month_days - hovered_day + month_start;
 			}
 			
 			let pos = ((offset_day - month_start) * day_width + day_width / 2 - timeline_rect.left + timeline_month_rect.left)
@@ -830,11 +833,6 @@ app.controller('TimelineController', function(
 			line_anchor.left    = pos;
 			tooltip_anchor.left = pos + timeline_rect.left;
 		}
-		
-		// if (hovered_day < 1 || hovered_day > (month_days + month_start))
-		// {
-		// 	$scope.set_indicator_opacity(0);
-		// }
 		
 		if (!Utility.mobile_mode())
 		{
