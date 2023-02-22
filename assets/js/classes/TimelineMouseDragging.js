@@ -18,7 +18,7 @@ class TimelineMouseDragging
 	
 	is_active()
 	{
-		return this.active || this.has_momentum;
+		return (this.active && this.unhighlit) || this.has_momentum;
 	}
 	
 	initialize(RouteEvent)
