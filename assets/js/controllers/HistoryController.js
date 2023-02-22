@@ -67,8 +67,6 @@ app.controller('HistoryController', function($rootScope, $scope, $route, $routeP
 	{
 		$scope.loading = true;
 		
-		console.log("HistoryController");
-		
 		if ($routeParams.page === undefined)
 		{
 			window.scrollTo(0, 0);

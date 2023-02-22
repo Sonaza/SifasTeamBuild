@@ -1,8 +1,6 @@
 
 app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routeParamsProvider)
 {
-	// console.log("$routeParamsProvider", $routeParamsProvider);
-	
 	class Route
 	{
 		id;

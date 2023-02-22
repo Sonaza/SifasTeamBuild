@@ -363,9 +363,17 @@ app.controller('TimelineController', function(
 		{
 			$scope.mobile_cursor = 0.5;
 		}
+		
+		$timeout(() =>
+		{
+			if (Utility.mobile_mode() || Utility.mobile_lite_mode())
+			{
+				$scope.update_mobile_indicator();
+			}
+		}, 50);
 	}
 	
-	angular.element(timeline_element).on('scroll', ($event) =>
+	RouteEvent.element(timeline_element).on('scroll', ($event) =>
 	{
 		$scope.$broadcast('refresh-deferred-loads');
 		if (Utility.mobile_mode())
@@ -407,19 +415,14 @@ app.controller('TimelineController', function(
 		const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 		
 		$scope.mouse.absolute.x = cursor_rect.left + $scope.mobile_cursor * cursor_rect.width;
-		$scope.mouse.absolute.y = doc.clientHeight / 2;
-		// $scope.mouse.absolute.y = cursor_rect.top + 50 - scroll_top;
+		
+		// Try to magic a position within the timeline element that's always on screen
 		$scope.mouse.absolute.y = Math.max(100, Math.min(doc.clientHeight - 100, cursor_rect.top + cursor_rect.height / 2));
 		
-		console.log(cursor_rect.top + cursor_rect.height / 2, $scope.mouse.absolute.y);
-		
 		$scope.mouse.target     = document.elementFromPoint($scope.mouse.absolute.x, $scope.mouse.absolute.y);
+		
 		$scope.mouse.movement.x = 0;
 		$scope.mouse.movement.y = 0;
-		
-		// console.debug($scope.mouse.target.closest('.month')?.getAttribute('data-month-key'));
-		
-		// $scope.mouse.absolute.x = doc.clientWidth / 2 - 100 + $scope.mobile_cursor
 		
 		$scope.update_timeline_indicator();
 		$scope.update_timeline_position_param();
@@ -427,26 +430,7 @@ app.controller('TimelineController', function(
 	
 	// -------------------------------------------------------------------
 	
-	const force_hide_header_position = 120;
-	
-	// const body_element = document.querySelector('body');
-	// RouteEvent.element(window).on('wheel', ($event) =>
-	// {
-	// 	$event.preventDefault();
-	// },
-	// {
-	// 	capture: true,
-	// 	passive: false,
-	// });
-	// RouteEvent.element(window).on('touchmove', ($event) =>
-	// {
-	// 	console.log("SDFLJDSJF")
-	// 	$event.preventDefault();
-	// },
-	// {
-	// 	capture: true,
-	// 	passive: false,
-	// });
+	const force_hide_header_position = 180;
 	
 	RouteEvent.element(window).on('scroll', ($event) =>
 	{
@@ -498,8 +482,6 @@ app.controller('TimelineController', function(
 			timeline_element.querySelector('.timeline-entry.month:first-child ng-include')?.closest('.month') :
 			timeline_element.querySelector('.timeline-entry.month:last-child ng-include')?.closest('.month');
 			
-		// console.log(first_entry, last_entry);
-		
 		if (first_entry && timeline_element.scrollLeft < first_entry.getBoundingClientRect().width - 50)
 		{
 			visible_entry = first_entry;
@@ -591,17 +573,6 @@ app.controller('TimelineController', function(
 		hovered_ids : {},
 	};
 	
-	// $scope.set_indicator_opacity = (opacity) =>
-	// {
-	// 	indicator_line.style.opacity = opacity;
-	// 	date_highlight.style.opacity = opacity;
-	// 	date_tooltip.style.opacity = opacity;
-	// };
-	// $scope.get_indicator_opacity = () =>
-	// {
-	// 	return indicator_line.style.opacity;
-	// };
-	
 	$scope.unhighlight_everything = () =>
 	{
 		for (const [category, category_ids] of Object.entries($scope.current_day.hovered_ids))
@@ -630,28 +601,17 @@ app.controller('TimelineController', function(
 				$scope.hovered_idol_id = undefined;
 			});
 		}
-		
-		// $scope.hovering_timeline = false;
 	};
-	
 	
 	$scope.indicator_visible_class = () =>
 	{
 		if (!Utility.mobile_mode())
 		{
 			if (!$scope.hovering_timeline)
-			{
 				return;
-			}
 			
 			if ($scope.autoscrolling.is_active() || $scope.mouse_dragging.is_active())
-			{
 				return;
-			}
-		}
-		else
-		{
-			
 		}
 		
 		return 'visible';
@@ -662,26 +622,18 @@ app.controller('TimelineController', function(
 		if (!Utility.mobile_mode())
 		{
 			if (!$scope.hovering_timeline)
-			{
 				return;
-			}
 			
 			if ($scope.autoscrolling.is_active() || $scope.mouse_dragging.is_active())
-			{
 				return;
-			}
 		}
 		else
 		{
 			if (CardTooltip.tooltipVisible)
-			{
 				return;
-			}
 			
 			if ($scope.touch_scrolling.is_active())
-			{
 				return;
-			}
 		}
 		
 		return 'visible';
@@ -701,9 +653,7 @@ app.controller('TimelineController', function(
 		const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 		const distance_to_view_bottom = (doc.scrollHeight - doc.clientHeight - scroll_top);
 		
-		// console.log("distance_to_view_bottom", distance_to_view_bottom);
-		
-		if (distance_to_view_bottom < 230)
+		if (distance_to_view_bottom < 280)
 		{
 			output.push('flipped');
 		}
@@ -760,7 +710,6 @@ app.controller('TimelineController', function(
 		let timeline_members = $scope.mouse.target.closest('.timeline-members');
 		if (timeline_members)
 		{
-			// $scope.set_indicator_opacity(0);
 			$scope.unhighlight_everything();
 			return;
 		}
@@ -985,7 +934,7 @@ app.controller('TimelineController', function(
 		
 		if (!Utility.mobile_mode() || Utility.mobile_lite_mode())
 		{
-			if ($scope.mouse.absolute.x > (doc.clientWidth * 0.68))
+			if ($scope.mouse.absolute.x > (doc.clientWidth * 0.66))
 			{
 				const date_label_rect = date_tooltip.getBoundingClientRect();
 				tooltip_anchor.margin = -(date_label_rect.right - date_label_rect.left - 2);

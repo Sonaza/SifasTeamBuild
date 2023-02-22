@@ -1,5 +1,5 @@
 
-app.directive('ellipsis', function($window)
+app.directive('ellipsis', function($window, RouteEvent)
 {
 	return {
 		restrict: 'A',
@@ -27,7 +27,7 @@ app.directive('ellipsis', function($window)
 			}
 			update();
 			
-			angular.element($window).on('resize scroll', update);
+			RouteEvent.element(window).on('resize scroll', update);
 		}
 	}
 })

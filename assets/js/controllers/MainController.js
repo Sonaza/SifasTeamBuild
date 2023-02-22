@@ -70,7 +70,7 @@ app.config(function(SiteSettingsProvider, SiteRoutesProvider)
 	});
 });
 
-app.controller('MainController', function($rootScope, $scope, $route, $routeParams, $location, $window)
+app.controller('MainController', function($rootScope, $scope, $route, $routeParams, $location, $window, RouteEvent)
 	{
 		$scope.loading = true;
 		
@@ -98,10 +98,14 @@ app.controller('MainController', function($rootScope, $scope, $route, $routePara
 			}
 		}
 		
-		angular.element(document.querySelector('.rotation-column-wrapper')).on('scroll', ($event) =>
+		const column_wrapper_element = document.querySelector('.rotation-column-wrapper');
+		if (column_wrapper_element)
 		{
-			$scope.$broadcast('refresh-deferred-loads');
-		});
+			RouteEvent.element(column_wrapper_element).on('scroll', ($event) =>
+			{
+				$scope.$broadcast('refresh-deferred-loads');
+			});
+		}
 		
 		$scope.$watch('$root.settings.order_reversed', function(new_reversed, old_reversed)
 		{

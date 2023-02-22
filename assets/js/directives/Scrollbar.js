@@ -44,7 +44,7 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 				scope.update_slider_position(scope.scroll_progress);
 			}).observe(scrollbar)
 			
-			angular.element(target_element).on('scroll', () =>
+			RouteEvent.element(target_element).on('scroll', () =>
 			{
 				scope.update_scroll_progress();
 			});
@@ -60,11 +60,19 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 			});
 			
 			// ----------------------------------------------------------------------------
+			// Generic Variables
+			
+			scope.jumping = {
+				active      : false,
+				last_jumped : 0,
+			}
+			
+			// ----------------------------------------------------------------------------
 			// Mouse Controls
 			
 			scope.grip_offset = 0;
 			
-			RouteEvent.element($window).on('mousedown mouseup', ($event) =>
+			RouteEvent.element(window).on('mousedown mouseup', ($event) =>
 			{
 				if (Utility.mobile_mode())
 					return;
@@ -76,7 +84,7 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 						scope.dragging = false;
 						element.removeClass('dragging');
 					}
-					scope.jumping = false;
+					scope.jumping.active = false;
 					return;
 				}
 				
@@ -115,8 +123,8 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 						
 						if ($event.button == 0)
 						{
-							scope.jumping = true;
-							scope.last_jumped = Date.now();
+							scope.jumping.active = true;
+							scope.jumping.last_jumped = Date.now();
 							
 							let delta = (new_progress - scope.scroll_progress);
 							if (Math.abs(delta) / 2.2 < 0.07)
@@ -138,13 +146,12 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 				}
 			});
 			
-			scope.last_jumped = 0;
-			RouteEvent.element($window).on('mousemove', ($event) =>
+			RouteEvent.element(window).on('mousemove', ($event) =>
 			{
 				if (Utility.mobile_mode())
 					return;
 				
-				if (!scope.dragging && !scope.jumping)
+				if (!scope.dragging && !scope.jumping.active)
 					return;
 				
 				const groove_rect = scrollbar_groove.getBoundingClientRect();
@@ -161,9 +168,9 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 						scope.scroll_progress = slider_position / scrollable_groove_width;
 					});
 				}
-				else if (scope.jumping)
+				else if (scope.jumping.active)
 				{
-					if ((Date.now() - scope.last_jumped) > 125)
+					if ((Date.now() - scope.jumping.last_jumped) > 125)
 					{
 						scope.$apply(() =>
 						{
@@ -173,20 +180,20 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 							if (Math.abs(delta) / 3 < 0.04)
 							{
 								scope.scroll_progress = new_progress;
-								scope.jumping = false;
+								scope.jumping.active = false;
 							}
 							else
 							{
 								scope.scroll_progress += delta / 3;
 							}
 						});
-						scope.last_jumped = Date.now();
+						scope.jumping.last_jumped = Date.now();
 					}
 				}
 				$event.preventDefault();
 			});
 			
-			angular.element($window).on('contextmenu', ($event) =>
+			RouteEvent.element(window).on('contextmenu', ($event) =>
 			{
 				if ($event.target.closest('.scrollbar') || (!$event.target.closest('.thumbnail') && $event.target.closest('#timeline')))
 				{
@@ -197,22 +204,25 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 			// ----------------------------------------------------------------------------
 			// Touch Controls
 			
-			scope.touch_scrolling = {
+			scope.touch_dragging = {
 				active      : false,
 				identifier  : undefined,
 				position    : {x: 0, y: 0},
+				
+				jumping     : false,
+				last_jumped : 0,
 			}
 			
-			RouteEvent.element($window).on('touchstart touchend', ($event) =>
+			RouteEvent.element(window).on('touchstart touchend', ($event) =>
 			{
-				if (scope.touch_scrolling.active)
+				if (scope.touch_dragging.active)
 				{
 					if ($event.type == 'touchend')
 					{
 						let identifier_found = false;
 						for (const touch of $event.touches)
 						{
-							if (touch.identifier == scope.touch_scrolling.identifier)
+							if (touch.identifier == scope.touch_dragging.identifier)
 							{
 								identifier_found = true;
 								break;
@@ -220,7 +230,7 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 						}
 						if (!identifier_found)
 						{
-							scope.touch_scrolling.active = false;
+							scope.touch_dragging.active = false;
 							element.removeClass('dragging');
 						}
 					}
@@ -232,9 +242,9 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 					let target_slider = $event.target.closest('.scrollbar-slider');
 					if (target_slider && target_slider == scrollbar_slider)
 					{
-						scope.touch_scrolling.active = true;
-						scope.touch_scrolling.identifier = $event.changedTouches[0].identifier;
-						scope.touch_scrolling.position   = {
+						scope.touch_dragging.active = true;
+						scope.touch_dragging.identifier = $event.changedTouches[0].identifier;
+						scope.touch_dragging.position   = {
 							x: $event.changedTouches[0].clientX,
 							y: $event.changedTouches[0].clientY
 						};
@@ -249,17 +259,17 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 						const groove_rect = scrollbar_groove.getBoundingClientRect();
 						const slider_rect = scrollbar_slider.getBoundingClientRect();
 						
-						scope.touch_scrolling.identifier = $event.changedTouches[0].identifier;
-						scope.touch_scrolling.position   = {
+						scope.touch_dragging.identifier = $event.changedTouches[0].identifier;
+						scope.touch_dragging.position   = {
 							x: $event.changedTouches[0].clientX,
 							y: $event.changedTouches[0].clientY
 						};
 						
-						const slider_position = Math.max(0, Math.min(groove_rect.width - slider_rect.width, scope.touch_scrolling.position.x - groove_rect.left - slider_rect.width / 2));
+						const slider_position = Math.max(0, Math.min(groove_rect.width - slider_rect.width, scope.touch_dragging.position.x - groove_rect.left - slider_rect.width / 2));
 						const scrollable_groove_width = groove_rect.width - slider_rect.width;
 						
-						scope.jumping = true;
-						scope.last_jumped = Date.now();
+						scope.jumping.active = true;
+						scope.jumping.last_jumped = Date.now();
 						
 						scope.$apply(() =>
 						{
@@ -280,12 +290,15 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 				}
 			});
 			
-			RouteEvent.element($window).on('touchmove', ($event) =>
+			RouteEvent.element(window).on('touchmove', ($event) =>
 			{
+				if (!scope.touch_dragging.active && !scope.jumping.active)
+					return;
+				
 				let current_position = undefined;
 				for (const touch of $event.touches)
 				{
-					if (touch.identifier == scope.touch_scrolling.identifier)
+					if (touch.identifier == scope.touch_dragging.identifier)
 					{
 						current_position = {
 							x: touch.clientX,
@@ -296,14 +309,11 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 				}
 				if (current_position === undefined)
 				{
-					scope.touch_scrolling.active = false;
-					scope.jumping = false;
+					scope.touch_dragging.active = false;
+					scope.jumping.active = false;
 					element.removeClass('dragging');
 					return;
 				}
-				
-				if (!scope.touch_scrolling.active && !scope.jumping)
-					return;
 				
 				const groove_rect = scrollbar_groove.getBoundingClientRect();
 				const slider_rect = scrollbar_slider.getBoundingClientRect();
@@ -311,7 +321,7 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 				const slider_position = Math.max(0, Math.min(groove_rect.width - slider_rect.width, current_position.x - groove_rect.left - slider_rect.width / 2));
 				const scrollable_groove_width = groove_rect.width - slider_rect.width;
 				
-				if (scope.touch_scrolling.active)
+				if (scope.touch_dragging.active)
 				{
 					scope.$apply(() => 
 					{
@@ -321,9 +331,16 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 					
 					$event.preventDefault();
 				}
-				else if (scope.jumping)
+				else if (scope.jumping.active)
 				{
-					if ((Date.now() - scope.last_jumped) > 125)
+					const target_groove = $event.target.closest('.scrollbar-groove');
+					if (target_groove != scrollbar_groove)
+					{
+						scope.jumping.active = false;
+						return;
+					}
+					
+					if ((Date.now() - scope.jumping.last_jumped) > 125)
 					{
 						scope.$apply(() =>
 						{
@@ -333,18 +350,20 @@ app.directive('scrollbar', function($parse, $window, RouteEvent)
 							if (Math.abs(delta) / 3 < 0.04)
 							{
 								scope.scroll_progress = new_progress;
-								scope.jumping = false;
+								scope.jumping.active = false;
 							}
 							else
 							{
 								scope.scroll_progress += delta / 3;
 							}
 						});
-						scope.last_jumped = Date.now();
+						scope.jumping.last_jumped = Date.now();
 					}
+					
+					$event.preventDefault();
 				}
 				
-				scope.touch_scrolling.position = current_position;
+				scope.touch_dragging.position = current_position;
 			},
 			{
 				passive: false,

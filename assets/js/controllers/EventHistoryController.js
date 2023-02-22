@@ -11,7 +11,7 @@ app.config(function(SiteSettingsProvider, SiteRoutesProvider)
 	});
 });
 
-app.controller('EventHistoryController', function($rootScope, $scope, $route, $routeParams, $window, LocationKeys)
+app.controller('EventHistoryController', function($rootScope, $scope, $route, $routeParams, $window, RouteEvent, LocationKeys)
 	{
 		$scope.loading = true;
 		
@@ -104,7 +104,7 @@ app.controller('EventHistoryController', function($rootScope, $scope, $route, $r
 			let margin = Math.min((view_width - rect.right) - 20 + current_margin, 0);
 			angular.element(e).css('margin-left', margin + "px");
 		}
-		angular.element($window).on('resize scroll', $scope.keepSelectBoxOnScreen);
+		RouteEvent.element(window).on('resize scroll', $scope.keepSelectBoxOnScreen);
 		$scope.keepSelectBoxOnScreen();
 		
 		const url_options = LocationKeys.get();
@@ -183,8 +183,6 @@ app.controller('EventHistoryController', function($rootScope, $scope, $route, $r
 		
 		$scope.$watch('filter_index', (filter_index, old_index) =>
 		{
-			console.log('event history filter_index', filter_index);
-			
 			if (filter_index == 0)
 			{
 				$scope.filter_idol = false;

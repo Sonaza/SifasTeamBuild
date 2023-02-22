@@ -11,7 +11,7 @@ app.config(function(SiteSettingsProvider, SiteRoutesProvider)
 	});
 });
 
-app.controller('BannersController', function($rootScope, $scope, $route, $routeParams, $window, LocationKeys)
+app.controller('BannersController', function($rootScope, $scope, $route, $routeParams, $window, RouteEvent, LocationKeys)
 	{
 		$scope.loading = true;
 		
@@ -116,7 +116,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			let margin = Math.min((view_width - rect.right) - 20 + current_margin, 0);
 			angular.element(e).css('margin-left', margin + "px");
 		}
-		angular.element($window).on('resize scroll', $scope.keepSelectBoxOnScreen);
+		RouteEvent.element(window).on('resize scroll', $scope.keepSelectBoxOnScreen);
 		$scope.keepSelectBoxOnScreen();
 		
 		const url_options = LocationKeys.get();
@@ -205,8 +205,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		
 		$scope.$watch('filter_index', (filter_index, old_index) =>
 		{
-			console.log('banners filter_index', filter_index);
-			
 			if (filter_index == 0)
 			{
 				$scope.filter_idol = false;

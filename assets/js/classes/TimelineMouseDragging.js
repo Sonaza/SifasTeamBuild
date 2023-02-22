@@ -121,8 +121,6 @@ class TimelineMouseDragging
 		this.velocity.x *= 0.85;
 		this.velocity.y *= 0.85;
 		
-		// console.log("GRAB MOMENTUM!", this.velocity);
-		
 		const timeline_element = document.querySelector('#timeline');
 		timeline_element.scrollLeft -= this.velocity.x;
 		document.documentElement.scrollTop -= this.velocity.y;

@@ -1,7 +1,7 @@
 
 let deferred_unloads_halted = false;
 
-app.directive('deferredLoad', function($rootScope, $parse, $window, $timeout)
+app.directive('deferredLoad', function($rootScope, $parse, $window, $timeout, RouteEvent)
 {
 	return {
 		restrict: 'A',
@@ -38,7 +38,7 @@ app.directive('deferredLoad', function($rootScope, $parse, $window, $timeout)
 				scope.refresh_loads();
 			});
 			
-			angular.element($window).on('scroll', () =>
+			RouteEvent.element(window).on('scroll', () =>
 			{
 				scope.refresh_loads();
 			});

@@ -10,27 +10,19 @@ app.factory('RouteEvent', ($rootScope, $route) =>
 		{
 			var that = this;
 			$rootScope.$on("$routeChangeStart", function($event, next_route, current_route)
-			{ 
-				// that.route_change_start($event, next_route, current_route);
-				
+			{
 				for (let listener of that.event_listeners)
 				{
 					if (listener === false)
-					{
 						continue;
-					}
 					
-					console.log("Aborting listener", listener);
 					listener.abort_controller.abort();
 				}
 				that.event_listeners.length = 0;
+				
+				that.current_route = next_route;
 			});
 		}
-		
-		// #route_change_start($event, next_route, current_route)
-		// {
-			
-		// }
 		
 		element(element)
 		{
@@ -48,15 +40,13 @@ app.factory('RouteEvent', ($rootScope, $route) =>
 			return {
 				on : (event_names, listener, options = undefined) =>
 				{
-					that.on(element, event_names, listener, options);
+					that.listen(element, event_names, listener, options);
 				}
 			}
 		}
 		
-		on(element, event_names, listener, options = undefined)
+		listen(element, event_names, listener, options = undefined)
 		{
-			// console.log("ROUTE ON", element, event_names, listener, options);
-			
 			if (element?.addEventListener === undefined)
 			{
 				throw Error("Parameter element must be valid target for event listeners.");
@@ -101,8 +91,6 @@ app.factory('RouteEvent', ($rootScope, $route) =>
 			{
 				element.addEventListener(event_name, listener, listener_options);
 			}
-			
-			// console.log("Registered", element, current_listener);
 			
 			this.event_listeners.push(current_listener);
 			return current_listener;

@@ -33,7 +33,7 @@ class TimelineTouchScrolling
 	
 	is_active()
 	{
-		return this.active || this.has_momentum;
+		return (this.active && this.axis !== false) || this.has_momentum;
 	}
 	
 	initialize(RouteEvent)
@@ -58,7 +58,6 @@ class TimelineTouchScrolling
 					}
 					if (!identifier_found)
 					{
-						// console.log("STOPPING TOUCH SCROLL", $event);
 						this.stop();
 					}
 				}
@@ -134,7 +133,7 @@ class TimelineTouchScrolling
 			return;
 		
 		this.has_momentum = ((Date.now() - this.last_move) < 70) &&
-			((Math.abs(this.delta.x) > 25) || (Math.abs(this.delta.y) > 25));
+			((Math.abs(this.delta.x) > 18) || (Math.abs(this.delta.y) > 18));
 			
 		this.$scope.$apply(() =>
 		{
@@ -268,8 +267,6 @@ class TimelineTouchScrolling
 		
 		this.velocity.x *= 0.92;
 		this.velocity.y *= 0.92;
-		
-		// console.log("TOUCH MOMENTUM!", this.velocity);
 		
 		const can_scroll = this.update_mobile_cursor(this.velocity.x);
 		if (can_scroll)
