@@ -105,7 +105,7 @@ app.controller('TimelineController', function(
 		SHOW_SR_ONLY : 2,
 	}
 	
-	$scope.current_month_label = "";
+	$scope.mobile_current_date_label = "";
 	
 	$scope.loading = true;
 	
@@ -220,8 +220,10 @@ app.controller('TimelineController', function(
 	
 	const indicator_line = document.querySelector('#timeline-indicator-line');
 	console.assert(indicator_line, "indicator_line null");
+	
 	const date_highlight = document.querySelector('#timeline-date-highlight');
 	console.assert(date_highlight, "date_highlight null");
+	
 	const date_tooltip   = document.querySelector('#timeline-date-tooltip');
 	console.assert(date_tooltip, "date_tooltip null");
 	
@@ -428,6 +430,7 @@ app.controller('TimelineController', function(
 	// -------------------------------------------------------------------
 	
 	const force_hide_header_position = 180;
+	const flipped_mobile_tooltip_position = 280;
 	
 	RouteEvent.element(window).on('scroll', ($event) =>
 	{
@@ -438,14 +441,28 @@ app.controller('TimelineController', function(
 		
 	});
 	
-	$scope.current_month_label_class = () =>
+	$scope.mobile_current_date_label_class = () =>
 	{
 		const timeline_rect = timeline_element.getBoundingClientRect();
-		if (timeline_rect.top < force_hide_header_position)
+		if (timeline_rect.top >= force_hide_header_position)
+			return;
+		
+		if (CardTooltip.tooltipVisible)
+			return;
+		
+		if (!$scope.touch_scrolling.is_active())
+			return;
+		
+		const doc = document.documentElement;
+		const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+		const distance_to_view_bottom = (doc.scrollHeight - doc.clientHeight - scroll_top);
+		
+		if (distance_to_view_bottom < flipped_mobile_tooltip_position)
 		{
-			return 'visible';
+			return 'visible flipped';
 		}
-		return '';
+		
+		return 'visible';
 	}
 	
 	// -------------------------------------------------------------------
@@ -525,7 +542,7 @@ app.controller('TimelineController', function(
 			$scope.timeline_settings.target_month = position.current;
 			$scope.timeline_settings.position     = position;
 			
-			$scope.current_month_label = position.month_name;
+			// $scope.mobile_current_date_label = position.month_name;
 			
 			LocationKeys.set('timeline_position', position.current);
 		}
@@ -681,7 +698,7 @@ app.controller('TimelineController', function(
 		const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
 		const distance_to_view_bottom = (doc.scrollHeight - doc.clientHeight - scroll_top);
 		
-		if (distance_to_view_bottom < 280)
+		if (distance_to_view_bottom < flipped_mobile_tooltip_position)
 		{
 			output.push('flipped');
 		}
@@ -866,6 +883,8 @@ app.controller('TimelineController', function(
 				launch_day    : false,
 				birthdays     : [],
 			};
+			
+			$scope.mobile_current_date_label  = tooltip_data.current_date;
 			
 			if (timeline_month.matches(':first-child'))
 			{

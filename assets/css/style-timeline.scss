@@ -332,34 +332,42 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 	}
 }
 
-#timeline-current-month
+#timeline-mobile-current-date
 {
 	position: fixed;
-	top: -4rem;
+	bottom: 70px;
 	left: 0;
 	right: 0;
 	font-family: 'Montserrat', sans-serif;
 	font-weight: 700;
-	font-size: 16pt;
+	font-size: 13pt;
 	color: #fff;
 	text-align: center;
 	text-shadow: 0 0 4px #000;
 	z-index: 99999;
 	padding: 0.3rem 0;
-	background: #0006;
+	background: linear-gradient(to right, #0000 25%, #0009 50%, #0000 75%);
 	
 	pointer-events: none;
 	
-	transition: top linear 100ms;
 	display: none;
+	
+	opacity: 0;
+	transition: opacity linear 100ms;
 	
 	&.visible
 	{
-		top: 1rem;
+		opacity: 1;
+	}
+	
+	&.flipped
+	{
+		top: 30px;
+		bottom: auto;
 	}
 }
 
-body.mobile-mode #timeline-current-month
+body.mobile-mode #timeline-mobile-current-date
 {
 	display: block;
 }
