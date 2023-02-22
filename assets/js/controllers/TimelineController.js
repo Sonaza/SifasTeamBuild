@@ -31,6 +31,18 @@ app.config(function(SiteSettingsProvider, SiteRoutesProvider)
 			return SiteSettingsProvider.settings.global_dates ? 'timeline_ww.html' : 'timeline_jp.html';
 		},
 		allowed_keys : ['timeline_position'],
+		subtitle     : (routeParams) =>
+		{
+			if (routeParams.locale == "jp")
+			{
+				return 'Japan';
+			}
+			
+			if (routeParams.locale == "ww")
+			{
+				return 'Global';
+			}
+		},
 	});
 });
 
