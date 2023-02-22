@@ -14,7 +14,7 @@
 	<label>
 		Jump to
 	</label>
-	<select ng-model="timeline_settings.target_month" ng-change="jump_to_changed()">
+	<select ng-model="timeline_settings.target_month" ng-change="jump_to_position(timeline_settings.target_month)">
 		<optgroup label="[[ year ]]" ng-repeat="year in timeline_timespan.years | reverse : settings.order_reversed">
 			<option value="[[ year ]]-[[ (month[0] < 10 ? '0' : '') + month[0] ]]" ng-repeat="month in timeline_timespan.months_in_years[year] | reverse : settings.order_reversed">
 				[[ month[1] ]] [[ year ]]

@@ -641,14 +641,17 @@ app.controller('TimelineController', function(
 		{
 			if (!$scope.hovering_timeline)
 			{
-				console.log("NOTdsfssdfdsfsdfdsfdsffdsdsfdsfs!");
-				return false;
+				return;
 			}
 			
 			if ($scope.autoscrolling.is_active() || $scope.mouse_dragging.is_active())
 			{
-				return false;
+				return;
 			}
+		}
+		else
+		{
+			
 		}
 		
 		return 'visible';
@@ -660,12 +663,24 @@ app.controller('TimelineController', function(
 		{
 			if (!$scope.hovering_timeline)
 			{
-				return false;
+				return;
 			}
 			
 			if ($scope.autoscrolling.is_active() || $scope.mouse_dragging.is_active())
 			{
-				return false;
+				return;
+			}
+		}
+		else
+		{
+			if (CardTooltip.tooltipVisible)
+			{
+				return;
+			}
+			
+			if ($scope.touch_scrolling.is_active())
+			{
+				return;
 			}
 		}
 		

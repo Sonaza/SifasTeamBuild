@@ -85,6 +85,13 @@ body.mobile-mode #timeline-date-tooltip
 			top: -250px;
 		}
 	}
+	
+	
+	box-shadow: 0 0 12px 4px #0005;
+	
+	border: 2px solid #fff;
+	// background: linear-gradient(to bottom, #fafafae 0px, #ffffffc5 25px);
+	backdrop-filter: blur(14px);
 }
 
 #timeline

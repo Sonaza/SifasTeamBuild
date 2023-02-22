@@ -262,6 +262,7 @@ class TimelineTouchScrolling
 		{
 			this.has_momentum = false;
 			this.axis = false;
+			this.$scope.$apply();
 			return;
 		}
 		
@@ -289,6 +290,7 @@ class TimelineTouchScrolling
 		{
 			this.has_momentum = false;
 			this.axis = false;
+			this.$scope.$apply();
 			return;
 		}
 		
