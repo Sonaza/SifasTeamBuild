@@ -110,24 +110,35 @@ class RotationsGenerator:
 				
 		self.resource_processor_tasks = dotdict(
 		{
+			'ts' : dotdict({
+				'watch_directory'  : "assets/",
+				'watched_files'    : [
+					"assets/js/*.js",
+					"assets/js/*.ts",
+					"assets/js/*/*.js",
+					"assets/js/*/*.ts",
+				],
+				'run_command'      : ['tsc', '--project', 'tsconfig.json'],
+			}),
+			
 			'js' : dotdict({
 				'processor'        : ResourceProcessor.JavascriptResourceProcessor,
 				'watch_directory'  : "assets/",
 				'watched_files'    : [
-					"assets/js/*.js",
-					"assets/js/*/*.js",
+					"assets/js-build/*.js",
+					"assets/js-build/*/*.js",
 				],
 				'input_files'      : [
-					"assets/js/build_id.js",
-					"assets/js/AppModule.js",
-					"assets/js/Constants.js",
-					"assets/js/classes/*.js",
-					"assets/js/providers/*.js",
-					"assets/js/factories/*.js",
-					"assets/js/directives/*.js",
-					"assets/js/controllers/*.js",
-					"assets/js/AppConfig.js",
-					"assets/js/TooltipsCache.js",
+					"assets/js-build/build_id.js",
+					"assets/js-build/AppModule.js",
+					"assets/js-build/Constants.js",
+					"assets/js-build/classes/*.js",
+					"assets/js-build/providers/*.js",
+					"assets/js-build/factories/*.js",
+					"assets/js-build/directives/*.js",
+					"assets/js-build/controllers/*.js",
+					"assets/js-build/AppConfig.js",
+					"assets/js-build/TooltipsCache.js",
 				],
 				'output_file'      : os.path.join(Config.OUTPUT_DIRECTORY, "js/public.min.js").replace('\\', '/'),
 				'depends'          : ['tooltip'],

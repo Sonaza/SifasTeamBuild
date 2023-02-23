@@ -175,6 +175,7 @@
 	{% else %}
 		<script src="{{ cache_buster('/js/vendor/angular/angular-combined.min.js') }}"></script>
 	{% endif %}
+	<script src="{{ cache_buster('/js/vendor/localforage/localforage.min.js') }}"></script>
 	<script src="{{ cache_buster('/js/tooltip_data.js') }}"></script>
 	<script src="{{ cache_buster('/js/public.min.js') }}"></script>
 </body>

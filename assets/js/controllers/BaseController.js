@@ -178,7 +178,7 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 				
 		$scope.$watch('$root.settings', function(bs, settings)
 		{
-			Utility.saveStorage($rootScope.settings);
+			SiteStorage.save_all($rootScope.settings);
 			$timeout(() => {
 				$scope.unfocus();
 			}, 350);

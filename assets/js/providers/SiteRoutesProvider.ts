@@ -1,25 +1,50 @@
 
-app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routeParamsProvider)
+interface SubtitleParams
 {
-	class Route
+	route_key: string;
+	default_key: string;
+};
+
+interface RouteInterface
+{
+	id?: string;
+	title: string;
+	path: string;
+	controller: string;
+	template: string | Function;
+	allowed_keys?: string[];
+	error_redirect?: string;
+	subpages?: { [key: string]: string };
+	subtitle: Function | SubtitleParams;
+	route_settings?: object
+}
+
+app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider: any, $routeParamsProvider: any)
+{
+	class Route //implements RouteInterface
 	{
-		id;
-		title;
-		path;
-		controller;
-		template;
-		allowed_keys;
-		error_redirect;
-		subpages;
-		subtitle;
-		route_settings;
+		id: string;
+		title: string;
+		path: string;
+		controller: string;
+		template: string | Function;
+		allowed_keys: string[];
+		error_redirect: string;
+		subpages: { [key: string]: string };
+		subtitle: Function | SubtitleParams;
+		route_settings: object
 		
 		$angular = {};
 			
-		constructor(route_object)
+		constructor(route_object : RouteInterface)
 		{
+			console.log("route_object", route_object);
+			
 			const reserved_keys   = ['id', '$angular'];
-			const assignable_keys = Reflect.ownKeys(this).filter(key => !reserved_keys.includes(key));
+			const assignable_keys = Reflect.ownKeys(this)
+				.filter(key => !reserved_keys.includes(key));
+				
+			console.log(this, Reflect.ownKeys(RouteInterface), assignable_keys);
 			
 			for (const key of Reflect.ownKeys(route_object))
 			{
@@ -28,6 +53,8 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 				
 				this[key] = route_object[key];
 			}
+			
+			Object.assign(this, route_object);
 			
 			this.id = Route.make_path_id(this.path);
 		}
@@ -77,7 +104,7 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 	
 	this.registered_routes = {};
 	
-	var push_route = (route_config) =>
+	var push_route = (route_config : RouteInterface) =>
 	{
 		let route = new Route(route_config);
 		if (route.id in this.registered_routes)
@@ -88,7 +115,7 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 		this.registered_routes[route.id] = route;
 	}
 	
-	this.register_route = (new_routes) =>
+	this.register_route = (new_routes : RouteInterface) =>
 	{
 		push_route(new_routes);
 		return this;

@@ -1,70 +1,11 @@
 
+interface Point {
+	x: number;
+	y: number;
+};
+
 class Utility
 {
-	/******************************************************
-	 * Storage Utility
-	 */
-	 
-	static storageAvailable = (type) =>
-	{
-		var storage;
-		try {
-			storage = window[type];
-			var x = '__storage_test__';
-			storage.setItem(x, x);
-			storage.removeItem(x);
-			return true;
-		}
-		catch(e) {
-			return e instanceof DOMException && (
-				// everything except Firefox
-				e.code === 22 ||
-				// Firefox
-				e.code === 1014 ||
-				// test name field too, because code might not be present
-				// everything except Firefox
-				e.name === 'QuotaExceededError' ||
-				// Firefox
-				e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-				// acknowledge QuotaExceededError only if there's something already stored
-				(storage && storage.length !== 0);
-		}
-	}
-	
-	static getStorage = (key, default_value) =>
-	{
-		if (!Utility.storageAvailable('localStorage'))
-		{
-			return default_value;
-		}
-		
-		let value = window.localStorage.getItem(key);
-		if (value === null || value === "null")
-		{
-			return default_value;
-		}
-		
-		return {
-			'boolean'   : (v) => v == 'true',
-			'number'    : Number,
-			'string'    : String,
-			'undefined' : () => console.warn('value type undefined'),
-		}[typeof default_value](value);
-	}
-
-	static saveStorage = (values) =>
-	{
-		if (!Utility.storageAvailable('localStorage'))
-		{
-			return;
-		}
-		
-		for (let [key, value] of Object.entries(values))
-		{
-			window.localStorage.setItem(key, value);
-		}
-	}
-	
 	/******************************************************
 	 * Site preferences
 	 */
@@ -91,54 +32,54 @@ class Utility
 	 * String formatting
 	 */
 	
-	static ordinalize = function(n)
+	static ordinalize = function(number: string | number)
 	{
-		n = parseInt(n)
+		number = Number(number)
+		
 		let suffix;
-		if (11 <= (n % 100) && (n % 100) <= 13)
+		if (11 <= (number % 100) && (number % 100) <= 13)
 		{
 			suffix = 'th'
 		}
 		else
 		{
-			suffix = ['th', 'st', 'nd', 'rd', 'th'][Math.min(n % 10, 4)]
+			suffix = ['th', 'st', 'nd', 'rd', 'th'][Math.min(number % 10, 4)]
 		}
-		return n + suffix;
+		return `${number}${suffix}`
 	}
 	
-	static pluralize = function(value, s, p)
+	static pluralize = function(value: number, singular: string, plural: string)
 	{
-		return new String(value) + " " + (value == 1 ? s : p);
+		return new String(value) + " " + (value == 1 ? singular : plural);
 	}
 	
-	static format_seconds = function(seconds_param)
+	static format_seconds = function(seconds_param: number)
 	{
-		let days = Math.floor(seconds_param / 86400);
-		let hours = Math.floor(seconds_param % 86400 / 3600);
-		let minutes = Math.floor(seconds_param % 86400 % 3600 / 60);
-		let seconds = Math.floor(seconds_param % 86400 % 3600 % 60);
-		
+		const days = Math.floor(seconds_param / 86400);
 		if (days > 0)
 		{
-			return Utility.pluralize(days, "day", "days") + " ago";
+			return Utility.pluralize(days, "day", "days");
 		}
 		
+		const hours = Math.floor(seconds_param % 86400 / 3600);
 		if (hours > 0)
 		{
-			return Utility.pluralize(hours, "hour", "hours") + " ago";
+			return Utility.pluralize(hours, "hour", "hours");
 		}
 		
+		const minutes = Math.floor(seconds_param % 86400 % 3600 / 60);
 		if (minutes > 0)
 		{
-			return Utility.pluralize(minutes, "minute", "minutes") + " ago";
+			return Utility.pluralize(minutes, "minute", "minutes");
 		}
 		
-		return Utility.pluralize(seconds, "second", "seconds") + " ago";
+		const seconds = Math.floor(seconds_param % 86400 % 3600 % 60);
+		return Utility.pluralize(seconds, "second", "seconds");
 	}
 	
 	// Wraps a date based on the time only so that relative to the given `now`
 	// the date becomes yesterday, today or tomorrow when crossing midnight.
-	static wrap_date(now, date_value)
+	static wrap_date(now: Date, date_value: Date)
 	{
 		const hour = date_value.getHours();
 		const minute = date_value.getMinutes();
@@ -170,7 +111,7 @@ class Utility
 	 * Viewport
 	 */
 	
-	static isElementPartiallyInViewport = function(el)
+	static isElementPartiallyInViewport = function(el: HTMLElement)
 	{
 		let style = window.getComputedStyle(el);
 		if (style.display === 'none')
@@ -185,7 +126,7 @@ class Utility
 	    );
 	}
 
-	static isPartiallyVisibleInParent(parent, child, horizontal_leeway = 0)
+	static isPartiallyVisibleInParent(parent: HTMLElement, child: HTMLElement, horizontal_leeway: number = 0)
 	{
 	    let parent_rect = parent.getBoundingClientRect();
 	    let child_rect = child.getBoundingClientRect();
@@ -201,17 +142,17 @@ class Utility
 	 * Styling
 	 */
 	
-	static addClass(selector, class_name)
+	static addClass(selector: string, class_name: string)
 	{
-		for (let el of document.querySelectorAll(selector))
+		for (const el of Array.from(document.querySelectorAll(selector)))
 		{
 			el.classList.add(class_name);
 		}
 	}
 	
-	static removeClass(selector, class_name)
+	static removeClass(selector: string, class_name: string)
 	{
-		for (let el of document.querySelectorAll(selector))
+		for (const el of Array.from(document.querySelectorAll(selector)))
 		{
 			el.classList.remove(class_name);
 		}
@@ -220,25 +161,25 @@ class Utility
 	/******************************************************
 	 * Stuff
 	 */
-	 
-	static distance(a, b)
+	
+	static distance(a: Point, b: Point)
 	{
 		const diff_x = b.x - a.x;
 		const diff_y = b.y - a.y;
 		return Math.sqrt(diff_x * diff_x + diff_y * diff_y);
 	}
 	
-	static shallow_copy(object_to_copy)
+	static shallow_copy(object_to_copy: object)
 	{
 		return Object.assign({}, object_to_copy);
 	}
 	
-	static deep_copy(object_to_copy)
+	static deep_copy(object_to_copy: object)
 	{
 		return structuredClone(object_to_copy);
 	}
 	 
-	static cache_buster(path, buster_string)
+	static cache_buster(path: string, buster_string: string)
 	{
 		let path_split = path.split('.');
 		let path_end = path_split.pop();
@@ -249,19 +190,20 @@ class Utility
 		);
 	}
 	
-	static zip(a, b)
+	static zip(keys: any[], values: any[])
 	{
-		return Object.assign(...a.flatMap(function(e, i) {
-			return {[e] : b[i]};
+		return Object.assign({}, ...keys.flatMap(function(key, value_index)
+		{
+			return {[key] : values[value_index]};
 		}));
 	}
 	
-	static zip_isodate(date)
+	static zip_isodate(date: number[])
 	{
 		return Utility.zip(['year', 'month', 'day'], date);
 	}
 	
-	static arrays_equal(a, b)
+	static arrays_equal(a: any[], b: any[])
 	{
 		if (a === b) return true;
 		if (a == null || b == null) return false;
@@ -274,12 +216,12 @@ class Utility
 		return true;
 	}
 	
-	static abs_subtract(a, b)
+	static abs_subtract(a: number, b: number)
 	{
 		return (Math.abs(a) - b) * (a < 0 ? -1 : 1);
 	}
 	
-	static wrap_value(value, min_value, max_value)
+	static wrap_value(value: number, min_value: number, max_value: number)
 	{
 		if (value < min_value)
 			return max_value;
@@ -292,6 +234,10 @@ class Utility
 
 }
 
+interface String {
+  format(...args: any[]): string;
+}
+
 String.prototype.format = function ()
 {
 	var i = 0, args = arguments;
@@ -300,9 +246,3 @@ String.prototype.format = function ()
 		return typeof args[i] != 'undefined' ? args[i++] : '';
 	});
 };
-
-
-// export default Utility;
-
-
-

@@ -8,6 +8,6 @@ if "%~1"=="-FIXED_CTRL_C" (
 	CALL <NUL %0 -FIXED_CTRL_C %*
 	GOTO :EOF
 )
-pipenv run python .\BuildCardRotations.py --watch
+pipenv run python .\BuildCardRotations.py --watch-polling
 :EOF
 rem cls

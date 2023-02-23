@@ -1,11 +1,11 @@
 
 class Group
 {
-	id;
-	display_name;
-	tag;
+	id: number;
+	display_name: string;
+	tag: string;
 	
-	constructor(id, tag, display_name)
+	constructor(id: number, tag: string, display_name: string)
 	{
 		this.id           = id;
 		this.tag          = tag;
@@ -19,10 +19,10 @@ class Group
 
 class Birthday
 {
-	month;
-	day;
+	month: number;
+	day: number;
 	
-	constructor(month, day)
+	constructor(month: number, day: number)
 	{
 		this.month = month;
 		this.day = day;
@@ -31,13 +31,13 @@ class Birthday
 
 class Member
 {
-	id;
+	id: number;
 	full_name;
 	first_name;
 	birthday;
-	group;
+	group: Group;
 		
-	constructor(id, full_name, birthday, group)
+	constructor(id: number, full_name: string, birthday: Birthday, group: Group)
 	{
 		this.id         = id;
 		this.full_name  = full_name;
@@ -46,17 +46,15 @@ class Member
 		this.group      = group;
 	}
 	
-	static members_by_id;
-	static members_ordered;
+	static members_by_id: { [key: number]: Member };
+	static members_ordered: Member[];
+	static members_by_name: { [key: string]: Member };
 	
-	static get_members(group = undefined)
+	static get_members(group?: Group)
 	{
-		return Object.fromEntries(Reflect.ownKeys(this).map((key) => this[key])
-			.filter((obj) => (
-				obj !== undefined && obj instanceof this && 
-					(group === undefined || group.id != e.group.id)
-			))
-			.map((obj) => [obj.id, obj])
+		return Object.fromEntries(Object.entries(this)
+			.filter(([key, obj] : [any, Member?]) => obj instanceof this && (group === undefined || group.id != obj.group.id))
+			.map(([key, obj] : [string, Member]) => [obj.id, obj])
 		);
 	}
 	
@@ -121,34 +119,27 @@ class Member
 			Member.Emma,  Member.Kanata,  Member.Karin,   Member.Mia, 
 		],
 	};
-	static get_member_order(group = undefined)
+	static get_member_order(group?: Group)
 	{
 		if (group !== undefined)
 		{
 			return Member.member_order_by_group[group.id];
 		}
-		return Object.entries(Member.member_order_by_group).flatMap((e, i) => { return e[1]; });
-	};
-	static get_member_order(group = undefined)
-	{
-		if (group !== undefined)
-		{
-			return Member.member_order_by_group[group.id];
-		}
-		return Object.entries(Member.member_order_by_group).flatMap((e, i) => { return e[1]; });
+		return Object.entries(Member.member_order_by_group)
+			.flatMap(([group_id, members] : [string, Member[]]) => members);
 	};
 	
-	static get_month_birthdays(month, day)
+	static get_month_birthdays(month: number, day: number)
 	{
 		return Object.entries(Member.members_by_id)
-			.filter(([id, member]) => member.birthday.month == month)
-			.map(([id, member]) => member);
+			.filter(([id, member] : [string, Member]) => member.birthday.month == month)
+			.map(([id, member] : [string, Member]) => member);
 	};
-	static find_by_birthday(month, day)
+	static find_by_birthday(month: number, day: number)
 	{
 		const birthdays = Object.entries(Member.members_by_id)
-			.filter(([id, member]) => member.birthday.month == month && member.birthday.day == day)
-			.map(([id, member]) => member);
+			.filter(([id, member] : [string, Member]) => member.birthday.month == month && member.birthday.day == day)
+			.map(([id, member] : [string, Member]) => member);
 			
 		if (birthdays.length == 0)
 			return false;
@@ -161,28 +152,25 @@ class Member
 };
 Member.members_by_id   = Member.get_members();
 Member.members_ordered = Member.get_member_order();
-Member.members_by_name = Object.fromEntries(Member.members_ordered.map((e, i) => [e.first_name.toLowerCase(), e]));
-
+Member.members_by_name = Object.fromEntries(Member.members_ordered.map((member : Member) => [member.first_name.toLowerCase(), member]));
 
 class Source
 {
-	id;
-	display_name;
+	id: number;
+	display_name: string;
 	
-	constructor(id, display_name)
+	constructor(id: number, display_name: string)
 	{
 		this.id   = id;
-		display_name = display_name;
+		this.display_name = display_name;
 	}
 	
-	static sources_by_id;
+	static sources_by_id : { [key: number]: Source };
 	
 	static get_sources()
 	{
-		return Object.fromEntries(Reflect.ownKeys(this).map((key) => this[key])
-			.filter((obj) => (obj !== undefined && obj instanceof this))
-			.map((obj) => [obj.id, obj])
-		);
+		return Object.fromEntries(Object.entries(this)
+			.filter(([key, obj] : [string, Source]) => obj instanceof this));
 	}
 	
 	static Unspecified = new Source(1, 'Initial');
@@ -197,23 +185,21 @@ Source.sources_by_id = Source.get_sources();
 
 class EventType
 {
-	id;
-	display_name;
+	id: number;
+	display_name: string;
 	
-	constructor(id, display_name)
+	constructor(id: number, display_name: string)
 	{
 		this.id = id;
 		this.display_name = display_name;
 	}
 	
-	static types_by_id;
+	static types_by_id : { [key: number]: EventType };
 	
 	static get_types()
 	{
-		return Object.fromEntries(Reflect.ownKeys(this).map((key) => this[key])
-			.filter((obj) => (obj !== undefined && obj instanceof this))
-			.map((obj) => [obj.id, obj])
-		);
+		return Object.fromEntries(Object.entries(this)
+			.filter(([key, obj] : [string, EventType]) => obj instanceof this));
 	}
 	
 	static Story    = new EventType(1, "Story");
@@ -222,34 +208,35 @@ class EventType
 EventType.types_by_id = EventType.get_types();
 
 
-class BannerType
-{
-	id;
-	display_name;
-	source;
+// class BannerType
+// {
+// 	id;
+// 	display_name;
+// 	source;
 	
-	constructor(id, display_name, source)
-	{
-		this.id = id;
-		this.display_name = display_name;
-		this.source = source;
-	}
+// 	constructor(id, display_name, source)
+// 	{
+// 		this.id = id;
+// 		this.display_name = display_name;
+// 		this.source = source;
+// 	}
 	
-	static types_by_id;
+// 	static types_by_id;
 	
-	static get_types()
-	{
-		return Object.fromEntries(Reflect.ownKeys(this).map((key) => this[key])
-			.filter((obj) => (obj !== undefined && obj instanceof this))
-			.map((obj) => [obj.id, obj])
-		);
-	}
+// 	static get_types()
+// 	{
+// 		return Object.fromEntries(Reflect.ownKeys(this).map((key) => this[key])
+// 			.filter((obj) => (obj !== undefined && obj instanceof this))
+// 			.map((obj) => [obj.id, obj])
+// 		);
+// 	}
 	
-	static Spotlight = new BannerType(1, "Spotlight", Source.Spotlight);
-	static Festival  = new BannerType(2, "Festival",  Source.Festival);
-	static Party     = new BannerType(3, "Party",     Source.Party);
-	static Other     = new BannerType(4, "Other",     Source.Unspecified);
-	// static Gacha     = new BannerType(5, "Gacha",     Source.Gacha);
-};
-BannerType.types_by_id = BannerType.get_types();
+// 	static Spotlight = new BannerType(1, "Spotlight", Source.Spotlight);
+// 	static Festival  = new BannerType(2, "Festival",  Source.Festival);
+// 	static Party     = new BannerType(3, "Party",     Source.Party);
+// 	static Other     = new BannerType(4, "Other",     Source.Unspecified);
+// 	// static Gacha     = new BannerType(5, "Gacha",     Source.Gacha);
+// };
+// BannerType.types_by_id = BannerType.get_types();
+
 
