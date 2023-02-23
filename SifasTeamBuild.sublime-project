@@ -77,13 +77,13 @@
 			"working_dir": "$project_path",
 			"quiet": false
 		},
-		// {
-		// 	"name": "Vagrant SSH Test",
-		// 	"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
-		// 	"shell_cmd": "plink -l vagrant -pw vagrant -P 2222 -batch 127.0.0.1 ./build.sh",
+		{
+			"name": "Vagrant SSH Test",
+			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
+			"shell_cmd": "plink -l vagrant -pw vagrant -P 2222 -batch 127.0.0.1 \"~/sifas/vagrant-build.sh --dev --no-colored-output\"",
 
-		// 	"working_dir": "F:\\vagrant",
-		// 	"quiet": false,
-		// },
+			"working_dir": "$project_path",
+			"quiet": false,
+		},
 	]
 }

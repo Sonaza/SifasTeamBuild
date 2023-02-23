@@ -3,6 +3,9 @@
 wanha/
 res/
 
+.vagrant/
+vagrant-build.sh
+
 public/.htaccess
 
 public/crawler.html
