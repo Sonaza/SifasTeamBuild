@@ -6,7 +6,7 @@ app.controller('FooterController', function($rootScope, $scope)
 			let time = new Date(iso_timestamp);
 			if (!time) return "";
 			let secondsDiff = (new Date().getTime() - time.getTime()) / 1000;
-			return " (" + Utility.format_seconds(secondsDiff) + ")";
+			return " (" + Utility.format_seconds(secondsDiff) + " ago)";
 		}
 	}
 );

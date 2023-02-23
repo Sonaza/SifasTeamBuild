@@ -91,49 +91,49 @@ class Utility
 	 * String formatting
 	 */
 	
-	static ordinalize = function(n)
+	static ordinalize = function(number)
 	{
-		n = parseInt(n)
+		number = Number(number)
+		
 		let suffix;
-		if (11 <= (n % 100) && (n % 100) <= 13)
+		if (11 <= (number % 100) && (number % 100) <= 13)
 		{
 			suffix = 'th'
 		}
 		else
 		{
-			suffix = ['th', 'st', 'nd', 'rd', 'th'][Math.min(n % 10, 4)]
+			suffix = ['th', 'st', 'nd', 'rd', 'th'][Math.min(number % 10, 4)]
 		}
-		return n + suffix;
+		return `${number}${suffix}`;
 	}
 	
-	static pluralize = function(value, s, p)
+	static pluralize = function(value, singular, plural)
 	{
-		return new String(value) + " " + (value == 1 ? s : p);
+		return new String(value) + " " + (value == 1 ? singular : plural);
 	}
 	
 	static format_seconds = function(seconds_param)
 	{
-		let days = Math.floor(seconds_param / 86400);
-		let hours = Math.floor(seconds_param % 86400 / 3600);
-		let minutes = Math.floor(seconds_param % 86400 % 3600 / 60);
-		let seconds = Math.floor(seconds_param % 86400 % 3600 % 60);
-		
+		const days = Math.floor(seconds_param / 86400);
 		if (days > 0)
 		{
-			return Utility.pluralize(days, "day", "days") + " ago";
+			return Utility.pluralize(days, "day", "days");
 		}
 		
+		const hours = Math.floor(seconds_param % 86400 / 3600);
 		if (hours > 0)
 		{
-			return Utility.pluralize(hours, "hour", "hours") + " ago";
+			return Utility.pluralize(hours, "hour", "hours");
 		}
 		
+		const minutes = Math.floor(seconds_param % 86400 % 3600 / 60);
 		if (minutes > 0)
 		{
-			return Utility.pluralize(minutes, "minute", "minutes") + " ago";
+			return Utility.pluralize(minutes, "minute", "minutes");
 		}
 		
-		return Utility.pluralize(seconds, "second", "seconds") + " ago";
+		const seconds = Math.floor(seconds_param % 86400 % 3600 % 60);
+		return Utility.pluralize(seconds, "second", "seconds");
 	}
 	
 	// Wraps a date based on the time only so that relative to the given `now`
@@ -203,7 +203,7 @@ class Utility
 	
 	static addClass(selector, class_name)
 	{
-		for (let el of document.querySelectorAll(selector))
+		for (let el of Array.from(document.querySelectorAll(selector)))
 		{
 			el.classList.add(class_name);
 		}
@@ -211,7 +211,7 @@ class Utility
 	
 	static removeClass(selector, class_name)
 	{
-		for (let el of document.querySelectorAll(selector))
+		for (let el of Array.from(document.querySelectorAll(selector)))
 		{
 			el.classList.remove(class_name);
 		}
@@ -249,10 +249,11 @@ class Utility
 		);
 	}
 	
-	static zip(a, b)
+	static zip(keys, values)
 	{
-		return Object.assign(...a.flatMap(function(e, i) {
-			return {[e] : b[i]};
+		return Object.assign({}, ...keys.flatMap(function(key, value_index)
+		{
+			return {[key] : values[value_index]};
 		}));
 	}
 	
