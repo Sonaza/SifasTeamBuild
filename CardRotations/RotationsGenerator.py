@@ -92,6 +92,10 @@ class RotationsGenerator:
 							help="Instead of generating pages, start watching for asset changes and reprocessing them when modified.",
 							action="store_true")
 		
+		self.parser.add_argument("-wp", "--watch-polling",
+							help="Same as --watch but uses polling observer instead. Use when you can't rely on inotify events.",
+							action="store_true")
+		
 		self.parser.add_argument("--colored-output", help=argparse.SUPPRESS,
 							action="store_true", default=True)
 		
@@ -103,8 +107,8 @@ class RotationsGenerator:
 		# Only strip on windows for Sublime Text, somehow it still displays in console?
 		colorama_init(autoreset=True, strip=not self.args.colored_output)		
 		sys.stdout = stdout_wrapper()
-		
-		self.resource_processor_settings = dotdict(
+				
+		self.resource_processor_tasks = dotdict(
 		{
 			'js' : dotdict({
 				'processor'        : ResourceProcessor.JavascriptResourceProcessor,
@@ -177,9 +181,9 @@ class RotationsGenerator:
 		print()
 	
 	def initialize(self):
-		self.processor = ResourceProcessor.ResourceProcessor(self, self.resource_processor_settings)
-		if self.args.watch:
-			self.processor.watch_changes()
+		self.processor = ResourceProcessor.ResourceProcessor(self, self.resource_processor_tasks)
+		if self.args.watch or self.args.watch_polling:
+			self.processor.watch_changes(polling=self.args.watch_polling)
 			exit()
 			
 		if not os.path.exists("assets/css/idols.css"):
@@ -242,7 +246,7 @@ class RotationsGenerator:
 	def get_preload_assets(self):
 		preload_assets = []
 		preload_asset_files = Utility.glob([
-			self.resource_processor_settings.css.output_file,
+			self.resource_processor_tasks.css.output_file,
 			os.path.join(Config.OUTPUT_DIRECTORY, "js/vendor/angular/angular-combined.min.js"),
 			os.path.join(Config.OUTPUT_DIRECTORY, "js/public.min.js"),
 			os.path.join(Config.OUTPUT_DIRECTORY, "js/tooltip_data.js"),

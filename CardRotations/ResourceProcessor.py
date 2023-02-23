@@ -17,7 +17,6 @@ from rjsmin import jsmin
 import htmlmin
 
 from threading import Lock
-from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 import psutil
@@ -187,13 +186,13 @@ class TooltipsResourceProcessor(ResourceProcessorImplementation):
 
 class ResourceProcessorException(Exception): pass
 class ResourceProcessor():
-	def __init__(self, parent, settings):
-		self.parent   = parent
-		self.settings = settings
-		self.processors_ran = set()
+	def __init__(self, parent, tasks):
+		self.parent = parent
+		self.tasks  = tasks
+		self.tasks_ran = set()
 		
-		for processor_name, processor_settings in self.settings.items():
-			processor_settings.processor_instance = processor_settings.processor()
+		for task_name, task_config in self.tasks.items():
+			task_config.processor_instance = task_config.processor()
 		
 		self.mutex = Lock()
 		
@@ -213,7 +212,7 @@ class ResourceProcessor():
 				with open(Config.PROCESSOR_HISTORY_FILE, "r") as f:
 					self.processor_history = json.load(f)
 				
-				for processor_name, data in self.processor_history.items():
+				for task_name, data in self.processor_history.items():
 					data['last_processed'] = datetime.fromisoformat(data['last_processed'])
 					data['input_files']    = set(data['input_files'])
 				
@@ -238,37 +237,37 @@ class ResourceProcessor():
 		return True
 	
 	
-	def should_run_processor(self, processor_name):
-		if processor_name not in self.processor_history:
+	def should_run_task(self, task_name):
+		if task_name not in self.processor_history:
 			return True
-		if 'last_processed' not in self.processor_history[processor_name]:
-			return True
-		
-		if not os.path.exists(self.settings[processor_name].output_file):
+		if 'last_processed' not in self.processor_history[task_name]:
 			return True
 		
-		if self.settings[processor_name].output_file != self.processor_history[processor_name]['output_file']:
+		if not os.path.exists(self.tasks[task_name].output_file):
 			return True
 		
-		input_files_globbed = Utility.glob(self.settings[processor_name].input_files)
+		if self.tasks[task_name].output_file != self.processor_history[task_name]['output_file']:
+			return True
+		
+		input_files_globbed = Utility.glob(self.tasks[task_name].input_files)
 		
 		for input_file in input_files_globbed:
-			if input_file not in self.processor_history[processor_name]['input_files']:
+			if input_file not in self.processor_history[task_name]['input_files']:
 				return True
 		
 			file_modified_time = datetime.utcfromtimestamp(os.path.getmtime(input_file)).replace(tzinfo=timezone.utc)
-			if self.processor_history[processor_name]['last_processed'] < file_modified_time:
+			if self.processor_history[task_name]['last_processed'] < file_modified_time:
 				return True
 		
-		for input_file in self.processor_history[processor_name]['input_files']:
+		for input_file in self.processor_history[task_name]['input_files']:
 			if input_file not in input_files_globbed:
 				return True
 		
 		return False
 		
 	
-	def mark_processed(self, processor_name, input_files, output_file):
-		self.processor_history[processor_name] = {
+	def mark_processed(self, task_name, input_files, output_file):
+		self.processor_history[task_name] = {
 			'last_processed' : datetime.now(timezone.utc),
 			'input_files'    : set(input_files),
 			'output_file'    : output_file,
@@ -276,51 +275,51 @@ class ResourceProcessor():
 	
 	
 	def process_all_resources(self, force=False, minify=True):
-		self.processors_ran = set()
+		self.tasks_ran = set()
 		
 		print()
-		for processor_name, processor_settings in self.settings.items():
-			if processor_name not in self.processors_ran:
-				self.run_processor(processor_name, force=force, minify=minify)
+		for task_name, task_config in self.tasks.items():
+			if task_name not in self.tasks_ran:
+				self.run_processor(task_name, force=force, minify=minify)
 				print()
 		
 		self.save_processor_history()
 	
 	# -------------------------------------------------------------------------
 	
-	def run_processor(self, processor_name, force=False, minify=True):
-		if processor_name not in self.settings:
-			raise ResourceProcessorException("Processor name not configured: " + processor_name)
+	def run_processor(self, task_name, force=False, minify=True):
+		if task_name not in self.tasks:
+			raise ResourceProcessorException("Processor name not configured: " + task_name)
 		
-		self.processors_ran.add(processor_name)
+		self.tasks_ran.add(task_name)
 		
-		settings = self.settings[processor_name]
+		tasks = self.tasks[task_name]
 		
-		if 'depends' in settings:
-			for dependent_processor_name in settings.depends:
-				if force or self.should_run_processor(dependent_processor_name):
-					print(f"{Fore.YELLOW}{Style.BRIGHT}{processor_name.upper()} resource processor depends on {dependent_processor_name.upper()}  ...  {Style.RESET_ALL}", end='')
-					self.run_processor(dependent_processor_name, minify=minify)
+		if 'depends' in tasks:
+			for dependent_task_name in tasks.depends:
+				if force or self.should_run_task(dependent_task_name):
+					print(f"{Fore.YELLOW}{Style.BRIGHT}{task_name.upper()} task depends on {dependent_task_name.upper()}  ...  {Style.RESET_ALL}", end='')
+					self.run_processor(dependent_task_name, minify=minify)
 					print()
 					force = True
 		
-		print(f"{Fore.GREEN}{Style.BRIGHT}Processing {processor_name.upper()}...{Style.RESET_ALL}")
+		print(f"{Fore.GREEN}{Style.BRIGHT}Processing {task_name.upper()}...{Style.RESET_ALL}")
 		
-		if not force and not self.should_run_processor(processor_name):
+		if not force and not self.should_run_task(task_name):
 			print(f"    {Fore.BLACK}{Style.BRIGHT}Source files unchanged                ...  OK{Style.RESET_ALL}")
 			return False
 		
-		input_files_globbed = Utility.glob(settings.input_files)
+		input_files_globbed = Utility.glob(tasks.input_files)
 		
-		settings.processor_instance.process(
+		tasks.processor_instance.process(
 			input_files  = input_files_globbed,
-			output_file  = settings.output_file,
+			output_file  = tasks.output_file,
 			minify       = minify
 		)
 		
-		self.mark_processed(processor_name, input_files_globbed, settings.output_file)
+		self.mark_processed(task_name, input_files_globbed, tasks.output_file)
 		
-		print(f"    {Fore.GREEN}{Style.BRIGHT}Processing complete!    {Fore.YELLOW}Output written to file:    {Fore.BLUE}{settings.output_file}{Style.RESET_ALL}")
+		print(f"    {Fore.GREEN}{Style.BRIGHT}Processing complete!    {Fore.YELLOW}Output written to file:    {Fore.BLUE}{tasks.output_file}{Style.RESET_ALL}")
 		return True
 	
 	# -------------------------------------------------------------------------
@@ -328,20 +327,20 @@ class ResourceProcessor():
 	class EventHandler(FileSystemEventHandler):
 		is_dirty = True
 		
-		def __init__(self, parent, processor_name, processor_settings):
+		def __init__(self, parent, task_name, task_config):
 			super().__init__()
 			
-			self.parent             = parent
-			self.processor_name     = processor_name
-			self.processor_settings = processor_settings
-			self.files_changed      = set()
+			self.parent        = parent
+			self.task_name     = task_name
+			self.task_config   = task_config
+			self.files_changed = set()
 		
 		
 		def on_modified(self, event):
 			if self.is_dirty: return
 			if event.is_directory: return
 			
-			watched_files_globbed = Utility.glob(self.processor_settings.watched_files)
+			watched_files_globbed = Utility.glob(self.task_config.watched_files)
 			
 			file_path = event.src_path.replace('\\', '/')
 			if file_path not in watched_files_globbed: return
@@ -362,7 +361,7 @@ class ResourceProcessor():
 			self.parent.processing = True
 			
 			self.parent.load_processor_history()
-			processor_ran = self.parent.run_processor(self.processor_name, minify=False)
+			processor_ran = self.parent.run_processor(self.task_name, minify=False)
 			self.parent.save_processor_history()
 			
 			if processor_ran:
@@ -388,7 +387,7 @@ class ResourceProcessor():
 			with p.oneshot():
 				if p.pid in ignored_pids:
 					continue
-				if 'python' not in p.name():
+				if 'python' not in p.name().lower():
 					continue
 				if p.cwd() != os.getcwd():
 					continue
@@ -405,25 +404,32 @@ class ResourceProcessor():
 			print(f"  {Fore.RED}{Style.BRIGHT}Watcher was already running. {Fore.YELLOW}Killed {len(duplicate_processes)} duplicate processes.{Style.RESET_ALL}")
 		
 		
-	def watch_changes(self):
+	def watch_changes(self, polling = False):
 		self.kill_duplicate_processes()
 		
 		print()
 		print( "---------------------------------------------------------------")
 		print(f"  {Fore.MAGENTA}{Style.BRIGHT}Watching for file changes!{Style.RESET_ALL}")
 		
+		if polling:
+			from watchdog.observers.polling import PollingObserver as Observer
+		else:
+			from watchdog.observers import Observer
+		
 		observer = Observer()
 		
 		event_handlers = {}
-		for processor_name, processor_settings in self.settings.items():
-			event_handlers[processor_name] = self.EventHandler(self, processor_name, processor_settings)
-			observer.schedule(event_handlers[processor_name], processor_settings.watch_directory, recursive=True)
+		for task_name, task_config in self.tasks.items():
+			event_handlers[task_name] = self.EventHandler(self, task_name, task_config)
+			observer.schedule(event_handlers[task_name], task_config.watch_directory, recursive=True)
 			
 			print()
-			print(f"  {Fore.WHITE}{Style.BRIGHT}Processor        : {Fore.BLUE}{processor_name.upper()}{Style.RESET_ALL}")
-			print(f"  {Fore.GREEN}{Style.BRIGHT}Directory        : {Fore.BLUE}{processor_settings.watch_directory}{Style.RESET_ALL}")
-			print(f"  {Fore.GREEN}{Style.BRIGHT}Watched files    : {Fore.BLUE}{', '.join(processor_settings.watched_files)}{Style.RESET_ALL}")
+			print(f"  {Fore.WHITE}{Style.BRIGHT}Processor        {Fore.WHITE}: {Fore.BLUE}{task_name.upper()}{Style.RESET_ALL}")
+			print(f"  {Fore.GREEN}{Style.BRIGHT}Directory        {Fore.WHITE}: {Fore.BLUE}{task_config.watch_directory}{Style.RESET_ALL}")
+			print(f"  {Fore.GREEN}{Style.BRIGHT}Watched files    {Fore.WHITE}: {Fore.BLUE}{', '.join(task_config.watched_files)}{Style.RESET_ALL}")
 		
+		print()
+		print(f"  {Fore.YELLOW}{Style.BRIGHT}Polling Observer {Fore.WHITE}: {'yes' if polling else 'no'}{Style.RESET_ALL}")
 		print()
 		
 		observer.start()
