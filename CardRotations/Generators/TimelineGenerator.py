@@ -78,10 +78,19 @@ class TimelineGenerator(GeneratorBase):
 			with_event_info  = True,
 			with_banner_info = True)
 		
+		# current_month  = "2023-01"
+		# cutoff_date = datetime(2023, 1, 31, 0, 0, tzinfo=timezone.utc)
+		# idols_data = [idol for idol in idols_data if idol.release_date[Locale.JP] < cutoff_date]
+		
 		for idol in idols_data:
 			release_month = idol.release_date[Locale.JP].strftime("%Y-%m")
 			if release_month not in monthly_equivalence: monthly_equivalence[release_month] = []
 			monthly_equivalence[release_month].append(idol.release_date[Locale.WW].strftime("%Y-%m"))
+			
+			if release_month == current_month and idol.banner.id:
+				banner_end_month = idol.banner.end[Locale.JP].strftime("%Y-%m")
+				if banner_end_month not in monthly_equivalence: monthly_equivalence[banner_end_month] = []
+				monthly_equivalence[banner_end_month].append(idol.banner.end[Locale.WW].strftime("%Y-%m"))
 			
 		from collections import Counter
 		
@@ -116,7 +125,7 @@ class TimelineGenerator(GeneratorBase):
 						month_start_offset = days_in_month - month_length_days
 						
 					elif release_month == current_month:
-						month_length_days  = min(days_in_month, math.ceil((now.day) / 12) * 15)
+						month_length_days  = days_in_month if now.day >= 12 else 15
 						
 					if release_month not in entry_info: entry_info[release_month] = {}
 					entry_info[release_month]['start']   = month_start + timedelta(days=month_start_offset)
@@ -127,6 +136,27 @@ class TimelineGenerator(GeneratorBase):
 						entry_info[release_month]['events']  = set()
 					if 'banners' not in entry_info[release_month]:
 						entry_info[release_month]['banners'] = set()
+				
+				if idol.banner.id:
+					banner_end_month = idol.banner.end[locale].strftime("%Y-%m")
+					if banner_end_month != release_month and release_month == current_month:
+						timeline['entries'][banner_end_month] = {group: {member.member_id: {} for member in Idols.by_group[group]} for group in Group}
+						
+						month_length_days  = 15
+						month_start_offset = 0
+						
+						banner_end_month_start = idol.banner.end[locale].replace(day=1, hour=0, minute=0, second=0)
+						
+						if banner_end_month not in entry_info: entry_info[banner_end_month] = {}
+						entry_info[banner_end_month]['start']   = banner_end_month_start
+						entry_info[banner_end_month]['end']     = banner_end_month_start + timedelta(days=month_length_days)
+						entry_info[banner_end_month]['days']    = month_length_days
+					
+						if 'events' not in entry_info[banner_end_month]:
+							entry_info[banner_end_month]['events']  = set()
+						if 'banners' not in entry_info[banner_end_month]:
+							entry_info[banner_end_month]['banners'] = set()
+
 						
 				current_bucket     = timeline['entries'][release_month][idol.group_id][idol.member_id]
 				current_entry_info = entry_info[release_month]
