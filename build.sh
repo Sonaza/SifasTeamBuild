@@ -1,5 +1,5 @@
 #!/bin/bash
-export PATH="$PATH:/var/www/sonaza.com/.local/bin/"
+export PATH="$PATH:~/.local/bin/"
 set -euo pipefail
 
 cd /var/www/sonaza.com/sifas-cards.subdomain
