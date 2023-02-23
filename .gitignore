@@ -19,6 +19,7 @@ __pycache__/
 
 # Stuff
 .vscode
+node_modules
 
 # C extensions
 *.so
