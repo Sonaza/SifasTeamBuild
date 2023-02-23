@@ -10,6 +10,7 @@ import json
 from datetime import datetime, timezone
 from colorama import Fore, Style
 import signal
+from enum import Enum
 
 import sass
 import csscompressor
@@ -20,6 +21,7 @@ from threading import Lock
 from watchdog.events import FileSystemEventHandler
 
 import psutil
+import subprocess
 
 # ------------------------------------------------
 
@@ -46,7 +48,7 @@ class ResourceProcessorImplementation():
 		minified_size   = 0
 		
 		for input_filepath in input_files:
-			print(f"    {Fore.WHITE}{Style.BRIGHT}{input_filepath:<47}{Style.RESET_ALL}  ", end='')
+			print(f"    {Fore.WHITE}{Style.BRIGHT}{input_filepath:<57}{Style.RESET_ALL}  ", end='')
 			
 			try:
 				source_code = open(input_filepath, "r", encoding="utf-8").read()
@@ -184,6 +186,11 @@ class TooltipsResourceProcessor(ResourceProcessorImplementation):
 	
 # ---------------------------------------------------
 
+class ProcessorResult(Enum):
+	NotProcessed = 0
+	Success      = 1
+	Failure      = 2
+
 class ResourceProcessorException(Exception): pass
 class ResourceProcessor():
 	def __init__(self, parent, tasks):
@@ -192,7 +199,16 @@ class ResourceProcessor():
 		self.tasks_ran = set()
 		
 		for task_name, task_config in self.tasks.items():
-			task_config.processor_instance = task_config.processor()
+			if task_config.processor:
+				if not issubclass(task_config.processor, ResourceProcessorImplementation):
+					raise ResourceProcessorException("Processor must inherit from ResourceProcessorImplementation.")
+					
+				task_config.processor_instance = task_config.processor()
+				continue
+			
+			if not task_config.run_command:
+				raise ResourceProcessorException("A run command must be specified if a processor is not declared.")
+		
 		
 		self.mutex = Lock()
 		
@@ -287,40 +303,89 @@ class ResourceProcessor():
 	
 	# -------------------------------------------------------------------------
 	
-	def run_processor(self, task_name, force=False, minify=True):
+	def run_file_processing_task(self, task_name, task_config, minify):
+		input_files_globbed = Utility.glob(task_config.input_files)
+		
+		task_config.processor_instance.process(
+			input_files  = input_files_globbed,
+			output_file  = task_config.output_file,
+			minify       = minify
+		)
+		
+		self.mark_processed(task_name, input_files_globbed, task_config.output_file)
+		print(f"    {Fore.GREEN}{Style.BRIGHT}File processing done!   {Fore.YELLOW}Output written to file:    {Fore.BLUE}{task_config.output_file}{Style.RESET_ALL}")
+		return True
+		
+	
+	def run_command_task(self, task_name, task_config):
+		
+		print(f"    {Fore.YELLOW}{Style.BRIGHT}Running command     {Fore.WHITE}: {Utility.concat(task_config.run_command, separator=' ')}{Style.RESET_ALL}")
+		print()
+		process = subprocess.Popen(task_config.run_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+		
+		with print_indent(4):
+			while True:
+				output = process.stdout.readline()
+				if not output:
+					break
+				print(output.strip().decode())
+
+				error = process.stderr.readline()
+				if error:
+					print(f"{Fore.RED}ERROR{Style.RESET_ALL} ", error.strip().decode())
+		
+		print()
+		
+		# Wait for the process to finish and check the return code
+		return_code = process.wait()
+		if return_code != 0:
+			print(f"    {Fore.RED}{Style.BRIGHT}Process finished with errors (error code {return_code}){Style.RESET_ALL}")
+			return False
+		
+		return True
+	
+	
+	def run_processor(self, task_name, force=False, minify=True) -> ProcessorResult:
 		if task_name not in self.tasks:
 			raise ResourceProcessorException("Processor name not configured: " + task_name)
 		
 		self.tasks_ran.add(task_name)
 		
-		tasks = self.tasks[task_name]
+		task_config = self.tasks[task_name]
 		
-		if 'depends' in tasks:
-			for dependent_task_name in tasks.depends:
+		if 'depends' in task_config:
+			for dependent_task_name in task_config.depends:
 				if force or self.should_run_task(dependent_task_name):
 					print(f"{Fore.YELLOW}{Style.BRIGHT}{task_name.upper()} task depends on {dependent_task_name.upper()}  ...  {Style.RESET_ALL}", end='')
-					self.run_processor(dependent_task_name, minify=minify)
+					result = self.run_processor(dependent_task_name, minify=minify)
+					if result == ProcessorResult.Failure:
+						return ProcessorResult.Failure
+					
 					print()
 					force = True
 		
 		print(f"{Fore.GREEN}{Style.BRIGHT}Processing {task_name.upper()}...{Style.RESET_ALL}")
 		
-		if not force and not self.should_run_task(task_name):
-			print(f"    {Fore.BLACK}{Style.BRIGHT}Source files unchanged                ...  OK{Style.RESET_ALL}")
-			return False
+		# File processing task
+		if task_config.processor:
+			if not force and not self.should_run_task(task_name):
+				print(f"    {Fore.BLACK}{Style.BRIGHT}Source files unchanged                ...  OK{Style.RESET_ALL}")
+				return ProcessorResult.NotProcessed
 		
-		input_files_globbed = Utility.glob(tasks.input_files)
+			result = self.run_file_processing_task(task_name, task_config, minify=minify)
+			if not result:
+				print(f"    {Fore.RED}{Style.BRIGHT}Processing error! Aborting...{Style.RESET_ALL}")
+				return ProcessorResult.Failure
 		
-		tasks.processor_instance.process(
-			input_files  = input_files_globbed,
-			output_file  = tasks.output_file,
-			minify       = minify
-		)
-		
-		self.mark_processed(task_name, input_files_globbed, tasks.output_file)
-		
-		print(f"    {Fore.GREEN}{Style.BRIGHT}Processing complete!    {Fore.YELLOW}Output written to file:    {Fore.BLUE}{tasks.output_file}{Style.RESET_ALL}")
-		return True
+		# Command processing task
+		if task_config.run_command:
+			result = self.run_command_task(task_name, task_config)
+			if not result:
+				print(f"    {Fore.RED}{Style.BRIGHT}Processing error! Aborting...{Style.RESET_ALL}")
+				return ProcessorResult.Failure
+				
+		print(f"    {Fore.GREEN}{Style.BRIGHT}Processing complete!{Style.RESET_ALL}")
+		return ProcessorResult.Success
 	
 	# -------------------------------------------------------------------------
 	
@@ -347,12 +412,11 @@ class ResourceProcessor():
 			
 			self.is_dirty = True
 			self.files_changed.add(file_path)
+			
 		
-		
-		def compile(self):
+		def run_task(self):
 			if not self.is_dirty: return
 			if self.parent.processing:
-				print(f"{Fore.RED}ALREADY PROCESSING SNOOZE")
 				return
 			
 			for file_path in self.files_changed:
@@ -361,16 +425,24 @@ class ResourceProcessor():
 			self.parent.processing = True
 			
 			self.parent.load_processor_history()
-			processor_ran = self.parent.run_processor(self.task_name, minify=False)
+			processor_result = self.parent.run_processor(self.task_name, minify=False)
 			self.parent.save_processor_history()
 			
-			if processor_ran:
+			if processor_result == ProcessorResult.Success:
 				now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 				print(f"    {Fore.YELLOW}{Style.BRIGHT}{Fore.YELLOW}Completed on {Fore.WHITE}{now}{Style.RESET_ALL}")
+			
+			elif processor_result == ProcessorResult.Failure:
+				self.parent.clear_queue()
+				now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+				print(f"    {Fore.RED}{Style.BRIGHT}{Fore.YELLOW}Aborted on {Fore.WHITE}{now}{Style.RESET_ALL}")
+				
 			print()
 			
 			self.parent.processing = False
-			
+			self.clean()
+		
+		def clean(self):
 			self.is_dirty = False
 			self.files_changed.clear()
 	
@@ -404,6 +476,11 @@ class ResourceProcessor():
 			print(f"  {Fore.RED}{Style.BRIGHT}Watcher was already running. {Fore.YELLOW}Killed {len(duplicate_processes)} duplicate processes.{Style.RESET_ALL}")
 		
 		
+	def clear_queue(self):
+		for event_handler in self.event_handlers.values():
+			event_handler.clean()
+	
+	
 	def watch_changes(self, polling = False):
 		self.kill_duplicate_processes()
 		
@@ -418,10 +495,10 @@ class ResourceProcessor():
 		
 		observer = Observer()
 		
-		event_handlers = {}
+		self.event_handlers = {}
 		for task_name, task_config in self.tasks.items():
-			event_handlers[task_name] = self.EventHandler(self, task_name, task_config)
-			observer.schedule(event_handlers[task_name], task_config.watch_directory, recursive=True)
+			self.event_handlers[task_name] = self.EventHandler(self, task_name, task_config)
+			observer.schedule(self.event_handlers[task_name], task_config.watch_directory, recursive=True)
 			
 			print()
 			print(f"  {Fore.WHITE}{Style.BRIGHT}Processor        {Fore.WHITE}: {Fore.BLUE}{task_name.upper()}{Style.RESET_ALL}")
@@ -445,8 +522,8 @@ class ResourceProcessor():
 		self.processing = False;
 		
 		while self.running:
-			for event_handler in event_handlers.values():
-				event_handler.compile()
+			for event_handler in self.event_handlers.values():
+				event_handler.run_task()
 			time.sleep(0.1)
 			
 		print(f"{Fore.BLUE}It is time to go to sleep! Good night...{Style.RESET_ALL}\n")
