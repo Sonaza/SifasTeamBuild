@@ -500,9 +500,30 @@ body.hide-tooltips #timeline-date-label
 	.timeline-entry
 	{
 		flex-shrink: 0;
-		border-left: 1px solid #977FA6;
-		border-right: 1px solid #977FA6;
 		box-shadow: inset 0 0 5px 3px #130D16;
+		
+		.inner
+		{
+			border-left: 1px solid #977FA6;
+			border-right: 1px solid #977FA6;
+		}
+		
+		&[data-month-number="12"]
+		{
+			border-right: 1px solid #977FA6;
+			.inner
+			{
+				border-right: 1px solid #DDCEE6;
+			}
+		}
+		&[data-month-number="1"]
+		{
+			border-left: 1px solid #977FA6;
+			.inner
+			{
+				border-left: 1px solid #DDCEE6;
+			}
+		}
 		
 		display: grid;
 		grid-template-columns: 1fr;
@@ -510,6 +531,11 @@ body.hide-tooltips #timeline-date-label
 		grid-column-gap: 0px;
 		grid-row-gap: 0px;
 		
+		.header
+		{
+			border-left: 1px solid #5E367B;
+			border-right: 1px solid #5E367B;
+		}
 		&:nth-child(odd) .header
 		{
 			color: #5E367B;
