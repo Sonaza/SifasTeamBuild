@@ -12,6 +12,7 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 		error_redirect;
 		subpages;
 		subtitle;
+		route_settings;
 		
 		$angular = {};
 			
@@ -99,7 +100,7 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 	}
 	
 	var $this = this;
-	this.$get = function($rootScope, $location, $route)
+	this.$get = function($rootScope, $location, $route, SiteSettings)
 	{
 		for (let [route_id, route] of Object.entries($this.registered_routes))
 		{
@@ -121,9 +122,10 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 		
 		$this.active_route = $this.get_active_route();
 		
-		$rootScope.$on('$locationChangeSuccess', (event) =>
+		$rootScope.$on('$routeChangeSuccess', (event) =>
 		{
 			$this.active_route = $this.get_active_route();
+			SiteSettings.route_settings = Utility.shallow_copy($this.active_route.route_settings || {});
 		});
 		
 		return {

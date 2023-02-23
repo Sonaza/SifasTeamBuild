@@ -20,8 +20,12 @@ app.provider('SiteSettings', function SiteSettingsProvider()
 		},
 		
 		session_settings : {
-			force_hide_header       : false, 
-		}
+			force_hide_header         : false, 
+		},
+		
+		route_settings : {
+			main_content_no_h_padding : false,
+		},
 	}
 	
     this.$get = () =>

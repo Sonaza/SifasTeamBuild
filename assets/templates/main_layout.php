@@ -124,7 +124,7 @@
 			</div>
 			<div id="main">
 				<div id="main-inner">
-					<div class="main-content" ng-view>
+					<div class="main-content" ng-view ng-class="main_content_class()">
 						<noscript>
 							{{ include("noscript_notice.html", static=True) }}
 						</noscript>

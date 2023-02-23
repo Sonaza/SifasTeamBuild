@@ -10,31 +10,33 @@
 	For the best experience, using the timeline a more powerful device with a large screen is strongly recommended.
 </p>
 
-<div class="page-settings-bar event-card-settings timeline-settings">
-	<label>
-		Jump to
-	</label>
-	<select ng-model="timeline_settings.target_month" ng-change="jump_to_position(timeline_settings.target_month)">
-		<optgroup label="[[ year ]]" ng-repeat="year in timeline_timespan.years | reverse : settings.order_reversed">
-			<option value="[[ year ]]-[[ (month[0] < 10 ? '0' : '') + month[0] ]]" ng-repeat="month in timeline_timespan.months_in_years[year] | reverse : settings.order_reversed">
-				[[ month[1] ]] [[ year ]]
-			</option>
-		</optgroup>
-	</select>
-	<div pill-button model="settings.timeline_show_events" keybind="E">
-		Highlight Events
+<div class="main-content-inner-padding-only">
+	<div class="page-settings-bar event-card-settings timeline-settings">
+		<label>
+			Jump to
+		</label>
+		<select ng-model="timeline_settings.target_month" ng-change="jump_to_position(timeline_settings.target_month)">
+			<optgroup label="[[ year ]]" ng-repeat="year in timeline_timespan.years | reverse : settings.order_reversed">
+				<option value="[[ year ]]-[[ (month[0] < 10 ? '0' : '') + month[0] ]]" ng-repeat="month in timeline_timespan.months_in_years[year] | reverse : settings.order_reversed">
+					[[ month[1] ]] [[ year ]]
+				</option>
+			</optgroup>
+		</select>
+		<div pill-button model="settings.timeline_show_events" keybind="E">
+			Highlight Events
+		</div>
+		<div pill-button model="settings.timeline_show_banners" keybind="B">
+			Highlight Banners
+		</div>
+		<label>
+			Display <span class="hide-mobile">(F)</span>
+		</label>
+		<select ng-model="timeline_settings.display_mode">
+			<option ng-value="0">All Cards</option>
+			<option ng-value="1">UR Only</option>
+			<option ng-value="2">SR Only</option>
+		</select>
 	</div>
-	<div pill-button model="settings.timeline_show_banners" keybind="B">
-		Highlight Banners
-	</div>
-	<label>
-		Display <span class="hide-mobile">(F)</span>
-	</label>
-	<select ng-model="timeline_settings.display_mode">
-		<option ng-value="0">All Cards</option>
-		<option ng-value="1">UR Only</option>
-		<option ng-value="2">SR Only</option>
-	</select>
 </div>
 
 <div id="timeline-container" ng-class="[highlight_stripes()]">

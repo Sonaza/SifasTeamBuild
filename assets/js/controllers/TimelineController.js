@@ -43,6 +43,9 @@ app.config(function(SiteSettingsProvider, SiteRoutesProvider)
 				return 'Global';
 			}
 		},
+		route_settings : {
+			main_content_no_h_padding : true,
+		},
 	});
 });
 

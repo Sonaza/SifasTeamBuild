@@ -94,6 +94,20 @@ body.mobile-mode #timeline-date-tooltip
 	backdrop-filter: blur(14px);
 }
 
+#timeline-container
+{
+	// width: 100vw;
+	// margin-left: -1.2rem;
+	padding: 0 0.3rem;
+}
+
+
+.timeline-scrollbar.scrollbar-bottom
+{
+	width: 100% !important;
+	margin-left: 0 !important;
+}
+
 #timeline
 {
 	

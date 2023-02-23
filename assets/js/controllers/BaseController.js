@@ -215,6 +215,15 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 			}, 200);
 		});
 		
+		$scope.main_content_class = () =>
+		{
+			if (SiteSettings.route_settings.main_content_no_h_padding)
+			{
+				return 'no-h-padding';
+			}
+			return '';
+		}
+		
 		$scope.navigation_visible = false;
 		$scope.settings_visible = false;
 		

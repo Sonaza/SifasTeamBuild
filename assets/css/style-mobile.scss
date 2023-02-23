@@ -823,6 +823,21 @@ body.sidebar-open
 				{
 					background: transparent !important;
 					padding: 1.0rem 1.2rem 1.2rem 1.2rem;
+					
+					&.no-h-padding
+					{
+						padding-left: 0;
+						padding-right: 0;
+						
+						.main-content-inner,
+						.main-content-inner-wide,
+						.main-content-inner-widest,
+						.main-content-inner-padding-only
+						{
+							padding-left: 1.2rem;
+							padding-right: 1.2rem;
+						}
+					}
 				}
 			}
 		}

@@ -75,7 +75,7 @@ class TimelineMouseDragging
 		{
 			this.active = false;
 		});
-				
+		
 		if (this.has_momentum)
 		{
 			this.update_momentum();
