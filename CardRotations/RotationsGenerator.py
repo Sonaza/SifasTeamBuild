@@ -1,8 +1,11 @@
 import Config
 from IdolDatabase import *
 
-from . import ResourceProcessor, PageRenderer, CardThumbnails, CardValidity
-from .Utility import Utility
+import ResourceProcessor
+# from ResourceProcessor.FileProcessors import *
+
+from . import PageRenderer, CardThumbnails, CardValidity
+from Common import Utility
 
 import os
 import sys
@@ -88,13 +91,19 @@ class RotationsGenerator:
 		self.parser.add_argument("--dev", help="Flags it as developing build.",
 							action="store_true")
 		
-		self.parser.add_argument("-w", "--watch",
+		self.parser.add_argument("--watch",
 							help="Instead of generating pages, start watching for asset changes and reprocessing them when modified.",
 							action="store_true")
 		
-		self.parser.add_argument("-wp", "--watch-polling",
+		self.parser.add_argument("--watch-polling",
 							help="Same as --watch but uses polling observer instead. Use when you can't rely on inotify events.",
 							action="store_true")
+		
+		self.parser.add_argument("--kill-duplicates", help=argparse.SUPPRESS,
+							action="store_true", default=True)
+		
+		self.parser.add_argument("--no-kill-duplicates", help="By default when watcher is started duplicate watcher processes are killed. Use this to disable.",
+							action="store_false", dest='kill_duplicates')
 		
 		self.parser.add_argument("--colored-output", help=argparse.SUPPRESS,
 							action="store_true", default=True)
@@ -107,17 +116,28 @@ class RotationsGenerator:
 		# Only strip on windows for Sublime Text, somehow it still displays in console?
 		colorama_init(autoreset=True, strip=not self.args.colored_output)		
 		sys.stdout = stdout_wrapper()
-				
-		self.resource_processor_tasks = dotdict(
-		{
-			'js' : dotdict({
-				'processor'        : ResourceProcessor.JavascriptResourceProcessor,
-				'watch_directory'  : "assets/",
-				'watched_files'    : [
+		
+		self.resource_processor_tasks = [
+			# ResourceProcessor.ProcessorTask(
+			# 	name             = 'CommandTest',
+			# 	post_command     = ['echo', '"hello world"'],
+			# 	watch_directory  = "assets/",
+			# 	watched_files    = [
+			# 		"assets/js/*.js",
+			# 		"assets/js/*/*.js",
+			# 	],
+			# 	depends_on       = [],
+			# ),
+			
+			ResourceProcessor.ProcessorTask(
+				name             = 'JavaScript',
+				file_processor   = ResourceProcessor.FileProcessors.JavascriptFileProcessor,
+				watch_directory  = "assets/",
+				watched_files    = [
 					"assets/js/*.js",
 					"assets/js/*/*.js",
 				],
-				'input_files'      : [
+				input_files      = [
 					"assets/js/build_id.js",
 					"assets/js/AppModule.js",
 					"assets/js/Constants.js",
@@ -129,18 +149,19 @@ class RotationsGenerator:
 					"assets/js/AppConfig.js",
 					"assets/js/TooltipsCache.js",
 				],
-				'output_file'      : os.path.join(Config.OUTPUT_DIRECTORY, "js/public.min.js").replace('\\', '/'),
-				'depends'          : ['tooltip'],
-			}),
+				output_file      = os.path.join(Config.OUTPUT_DIRECTORY, "js/public.min.js"),
+				depends_on       = ['TooltipsCache'],
+			),
 			
-			'css' : dotdict({
-				'processor'        : ResourceProcessor.CSSResourceProcessor,
-				'watch_directory'  : "assets/",
-				'watched_files'    : [
+			ResourceProcessor.ProcessorTask(
+				name             = 'CSS',
+				file_processor   = ResourceProcessor.FileProcessors.CSSFileProcessor,
+				watch_directory  = "assets/",
+				watched_files    = [
 					"assets/css/*.css",
 					"assets/css/*.scss",
 				],
-				'input_files'      : [
+				input_files      = [
 					"public/css/fonts.css",
 					"assets/css/atlas.css",
 					"assets/css/idols.css",
@@ -152,40 +173,41 @@ class RotationsGenerator:
 					"assets/css/style-timeline-mobile.scss",
 					"assets/css/style-darkmode-mobile.scss",
 				],
-				'output_file'      : os.path.join(Config.OUTPUT_DIRECTORY, "css/public.min.css").replace('\\', '/'),
-			}),
+				output_file      = os.path.join(Config.OUTPUT_DIRECTORY, "css/public.min.css"),
+			),
 			
-			'tooltip' : dotdict({
-				'processor'        : ResourceProcessor.TooltipsResourceProcessor,
-				'watch_directory'  : "assets/",
-				'watched_files'    : [
+			ResourceProcessor.ProcessorTask(
+				name             = 'TooltipsCache',
+				file_processor   = ResourceProcessor.FileProcessors.TooltipsFileProcessor,
+				watch_directory  = "assets/",
+				watched_files    = [
 					"assets/tooltips/*.html",
 				],
-				'input_files'      : [
+				input_files      = [
 					"assets/tooltips/*.html",
 				],
-				'output_file'      : "assets/js/TooltipsCache.js",
-			}),
-		})
+				output_file      = "assets/js/TooltipsCache.js",
+			),
+		]
 	
 	def initialise_generators(self):
 		self.generators = {}
-		#    BasicRotationsGenerator        ... OK
-		#Unchanged  home.html                      ...  OK
 		print()
 		print("Loading generators...")
 		from .Generators import Generators
 		for generator_name, generator_module in Generators.items():
 			self.generators[generator_name] = getattr(generator_module, generator_name)(self)
-			# print(f"  {self.generators[generator_name].generator_name:<39} ...  OK")
 		print()
 	
 	def initialize(self):
 		self.processor = ResourceProcessor.ResourceProcessor(self, self.resource_processor_tasks)
+		
 		if self.args.watch or self.args.watch_polling:
-			self.processor.watch_changes(polling=self.args.watch_polling)
+			self.processor.watch_changes(
+				kill_duplicates = self.args.kill_duplicates,
+				polling         = self.args.watch_polling)
 			exit()
-			
+		
 		if not os.path.exists("assets/css/idols.css"):
 			raise Exception("Generated idols.css does not exist! Run tools/generate_idols_css.py")
 		
@@ -246,7 +268,7 @@ class RotationsGenerator:
 	def get_preload_assets(self):
 		preload_assets = []
 		preload_asset_files = Utility.glob([
-			self.resource_processor_tasks.css.output_file,
+			os.path.join(Config.OUTPUT_DIRECTORY, "css/public.min.css"),
 			os.path.join(Config.OUTPUT_DIRECTORY, "js/vendor/angular/angular-combined.min.js"),
 			os.path.join(Config.OUTPUT_DIRECTORY, "js/public.min.js"),
 			os.path.join(Config.OUTPUT_DIRECTORY, "js/tooltip_data.js"),
@@ -267,7 +289,7 @@ class RotationsGenerator:
 			rel = 'preload'
 			
 			filepath = filepath.replace('\\', '/')
-			filehash = Utility.get_file_modifyhash(filepath)
+			filehash = Utility.get_file_modify_hash(filepath)
 			
 			relative_path = filepath.replace('public/', '')
 			base, ext = os.path.splitext(relative_path)
@@ -344,7 +366,7 @@ class RotationsGenerator:
 		# Process Javascript and CSS
 		
 		self.processor.process_all_resources(
-			force  = self.is_doing_full_render() or not self.processor.processor_history_loaded_successfully(),
+			force  = self.is_doing_full_render(),
 			minify=not self.args.dev)
 		
 		# -------------------------------------------------------

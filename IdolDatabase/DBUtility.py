@@ -2,7 +2,7 @@
 from enum import Enum
 from typing import List, Optional, Tuple, Dict, Any, Union
 import sqlite3 as sqlite
-from CardRotations.Utility import Utility
+from Common import Utility
 
 try:
 	from collections.abc import KeysView

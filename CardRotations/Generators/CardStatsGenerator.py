@@ -2,7 +2,7 @@ import Config
 from IdolDatabase import *
 
 from CardRotations import GeneratorBase, CardValidity
-from ..Utility import Utility
+from Common import Utility
 
 from datetime import datetime, timezone
 from dateutil.relativedelta import relativedelta

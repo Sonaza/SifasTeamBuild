@@ -12,7 +12,6 @@ python-dateutil = "==2.8.2"
 requests = "==2.25.1"
 Jinja2 = "==3.0.3"
 Pillow = ">=9.2"
-watchdog = "==2.1.6"
 certifi = ">=2022.12.07"
 colorama = "*"
 rjsmin = "*"
@@ -21,6 +20,7 @@ inflection = "*"
 psutil = "*"
 
 [dev-packages]
+watchdog = "*"
 
 [requires]
 python_version = "3"

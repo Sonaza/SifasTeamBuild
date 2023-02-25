@@ -19,7 +19,7 @@ from . import DBUtility
 from .Skill import Skill
 from .SkillEnum import ST, TT
 
-from CardRotations.Utility import Utility
+from Common import Utility
 
 try:
 	from backports.datetime_fromisoformat import MonkeyPatch
@@ -181,6 +181,8 @@ class KiraraIdol():
 		else:
 			return self.normal_name
 	
+	def from_event_gacha(self):
+		return self.source == Source.Gacha and self.event.id != None
 	
 	def get_raw_parameters(self, level : int, limit_break : int):
 		if not (level >= 1 and level <= 100):

@@ -2,7 +2,7 @@ import Config
 from IdolDatabase import *
 
 from CardRotations import GeneratorBase
-from ..Utility import Utility
+from Common import Utility
 
 import json
 from operator import itemgetter

@@ -1,8 +1,9 @@
 import Config
+from Common import Utility
 from IdolDatabase import *
 
 from . import CardValidity
-from .Utility import Utility
+from .CardUtility import CardUtility
 
 import os
 import sys
@@ -85,7 +86,7 @@ class PageRenderer():
 			
 		def embed_card_tooltip(card):
 			if card.ordinal not in self.tooltip_data:
-				self.tooltip_data[card.ordinal] = Utility.serialize_card(card)
+				self.tooltip_data[card.ordinal] = CardUtility.serialize_card(card)
 			return card.ordinal
 			
 		def card_thumbnail_classes(card):
@@ -129,13 +130,12 @@ class PageRenderer():
 			'is_valid_card'          : CardValidity.is_valid_card,
 			'is_missing_card'        : CardValidity.is_missing_card,
 			'is_nonextant_card'      : CardValidity.is_nonextant_card,
-			'get_card_source_label'  : Utility.get_card_source_label,
 			
 			'include'                : include,
 			
+			'get_card_source_label'  : CardUtility.get_card_source_label,
+			'card_to_base64'         : CardUtility.card_to_base64,
 			'embed_card_tooltip'     : embed_card_tooltip,
-			
-			'card_to_base64'         : Utility.card_to_base64,
 			
 			# Generic utility
 			'concat'                 : Utility.concat,

@@ -1,5 +1,5 @@
 import Config
-from .Utility import Utility
+from Common import Utility
 
 from IdolDatabase import *
 
@@ -203,8 +203,8 @@ class CardThumbnails():
 					print(f'    {Fore.BLUE}{Style.BRIGHT}Saved idolized atlas (plane {atlas_plane + 1}/{num_atlas_planes})  {Fore.WHITE}: {atlas_idolized_path}{Style.RESET_ALL}')
 					
 					filehashes = (
-						Utility.get_file_modifyhash(atlas_normal_path),
-						Utility.get_file_modifyhash(atlas_idolized_path),
+						Utility.get_file_modify_hash(atlas_normal_path),
+						Utility.get_file_modify_hash(atlas_idolized_path),
 					)
 					atlas_identifiers.append((group, rarity, atlas_plane, filehashes))
 					
