@@ -104,10 +104,7 @@ app.run(($rootScope, $window, $templateCache, $http, RouteEvent, SiteSettings) =
 			return;
 		
 		const label = el.innerHTML.trim();
-		console.log(timestamp, label);
-		
 		const text = `Next ${label} preview ${approximate ? 'approximately ' : ''}<t:${timestamp}:R> on <t:${timestamp}:F>`;
-		console.log(text);
 		
 		Utility.copy_to_clipboard(text)
 			.then(() =>
