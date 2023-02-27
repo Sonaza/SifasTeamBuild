@@ -310,6 +310,44 @@ $pillbutton-label-color: #E3CCFC;
 
 /****************************************************************************/
 
+.card-preview-countdown
+{
+	.disclaimer
+	{
+		color: #9576C6;
+	}
+	
+	.countdown-item
+	{
+		> .label-countdown .label
+		{
+			color: #CF83EB;
+		}
+	
+		> .copy
+		{
+			color: #fff;
+			border-color: #6B4A8A;
+			background-color: #4A2B68;
+			
+			box-shadow: 0 3px #462565;
+			
+			&:hover
+			{
+				background-color: #7B4BA9;
+			}
+			
+			&.copied
+			{
+				color: #fff;
+				background-color: #8E67B4;
+			}
+		}
+	}
+}
+
+/****************************************************************************/
+
 $brightness-level: 85%;
 
 .rotation-group

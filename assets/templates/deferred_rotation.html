@@ -1,5 +1,39 @@
 <h1>{{ page_title }}</h1>
 <p class="rotation-description">{{ page_description }}</p>
+
+<div class="content-columns">
+	
+{% if previews is defined and next_preview is defined %}
+	<div class="card-preview-countdown">
+		<h4>Next Card Preview</h4>
+		{% for preview_item_type in previews: %}
+			<div class="countdown-item">
+				{% set preview_date, approximate = next_preview[preview_item_type] %}
+				{% set timestamp = int(preview_date.timestamp()) %}
+				<div class="label-countdown">
+					<div class="label" id="countdown-label-{{ timestamp }}">
+						{# Next {{ preview_item_type.name }} {{ preview_item_type.type_name }} preview  #}
+						{{ preview_item_type.name }} {{ preview_item_type.type_name }}
+					</div>
+					<div class="countdown" countdown="{{ timestamp }}" selector="span"
+						finished="Preview out now!"
+						title="{{ preview_date | format_datestring(with_utc_time=True) }}">
+						in {{ 'about' | conditional(approximate) }} <span></span>
+					</div>
+				</div>
+				<button class="copy" title="Copy Discord timestamp!"
+					ng-click="copy_discord_timestamp($event, '{{ timestamp }}', {{ int(approximate) }})">
+					<span>Copy</span>
+					<span>Copied!</span>
+				</button>
+			</div>
+		{% endfor %}
+		<p class="disclaimer">
+			These values are estimates based on statistics and may not be accurate.
+		</p>
+	</div>
+{% endif %}
+
 <div class="rotation-column-wrapper">
 	{% for group, group_data in grouped_rotations %}
 		<div class="rotation-column">
@@ -22,4 +56,6 @@
 			{% endfor %}
 		</div>
 	{% endfor %}
+</div>
+
 </div>

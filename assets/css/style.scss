@@ -435,6 +435,11 @@ a
 				margin: 6px 0;
 				border-top: 1px solid #C1B2E1;
 			}
+			
+			ul
+			{
+				padding: 2px 0 0 0.75rem;
+			}
 		}
 	}
 
@@ -1029,6 +1034,188 @@ select
 @media screen and (min-width: 2800px)
 {
 	#main-outer-wrapper #main-wrapper { margin: 0 16vw 0 16vw; }
+}
+
+/*************************************/
+
+.content-columns
+{
+	max-width: max-content;
+	display: flex;
+	flex-flow: row-reverse wrap;
+	
+	align-content: flex-start;
+	
+	.rotation-column-wrapper
+	{
+		width: max-content;
+		overflow: auto;
+		// flex-shrink: 0;
+		flex-grow: 1;
+		// grid-row: 1;
+		// grid-column: 1;
+	}
+	
+	.card-preview-countdown
+	{
+		flex-grow: 1;
+		// grid-column: 2;
+		// grid-row: 1;
+	}
+}
+
+.card-preview-countdown
+{
+	margin: 0 0 1rem 0;
+	
+	.disclaimer
+	{
+		font-size: 10pt;
+		color: #4C3275;
+	}
+	
+	.countdown-item
+	{
+		max-width: max-content;
+		margin: 0 0 0.5rem 0;
+		
+		display: grid;
+		grid-template-columns: repeat(2, max-content);
+		// grid-template-rows: 1fr 1fr;
+		
+		gap: 0.5rem;
+		
+		border-radius: 4px;
+		
+		// font-family: 'Montserrat', sans-serif;
+		// font-weight: 700;
+		// font-size: 11pt;
+		
+		align-items: center;
+		
+		> div
+		{
+			align-self: center;
+		}
+		
+		> .label-countdown
+		{
+			display: flex;
+			flex-flow: row nowrap;
+			min-width: 330px;
+			
+			gap: 0.5rem;
+			
+			.label
+			{
+				color: #84399F;
+				font-weight: 700;
+			}
+			
+			.countdown
+			{
+				
+			}
+		}
+		
+		> .copy
+		{
+			width: max-content;
+			height: 32px;
+			margin: 0 0 0 0.5rem;
+			cursor: pointer;
+			
+			justify-self: center;
+			align-content: center;
+			
+			// display: grid;
+			// grid-template-columns: repeat(2, max-content);
+			// gap: 5px;
+			
+			color: #fff;
+			border: 1px solid #9465C3;
+			border-radius: 4px;
+			
+			transition: all linear 200ms;
+			
+			background: url('/img/emoji_clipboard_120.png') #9970C1 no-repeat;
+			background-size: 20px 20px;
+			background-position: left 6px center;
+			
+			box-shadow: 0 3px #C8B1DE;
+			
+			&:hover
+			{
+				background-color: #CB95FF;
+				border-color: #78529D;
+				transition: all linear 70ms;
+			}
+			
+			span
+			{
+				display: none;
+				margin: 0 6px 0 30px;
+				font-family: 'Montserrat', sans-serif;
+				font-weight: 700;
+			}
+			
+			span:first-child
+			{
+				display: block;
+			}
+			
+			&.copied
+			{
+				color: #61348B;
+				background-color: #DBBDF8;
+				background-image: url('/img/emoji_checkmark_120.png');
+				transition: all linear 70ms;
+				
+				span:first-child
+				{
+					display: none;
+				}
+				span:last-child
+				{
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 900px)
+{
+	
+.content-columns
+{
+	display: block;
+	max-width: 100vh;
+	
+	.rotation-column-wrapper
+	{
+		width: auto;
+	}
+}
+	
+.card-preview-countdown
+{
+	.countdown-item
+	{
+		max-width: 100%;
+		
+		grid-template-columns: 1fr max-content;
+		
+		> .label-countdown
+		{
+			display: flex;
+			flex-flow: column nowrap;
+			min-width: 0;
+		}
+	}
+}
+	
+	
 }
 
 /*************************************/

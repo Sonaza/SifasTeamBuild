@@ -97,6 +97,35 @@ app.run(($rootScope, $window, $templateCache, $http, RouteEvent, SiteSettings) =
 		$rootScope.toggleTooltip($event, false);
 	}
 	
+	$rootScope.copy_discord_timestamp = ($event, timestamp, approximate) =>
+	{
+		const el = document.querySelector("#countdown-label-" + timestamp);
+		if (el === null)
+			return;
+		
+		const label = el.innerHTML.trim();
+		console.log(timestamp, label);
+		
+		const text = `Next ${label} preview ${approximate ? 'approximately ' : ''}<t:${timestamp}:R> on <t:${timestamp}:F>`;
+		console.log(text);
+		
+		Utility.copy_to_clipboard(text)
+			.then(() =>
+			{
+				const button = $event.target.closest('button');
+				button.classList.add("copied");
+				
+				setTimeout(() =>
+				{
+					button.classList.remove("copied");
+				}, 1500);
+			})
+			.catch((error) =>
+			{
+				console.error('Error copying text: ', error);
+			});
+	}
+	
 	$rootScope.toggleTooltip = ($event, visible) => { CardTooltip.toggleTooltip($rootScope, $event, visible); }
 	angular.element($window).on('resize', () => { $rootScope.toggleTooltip(undefined, false); });
 })

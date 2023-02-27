@@ -108,8 +108,11 @@ class PageRenderer():
 		self.jinja.globals.update({
 			# Python built in functions
 			'len'                    : len,
+			'int'                    : int,
 			'range'                  : range,
 			'reversed'               : reversed,
+			
+			'math'                   : math,
 			
 			# Application related variables
 			'cmd_args'               : self.parent.args,

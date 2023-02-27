@@ -4,7 +4,7 @@ app.controller('NavController', function($rootScope, $scope, $routeParams, $loca
 		$scope.classActive = (page_path) =>
 		{
 			const active_route = SiteRoutes.active_route();
-			if (active_route.id == page_path.substr(1))
+			if (active_route.path_matches_current(page_path))
 			{
 				return 'active';
 			}

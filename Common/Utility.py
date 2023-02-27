@@ -215,12 +215,22 @@ class Utility:
 	@staticmethod
 	def timedelta_float(delta: timedelta, unit: str):
 		return delta / timedelta(**{ unit: 1 })
+		
+	@staticmethod
+	def wrap_year_and_month(year: int, month: int):
+		if month > 12:
+			return year + 1, 1
+		return year, month
 	
 	# ----------------------------------------------------------
 	
 	@staticmethod
-	def dbgprint(*args, **kwargs):
-		longest_key      = max([4] + [len(key) + 3 for key in kwargs.keys()])
+	def dbgprint(kw=None, *args, **kwargs):
+		if kw != None:
+			for key, value in kw.items():
+				kwargs[key] = value
+		
+		longest_key      = max([4] + [len(str(key)) + 3 for key in kwargs.keys()])
 		longest_typeinfo = max(
 			[10] +
 			[len(f"({type(value).__name__})") for value in args] +

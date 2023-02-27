@@ -24,6 +24,8 @@ class BasicRotationsGenerator(GeneratorBase):
 				}, minify_html=not self.args.dev)
 		
 	def generate_and_render(self):
+		preview_times = self.client.get_next_preview_time()
+		
 		# General UR rotations
 		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
 		self.render_and_save("deferred_rotation.html", "pages/ur_rotations.html", {
@@ -33,6 +35,8 @@ class BasicRotationsGenerator(GeneratorBase):
 			'page_title'         : 'UR Rotations',
 			'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
 			                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.''',
+			'previews'           : preview_times.keys(),
+			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('ur', ur_rotations)
 	
@@ -44,9 +48,12 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Festival UR Rotations',
 			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
+			'previews'           : [ BannerType.Festival ],
+			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('festival', festival_rotations)
-	
+		
+		
 		# Party UR rotations
 		party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
 		self.render_and_save("deferred_rotation.html", "pages/party_rotations.html", {
@@ -55,6 +62,8 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Party UR Rotations',
 			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
+			'previews'           : [ BannerType.Party ],
+			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('party', party_rotations)
 	
@@ -66,6 +75,8 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Event UR Rotations',
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
+			'previews'           : [ EventType.Exchange, EventType.Story, ],
+			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('event', event_rotations)
 	
@@ -79,6 +90,7 @@ class BasicRotationsGenerator(GeneratorBase):
 			'page_description'   : '''SR cards organised into sets by costume or other common theme.''',
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('sr', sr_sets)
+		
 		return True
 
 	# -------------------------------------------------------------------------------------------

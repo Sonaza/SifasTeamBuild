@@ -38,8 +38,10 @@ elif [ $LOCAL = $BASE ]; then
 	if [ $? -eq 0 ]; then
 		echo "Repository updated."
 		if grep -q "Pipfile.lock$" <<< "$CHANGES"; then
+			echo
 			echo "Pipfile.lock was updated, running pipenv sync..."
 			pipenv sync
+			echo
 	    fi
 	    
 	    ./build.sh $@

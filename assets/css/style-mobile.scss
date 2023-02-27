@@ -231,6 +231,11 @@
 				border-left: 4px solid #6A3EC4;
 			}
 		}
+		
+		// ul
+		// {
+		// 	display: none;
+		// }
 
 		&.spacer
 		{
@@ -708,9 +713,14 @@ body.sidebar-open
 			margin-left: 0;
 		}
 
-		ul
+		ul.side-nav-ul
 		{
 			padding-bottom: 3rem;
+			
+			li ul
+			{
+				// display: none;
+			}
 		}
 	}
 

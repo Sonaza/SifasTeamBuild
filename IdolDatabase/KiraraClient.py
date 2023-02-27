@@ -1,4 +1,6 @@
 import Config
+from Common import Utility
+
 import requests
 import json
 import time
@@ -14,12 +16,11 @@ from collections import defaultdict, namedtuple
 from dataclasses import dataclass, field
 from typing import List, Optional, Tuple, Dict, Any, Union
 
-from . import DBUtility
+from . import DBUtility, AuxiliaryData
 
 from .Skill import Skill
 from .SkillEnum import ST, TT
 
-from Common import Utility
 
 try:
 	from backports.datetime_fromisoformat import MonkeyPatch
@@ -1116,8 +1117,7 @@ class KiraraClient():
 			
 		return self.convert_to_idol_object(self.db.fetchall())
 	
-	# -------------------------------------------------------------------------------------------
-		
+	
 	def get_idols_by_rarity(self, rarity : Rarity):
 		return self.get_idols(rarity=rarity)
 	
@@ -1132,6 +1132,102 @@ class KiraraClient():
 			return (f"{column} IN ({DBUtility.where_placeholders(data)})", [x.value for x in data])
 		else:
 			return (f"{column} = ?", [data.value])
+	
+	# -------------------------------------------------------------------------------------------
+	
+	def event_banner_stats_thingy(self):
+		query = """SELECT id, type, start_jp, end_jp FROM events
+				   WHERE start_jp >= "2021-01" AND start_jp <= "2023-01"
+				"""
+		self.db.execute(query)
+		events = [dict(x) for x in self.db.fetchall()]
+		events_by_month = defaultdict(list)
+		for event in events:
+			event['type'] = EventType(event['type'])
+			event['start_jp'] = datetime.fromisoformat(event['start_jp'])
+			event['end_jp'] = datetime.fromisoformat(event['end_jp'])
+			events_by_month[event['start_jp'].strftime("%Y-%m")].append(event)
+		
+		query = """SELECT id, type, start_jp, end_jp FROM banners
+				   WHERE start_jp >= "2020-12" AND start_jp <= "2023-01"
+				   AND type IN (1, 2, 3)
+				"""
+		self.db.execute(query)
+		banners = [dict(x) for x in self.db.fetchall()]
+		banners_by_month = defaultdict(list)
+		for banner in banners:
+			banner['type'] = BannerType(banner['type'])
+			banner['start_jp'] = datetime.fromisoformat(banner['start_jp'])
+			banner['end_jp'] = datetime.fromisoformat(banner['end_jp'])
+			banners_by_month[banner['end_jp'].strftime("%Y-%m")].append(banner)
+		
+		for month in events_by_month.keys():
+			print(month)
+			
+			assert(len(events_by_month[month]) == 2)
+			assert(len(banners_by_month[month]) == 2)
+			
+			for event, banner in zip(events_by_month[month], banners_by_month[month]):
+				start_diff = Utility.timedelta_float(event['start_jp'] - banner['start_jp'], 'days')
+				identifier = f"{banner['type'].name} Banner start before {event['type'].name} Event"
+				print(f"{identifier:<45}  {start_diff}")
+				print("    E ", event['start_jp'])
+				print("    B ", banner['start_jp'])
+				print()
+				
+			print()
+		
+	
+	def get_next_preview_time(self, as_timestamps=False):
+		banner_types = [BannerType.Festival, BannerType.Party]
+		event_types = [EventType.Exchange, EventType.Story]
+		
+		next_time = {
+			**{banner_type: None for banner_type in banner_types},
+			**{event_type: None for event_type in event_types},
+		}
+		
+		# --------------------------------------------------------------
+		#  Banners
+		
+		current_banner_type, banners_by_type = self.get_recent_banner_stats(banner_type=banner_types, rarity=Rarity.UR, limit=2)
+		next_banner_type = AuxiliaryData.NextBannerOrder[current_banner_type]
+		
+		current_banner = banners_by_type[current_banner_type][0]
+		preview_date = current_banner['end'] - timedelta(hours=23, minutes=59)
+		
+		next_time[next_banner_type]    = (preview_date, False)
+		
+		previous_banner = banners_by_type[next_banner_type][0]
+		next_year, next_month = Utility.wrap_year_and_month(previous_banner['start'].year, previous_banner['start'].month + 1)
+
+		start_date = AuxiliaryData.StartDateOverride[current_banner_type].get(f'{next_year}-{next_month}',
+			AuxiliaryData.ApproximateStartDate[current_banner_type][next_month])
+		preview_date = datetime(next_year, next_month, start_date - 1, 6, 0, tzinfo=timezone.utc)
+		
+		next_time[current_banner_type] = (preview_date, True)
+		
+		# --------------------------------------------------------------
+		#  Events
+		
+		current_event_type, events_by_type = self.get_recent_event_stats(event_type=event_types, rarity=Rarity.UR, limit=2)
+		next_event_type = AuxiliaryData.NextEventOrder[current_event_type]
+		
+		for event_type in [next_event_type, current_event_type]:
+			event_info = events_by_type[event_type][0]
+			
+			next_year, next_month = Utility.wrap_year_and_month(event_info['start'].year, event_info['start'].month + 1)
+			
+			start_date = AuxiliaryData.StartDateOverride[event_type].get(f'{next_year}-{next_month}',
+				AuxiliaryData.ApproximateStartDate[event_type][next_month])
+			preview_date = datetime(next_year, next_month, start_date - 3, 6, 0, tzinfo=timezone.utc)
+			# preview_date -= timedelta(days=4, hours=14, minutes=19)
+			next_time[event_type] = (preview_date, True)
+		
+		next_time = {k: v for k, v in sorted(next_time.items(), key=lambda x: x[1])}
+			
+		return next_time
+	
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -1233,7 +1329,7 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
-	def get_banner_stats(self, banner_type : Union[BannerType, List[BannerType]], rarity : Union[Rarity, List[Rarity]]):
+	def get_recent_banner_stats(self, banner_type : Union[BannerType, List[BannerType]], rarity : Union[Rarity, List[Rarity]], limit: int = 10):
 		fields = []
 		fields.append(self._make_where_condition("b.type",   banner_type))
 		fields.append(self._make_where_condition("i.rarity", rarity))
@@ -1251,7 +1347,7 @@ class KiraraClient():
 					WHERE {' AND '.join([x[0] for x in fields])}
 					GROUP BY b.id
 					ORDER BY start DESC
-					LIMIT 10"""
+					LIMIT {limit}"""
 		self.db.execute(query, [value for x in fields for value in x[1]])
 		response_data = self.db.fetchall()
 		
@@ -1272,6 +1368,47 @@ class KiraraClient():
 			
 		banners_by_type.default_factory = None
 		return most_recent_banner_type, banners_by_type
+		
+		
+	def get_recent_event_stats(self, event_type : Union[EventType, List[EventType]], rarity : Union[Rarity, List[Rarity]], limit: int = 10):
+		fields = []
+		fields.append(self._make_where_condition("b.type",   event_type))
+		fields.append(self._make_where_condition("i.rarity", rarity))
+		
+		query = f"""SELECT
+						b.type,
+						b.start_jp AS start,
+						b.end_jp AS end,
+						GROUP_CONCAT(c.ordinal) AS ordinals,
+						GROUP_CONCAT(m.group_id) AS groups
+					FROM events b
+						LEFT JOIN event_cards c ON b.id = c.event_id
+						LEFT JOIN idols i ON c.ordinal = i.ordinal
+						LEFT JOIN members m ON i.member_id = m.id
+					WHERE {' AND '.join([x[0] for x in fields])}
+					GROUP BY b.id
+					ORDER BY start DESC
+					LIMIT {limit}"""
+		self.db.execute(query, [value for x in fields for value in x[1]])
+		response_data = self.db.fetchall()
+		
+		most_recent_event_type = EventType(response_data[0]['type'])
+		
+		events_by_type = defaultdict(list)
+		for event_data in response_data:
+			idols  = self.get_idols_by_ordinal(event_data['ordinals'].split(','))
+			groups = [Group(int(x)) for x in event_data['groups'].split(',')]
+			
+			event_type = EventType(event_data['type'])
+			events_by_type[event_type].append({
+				'start'  : datetime.fromisoformat(event_data['start']),
+				'end'    : datetime.fromisoformat(event_data['end']),
+				'idols'  : idols,
+				'groups' : groups,
+			})
+			
+		events_by_type.default_factory = None
+		return most_recent_event_type, events_by_type
 		
 	# -------------------------------------------------------------------------------------------
 	
@@ -1335,7 +1472,7 @@ class KiraraClient():
 				elapsed_per_member[idol.member_id] = delta
 		
 		banner_types = [x.banner_type for x in overdue_sources]
-		most_recent_banner_type, banners_by_type = self.get_banner_stats(banner_type=banner_types, rarity=Rarity.UR)
+		most_recent_banner_type, banners_by_type = self.get_recent_banner_stats(banner_type=banner_types, rarity=Rarity.UR)
 		most_recent_groups = banners_by_type[most_recent_banner_type][0]['groups']
 		# print(most_recent_banner_type, most_recent_groups)
 		
@@ -1387,11 +1524,7 @@ class KiraraClient():
 		
 		# exit()
 		
-		other_banner_type = {
-			BannerType.Festival : BannerType.Party,
-			BannerType.Party    : BannerType.Festival,
-		}
-		next_banner_type = other_banner_type[most_recent_banner_type]
+		next_banner_type = AuxiliaryData.NextBannerOrder[most_recent_banner_type]
 		
 		weighted_overdueness = {}
 		for current_source in overdue_sources:

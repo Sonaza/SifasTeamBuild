@@ -65,6 +65,31 @@ class Utility
 		}
 	}
 	
+	static copy_to_clipboard = (text_to_copy) =>
+	{
+	    if (navigator.clipboard && window.isSecureContext)
+	    {
+	        return navigator.clipboard.writeText(text_to_copy);
+	    }
+	    else
+	    {
+	        let textArea = document.createElement("textarea");
+	        textArea.value = text_to_copy;
+	        
+	        textArea.style.position = "fixed";
+	        textArea.style.left = "-999999px";
+	        textArea.style.top = "-999999px";
+	        document.body.appendChild(textArea);
+	        textArea.focus();
+	        textArea.select();
+	        return new Promise((resolve, reject) =>
+	        {
+	            document.execCommand('copy') ? resolve() : reject();
+	            textArea.remove();
+	        });
+	    }
+	}
+	
 	/******************************************************
 	 * Site preferences
 	 */
@@ -112,28 +137,52 @@ class Utility
 		return new String(value) + " " + (value == 1 ? singular : plural);
 	}
 	
-	static format_seconds = function(seconds_param)
+	static format_seconds_all = function(seconds_param)
 	{
 		const days = Math.floor(seconds_param / 86400);
+		const hours = Math.floor(seconds_param % 86400 / 3600);
+		const minutes = Math.floor(seconds_param % 86400 % 3600 / 60);
+		const seconds = Math.floor(seconds_param % 86400 % 3600 % 60);
+		
+		const output = [];
+		let adding = false;
+		
 		if (days > 0)
 		{
-			return Utility.pluralize(days, "day", "days");
+			output.push(Utility.pluralize(days, "day", "days"));
+			adding = true;
 		}
 		
-		const hours = Math.floor(seconds_param % 86400 / 3600);
-		if (hours > 0)
+		if (hours > 0 || adding)
 		{
-			return Utility.pluralize(hours, "hour", "hours");
+			output.push(Utility.pluralize(hours, "hour", "hours"));
+			adding = true;
 		}
 		
-		const minutes = Math.floor(seconds_param % 86400 % 3600 / 60);
-		if (minutes > 0)
+		if (minutes > 0 || adding)
 		{
-			return Utility.pluralize(minutes, "minute", "minutes");
+			output.push(Utility.pluralize(minutes, "min", "min"));
 		}
 		
-		const seconds = Math.floor(seconds_param % 86400 % 3600 % 60);
-		return Utility.pluralize(seconds, "second", "seconds");
+		output.push(Utility.pluralize(seconds, "sec", "sec"));
+		
+		return output;
+	}
+	
+	static format_seconds_significant = function(seconds_param, significant = 2)
+	{
+		const formatted = Utility.format_seconds_all(seconds_param);
+		const output = [];
+		for (let i = 0; i < Math.max(formatted.length, significant); ++i)
+		{
+			output.push(formatted.shift());
+		}
+		return output.join(' ');
+	}
+	
+	static format_seconds = function(seconds_param)
+	{
+		return Utility.format_seconds_all(seconds_param).shift();
 	}
 	
 	// Wraps a date based on the time only so that relative to the given `now`

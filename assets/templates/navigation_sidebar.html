@@ -14,7 +14,12 @@
 	<li class="spacer"></li>
 	<li><a href="#/event_history" ng-class="classActive('/event_history')">Event History</a></li>
 	<li><a href="#/banners"       ng-class="classActive('/banners')">Gacha Banners</a></li>
-	<li><a href="#/stats"         ng-class="classActive('/stats')">Card Stats</a></li>
+	<li>
+		<a href="#/stats"         ng-class="classActive('/stats')">Card Stats</a>
+		<ul>
+			<li><a href="#/stats/overdueness"         ng-class="classActive('/stats/overdueness')">Overdueness</a></li>
+		</ul>
+	</li>
 	<li><a href="#/history"       ng-class="classActive('/history')">Card History</a></li>
 	<li class="spacer"></li>
 	<li><a href="#/timeline/[[ settings.global_dates ? 'ww' : 'jp' ]]" ng-class="classActive('/timeline')">Timeline <span class="new-tag">[NEW]</span></a></li>

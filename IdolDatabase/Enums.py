@@ -225,11 +225,11 @@ class SkillEffectType(Enum):
 	ReduceAppealBaseBonus = 84
 	
 class EventType(Enum):
-	_init_ = 'value'
+	_init_ = 'value, type_name'
 	
-	Unset    = 0
-	Story    = 1
-	Exchange = 2
+	Unset    = 0, "None"
+	Story    = 1, "Event"
+	Exchange = 2, "Event"
 	
 	@classmethod
 	def from_string(cls, name):
@@ -240,14 +240,14 @@ class EventType(Enum):
 		return EventType.Unset
 	
 class BannerType(Enum):
-	_init_ = 'value valid source'
+	_init_ = 'value valid source type_name'
 	
-	Unset     = 0, False, Source.Unspecified
-	Spotlight = 1, True,  Source.Spotlight
-	Festival  = 2, True,  Source.Festival
-	Party     = 3, True,  Source.Party
-	Other     = 4, False, Source.Unspecified
-	Gacha     = 5, False, Source.Gacha
+	Unset     = 0, False, Source.Unspecified, "None"
+	Spotlight = 1, True,  Source.Spotlight,   "Banner"
+	Festival  = 2, True,  Source.Festival,    "Banner"
+	Party     = 3, True,  Source.Party,       "Banner"
+	Other     = 4, False, Source.Unspecified, "Banner"
+	Gacha     = 5, False, Source.Gacha,       "Banner"
 	
 	@classmethod
 	def from_string(cls, name):
@@ -264,7 +264,7 @@ class BannerType(Enum):
 			if e.valid:
 				ret.append(e)
 		return ret
-	
+
 class MetadataType(Enum):
 	_init_ = 'value prefix category_type'
 	
