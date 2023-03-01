@@ -14,4 +14,4 @@ if ($dark_mode_enabled === true)
 	$data['dark_mode_class'] = 'dark-mode';
 }
 
-display_view("content_index.php", $data);
+display_view("main_index.php", $data);

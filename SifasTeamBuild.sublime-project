@@ -8,6 +8,7 @@
             ],
             "folder_exclude_patterns":
             [
+                "dist/build-live",
                 "wanha",
                 "res",
                 "public/js/vendor"

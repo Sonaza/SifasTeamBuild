@@ -4,16 +4,16 @@ from glob import glob
 
 images = glob(f"*.png") + glob(f"*.jpg")
 
-output_directory = "output"
-if not os.path.exists(output_directory):
+OUTPUT_STAGE_DIRECTORY = "output"
+if not os.path.exists(OUTPUT_STAGE_DIRECTORY):
 	try:
-		os.mkdir(output_directory)
+		os.mkdir(OUTPUT_STAGE_DIRECTORY)
 	except:
 		pass
 
 for filename in images:
 	name, ext = os.path.splitext(os.path.basename(filename))
-	target_path = f'{output_directory}/{name}.webp'
+	target_path = f'{OUTPUT_STAGE_DIRECTORY}/{name}.webp'
 	
 	# if os.path.exists(target_path):
 	# 	continue

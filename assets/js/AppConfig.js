@@ -12,45 +12,7 @@ app.config(($interpolateProvider, $routeProvider, $locationProvider, SiteSetting
 		template    : 'home.html',
 	});
 	
-	for (const route of SiteRoutesProvider.routes())
-	{
-		$routeProvider.when(route.path, {
-			controller:  route.controller,
-			templateUrl: function(routeParams)
-			{
-				if (typeof route.template == "function")
-				{
-					let page_path = route.template(routeParams);
-					if (page_path !== false)
-					{
-						return Utility.cache_buster('pages/' + page_path, BUILD_ID);
-					}
-					else
-					{
-						return false;
-					}
-				}
-				
-				return Utility.cache_buster('pages/' + route.template, BUILD_ID);
-			},
-			reloadOnSearch: route.reload || false,
-			redirectTo : function(routeParams, locationPath, locationParams)
-			{
-				if (typeof route.template == "function")
-				{
-					let page_path = route.template(routeParams);
-					if (page_path === false)
-					{
-						return route.error_redirect;
-					}
-				}
-			},
-		})
-	}
-
-	$routeProvider.otherwise({
-		redirectTo: '/',
-	});
+	SiteRoutesProvider.configure();
 
 	$locationProvider.hashPrefix('');
 	// $locationProvider.html5Mode(true);

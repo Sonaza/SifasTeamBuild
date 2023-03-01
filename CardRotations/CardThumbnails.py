@@ -194,11 +194,11 @@ class CardThumbnails():
 					
 					atlas_identifier = f"atlas_{group.value}_{rarity.value}_{atlas_plane}"
 					
-					atlas_normal_path = Utility.join_path(Config.OUTPUT_DIRECTORY, f'img/thumbnails/{atlas_identifier}_normal.webp').replace('\\', '/')
+					atlas_normal_path = Utility.join_path(Config.OUTPUT_STAGE_DIRECTORY, f'thumbnails/{atlas_identifier}_normal.webp').replace('\\', '/')
 					atlas_normal.save(atlas_normal_path, 'WebP', lossless=False, quality=100)
 					print(f'    {Fore.BLUE}{Style.BRIGHT}Saved normal atlas   (plane {atlas_plane + 1}/{num_atlas_planes})  {Fore.WHITE}: {atlas_normal_path}{Style.RESET_ALL}')
 					
-					atlas_idolized_path = Utility.join_path(Config.OUTPUT_DIRECTORY, f'img/thumbnails/{atlas_identifier}_idolized.webp').replace('\\', '/')
+					atlas_idolized_path = Utility.join_path(Config.OUTPUT_STAGE_DIRECTORY, f'thumbnails/{atlas_identifier}_idolized.webp').replace('\\', '/')
 					atlas_idolized.save(atlas_idolized_path, 'WebP', lossless=False, quality=100)
 					print(f'    {Fore.BLUE}{Style.BRIGHT}Saved idolized atlas (plane {atlas_plane + 1}/{num_atlas_planes})  {Fore.WHITE}: {atlas_idolized_path}{Style.RESET_ALL}')
 					
@@ -215,8 +215,8 @@ class CardThumbnails():
 		atlas_css = []
 		for group, rarity, atlas_plane, (hash_normal, hash_idolized) in atlas_identifiers:
 			atlas_identifier = f"atlas_{group.value}_{rarity.value}_{atlas_plane}"
-			atlas_css.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value}-{atlas_plane} {{ background: url('/img/thumbnails/{atlas_identifier}_normal.{hash_normal}.webp') no-repeat; }}")
-			atlas_css.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value}-{atlas_plane} {{ background: url('/img/thumbnails/{atlas_identifier}_idolized.{hash_idolized}.webp') no-repeat; }}")
+			atlas_css.append(f"                         .card-thumbnail.group-{group.value}-{rarity.value}-{atlas_plane} {{ background: url('/dist/thumbnails/{atlas_identifier}_normal.{hash_normal}.webp') no-repeat; }}")
+			atlas_css.append(f".use-idolized-thumbnails .card-thumbnail.group-{group.value}-{rarity.value}-{atlas_plane} {{ background: url('/dist/thumbnails/{atlas_identifier}_idolized.{hash_idolized}.webp') no-repeat; }}")
 		
 		for ordinal, (group, rarity, atlas_plane, coordinates) in self.atlas_metadata.items():
 			atlas_css.append(f".card-thumbnail.card-{ordinal} {{ background-position: {-coordinates[0]}px {-coordinates[1]}px !important; }}")

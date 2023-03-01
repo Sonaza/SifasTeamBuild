@@ -143,6 +143,48 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 		return Object.values(this.registered_routes);
 	}
 	
+	this.configure = () =>
+	{
+		for (const route of this.routes())
+		{
+			$routeProvider.when(route.path, {
+				controller:  route.controller,
+				templateUrl: function(routeParams)
+				{
+					if (typeof route.template == "function")
+					{
+						let page_path = route.template(routeParams);
+						if (page_path !== false)
+						{
+							return Utility.cache_buster('dist/pages/' + page_path, BUILD_ID);
+						}
+						else
+						{
+							return false;
+						}
+					}
+					
+					return Utility.cache_buster('dist/pages/' + route.template, BUILD_ID);
+				},
+				reloadOnSearch: route.reload || false,
+				redirectTo : function(routeParams, locationPath, locationParams)
+				{
+					if (typeof route.template == "function")
+					{
+						let page_path = route.template(routeParams);
+						if (page_path === false)
+						{
+							return route.error_redirect;
+						}
+					}
+				},
+			})
+		}
+		$routeProvider.otherwise({
+			redirectTo: '/',
+		});
+	}
+	
 	this.$get = function($rootScope, $location, $route, SiteSettings)
 	{
 		$that.$location = $location;

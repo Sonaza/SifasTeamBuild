@@ -10,7 +10,6 @@ app.directive('countdown', function($rootScope, $parse, $window, $interval, Rout
 			if (attrs.selector)
 			{
 				 const child_element = element[0].querySelector(attrs.selector);
-				 console.log(element[0],  attrs.selector, child_element);
 				 
 				 if (child_element !== null)
 				 {

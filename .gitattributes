@@ -1,2 +1,2 @@
-public/js/vendor/** linguist-vendored
-public/css/vendor/** linguist-vendored
+dist/public/js/vendor/** linguist-vendored
+dist/public/css/vendor/** linguist-vendored

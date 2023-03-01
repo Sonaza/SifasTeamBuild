@@ -1,0 +1,10 @@
+build-live
+build-prod-*
+
+build-stage/js/
+build-stage/css/
+build-stage/.htaccess
+
+public/.well-known/
+public/.htaccess
+views/main_index.php

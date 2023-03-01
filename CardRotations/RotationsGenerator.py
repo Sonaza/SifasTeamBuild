@@ -9,6 +9,7 @@ from Common import Utility
 
 import os
 import sys
+import shutil
 import platform
 import argparse
 
@@ -149,7 +150,7 @@ class RotationsGenerator:
 					"assets/js/AppConfig.js",
 					"assets/js/TooltipsCache.js",
 				],
-				output_file      = os.path.join(Config.OUTPUT_DIRECTORY, "js/public.min.js"),
+				output_file      = os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "js/public.min.js"),
 				depends_on       = ['TooltipsCache'],
 			),
 			
@@ -173,7 +174,7 @@ class RotationsGenerator:
 					"assets/css/style-timeline-mobile.scss",
 					"assets/css/style-darkmode-mobile.scss",
 				],
-				output_file      = os.path.join(Config.OUTPUT_DIRECTORY, "css/public.min.css"),
+				output_file      = os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "css/public.min.css"),
 			),
 			
 			ResourceProcessor.ProcessorTask(
@@ -244,7 +245,8 @@ class RotationsGenerator:
 			print("Render history load failed, a full render is required!")
 			self.args.force_render = True
 			
-		if not os.path.exists("public/js/tooltip_data.js"):
+		tooltip_path = os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "js/tooltip_data.js")
+		if not os.path.exists(tooltip_path):
 			print("Tooltip data file does not exist, a full render is required!")
 			self.args.force_render = True
 		
@@ -268,11 +270,11 @@ class RotationsGenerator:
 	def get_preload_assets(self):
 		preload_assets = []
 		preload_asset_files = Utility.glob([
-			os.path.join(Config.OUTPUT_DIRECTORY, "css/public.min.css"),
-			os.path.join(Config.OUTPUT_DIRECTORY, "js/vendor/angular/angular-combined.min.js"),
-			os.path.join(Config.OUTPUT_DIRECTORY, "js/public.min.js"),
-			os.path.join(Config.OUTPUT_DIRECTORY, "js/tooltip_data.js"),
-			os.path.join(Config.OUTPUT_DIRECTORY, "img/thumbnails/atlas_*_30_*_idolized.webp")
+			os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "css/public.min.css"),
+			os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "js/vendor/angular/angular-combined.min.js"),
+			os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "js/public.min.js"),
+			os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "js/tooltip_data.js"),
+			os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "thumbnails/atlas_*_30_*_idolized.webp")
 		])
 		
 		ext_types = {
@@ -291,7 +293,7 @@ class RotationsGenerator:
 			filepath = filepath.replace('\\', '/')
 			filehash = Utility.get_file_modify_hash(filepath)
 			
-			relative_path = filepath.replace('public/', '')
+			relative_path = filepath.replace(Config.OUTPUT_STAGE_DIRECTORY, Config.OUTPUT_LIVE_PATH)
 			base, ext = os.path.splitext(relative_path)
 			
 			preload_assets.append({
@@ -323,8 +325,8 @@ class RotationsGenerator:
 			
 	def generate_pages(self):
 		files_to_delete = Utility.glob([
-			os.path.join(Config.OUTPUT_DIRECTORY, "pages/*.html"),
-			os.path.join(Config.OUTPUT_DIRECTORY, "pages/*/*.html")
+			os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "pages/*.html"),
+			os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "pages/*/*.html")
 		])
 		
 		render_start_time = time.perf_counter()
@@ -338,10 +340,10 @@ class RotationsGenerator:
 		# Build ID
 		
 		random_build_id = str(hex(hash(time.time())))[2:8]
-		self.renderer.render_and_save("build_id_template.js", "../assets/js/build_id.js",
+		self.renderer.render_and_save("build_id_template.js", "assets/js/build_id.js",
 		{
 			'build_id' : random_build_id,
-		})
+		}, output_basepath="")
 		print()
 		
 		# -------------------------------------------------------
@@ -413,7 +415,7 @@ class RotationsGenerator:
 		# Crawler Info
 		
 		if self.due_for_rendering("crawler.html"):
-			self.renderer.render_and_save("crawler.html", "crawler.html", {}, minify_html=True)
+			self.renderer.render_and_save("crawler.html", "pages/crawler.html", {}, minify_html=True)
 		
 		# -------------------------------------------------------
 		# .htaccess
@@ -430,12 +432,12 @@ class RotationsGenerator:
 		
 		last_data_update = self.client.get_database_update_time()
 		now = datetime.now(timezone.utc)
-		self.renderer.render_and_save("main_layout.php", "views/content_index.php", {
+		self.renderer.render_and_save("main_layout.php", "main_index.php", {
 			'last_update'      : now,
 			'last_data_update' : last_data_update,
 			'render_time'      : f"{render_time_so_far:0.2f}s",
 			'preloads'         : preload_assets,
-		}, minify_html=False, output_basepath='')
+		}, minify_html=False, output_basepath='dist/views/')
 		
 		# -------------------------------------------------------
 		# File cleanup
@@ -448,5 +450,74 @@ class RotationsGenerator:
 			print(f"Removing outdated file  {file}")
 			os.remove(file)
 		
+		# -------------------------------------------------------
+		# Symlinking
+		
+		symlink_success = self.create_symlinks()
+		if symlink_success:
+			print("Copying .htaccess to public root...")
+			shutil.copy(os.path.join(Config.OUTPUT_STAGE_DIRECTORY, ".htaccess"), os.path.join(Config.OUTPUT_PUBLIC_DIRECTORY, ".htaccess"))
+		else:
+			print("Symlinking failed, build is not live!")
+		
 		render_time_total = time.perf_counter() - render_start_time
 		print(f"\nAll done! Rendering took {render_time_total:0.3f}s\n")
+	
+	
+	def create_symlinks(self):
+		print()
+		print(f"{Fore.BLUE}{Style.BRIGHT}Creating symlinks...")
+		
+		if self.args.dev:
+			return self.create_dev_symlinks()
+		else:
+			return self.create_prod_symlinks()
+	
+	
+	def create_dev_symlinks(self):
+		try:
+			current_symlink = os.readlink(Config.OUTPUT_LIVE_SYMLINK)
+		except FileNotFoundError:
+			current_symlink = None
+		
+		if current_symlink == os.path.basename(Config.OUTPUT_STAGE_DIRECTORY):
+			# print(f"  {Fore.GREEN}{Style.BRIGHT}Current dev build symlink is OK.")
+			return True
+			
+		try: 
+			print(f"  {Fore.YELLOW}{Style.BRIGHT}Current dev build symlink does not point to {Fore.WHITE}{Config.OUTPUT_STAGE_DIRECTORY}   {Fore.GREEN}Updating symlink...")
+			if os.path.exists(Config.OUTPUT_LIVE_SYMLINK):
+				os.remove(Config.OUTPUT_LIVE_SYMLINK)
+			os.symlink(os.path.basename(Config.OUTPUT_STAGE_DIRECTORY), Config.OUTPUT_LIVE_SYMLINK)
+		except:
+			print("Failed to create symlink!")
+			return False
+			
+		return True
+		
+	def create_prod_symlinks(self):
+		old_prod_directories = Utility.glob([Config.OUTPUT_PROD_DIRECTORY + '*'])
+		
+		prod_timestamp = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+		prod_symlink_target = f"{Config.OUTPUT_PROD_DIRECTORY}-{prod_timestamp}"
+		
+		print(f"  {Fore.YELLOW}{Style.BRIGHT}Updating production build symlink to {Fore.WHITE}{prod_symlink_target}  ...  ", end='')
+		
+		from distutils.dir_util import copy_tree, remove_tree
+		copy_tree(Config.OUTPUT_STAGE_DIRECTORY, prod_symlink_target)
+		
+		try: 
+			if os.path.exists(Config.OUTPUT_LIVE_SYMLINK):
+				os.remove(Config.OUTPUT_LIVE_SYMLINK)
+			os.symlink(os.path.basename(prod_symlink_target), Config.OUTPUT_LIVE_SYMLINK, target_is_directory=True)
+			print("OK!")
+			
+		except:
+			print("Failed to create symlink!")
+			return False
+		
+		for old_dirpath in old_prod_directories:
+			print("  Removing old build-prod directory: ", old_dirpath)
+			remove_tree(old_dirpath)
+		
+		return True

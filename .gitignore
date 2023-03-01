@@ -5,12 +5,7 @@ res/
 
 .vagrant/
 vagrant-build.sh
-
-public/.htaccess
-
-public/crawler.html
-public/.well-known/
-views/content_index.php
+sifas-vagrant.conf
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -27,7 +22,6 @@ node_modules
 # Distribution / packaging
 .Python
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/

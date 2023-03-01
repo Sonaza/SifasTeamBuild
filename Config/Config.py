@@ -1,23 +1,28 @@
 import os, sys
 
 class Config():
-	ROOT_DIRECTORY         = os.path.dirname(sys.modules['__main__'].__file__)
+	ROOT_DIRECTORY          = os.path.dirname(sys.modules['__main__'].__file__)
 	
-	USER_AGENT             = 'Mozilla/5.0 (compatible; sifas-cards crawler; +https://sifas-cards.sonaza.com/crawler.html) thanks for your website'
+	USER_AGENT              = 'Mozilla/5.0 (compatible; sifas-cards crawler; +https://sifas-cards.sonaza.com/crawler.html) thanks for your website'
 	
-	OUTPUT_DIRECTORY       = "public"
-	TEMPLATES_DIRECTORY    = "assets/templates"
+	OUTPUT_PUBLIC_DIRECTORY = "dist/public"
+	OUTPUT_STAGE_DIRECTORY  = "dist/build-stage"
+	OUTPUT_PROD_DIRECTORY   = "dist/build-prod"
+	OUTPUT_LIVE_SYMLINK     = "dist/build-live"
+	OUTPUT_LIVE_PATH        = "dist"
 	
-	DATABASE_FILE          = "build/idols.sqlite"
+	TEMPLATES_DIRECTORY     = "assets/templates"
 	
-	HISTORY_CRAWL_FILE     = "build/history_crawl.json"
-	DATA_FALLBACK_FILE     = "build/data_fallback.json"
+	DATABASE_FILE           = "build/idols.sqlite"
 	
-	ATLAS_METADATA_FILE    = "build/atlas_metadata.json"
-	RENDER_HISTORY_FILE    = "build/render_history.json"
-	PROCESSOR_HISTORY_FILE = "build/processor_history.json"
+	HISTORY_CRAWL_FILE      = "build/history_crawl.json"
+	DATA_FALLBACK_FILE      = "build/data_fallback.json"
 	
-	BUILD_STATUS_FILE      = "build/build.status"
+	ATLAS_METADATA_FILE     = "build/atlas_metadata.json"
+	RENDER_HISTORY_FILE     = "build/render_history.json"
+	PROCESSOR_HISTORY_FILE  = "build/processor_history.json"
 	
-	THUMBNAILS_CACHE       = "build/thumbnails"
+	BUILD_STATUS_FILE       = "build/build.status"
+	
+	THUMBNAILS_CACHE        = "build/thumbnails"
 

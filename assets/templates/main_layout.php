@@ -35,7 +35,7 @@
 	<link rel="preload" href="/css/fonts/Montserrat-Regular-latin.woff2" as="font" crossorigin="anonymous">
 	<link rel="preload" href="/css/fonts/Montserrat-Bold-latin.woff2" as="font" crossorigin="anonymous"> #}
  	<link rel="stylesheet" href="/css/vendor/font-awesome/font-awesome.min.css" media="(max-width: 1100px), (hover: none)">
-	<link rel="stylesheet" href="{{ cache_buster('/css/public.min.css') }}">
+	<link rel="stylesheet" href="/dist/{{ cache_buster('css/public.min.css') }}">
 	
 	<link rel="icon" href="/favicon.ico">
 	<link rel="apple-touch-icon" href="/img/favicon_tile_180.png">
@@ -166,16 +166,16 @@
 			</div>
 		</div>
 	</footer>
-	<script type="text/ng-template" id="pages/home.html">{{ include('public/pages/home.html', static=True, minify=True, root_directory='') }}</script>
+	<script type="text/ng-template" id="pages/home.html">{{ include('dist/build-stage/pages/home.html', static=True, minify=True, root_directory='') }}</script>
 	{% if cmd_args.dev %}
 		<script src="/js/vendor/angular/angular.js"></script>
 		<script src="/js/vendor/angular/angular-route.js"></script>
 		<script src="/js/vendor/angular/angular-sanitize.js"></script>
 		<script src="/js/vendor/angular/angular-cookies.js"></script>
 	{% else %}
-		<script src="{{ cache_buster('/js/vendor/angular/angular-combined.min.js') }}"></script>
+		<script src="/js/vendor/angular/angular-combined.min.js"></script>
 	{% endif %}
-	<script src="{{ cache_buster('/js/tooltip_data.js') }}"></script>
-	<script src="{{ cache_buster('/js/public.min.js') }}"></script>
+	<script src="/dist/{{ cache_buster('js/tooltip_data.js') }}"></script>
+	<script src="/dist/{{ cache_buster('js/public.min.js') }}"></script>
 </body>
 </html>

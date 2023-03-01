@@ -49,7 +49,7 @@ app.directive('deferredLoad', function($rootScope, $parse, $window, $timeout, Ro
 			});
 			
 			scope.loaded = false;
-			scope.template_url = Utility.cache_buster('pages/deferred/' + attrs.deferredLoad + '.html', BUILD_ID);
+			scope.template_url = Utility.cache_buster('dist/pages/deferred/' + attrs.deferredLoad + '.html', BUILD_ID);
 			
 			// scope.finished_loading = () =>
 			// {

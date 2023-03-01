@@ -27,7 +27,7 @@ class PageRenderer():
 		self.included_pages = set()
 	
 	def save_tooltip_data(self, output_filename):
-		output_filepath = Utility.join_path(Config.OUTPUT_DIRECTORY, output_filename)
+		output_filepath = Utility.join_path(Config.OUTPUT_STAGE_DIRECTORY, output_filename)
 		output_space = 145
 		
 		print()
@@ -91,7 +91,11 @@ class PageRenderer():
 			
 		def card_thumbnail_classes(card):
 			return f"card-thumbnail group-{ card.group_id.value }-{ card.rarity.value }-{ get_atlas_plane(card.ordinal) } card-{ card.ordinal }"
-			
+		
+		def cache_buster(filepath):
+			busted_path = Utility.cache_buster(Config.OUTPUT_STAGE_DIRECTORY, filepath)
+			return busted_path
+		
 		# ---------------------------------------------
 		
 		self.jinja.filters.update({
@@ -148,7 +152,7 @@ class PageRenderer():
 			'card_thumbnail_classes' : card_thumbnail_classes,
 			
 			# Systems stuff
-			'cache_buster'           : lambda filepath: Utility.cache_buster(Config.OUTPUT_DIRECTORY, filepath),
+			'cache_buster'           : cache_buster,
 		})
 		
 		self.rendered_pages = []
@@ -276,7 +280,7 @@ class PageRenderer():
 	
 	def make_output_filepath(self, output_filename, output_basepath=None):
 		if output_basepath == None:
-			output_basepath = Config.OUTPUT_DIRECTORY
+			output_basepath = Config.OUTPUT_STAGE_DIRECTORY
 		return Utility.join_path(output_basepath, output_filename, normalize=True)
 	
 	@staticmethod
