@@ -1329,6 +1329,22 @@ class KiraraClient():
 	
 	# -------------------------------------------------------------------------------------------
 	
+	def get_newest_event_id(self):
+		query = "SELECT id FROM events ORDER BY id DESC LIMIT 1"
+		self.db.execute(query)
+		try:
+			return self.db.fetchone().id
+		except:
+			return None
+			
+	def get_newest_banner_id(self):
+		query = "SELECT id FROM banners ORDER BY id DESC LIMIT 1"
+		self.db.execute(query)
+		try:
+			return self.db.fetchone().id
+		except:
+			return None
+	
 	def get_recent_banner_stats(self, banner_type : Union[BannerType, List[BannerType]], rarity : Union[Rarity, List[Rarity]], limit: int = 10):
 		fields = []
 		fields.append(self._make_where_condition("b.type",   banner_type))

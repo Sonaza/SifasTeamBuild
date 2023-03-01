@@ -63,6 +63,8 @@ class TimelineGenerator(GeneratorBase):
 		now = datetime.now(timezone.utc)
 		current_month  = now.strftime("%Y-%m")
 		
+		newest_banner_id = self.client.get_newest_banner_id()
+		
 		game_release_months = {
 			Locale.JP : "2019-09",
 			Locale.WW : "2020-02",
@@ -87,10 +89,11 @@ class TimelineGenerator(GeneratorBase):
 			if release_month not in monthly_equivalence: monthly_equivalence[release_month] = []
 			monthly_equivalence[release_month].append(idol.release_date[Locale.WW].strftime("%Y-%m"))
 			
-			if release_month == current_month and idol.banner.id:
+			if idol.banner.id == newest_banner_id:
 				banner_end_month = idol.banner.end[Locale.JP].strftime("%Y-%m")
-				if banner_end_month not in monthly_equivalence: monthly_equivalence[banner_end_month] = []
-				monthly_equivalence[banner_end_month].append(idol.banner.end[Locale.WW].strftime("%Y-%m"))
+				if banner_end_month != release_month:
+					if banner_end_month not in monthly_equivalence: monthly_equivalence[banner_end_month] = []
+					monthly_equivalence[banner_end_month].append(idol.banner.end[Locale.WW].strftime("%Y-%m"))
 			
 		from collections import Counter
 		
@@ -137,9 +140,9 @@ class TimelineGenerator(GeneratorBase):
 					if 'banners' not in entry_info[release_month]:
 						entry_info[release_month]['banners'] = set()
 				
-				if idol.banner.id:
+				if idol.banner.id == newest_banner_id:
 					banner_end_month = idol.banner.end[locale].strftime("%Y-%m")
-					if banner_end_month != release_month and release_month == current_month:
+					if banner_end_month != release_month:
 						timeline['entries'][banner_end_month] = {group: {member.member_id: {} for member in Idols.by_group[group]} for group in Group}
 						
 						month_length_days  = 15
