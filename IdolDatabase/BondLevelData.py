@@ -25,7 +25,7 @@ class BondParameter(Enum):
 	GdPenalty      = 10
 	SkPenalty      = 11
 
-	AttributeBonus = 12
+	MatchBonus     = 12
 
 	URLevel        = 13
 	SRLevel        = 14
@@ -75,7 +75,7 @@ class IdolBondBonuses():
 	BOND_BOARD_TILES = cyclelist([
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   },
-		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.AttributeBonus : 2.5, },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.MatchBonus : 2.5, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, },
@@ -281,7 +281,7 @@ if __name__ == "__main__":
 	# 	print(board_level, completion)
 	
 	# IdolBondBonuses.get_board_parameters(bond_level=261, board_level=260, unlocked_tiles=True)
-	# IdolBondBonuses.get_board_parameters(bond_level=92, board_level=60, unlocked_tiles=[BondParameter.AttributeBonus])
+	# IdolBondBonuses.get_board_parameters(bond_level=92, board_level=60, unlocked_tiles=[BondParameter.MatchBonus])
 	
 	# IdolBondBonuses.get_board_parameters(103, 50, [ BondParameter.Appeal, BondParameter.CritPower ])
 	# IdolBondBonuses.get_board_parameters(102, 40, [ BondParameter.Appeal, BondParameter.CritRate ])

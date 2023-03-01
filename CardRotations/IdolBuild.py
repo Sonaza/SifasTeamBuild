@@ -55,7 +55,7 @@ class Idol(IdolBase):
 					matching_bonus = self.song_modifier[1]
 					
 					if self.bond_board != None:
-						matching_bonus += self.bond_board[BondParameter.AttributeBonus] * 0.01
+						matching_bonus += self.bond_board[BondParameter.MatchBonus] * 0.01
 					
 					self.base_appeal    *= matching_bonus
 					self.base_stamina   *= matching_bonus
