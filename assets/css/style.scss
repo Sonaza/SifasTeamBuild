@@ -2505,6 +2505,12 @@ body.dark-mode
 			{
 				padding: 0 0.5rem;
 			}
+			
+			&.honk-wasted
+			{
+				background: url('/img/honkwasted-40.gif') no-repeat center right 6px;
+				background-size: 30px 30px;
+			}
 
 			.idol-icon
 			{

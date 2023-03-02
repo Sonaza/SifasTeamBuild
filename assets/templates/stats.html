@@ -105,7 +105,8 @@
 						{% for member, card, time_since, highlight in data.cards %}
 							<div class="st-tr idol-{{ member.value }} {{ 'empty-row' | conditional(not is_valid_card(card)) }} 
 								{{ 'highlight-idol' | conditional(highlight) }} {{ 'highlight-new' | conditional(is_valid_card(card) and (time_since[Locale.JP].days <= 0)) }}" data-index="{{ loop.index }}">
-								<div class="st-td st-cell-30 idol-identity">
+								{% set honk_wasted = time_since != None and (time_since[Locale.JP].days >= 1000) %}
+								<div class="st-td st-cell-30 idol-identity {{ 'honk-wasted' | conditional(honk_wasted) }}">
 									<div class="idol-icon idol-icon-32-border idol-bg-color-dim"></div>
 									<div class="idol-name">
 										<span class="hide-narrow-1400">{{ member.full_name }}</span>
