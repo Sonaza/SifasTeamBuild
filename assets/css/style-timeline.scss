@@ -710,6 +710,7 @@ body.hide-tooltips #timeline-date-label
 					background-size: #{$timeline-thumbnail-size - 10px};
 					transition: background-size ease-out 100ms;
 					filter: drop-shadow(0 -1px 3px #000a);
+					pointer-events: none;
 				}
 				
 				.thumbnail-set
