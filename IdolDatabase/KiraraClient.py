@@ -1220,7 +1220,7 @@ class KiraraClient():
 			
 			start_date = AuxiliaryData.StartDateOverride[event_type].get(f'{next_year}-{next_month}',
 				AuxiliaryData.ApproximateStartDate[event_type][next_month])
-			preview_date = datetime(next_year, next_month, start_date - 3, 6, 0, tzinfo=timezone.utc)
+			preview_date = datetime(next_year, next_month, start_date - 4, 6, 0, tzinfo=timezone.utc)
 			# preview_date -= timedelta(days=4, hours=14, minutes=19)
 			next_time[event_type] = (preview_date, True)
 		
