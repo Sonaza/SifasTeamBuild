@@ -525,9 +525,9 @@ bond_boards = {
 	Member.Umi      : { 'bond_level': 100, 'board_level': 60,  'unlocked_tiles' : [ ] },
 	Member.Eli      : { 'bond_level': 103, 'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.CritPower, BP.RLevel ] },
 	Member.Honoka   : { 'bond_level': 104, 'board_level': 40,  'unlocked_tiles' : [ BP.Appeal, BP.CritRate] },
-	Member.Kotori   : { 'bond_level': 91,  'board_level': 60,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.SpVoltage, BP.MatchBonus, ] },
+	Member.Kotori   : { 'bond_level': 91,  'board_level': 70,  'unlocked_tiles' : [ ] },
 	Member.Rin      : { 'bond_level': 83,  'board_level': 40,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.Stamina, BP.CritRate, ] },
-	Member.Nozomi   : { 'bond_level': 275, 'board_level': 260, 'unlocked_tiles' : True },
+	Member.Nozomi   : { 'bond_level': 276, 'board_level': 260, 'unlocked_tiles' : True },
 	Member.Nico     : { 'bond_level': 93,  'board_level': 50,  'unlocked_tiles' : [ ] },
 
 	Member.Mari     : { 'bond_level': 84,  'board_level': 60,  'unlocked_tiles' : [ BP.MatchBonus, ] },
@@ -535,17 +535,17 @@ bond_boards = {
 	Member.Dia      : { 'bond_level': 104, 'board_level': 40,  'unlocked_tiles' : [ BP.Appeal, BP.CritRate, ] },
 	Member.Riko     : { 'bond_level': 87,  'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.CritPower, ] },
 	Member.Chika    : { 'bond_level': 105, 'board_level': 40,  'unlocked_tiles' : [ ] },
-	Member.Kanan    : { 'bond_level': 110, 'board_level': 60,  'unlocked_tiles' : [ BP.MatchBonus, ] },
+	Member.Kanan    : { 'bond_level': 111, 'board_level': 60,  'unlocked_tiles' : [ BP.MatchBonus, ] },
 	Member.You      : { 'bond_level': 103, 'board_level': 80,  'unlocked_tiles' : [ BP.CritPower, ] },
 	Member.Hanamaru : { 'bond_level': 125, 'board_level': 120, 'unlocked_tiles' : True },
 	Member.Ruby     : { 'bond_level': 112, 'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.Stamina, BP.CritPower, ] },
 
-	Member.Kanata   : { 'bond_level': 121, 'board_level': 60,  'unlocked_tiles' : [ BP.Appeal, BP.MatchBonus, ] },
+	Member.Kanata   : { 'bond_level': 121, 'board_level': 60,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.Stamina, BP.SpVoltage, BP.MatchBonus, ] },
 	Member.Mia      : { 'bond_level': 60,  'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.CritPower ] },
 	Member.Karin    : { 'bond_level': 90,  'board_level': 50,  'unlocked_tiles' : [ ] },
-	Member.Rina     : { 'bond_level': 113, 'board_level': 70,  'unlocked_tiles' : [ ] },
+	Member.Rina     : { 'bond_level': 116, 'board_level': 70,  'unlocked_tiles' : [ ] },
 	Member.Kasumi   : { 'bond_level': 100, 'board_level': 100, 'unlocked_tiles' : True },
-	Member.Setsuna  : { 'bond_level': 83,  'board_level': 50,  'unlocked_tiles' : [ ] },
+	Member.Setsuna  : { 'bond_level': 84,  'board_level': 50,  'unlocked_tiles' : [ ] },
 	Member.Ayumu    : { 'bond_level': 91,  'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.CritPower, ] },
 	Member.Emma     : { 'bond_level': 109, 'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.CritPower, ] },
 	Member.Shizuku  : { 'bond_level': 101, 'board_level': 60,  'unlocked_tiles' : [ BP.MatchBonus, ] },
@@ -553,6 +553,8 @@ bond_boards = {
 	Member.Ai       : { 'bond_level': 85,  'board_level': 50,  'unlocked_tiles' : [ ] },
 	Member.Lanzhu   : { 'bond_level': 54,  'board_level': 30,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.CritRate, ] },
 }
+
+"""
 
 the_best_team.set_all_units([
 	# Toy Nico
@@ -621,11 +623,93 @@ the_best_team.set_accessories({
 		Accessories.Necklace.get(Attribute.Natural, Rarity.UR),
 	],
 })
+"""
+
+the_best_team.set_all_units([
+	# Fes1 Kanata
+	IdolUnit(182, "Fes1", limit_break = 5) \
+		.set_bond_board(**bond_boards[Member.Kanata]) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 4),
+	# Magical Nozo
+	IdolUnit(193, "Magical", limit_break = 5) \
+		.set_bond_board(**bond_boards[Member.Nozomi]) \
+		.set_insight_skills([InsightSkills.Appeal_M_Group] * 3),
+	# Fes2 Rina
+	IdolUnit(487, "Fes2", limit_break = 5) \
+		.set_bond_board(**bond_boards[Member.Rina]) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 4),
+	   
+	#--------------------------
+	
+	# Fes2 You
+	# IdolUnit(393, "Fes2", limit_break = 5) \
+	# 	.set_bond_board(**bond_boards[Member.You]) \
+	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	# Fes3 Kasu
+	IdolUnit(656, "Fes3", limit_break = 5) \
+		.set_bond_board(**bond_boards[Member.Kasumi]) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	    
+	# Fes3 Nozo
+	IdolUnit(728, "Fes3", limit_break = 5) \
+		.set_bond_board(**bond_boards[Member.Nozomi]) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	# Fes2 Maru
+	# IdolUnit(467, "Fes2", limit_break = 5) \
+	# 	.set_bond_board(**bond_boards[Member.Hanamaru]) \
+	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	    
+	# Fes2 Ruby
+	# IdolUnit(504, "Fes2", limit_break = 5) \
+	# 	.set_bond_board(**bond_boards[Member.Ruby]) \
+	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	# Fes3 Yoha
+	IdolUnit(854, "Fes3", limit_break = 5) \
+		.set_bond_board(**bond_boards[Member.Yoshiko]) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	
+	#--------------------------
+
+	# Initial Kanan
+	IdolUnit(48, "Initial", limit_break = 1) \
+		.set_bond_board(**bond_boards[Member.Kanan]) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 2),
+	# Star Setsu
+	IdolUnit(713, "Star", limit_break = 0) \
+		.set_bond_board(**bond_boards[Member.Setsuna]) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Group] * 2),
+	# Initial Koto
+	IdolUnit(12, "Initial", limit_break = 0) \
+		.set_bond_board(**bond_boards[Member.Kotori]) \
+		.set_insight_skills([InsightSkills.Appeal_S_Group, InsightSkills.Appeal_M_Group]),
+])
+
+the_best_team.set_accessories({
+	Strategy.Red : [
+		Accessories.Bracelet.get(Attribute.Active, Rarity.UR),
+		Accessories.Bracelet.get(Attribute.Active, Rarity.UR),
+		Accessories.Belt.get(Attribute.Cool, Rarity.UR),
+	],
+	Strategy.Green : [
+		# Accessories.Choker.get(Attribute.Smile,   Rarity.UR),
+		# Accessories.Choker.get(Attribute.Elegant, Rarity.UR),
+		# Accessories.Choker.get(Attribute.Active,  Rarity.UR),
+		Accessories.Brooch.get(Attribute.Natural,   Rarity.UR),
+		Accessories.Bangle.get(Attribute.Pure,    Rarity.UR),
+		Accessories.Bangle.get(Attribute.Active,  Rarity.UR),
+	],
+	Strategy.Blue : [
+		Accessories.Bracelet.get(Attribute.Smile, Rarity.UR),
+		Accessories.Bracelet.get(Attribute.Smile, Rarity.UR),
+		Accessories.Necklace.get(Attribute.Natural, Rarity.UR),
+	],
+})
 
 print()
 
-song_info = SongInfo.make_attribute_gimmick(Attribute.Smile, SkillEffectType.ReduceAppealBaseBonus, 0.50)
-# song_info = SongInfo.make_attribute_gimmick(Attribute.Smile, SkillEffectType.ReduceAppealBaseBonus, 0.25)
+# song_info = SongInfo.make_attribute_gimmick(Attribute.Smile, SkillEffectType.ReduceAppealBaseBonus, 0.50)
+song_info = None
+song_info = SongInfo.make_attribute_gimmick(Attribute.Natural, SkillEffectType.ReduceAppealBaseBonus, 0.20)
 the_best_team.calculate_stats(song_info)
 
 # strats = the_best_team.get_units_per_strategy()
