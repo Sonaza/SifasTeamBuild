@@ -35,14 +35,14 @@
 						</div>
 						
 						<div class="st-td st-cell-17-5 card-release-elapsed">
-							<a href="#/history/{{ member.first_name.lower() }}/ur" class="history-link">
+							<a href="/history/{{ member.first_name.lower() }}/ur" class="history-link">
 								{{ data['last_any_ur'].days | format_days }}
 							</a>
 						</div>
 						
 						{% if is_valid_card(card) %}
 							<div class="st-td st-cell-17-5 card-release-elapsed" title="Released on {{ card.release_date[Locale.JP] | format_datestring }}">
-								<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[source] }}" class="history-link">
+								<a href="/history/{{ member.first_name.lower() }}/{{ history_category[source] }}" class="history-link">
 									{{ data['last_limited_ur'].days | format_days }}
 								</a>
 							</div>

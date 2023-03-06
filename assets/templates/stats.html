@@ -128,9 +128,9 @@
 									<div class="st-td st-cell-20 card-release-elapsed">
 										
 										{% if category_tag not in ['limited', 'nonlimited', 'ur', 'sr', 'all']: %}
-											<a href="#/history/{{ member.first_name.lower() }}/{{ history_category[card.source] }}" class="history-link">
+											<a href="/history/{{ member.first_name.lower() }}/{{ history_category[card.source] }}" class="history-link">
 										{% else %}
-											<a href="#/history/{{ member.first_name.lower() }}/{{ category_tag }}" class="history-link">
+											<a href="/history/{{ member.first_name.lower() }}/{{ category_tag }}" class="history-link">
 										{% endif %}
 										
 											{% set dates_differ = (time_since[Locale.JP] != time_since[Locale.WW]) %}

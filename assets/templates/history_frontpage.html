@@ -16,7 +16,7 @@
 			<div class="history-group-table">
 				{% for member in Idols.by_group[group]: %}
 					<div class="cell idol-{{ member.member_id.value }}">
-						<a href="#/history/{{ member.first_name.lower() }}"
+						<a href="/history/{{ member.first_name.lower() }}"
 							class="idol-bg-color-dim bg-color-highlight-hover idol-bg-glow-faint">
 							<span class="idol-icon idol-icon-32-border"></span>
 							<span class="idol-name">

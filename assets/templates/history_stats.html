@@ -14,7 +14,7 @@
 		<ul class="page-selector member-page-selector group-{{ group.tag }}" ng-if="idol_navigation.group == '{{ group.tag }}'">
 			{% for member in Idols.by_group[group] %}
 				<li class="idol-{{ member.id }}">
-					<a href="#/history/{{ member.first_name.lower() }}/[[ active_page ]]"
+					<a href="/history/{{ member.first_name.lower() }}/[[ active_page ]]"
 						class="idol-bg-color-dim bg-color-highlight-hover idol-border-color-dark border-color-highlight-hover"
 						ng-class="idolActive('{{ member.first_name.lower() }}')">
 						<span class="idol-icon idol-icon-16-border"></span>
@@ -27,15 +27,15 @@
 </div>
 
 <ul class="page-selector stats-page-selector">
-	<li><a href="#/history/{{ member.first_name.lower() }}/all"        ng-class="pageActive('all')">All</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/event"      ng-class="pageActive('event')">Event UR</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/festival"   ng-class="pageActive('festival')">Festival</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/party"      ng-class="pageActive('party')">Party</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/limited"    ng-class="pageActive('limited')">Limited</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/nonlimited" ng-class="pageActive('nonlimited')">Non-Limited</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/gacha"      ng-class="pageActive('gacha')">Any Gacha</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/ur"         ng-class="pageActive('ur')">Any UR</a></li>
-	<li><a href="#/history/{{ member.first_name.lower() }}/sr"         ng-class="pageActive('sr')">Any SR</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/all"        ng-class="pageActive('all')">All</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/event"      ng-class="pageActive('event')">Event UR</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/festival"   ng-class="pageActive('festival')">Festival</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/party"      ng-class="pageActive('party')">Party</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/limited"    ng-class="pageActive('limited')">Limited</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/nonlimited" ng-class="pageActive('nonlimited')">Non-Limited</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/gacha"      ng-class="pageActive('gacha')">Any Gacha</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/ur"         ng-class="pageActive('ur')">Any UR</a></li>
+	<li><a href="/history/{{ member.first_name.lower() }}/sr"         ng-class="pageActive('sr')">Any SR</a></li>
 </ul>
 
 <div class="stats-category history-stats-category">
