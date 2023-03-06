@@ -41,9 +41,9 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 {
 	$scope.loading = true;
 	
-	if ($routeParams.page !== undefined)
+	if (typeof $routeParams.page == "number")
 	{
-		LocationKeys.set('page', $routeParams.page);
+		LocationKeys.set('page', $routeParams.page + 1);
 		$route.updateParams({'page': undefined});
 	}
 	
