@@ -15,7 +15,7 @@ app.config(($interpolateProvider, $routeProvider, $locationProvider, SiteSetting
 	SiteRoutesProvider.configure();
 
 	$locationProvider.hashPrefix('');
-	// $locationProvider.html5Mode(true);
+	$locationProvider.html5Mode(true);
 })
 
 

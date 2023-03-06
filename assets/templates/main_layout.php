@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html ng-app="app" lang="en">
 <head>
-	<title ng-bind-html="title">SIFAS Card Rotations</title>
+	<title ng-bind-html="title"><?= $current_site_title ?></title>
 	<meta charset="utf-8">
 	
 	<meta name="description" content="Love Live SIF All Stars card rotations and related statistics.">
 
-	<meta name="og:site_name" content="SIFAS Card Rotations">	
+	<meta name="og:site_name" content="<?= $site_title ?>">
 	<meta property="og:url" content="https://sifas-cards.sonaza.com">
 	<meta property="og:type" content="website">
-	<meta property="og:title" content="SIFAS Card Rotations">
+	<meta property="og:title" content="<?= $current_site_title ?>">
 	<meta property="og:description" content="Love Live SIF All Stars card rotations and related statistics.">
 	<meta property="og:image" itemprop="image primaryImageOfPage" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
 
 	<meta name="twitter:card" content="summary">
 	<meta property="twitter:domain" content="sifas-cards.sonaza.com">
 	<meta property="twitter:url" content="https://sifas-cards.sonaza.com">
-	<meta name="twitter:title" itemprop="name" content="SIFAS Card Rotations">
+	<meta name="twitter:title" itemprop="name" content="<?= $current_site_title ?>">
 	<meta name="twitter:description" itemprop="description" content="Love Live SIF All Stars card rotations and related statistics.">
 	<meta name="twitter:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
 	
@@ -25,7 +25,7 @@
 	<meta name="mobile-web-app-capable" content="yes">
   	<meta name="apple-mobile-web-app-capable" content="yes">
   	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-  	<meta name="apple-mobile-web-app-title" content="SIFAS Card Rotations">
+  	<meta name="apple-mobile-web-app-title" content="<?= $current_site_title ?>">
   	
 {# {% for item in preloads %}
 	<link rel="preload" href="{{ item['path'] }}" as="{{ item['type'] }}">{% endfor %}
@@ -43,6 +43,7 @@
 	<link rel="apple-touch-icon" href="/img/favicon_tile_512.png" sizes="512x512">
 	<link rel="shortcut icon" href="/img/favicon_tile_192.png">
 	<link rel="manifest" href="/manifest.json">
+	<base href="/">
 </head>
 <body ng-controller="BaseController" class="no-js <?= $dark_mode_class; ?>" ng-class="[activeSettingsClass(), hiddenHeaderClass(), scrollDisabler()]" ng-keydown="keydown($event)" tabindex="0" scroll="scroll($event, diff)">
 	<div id="header" class="{{ 'dev-build' | conditional(cmd_args.dev) }}">
