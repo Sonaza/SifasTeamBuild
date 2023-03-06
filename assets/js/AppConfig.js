@@ -4,15 +4,7 @@ app.config(($interpolateProvider, $routeProvider, $locationProvider, SiteSetting
 	$interpolateProvider.startSymbol('[[');
 	$interpolateProvider.endSymbol(']]');
 	
-	SiteRoutesProvider.register_route(
-	{
-		title       : 'Home',
-		path        : '/',
-		controller  : 'MainController',
-		template    : 'home.html',
-	});
-	
-	SiteRoutesProvider.configure();
+	SiteRoutesProvider.configure_route_provider();
 
 	$locationProvider.hashPrefix('');
 	$locationProvider.html5Mode(true);

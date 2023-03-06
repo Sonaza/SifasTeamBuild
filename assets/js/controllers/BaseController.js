@@ -344,8 +344,8 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 				$scope.page_loaded = now_utc;
 				
 				let expiry_dates = [
-					new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),     6, 3, 0)),
-					new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 6, 3, 0)),
+					new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),     6, 6, 0)),
+					new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1, 6, 6, 0)),
 				];
 				for (const expiry of expiry_dates)
 				{
@@ -373,7 +373,7 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 			$scope.unfocus();
 		});
 		
-		$rootScope.$on('$routeChangeSuccess', (event) =>
+		$rootScope.update_site_title = () =>
 		{
 			const active_route = SiteRoutes.active_route();
 			if (active_route.path !== '/')
@@ -395,7 +395,16 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 			
 			document.querySelector('meta[property="og:title"]').setAttribute("content", $rootScope.title);
 			document.querySelector('meta[name="twitter:title"]').setAttribute("content", $rootScope.title);
-			
+		}
+		
+		$rootScope.$on("$locationChangeSuccess", (event) =>
+		{
+			$rootScope.update_site_title();
+		});
+		
+		$rootScope.$on('$routeChangeSuccess', (event) =>
+		{
+			$rootScope.update_site_title();
 			angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 		});
 		
@@ -489,7 +498,5 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 			
 			angular.element(document.querySelector("#source-selector-default")).remove();
 		};
-		
-		angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 	}
 )

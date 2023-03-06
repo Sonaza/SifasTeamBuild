@@ -4,7 +4,8 @@
 		<ul class="page-selector array-group-page-selector" data-num-pages="{{ num_pages }}">
 			{% for page_index in range(num_pages): %}
 				<li>
-					<a href="/{{ group.tag }}/{{ page_index }}" ng-class="pageActive({{ page_index }})">
+					<a href="/{{ group.tag }}?page={{ page_index + 1 }}"
+						ng-click="set_page({{ page_index + 1 }}, $event)" ng-class="page_active_class({{ page_index + 1 }})">
 						Page {{ page_index + 1 }}
 					</a>
 				</li>
@@ -14,7 +15,7 @@
 			The number indicates how many of the same type-attribute pair the girl has. <b>Change pages to see them all.</b>
 		</p>
 		{% for page_index in range(num_pages): %}
-			<div class="array-group {{ group.tag }}" ng-class="pageActive({{ page_index }})">
+			<div class="array-group {{ group.tag }}" ng-class="page_active_class({{ page_index + 1 }})">
 				{% for member_id, card_array in group_data %}
 					<div class="card-array idol-{{ member_id.value }}">
 						<div class="card-array-inner">

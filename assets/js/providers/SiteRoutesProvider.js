@@ -87,12 +87,12 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 			if (this.subpages === undefined && this.subtitle === undefined)
 				return undefined;
 			
-			// const route_params = this.$angular.$route.current?.params || {};
 			const route_params = $that.$route.current?.params || {};
+			const location_search = $that.$location?.search() || {};
 			
 			if (typeof this.subtitle == "function")
 			{
-				return this.subtitle.call(this, route_params);
+				return this.subtitle.call(this, route_params, location_search);
 			}
 			
 			if (this.subpages !== undefined && typeof this.subpages == "object" &&
@@ -143,7 +143,7 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 		return Object.values(this.registered_routes);
 	}
 	
-	this.configure = () =>
+	this.configure_route_provider = () =>
 	{
 		for (const route of this.routes())
 		{
@@ -167,6 +167,7 @@ app.provider('SiteRoutes', function SiteRoutesProvider($routeProvider, $routePar
 					return Utility.cache_buster('dist/pages/' + route.template, BUILD_ID);
 				},
 				reloadOnSearch: route.reload || false,
+				// reloadOnUrl: false,
 				redirectTo : function(routeParams, locationPath, locationParams)
 				{
 					if (typeof route.template == "function")
