@@ -37,7 +37,9 @@ $subpage_titles = [
 	'timeline'      => 'Timeline',
 ];
 
-$request_uri = explode('/', $_SERVER['REQUEST_URI']);
+$request_uri = $_SERVER['REQUEST_URI'];
+$request_uri = explode('?', $request_uri, 2)[0];
+$request_uri = explode('/', $request_uri);
 array_shift($request_uri);
 if (count($request_uri) > 0)
 {
