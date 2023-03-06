@@ -50,4 +50,6 @@ if (count($request_uri) > 0)
 	}
 }
 
+$data['request_uri'] = $_SERVER['REQUEST_URI'];
+
 display_view("main_index.php", $data);

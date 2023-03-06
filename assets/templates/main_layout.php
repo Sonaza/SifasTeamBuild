@@ -7,7 +7,7 @@
 	<meta name="description" content="Love Live SIF All Stars card rotations and related statistics.">
 
 	<meta name="og:site_name" content="<?= $site_title ?>">
-	<meta property="og:url" content="https://sifas-cards.sonaza.com">
+	<meta property="og:url" content="https://sifas-cards.sonaza.com<?= $request_uri ?>">
 	<meta property="og:type" content="website">
 	<meta property="og:title" content="<?= $current_site_title ?>">
 	<meta property="og:description" content="Love Live SIF All Stars card rotations and related statistics.">
@@ -15,7 +15,7 @@
 
 	<meta name="twitter:card" content="summary">
 	<meta property="twitter:domain" content="sifas-cards.sonaza.com">
-	<meta property="twitter:url" content="https://sifas-cards.sonaza.com">
+	<meta property="twitter:url" content="https://sifas-cards.sonaza.com<?= $request_uri ?>">
 	<meta name="twitter:title" itemprop="name" content="<?= $current_site_title ?>">
 	<meta name="twitter:description" itemprop="description" content="Love Live SIF All Stars card rotations and related statistics.">
 	<meta name="twitter:image" content="https://sifas-cards.sonaza.com/img/favicon_tile_256.png">
