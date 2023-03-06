@@ -41,7 +41,9 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 {
 	$scope.loading = true;
 	
-	if ($routeParams.page !== undefined)
+	const current_page = LocationKeys.get('page');
+	
+	if (current_page === undefined && $routeParams.page !== undefined)
 	{
 		const old_page_number = Number($routeParams.page);
 		if (!isNaN(old_page_number))
@@ -67,7 +69,7 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 		}
 	}
 	
-	$scope.set_page(LocationKeys.get('page') || 1);
+	$scope.set_page(current_page || 1);
 	
 	$scope.page_active_class = (page) =>
 	{
