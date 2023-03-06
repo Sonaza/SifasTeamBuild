@@ -41,10 +41,14 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 {
 	$scope.loading = true;
 	
-	if (typeof $routeParams.page == "number")
+	if ($routeParams.page !== undefined)
 	{
-		LocationKeys.set('page', $routeParams.page + 1);
-		$route.updateParams({'page': undefined});
+		const old_page_number = Number($routeParams.page);
+		if (!isNaN(old_page_number))
+		{
+			LocationKeys.set('page', old_page_number + 1);
+			$route.updateParams({'page': undefined});
+		}
 	}
 	
 	$rootScope.$on("$routeChangeStart", function($event, next_route, current_route)
