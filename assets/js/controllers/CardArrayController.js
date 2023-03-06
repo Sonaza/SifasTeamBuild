@@ -41,6 +41,18 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 {
 	$scope.loading = true;
 	
+	let find_number_of_pages = () =>
+	{
+		const page_selector = document.querySelector('.array-group-page-selector');
+		if (page_selector)
+		{
+			return parseInt(page_selector.getAttribute('data-num-pages'));
+		}
+		console.error("Couldn't find number of array pages");
+		return 1;
+	}
+	
+	const num_pages = find_number_of_pages();
 	const current_page = LocationKeys.get('page');
 	
 	if (current_page === undefined && $routeParams.page !== undefined)
@@ -48,8 +60,9 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 		const old_page_number = Number($routeParams.page);
 		if (!isNaN(old_page_number))
 		{
-			LocationKeys.set('page', old_page_number + 1);
+			LocationKeys.set('page', Math.min(num_pages, old_page_number + 1));
 			$route.updateParams({'page': undefined});
+			return;
 		}
 	}
 	
@@ -60,8 +73,8 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 	
 	$scope.set_page = (page_number, $event) =>
 	{
-		$scope.active_page = page_number;
-		LocationKeys.set('page', page_number);
+		$scope.active_page = Math.min(num_pages, page_number);
+		LocationKeys.set('page', $scope.active_page);
 		
 		if ($event !== undefined)
 		{
@@ -77,13 +90,6 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 		{
 			return 'active';
 		}
-	}
-	
-	let num_pages = undefined;
-	let page_selector = document.querySelector('.array-group-page-selector');
-	if (page_selector)
-	{
-		num_pages = parseInt(page_selector.getAttribute('data-num-pages'));
 	}
 	
 	$scope.$on('keydown', (_, e) =>
@@ -108,6 +114,4 @@ app.controller('CardArrayController', function($rootScope, $scope, $route, $rout
 	});
 
 	$scope.loading = false;
-
-	angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 });
