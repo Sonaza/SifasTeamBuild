@@ -531,7 +531,8 @@ bond_boards = {
 	Member.Nico     : { 'bond_level': 93,  'board_level': 50,  'unlocked_tiles' : [ ] },
 
 	Member.Mari     : { 'bond_level': 84,  'board_level': 60,  'unlocked_tiles' : [ BP.MatchBonus, ] },
-	Member.Yoshiko  : { 'bond_level': 81,  'board_level': 40,  'unlocked_tiles' : [ ] },
+	# Member.Yoshiko  : { 'bond_level': 81,  'board_level': 40,  'unlocked_tiles' : [ ] },
+	Member.Yoshiko  : { 'bond_level': 81,  'board_level': 80,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.Stamina, BP.CritPower, ] },
 	Member.Dia      : { 'bond_level': 104, 'board_level': 40,  'unlocked_tiles' : [ BP.Appeal, BP.CritRate, ] },
 	Member.Riko     : { 'bond_level': 87,  'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.CritPower, ] },
 	Member.Chika    : { 'bond_level': 105, 'board_level': 40,  'unlocked_tiles' : [ ] },
@@ -655,18 +656,18 @@ the_best_team.set_all_units([
 		.set_bond_board(**bond_boards[Member.Nozomi]) \
 	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 	# Fes2 Maru
-	# IdolUnit(467, "Fes2", limit_break = 5) \
-	# 	.set_bond_board(**bond_boards[Member.Hanamaru]) \
-	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	IdolUnit(467, "Fes2", limit_break = 5) \
+		.set_bond_board(**bond_boards[Member.Hanamaru]) \
+	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 	    
 	# Fes2 Ruby
 	# IdolUnit(504, "Fes2", limit_break = 5) \
 	# 	.set_bond_board(**bond_boards[Member.Ruby]) \
 	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 	# Fes3 Yoha
-	IdolUnit(854, "Fes3", limit_break = 5) \
-		.set_bond_board(**bond_boards[Member.Yoshiko]) \
-	    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
+	# IdolUnit(854, "Fes3", limit_break = 5) \
+	# 	.set_bond_board(**bond_boards[Member.Yoshiko]) \
+	#     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4),
 	
 	#--------------------------
 
