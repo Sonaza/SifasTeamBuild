@@ -393,6 +393,9 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 				$rootScope.title = SiteGlobals.site_title;
 			}
 			
+			document.querySelector('meta[property="og:title"]').setAttribute("content", $rootScope.title);
+			document.querySelector('meta[name="twitter:title"]').setAttribute("content", $rootScope.title);
+			
 			angular.element(document.querySelectorAll(".ng-cloak")).removeClass('ng-cloak');
 		});
 		
