@@ -279,6 +279,17 @@ app.directive('memberSelectBox', function($parse, $templateCache, $compile, $tim
 				{
 					$scope.$apply(() =>
 					{
+						if (!Utility.mobile_mode())
+						{
+							const doc = document.documentElement;
+							const scroll_top = (window.pageYOffset || doc.scrollTop) - (doc.clientTop || 0);
+							console.log(scroll_top);
+							if (scroll_top > 150)
+							{
+								window.scrollTo(0, 120);
+							}
+						}
+						
 						$scope.toggleSelectBox();
 					});
 					e.preventDefault();
