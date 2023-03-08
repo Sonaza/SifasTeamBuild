@@ -1,5 +1,5 @@
 
-@media screen and (hover: none) 
+@media (hover: none) 
 {
 	
 #timeline
@@ -40,7 +40,7 @@
 
 /***********************************************************************************/
 
-@media screen and (min-width: 901px)
+@media (min-width: 901px)
 {
 
 body.mobile-mode #timeline-date-tooltip
@@ -58,7 +58,7 @@ body.mobile-mode #timeline-date-tooltip
 
 /***********************************************************************************/
 
-@media screen and (max-width: 900px)
+@media (max-width: 900px)
 {
 
 body.mobile-mode #timeline-date-tooltip

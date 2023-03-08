@@ -5,7 +5,6 @@ import os
 import sys
 import re
 import time
-import glob
 import json
 import signal
 import psutil
@@ -32,7 +31,7 @@ class _WatchEventHandler(FileSystemEventHandler):
 		if self.is_dirty: return
 		if event.is_directory: return
 		
-		watched_files_globbed = Utility.glob(self.task_config.watched_files)
+		watched_files_globbed = Utility.glob(self.task_config.watched_files, recursive=True)
 		
 		file_path = event.src_path.replace('\\', '/')
 		if file_path not in watched_files_globbed: return

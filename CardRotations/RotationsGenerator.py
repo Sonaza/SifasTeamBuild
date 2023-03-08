@@ -135,8 +135,7 @@ class RotationsGenerator:
 				file_processor   = ResourceProcessor.FileProcessors.JavascriptFileProcessor,
 				watch_directory  = "assets/",
 				watched_files    = [
-					"assets/js/*.js",
-					"assets/js/*/*.js",
+					"assets/js/**/*.js",
 				],
 				input_files      = [
 					os.path.join(Config.RENDER_STAGE_DIRECTORY, "build_id.js"),
@@ -159,8 +158,8 @@ class RotationsGenerator:
 				file_processor   = ResourceProcessor.FileProcessors.CSSFileProcessor,
 				watch_directory  = "assets/",
 				watched_files    = [
-					"assets/css/*.css",
-					"assets/css/*.scss",
+					"assets/css/**/*.css",
+					"assets/css/**/*.scss",
 				],
 				input_files      = [
 					Config.ATLAS_CSS_FILE,
@@ -173,6 +172,7 @@ class RotationsGenerator:
 					"assets/css/style-mobile.scss",
 					"assets/css/style-timeline-mobile.scss",
 					"assets/css/style-darkmode-mobile.scss",
+					"assets/css/components/*.scss",
 				],
 				output_file      = os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "css/public.min.css"),
 			),

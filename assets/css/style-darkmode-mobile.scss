@@ -1,209 +1,156 @@
 
 /***************************************************************************************/
 
-@media screen and (max-height: 820px) and (min-width: 900px)
+@media (max-height: 820px) and (min-width: 900px)
 {
 	
-body.dark-mode
-{
-	background: #170c0c;
-}
-
-body.dark-mode
-{
-	
-#main-outer-wrapper
-{
-	background: url('/img/background-mobile-dark.webp') no-repeat center center fixed;
-	background-size: cover;
-	
-	#main-wrapper
+	body.dark-mode
 	{
-		background: transparent !important;
+		background: #170c0c;
 		
-		#main #main-inner .main-content
+		#main-outer-wrapper
 		{
-			background: transparent !important;
-		}
-	}
-}
-	
-#side-nav
-{
-	border-right: 2px solid #3C0D61;
-	
-	.side-nav-inner
-	{
-		background: linear-gradient(to bottom, #1C0E3Af5 70%, #0D0719dd 100%);
-	}
-	
-	ul li
-	{
-		a
-		{
-			color: #DDCDFE;
-			background: #60447E99;
-			border-color: #60447E;
-			border-left: none;
-			border-right: 2px solid #AA96D3;
-			box-shadow: none;
-
-			&:hover
+			background: url('/img/background-mobile-dark.webp') no-repeat center center fixed;
+			background-size: cover;
+			
+			#main-wrapper
 			{
-				color: #fff;
-				background: #6E48BD;
-				border-right: none;
-				border-left: 4px solid #B597F3;
-			}
-
-			&.active
-			{
-				color: #fff;
-				background: #8C65DB !important;
-				border-right: none;
-				border-left: 4px solid #B292F4;
-
-				&:hover
-				{
-					color: #fff;
-					background: #BA98FF !important;
-				}
-			}
-		}
-	}
-}
-
-
-.settings-select-box
-{
-	
-	.select-box-options
-	{
-		box-shadow: 0 5px 40px #000c;
-		
-		ul
-		{
-			li.select-box-group
-			{
-				span.group-title
-				{
-					// background: linear-gradient(to bottom, #0F0C15 0%, #0F0C1500 40%);
-					background: transparent;
-					border-bottom: 1px solid #3A2E52;
-				}
-			}
-		}
-	}
-	
-}
-
-}
-
-}
-
-/***************************************************************************************/
-
-@media screen and (max-width: 1100px)
-{
-
-body.dark-mode
-{
-	background: #170c0c;
-}
-
-/*************************************************************************/
-
-body.dark-mode
-{
-
-#header .mobile-header
-{
-	.sidebar-toggle
-	{
-		text-align: center;
-		color: #EDDBF8;
-		
-		&.visible
-		{
-			color: #FFFFFF;
-			background: #150D26;
-		}
-	}
-}
-
-/*************************************************************************/
-
-#side-nav
-{
-	.nav-wrapper
-	{
-		background: linear-gradient(to bottom, #1C0E3Af5 70%, #0D0719dd 100%);
-		
-		li a
-		{
-			border-color: #60447E;
-			border-left: none;
-			border-right: 2px solid #AA96D3;
-
-			&:hover
-			{
-				border-right: none;
-				border-left: 4px solid #B597F3;
-			}
-
-			&.active
-			{
-				border-right: none;
-				border-left: 4px solid #B292F4;
-			}
-		}
-	}
-}
-
-/*************************************************************************/
-
-#main-outer-wrapper
-{
-	background: url('/img/background-mobile-dark.webp') no-repeat center center fixed;
-	background-size: cover;
-	
-	#main-wrapper
-	{
-		background: transparent !important;
-		box-shadow: none;
-		
-		#main
-		{
-			#main-inner
-			{
-				.main-content
+				background: transparent !important;
+				
+				#main #main-inner .main-content
 				{
 					background: transparent !important;
 				}
 			}
 		}
-	}
-}
-
-/*************************************************************************/
-
-.settings-select-box
-{
-	
-	.select-box-options
-	{
-		ul li.select-box-group
+			
+		#side-nav
 		{
-			span.group-title
+			border-right: 2px solid #3C0D61;
+			
+			.side-nav-inner
 			{
-				background: transparent;
-				border-bottom: 1px solid #3A2E52;
+				background: linear-gradient(to bottom, #1C0E3Af5 70%, #0D0719dd 100%);
+			}
+			
+			ul li
+			{
+				a
+				{
+					color: #DDCDFE;
+					background: #60447E99;
+					border-color: #60447E;
+					border-left: none;
+					border-right: 2px solid #AA96D3;
+					box-shadow: none;
+
+					&:hover
+					{
+						color: #fff;
+						background: #6E48BD;
+						border-right: none;
+						border-left: 4px solid #B597F3;
+					}
+
+					&.active
+					{
+						color: #fff;
+						background: #8C65DB !important;
+						border-right: none;
+						border-left: 4px solid #B292F4;
+
+						&:hover
+						{
+							color: #fff;
+							background: #BA98FF !important;
+						}
+					}
+				}
 			}
 		}
+		
 	}
-	
+
 }
-	
-}
+
+/***************************************************************************************/
+
+@media (max-width: 1100px)
+{
+
+	body.dark-mode
+	{
+		background: #170c0c;
+			
+		#header .mobile-header
+		{
+			.sidebar-toggle
+			{
+				text-align: center;
+				color: #EDDBF8;
+				
+				&.visible
+				{
+					color: #FFFFFF;
+					background: #150D26;
+				}
+			}
+		}
+
+		/*************************************************************************/
+
+		#side-nav
+		{
+			.nav-wrapper
+			{
+				background: linear-gradient(to bottom, #1C0E3Af5 70%, #0D0719dd 100%);
+				
+				li a
+				{
+					border-color: #60447E;
+					border-left: none;
+					border-right: 2px solid #AA96D3;
+
+					&:hover
+					{
+						border-right: none;
+						border-left: 4px solid #B597F3;
+					}
+
+					&.active
+					{
+						border-right: none;
+						border-left: 4px solid #B292F4;
+					}
+				}
+			}
+		}
+
+		/*************************************************************************/
+
+		#main-outer-wrapper
+		{
+			background: url('/img/background-mobile-dark.webp') no-repeat center center fixed;
+			background-size: cover;
+			
+			#main-wrapper
+			{
+				background: transparent !important;
+				box-shadow: none;
+				
+				#main
+				{
+					#main-inner
+					{
+						.main-content
+						{
+							background: transparent !important;
+						}
+					}
+				}
+			}
+		}
+
+	}
 
 }

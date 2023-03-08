@@ -5,7 +5,6 @@ import os
 import sys
 import re
 import time
-import glob
 import json
 from datetime import datetime, timezone
 from colorama import Fore, Style
@@ -68,7 +67,7 @@ class ResourceProcessor():
 		if not os.path.exists(task_config.output_file):
 			return True
 		
-		input_files_globbed = Utility.glob(task_config.input_files)
+		input_files_globbed = Utility.glob(task_config.input_files, recursive=True)
 		
 		for input_file in input_files_globbed:
 			if input_file not in task_history['input_files']:
@@ -165,7 +164,7 @@ class ResourceProcessor():
 		
 	
 	def run_file_processing_task(self, task_name, task_config, minify):
-		input_files_globbed = Utility.glob(task_config.input_files)
+		input_files_globbed = Utility.glob(task_config.input_files, recursive=True)
 		
 		task_config.processor_instance.process(
 			input_files  = input_files_globbed,

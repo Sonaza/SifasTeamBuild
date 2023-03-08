@@ -3,12 +3,11 @@ app.directive('memberSelectBox', function($parse, $templateCache, $compile, $tim
 	SiteSettings, RouteEvent)
 {
 	return {
-		restrict: 'E',
+		restrict: 'A',
 		scope: {
 			current_index:  '=filterIndex',
 			current_member: '=filterMember',
 		},
-		// template: '<div class="inner"><div class="inner-dot">&nbsp;</div></div><div class="label">[[ label ]] <span class="hide-mobile" ng-if="keybind">([[ keybind ]])</span></div>',
 		controller: function($rootScope, $scope, $attrs, $transclude)
 		{
 			if (!($scope.current_member instanceof Member))
@@ -21,11 +20,11 @@ app.directive('memberSelectBox', function($parse, $templateCache, $compile, $tim
 			
 			$scope.select_box_options_opened = false;
 			$scope.last_toggled = 0;
-			$scope.toggleSelectBox = ($event) =>
+			$scope.toggleSelectBox = () =>
 			{
-				let t = new Date().getTime();
-				if ((t - $scope.last_toggled) < 50) return;
-				$scope.last_toggled = t;
+				const now = new Date().getTime();
+				if ((now - $scope.last_toggled) < 50) return;
+				$scope.last_toggled = now;
 				
 				$scope.select_box_options_opened = !$scope.select_box_options_opened;
 				if ($scope.select_box_options_opened)
@@ -42,7 +41,8 @@ app.directive('memberSelectBox', function($parse, $templateCache, $compile, $tim
 			
 			$scope.optionSelectedClass = (member_id) =>
 			{
-				if (($scope.current_index == 0 && member_id === -1) || ($scope.current_member.id === member_id))
+				if (($scope.current_index == 0 && member_id === -1) ||
+					($scope.current_member.id === member_id))
 				{
 					return 'selected';
 				}
@@ -54,7 +54,7 @@ app.directive('memberSelectBox', function($parse, $templateCache, $compile, $tim
 				return $scope.select_box_options_opened ? 'opened': 'hidden';
 			}
 			
-			$scope.chooseSelectOption = ($event, member_id) =>
+			$scope.chooseSelectOption = (member_id) =>
 			{
 				if (member_id === -1)
 				{
@@ -71,13 +71,13 @@ app.directive('memberSelectBox', function($parse, $templateCache, $compile, $tim
 						}
 					}
 				}
-				$scope.toggleSelectBox($event);
+				$scope.toggleSelectBox();
 				$scope.$parent.$broadcast('refresh-deferred-loads');
 			}
 			
-			$scope.keepSelectBoxOnScreen = (event) =>
+			$scope.keepSelectBoxOnScreen = () =>
 			{
-				let e = document.querySelector('.select-box-options');
+				let e = document.querySelector('.member-select-options');
 				if (!e) return;
 				
 				const view_width = document.documentElement.clientWidth;
@@ -308,6 +308,8 @@ app.directive('memberSelectBox', function($parse, $templateCache, $compile, $tim
 		},
 		link: function ($scope, $element, $attrs)
 		{
+			$element.addClass('member-select-box');
+			
 			let template = $templateCache.get('member_select_box.html');
 			if (template !== undefined)
 			{

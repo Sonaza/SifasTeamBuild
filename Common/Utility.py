@@ -171,11 +171,11 @@ class Utility:
 	# ----------------------------------------------------------
 	
 	@staticmethod
-	def glob(globs_list : Union[str, List]):
+	def glob(globs_list : Union[str, List], recursive=False):
 		if isinstance(globs_list, str): globs_list = [globs_list]
 		output_paths = []
 		for glob_path in globs_list:
-			output_paths.extend([x.replace("\\", "/") for x in glob(glob_path)])
+			output_paths.extend([x.replace("\\", "/") for x in glob(glob_path, recursive=recursive)])
 		return output_paths
 		
 	

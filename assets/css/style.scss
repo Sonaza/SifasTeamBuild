@@ -683,307 +683,6 @@ select
 
 /* ------------------------------------------------------ */
 
-.select-box-hidden
-{
-	display: none;
-}
-
-@keyframes blinking
-{
-	0%
-	{
-		opacity: 0;
-	}
-
-	50%
-	{
-		opacity: 0;
-	}
-	
-	51%
-	{
-		opacity: 1;
-	}
-
-	100%
-	{
-		opacity: 1;
-	}
-}
-
-.settings-select-box
-{
-	position: relative;
-	user-select: none;
-	padding-right: 5px;
-	
-	.select-box-backdrop
-	{
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 9999;
-	}
-	
-	.select-box-current
-	{
-		display: block;
-		font-family: 'Montserrat', sans-serif;
-		font-weight: 700;
-		font-size: 9pt;
-		border: 1px solid #5E2BC7;
-		border-radius: 0.25rem;
-		padding: .375rem 2.25rem .375rem .75rem;
-		margin: 0.25rem 0 0.4rem 0;
-		-moz-padding-start: calc(0.75rem - 3px);
-		line-height: 1.5;
-		background-color: #fff;
-		background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxNiAxNic+PHBhdGggZmlsbD0nbm9uZScgc3Ryb2tlPScjMzQzYTQwJyBzdHJva2UtbGluZWNhcD0ncm91bmQnIHN0cm9rZS1saW5lam9pbj0ncm91bmQnIHN0cm9rZS13aWR0aD0nMicgZD0nTTIgNWw2IDYgNi02Jy8+PC9zdmc+");
-		background-repeat: no-repeat;
-		background-position: right .75rem center;
-		background-size: 16px 12px;
-		transition: border-color .075s ease-in-out, box-shadow .075s ease-in-out;
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		appearance: none;
-		color: #5D2CC2;
-		
-		z-index: 99999;
-		
-		width: 220px;
-		cursor: pointer;
-		
-		&:hover, &:focus
-		{
-			border: 1px solid #9562FF;
-			box-shadow: 0 0 0 3px #fff6;
-		}
-		
-		.idol-details
-		{
-			display: flex;
-			flex-flow: row nowrap;
-			align-items: center;
-			height: 24px;
-			
-			span.idol-icon
-			{
-				display: block;
-				width: 24px;
-				height: 24px;
-				margin-right: 0.5rem;
-				border-radius: 4px;
-				background-size: 16px;
-				background-position: center;
-				background-repeat: no-repeat;
-				text-align: center;
-			}
-			
-			span.idol-name
-			{
-				display: block;
-			}
-			
-			span.default-option
-			{
-				display: block;
-				padding-left: 1rem;
-				
-				span.blinking-cursor
-				{
-					display: inline-block;
-					width: 2px;
-					height: 1rem;
-					margin-bottom: -3px;
-					margin-left: 2px;
-					background: #270F48;
-					// background: #fff;
-					animation: blinking 1s linear infinite;
-				}
-			}
-		}
-	}
-	
-	div.select-box-options
-	{
-		float: left;
-		position: absolute;
-		padding: 1rem;
-		
-		background: #ffffffee;
-		border: 1px solid #A493C7;
-		box-shadow: 0 2px 3px #3335;
-		border-radius: 4px;
-		// backdrop-filter: blur(5px);
-		
-		z-index: 99999;
-		
-		transition: opacity ease-out 100ms, transform ease-out 100ms;
-		transform-origin: top left;
-		
-		display: none;
-		
-		&.opened
-		{
-			display: block;
-			opacity: 1;
-			transform: scale(1);
-		}
-		
-		&.hidden
-		{
-			display: block;
-			opacity: 0;
-			transform: scale(0.95);
-			pointer-events: none;
-		}
-		
-		ul
-		{
-			margin: 0;
-			padding: 0;
-			list-style: none;
-			
-			display: flex;
-			flex-flow: row nowrap;
-			
-			li.select-box-group
-			{
-				display: block;
-				padding: 0 0.25rem;
-				margin: 0;
-				min-width: 210px;
-				
-				// border-right: 2px dashed #e6e6e6;
-				
-				&:last-child
-				{
-					border-right: none;
-				}
-				
-				span.group-title
-				{
-					display: block;
-					font-family: 'Montserrat', sans-serif;
-					font-weight: 700;
-					font-size: 14pt;
-					text-align: center;
-					color: #222;
-					margin-bottom: 0.4rem;
-				}
-				
-				ol
-				{
-					margin: 0;
-					padding: 0;
-					list-style: none;
-				}
-			}
-		}
-		
-		.select-box-option
-		{
-			display: flex;
-			flex-flow: row nowrap;
-			align-items: center;
-			
-			padding: 0.2rem 0.6rem;
-			margin: 1px 0;
-			
-			white-space: nowrap;
-			cursor: pointer;
-			
-			border-radius: 3px;
-			// transition: all linear 70ms;
-			border: 1px solid transparent;
-			
-			&:hover
-			{
-				color: #533B7F;
-				background: #F0F0F0;
-				border: 1px solid #DCDCDC;
-			}
-			
-			span.idol-icon
-			{
-				display: block;
-				width: 24px;
-				height: 24px;
-				margin-right: 0.5rem;
-				border-radius: 4px;
-				background-size: 16px;
-				background-position: center;
-				background-repeat: no-repeat;
-				text-align: center;
-			}
-			
-			span.idol-name
-			{
-				display: block;
-			}
-			
-			&.default-option
-			{
-				display: block;
-				width: 100%;
-				padding: 0.5rem;
-				margin-bottom: 0.5rem;
-				
-				text-align: center;
-				font-family: 'Montserrat', sans-serif;
-				font-weight: 700;
-				font-size: 12pt;
-				
-				background: #F4F4F4;
-				border: 1px solid #DADADA;
-				
-				&:hover
-				{
-					color: #9479CC;
-					background: #fafafa;
-					border: 1px solid #e8e8e8;
-				}
-			}
-			
-			&.selected
-			{
-				color: #4B3772;
-				background: #EEE5FF;
-				border: 1px solid #B29BE1;
-				
-				&:hover
-				{
-					color: #9479CC;
-					background: #F6F1FE;
-					border: 1px solid #C7B1F4;
-				}
-			}
-		}
-		
-		ul
-		{
-			@each $member-id in $member-ids
-			{
-				&.match-#{$member-id} .select-box-option.idol-#{$member-id}
-				{
-					color: #453411;
-					background: #FFEAA6;
-					border: 1px solid #C7B135;
-					
-					&:hover
-					{
-						color: #6A511E;
-						background: #FFF6D8;
-						border: 1px solid #EFD751;
-					}
-				}
-			}
-		}
-	}
-}
-
 /* ------------------------------------------------------ */
 
 #main-outer-wrapper
@@ -1077,17 +776,17 @@ select
 	}
 }
 
-@media screen and (min-width: 2050px)
+@media (min-width: 2050px)
 {
 	#main-outer-wrapper #main-wrapper { margin: 0 7vw 0 7vw; }
 }
 
-@media screen and (min-width: 2200px)
+@media (min-width: 2200px)
 {
 	#main-outer-wrapper #main-wrapper { margin: 0 12vw 0 12vw; }
 }
 
-@media screen and (min-width: 2800px)
+@media (min-width: 2800px)
 {
 	#main-outer-wrapper #main-wrapper { margin: 0 16vw 0 16vw; }
 }
@@ -1459,7 +1158,7 @@ select
 	}
 }
 
-@media screen and (hover: hover)
+@media (hover: hover)
 {
 	
 	.card-grid .grid-icon-wrapper
@@ -1855,7 +1554,7 @@ select
 	}
 }
 
-@media screen and (max-width: 1500px)
+@media (max-width: 1500px)
 {
 	.array-wrapper
 	{
@@ -1865,7 +1564,7 @@ select
 	}
 }
 
-@media screen and (max-width: 1200px)
+@media (max-width: 1200px)
 {
 	.array-wrapper
 	{
@@ -1878,7 +1577,7 @@ select
 	}
 }
 
-@media screen and (max-width: 900px)
+@media (max-width: 900px)
 {
 	.array-wrapper
 	{

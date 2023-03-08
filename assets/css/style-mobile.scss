@@ -1,6 +1,6 @@
 
 
-@media screen and (max-width: 1630px)
+@media (max-width: 1630px)
 {
 	
 .history-group-wrapper
@@ -18,7 +18,7 @@
 .hide-narrow-1400    { display: block !important; }
 .hide-narrow-1400-ib { display: inline-block !important; }
 
-@media screen and (max-width: 1400px)
+@media (max-width: 1400px)
 {
 	#header > .dev-build
 	{
@@ -40,7 +40,7 @@
 
 /***************************************************************************************/
 
-@media screen and (max-width: 1350px)
+@media (max-width: 1350px)
 {
 	
 	#main-outer-wrapper
@@ -55,7 +55,7 @@
 }
 
 
-@media screen and (max-width: 1350px) and (hover: none)
+@media (max-width: 1350px) and (hover: none)
 {
 	
 	.history-page-selector 
@@ -125,7 +125,7 @@
 
 /***************************************************************************************/
 
-@media screen and (max-width: 1300px)
+@media (max-width: 1300px)
 {
 	
 .array-group
@@ -156,7 +156,7 @@
 
 // Tablet and small PC screens
 
-@media screen and (max-height: 820px) and (min-width: 900px)
+@media (max-height: 820px) and (min-width: 900px)
 {
 	
 #header
@@ -280,81 +280,13 @@ body
 	}
 }
 
-.settings-select-box
-{
-	.select-box-backdrop
-	{
-		z-index: 99999999999;
-		background: #0009;
-	}
-	
-	.select-box-options
-	{
-		$box-margin : 40px;
-		$box-margin-vw : #{$box-margin / 1300px * 100}vw;
-		
-		position: fixed;
-		height: calc(100% - #{$box-margin * 2});
-		
-		top: $box-margin;
-		bottom: $box-margin;
-		
-		left: calc(230px + #{$box-margin-vw});
-		right: $box-margin-vw;
-		
-		overflow-y: scroll;
-		
-		padding: 0.6rem;
-		margin: 0px;
-		
-		z-index: 999999999999;
-		
-		background: #ffffffd7;
-		backdrop-filter: blur(5px);
-		
-		box-shadow: 0 5px 40px #0009;
-		
-		ul
-		{
-			// flex-flow: column nowrap;
-			justify-content: space-around;
-			
-			li.select-box-group
-			{
-				width: calc(31%);
-				padding: 0 0 1rem 0;
-				
-				span.group-title
-				{
-					font-size: 15pt;
-					// margin: 0.4rem;
-					// padding: 0.6rem;
-				}
-			}
-		}	
-		
-		.select-box-option
-		{
-			padding: 0.4rem 0.7rem 0.4rem 1rem;
-			
-			&.default-option
-			{
-				position: sticky;
-				padding: 0.7rem 1.2rem;
-				margin-bottom: 0.7rem;
-				top: 0;
-			}
-		}
-	}
-}
-
 
 }
 
 
 /***************************************************************************************/
 
-@media screen and (max-width: 1100px)
+@media (max-width: 1100px)
 {
 
 body
@@ -432,7 +364,7 @@ body:not(.dark-mode) #side-nav li a
 
 /***************************************************************************************/
 
-@media screen and (max-width: 900px),
+@media (max-width: 900px),
        screen and (hover: none)
 {
 	
@@ -538,7 +470,7 @@ body:not(.dark-mode) #side-nav li a
 
 /***************************************************************************************/
 	
-@media screen and (max-width: 900px)
+@media (max-width: 900px)
 {
 
 h1 { font-size: 18pt; }
@@ -1075,73 +1007,6 @@ body.sidebar-open
 	}
 }
 
-
-/*****************************************************************/
-
-body.scrolling-disabled
-{
-	overflow: hidden;
-}
-
-.settings-select-box
-{
-	.select-box-backdrop
-	{
-		z-index: 99999999999;
-		background: #0009;
-	}
-	
-	.select-box-options
-	{
-		position: fixed;
-		top: 30px;
-		left: 30px;
-		right: 30px;
-		bottom: 30px;
-		height: calc(100% - 60px);
-		overflow-y: scroll;
-		
-		padding: 1rem;
-		margin: 0px;
-		
-		z-index: 999999999999;
-		
-		ul
-		{
-			flex-flow: column nowrap;
-			
-			li.select-box-group
-			{
-				padding: 0 0 1rem 0;
-				
-				span.group-title
-				{
-					font-size: 15pt;
-					margin: 0.4rem;
-					padding: 0.6rem;
-					background: #E5E5E5;
-				}
-			}
-		}	
-		
-		.select-box-option
-		{
-			padding: 0.8rem 1.2rem;
-			margin: 5px 0;
-			
-			font-size: 14pt;
-			
-			&.default-option
-			{
-				position: sticky;
-				padding: 1.2rem;
-				top: 0;
-			}
-		}
-	}
-}
-
-
 /*****************************************************************/
 
 .show-mobile
@@ -1158,7 +1023,7 @@ body.scrolling-disabled
 
 /*****************************************************************/
 
-@media screen and (max-width: 600px)
+@media (max-width: 600px)
 {
 	#header .mobile-header h2
 	{
@@ -1169,7 +1034,7 @@ body.scrolling-disabled
 
 }
 
-@media screen and (max-width: 500px)
+@media (max-width: 500px)
 {
 	
 	$cell-margin: 10%;
