@@ -165,7 +165,7 @@ Member.member_aliases = {
 	[Member.Nozomi.id]   : ["nontan", "washiwashi"],
 	[Member.Eli.id]      : ["ballet", "harasho"],
 	[Member.Nico.id]     : ["niconii", "niconiconii"],
-	[Member.Hanamaru.id] : ["zuramaru"],
+	[Member.Hanamaru.id] : ["zuramaru", "noppo"],
 	[Member.Yoshiko.id]  : ["yohane", "yahane"],
 	[Member.Ruby.id]     : ["headpats", "scaredycat"],
 	[Member.Chika.id]    : ["mikan"],
@@ -178,14 +178,14 @@ Member.member_aliases = {
 	[Member.Kasumi.id]   : ["cute", "koppepan", "kasukasu", "ksks"],
 	[Member.Shizuku.id]  : ["theater", "theatre", "shizuko"],
 	[Member.Shioriko.id] : ["fang", "shioko"],
-	[Member.Ayumu.id]    : ["yandere", "gremlin", "sasuke"],
+	[Member.Ayumu.id]    : ["pomu", "yandere", "sasuke"],
 	[Member.Setsuna.id]  : ["hashiridashita"],
 	[Member.Ai.id]       : ["punny", "genki"],
 	[Member.Lanzhu.id]   : ["queen"],
 	[Member.Emma.id]     : ["switzerland", "swiss", "mama"],
 	[Member.Kanata.id]   : ["zzzzzzzzz", "sleepyhead"],
-	[Member.Karin.id]    : ["oneesan"],
-	[Member.Mia.id]      : ["newyorker"],
+	[Member.Karin.id]    : ["oneesan", "lost"],
+	[Member.Mia.id]      : ["newyorker", "shit", "composer"],
 };
 
 class Source
