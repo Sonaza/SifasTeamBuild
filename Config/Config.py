@@ -13,12 +13,18 @@ class Config():
 	
 	TEMPLATES_DIRECTORY     = "assets/templates"
 	
+	RENDER_STAGE_DIRECTORY  = "build/stage"
+	
 	DATABASE_FILE           = "build/idols.sqlite"
 	
 	HISTORY_CRAWL_FILE      = "build/history_crawl.json"
 	DATA_FALLBACK_FILE      = "build/data_fallback.json"
 	
 	ATLAS_METADATA_FILE     = "build/atlas_metadata.json"
+	ATLAS_CSS_FILE          = "build/stage/atlas.css"
+	
+	IDOLS_CSS_FILE          = "build/stage/idols.css"
+	
 	RENDER_HISTORY_FILE     = "build/render_history.json"
 	PROCESSOR_HISTORY_FILE  = "build/processor_history.json"
 	

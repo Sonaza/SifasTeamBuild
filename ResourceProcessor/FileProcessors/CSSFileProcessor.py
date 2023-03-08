@@ -7,12 +7,18 @@ class CSSFileProcessor(FileProcessorBase):
 	comment_format      = "/* {} */"
 	after_concatenation = ""
 	
+	scss_globals = """
+	$member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 210 201 207 205 212 208 206 204 211;
+	"""
+	
 	def needs_compilation(self, filepath):
 		return '.scss' in filepath
 	
 	def compile(self, source_code, filepath):
 		if not source_code:
 			return ''
+		
+		source_code = self.scss_globals + "\n" + source_code
 		
 		try:
 			return sass.compile(string=source_code)

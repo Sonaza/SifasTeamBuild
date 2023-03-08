@@ -139,7 +139,7 @@ class RotationsGenerator:
 					"assets/js/*/*.js",
 				],
 				input_files      = [
-					"assets/js/build_id.js",
+					os.path.join(Config.RENDER_STAGE_DIRECTORY, "build_id.js"),
 					"assets/js/AppModule.js",
 					"assets/js/Constants.js",
 					"assets/js/classes/*.js",
@@ -148,10 +148,10 @@ class RotationsGenerator:
 					"assets/js/directives/*.js",
 					"assets/js/controllers/*.js",
 					"assets/js/AppConfig.js",
-					"assets/js/TooltipsCache.js",
+					os.path.join(Config.RENDER_STAGE_DIRECTORY, "TemplateCache.js"),
 				],
 				output_file      = os.path.join(Config.OUTPUT_STAGE_DIRECTORY, "js/public.min.js"),
-				depends_on       = ['TooltipsCache'],
+				depends_on       = ['TemplateCache'],
 			),
 			
 			ResourceProcessor.ProcessorTask(
@@ -163,8 +163,8 @@ class RotationsGenerator:
 					"assets/css/*.scss",
 				],
 				input_files      = [
-					"assets/css/atlas.css",
-					"assets/css/idols.css",
+					Config.ATLAS_CSS_FILE,
+					Config.IDOLS_CSS_FILE,
 					"assets/css/fonts.css",
 					"assets/css/style.scss",
 					"assets/css/style-scrollbar.scss",
@@ -178,16 +178,17 @@ class RotationsGenerator:
 			),
 			
 			ResourceProcessor.ProcessorTask(
-				name             = 'TooltipsCache',
-				file_processor   = ResourceProcessor.FileProcessors.TooltipsFileProcessor,
+				name             = 'TemplateCache',
+				file_processor   = ResourceProcessor.FileProcessors.TemplateCacheFileProcessor,
 				watch_directory  = "assets/",
 				watched_files    = [
-					"assets/tooltips/*.html",
+					"assets/templatecache/*.html",
 				],
 				input_files      = [
-					"assets/tooltips/*.html",
+					os.path.join(Config.RENDER_STAGE_DIRECTORY, "member_select_box.html"),
+					"assets/templatecache/*.html",
 				],
-				output_file      = "assets/js/TooltipsCache.js",
+				output_file      = os.path.join(Config.RENDER_STAGE_DIRECTORY, "TemplateCache.js"),
 			),
 		]
 	
@@ -209,7 +210,7 @@ class RotationsGenerator:
 				polling         = self.args.watch_polling)
 			exit()
 		
-		if not os.path.exists("assets/css/idols.css"):
+		if not os.path.exists(Config.IDOLS_CSS_FILE):
 			raise Exception("Generated idols.css does not exist! Run tools/generate_idols_css.py")
 		
 		if self.args.dev:
@@ -250,13 +251,8 @@ class RotationsGenerator:
 			print("Tooltip data file does not exist, a full render is required!")
 			self.args.force_render = True
 		
-		if not os.path.exists("assets/css/atlas.css"):
-			print("Atlas CSS does not exist and must be regenerated!")
-			self.args.remake_atlas = True
-		
 		self.thumbnails = CardThumbnails.CardThumbnails(self.client)
-		if not self.thumbnails.metadata_loaded_successfully():
-			print("Atlas metadata does not exist or is corrupted and must be regenerated!")
+		if self.thumbnails.reprocessing_required():
 			self.args.remake_atlas = True
 		
 		if self.thumbnails.download_thumbnails() or self.args.remake_atlas:
@@ -340,16 +336,23 @@ class RotationsGenerator:
 		# Build ID
 		
 		random_build_id = str(hex(hash(time.time())))[2:8]
-		self.renderer.render_and_save("build_id_template.js", "assets/js/build_id.js",
+		self.renderer.render_and_save("build_id_template.js", "build_id.js",
 		{
 			'build_id' : random_build_id,
-		}, output_basepath="")
+		}, output_basepath=Config.RENDER_STAGE_DIRECTORY)
 		print()
 		
 		# -------------------------------------------------------
 		# Page Generators
 		
 		self.run_generators()
+		
+		# -------------------------------------------------------
+		# Miscellaneous
+		
+		if self.due_for_rendering("member_select_box.html"):
+			self.renderer.render_and_save("member_select_box.html", "member_select_box.html", {},
+				minify_html=False, output_basepath=Config.RENDER_STAGE_DIRECTORY)
 		
 		# -------------------------------------------------------
 		# Index page

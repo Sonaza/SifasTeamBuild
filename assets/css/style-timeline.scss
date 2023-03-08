@@ -14,8 +14,6 @@ $event-colors: #61B424 #2F9CD5;
 $event-banner-colors: #6DC882 #71C0C7;
 $banner-colors: #BA71F7 #F64D91 #E5A201 #CECEB6;
 
-$member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 210 201 207 205 212 208 206 204 211;
-
 #timeline span.deferred-loading
 {
 	width: 100%;
@@ -320,7 +318,7 @@ $member-ids: 8 5 6 1 3 4 7 2 9 107 106 109 101 102 105 103 104 108 209 202 203 2
 					filter: drop-shadow(0 0 2px #222c);
 				}
 			}
-						
+			
 			@each $member-id in $member-ids
 			{
 				&.idol-#{$member-id} span.idol-yay

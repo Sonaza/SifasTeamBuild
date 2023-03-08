@@ -15,14 +15,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 	{
 		$scope.loading = true;
 		
-		if ($routeParams.page === undefined)
-		{
-			window.scrollTo(0, 0);
-		}
-		
-		$scope.filter_index = 0;
-		$scope.filter_index_max = Member.members_ordered.length;
-		
 		$scope.banner_types = [
 			{ id: -1, title: '— Show All —' },
 			{ id: 1,  title: 'Spotlight' },
@@ -35,89 +27,25 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		$scope.banner_index_max = $scope.banner_types.length - 1;
 		
 		$scope.filter_settings = {
-			filter        : -1,
 			banner        : -1,
 			highlight     : false,
 		};
 		
-		$scope.filter_idol = false;
-		$scope.select_box_options_opened = false;
+		$scope.filter_index = 0;
+		$scope.filter_member = false;
 		
-		$scope.last_toggled = 0;
-		$scope.toggleSelectBox = ($event) =>
+		$scope.$watch('filter_member', (member) =>
 		{
-			let t = new Date().getTime();
-			if ((t - $scope.last_toggled) < 50) return;
-			$scope.last_toggled = t;
-		
-			$scope.select_box_options_opened = !$scope.select_box_options_opened;
-			if ($scope.select_box_options_opened)
+			if (member instanceof Member)
 			{
-				// Lol wtf
-				setTimeout($scope.keepSelectBoxOnScreen, 50);
-				setTimeout($scope.keepSelectBoxOnScreen, 100);
-				setTimeout($scope.keepSelectBoxOnScreen, 150);
-			}
-			$rootScope.disable_scrolling = $scope.select_box_options_opened;
-		}
-		
-		$scope.optionSelectedClass = (member_id) =>
-		{
-			if (($scope.filter_index == 0 && member_id === -1) || ($scope.filter_idol.id === member_id))
-			{
-				return 'selected';
-			}
-			return '';
-		}
-		
-		$scope.selectBoxOptionsClass = () =>
-		{
-			return $scope.select_box_options_opened ? 'opened': 'hidden';
-		}
-		
-		$scope.chooseSelectOption = ($event, member_id) =>
-		{
-			if (member_id === -1)
-			{
-				$scope.filter_index = 0;
+				LocationKeys.set('filter', member.first_name.toLowerCase());
 			}
 			else
 			{
-				for (let i = 0; i < Member.members_ordered.length; i++)
-				{
-					if (Member.members_ordered[i].id === member_id)
-					{
-						$scope.filter_index = i + 1;
-						break;
-					}
-				}
+				LocationKeys.reset('filter');
 			}
-			$scope.toggleSelectBox($event);
 			$scope.$broadcast('refresh-deferred-loads');
-		}
-		
-		$scope.keepSelectBoxOnScreen = (event) =>
-		{
-			let e = document.querySelector('.select-box-options');
-			if (!e) return;
-			
-			const view_width = document.documentElement.clientWidth;
-			if (view_width < 900)
-			{
-				angular.element(e).css('margin-left', '0');
-				return;
-			}
-			
-			let rect = e.getBoundingClientRect();
-			
-			var style = e.currentStyle || window.getComputedStyle(e);
-			let current_margin = parseFloat(style.marginLeft);
-			
-			let margin = Math.min((view_width - rect.right) - 20 + current_margin, 0);
-			angular.element(e).css('margin-left', margin + "px");
-		}
-		RouteEvent.element(window).on('resize scroll', $scope.keepSelectBoxOnScreen);
-		$scope.keepSelectBoxOnScreen();
+		});
 		
 		const url_options = LocationKeys.get();
 		if (url_options.filter !== undefined)
@@ -129,6 +57,7 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 				if (first_name === filter_name)
 				{
 					$scope.filter_index = i + 1;
+					$scope.filter_member = Member.members_ordered[i];
 					break;
 				}
 			}
@@ -167,11 +96,10 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 				output.push('highlight');
 			}
 			
-			if ($scope.filter_settings.filter != -1)
+			if ($scope.filter_member instanceof Member)
 			{
 				output.push('filtering-active');
-				// output.push('filtering-by-idol');
-				output.push('show-idol-' + $scope.filter_settings.filter);
+				output.push('show-idol-' + $scope.filter_member.id);
 			}
 			
 			if ($scope.filter_settings.banner != -1)
@@ -202,26 +130,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 			}
 			$scope.$broadcast('refresh-deferred-loads');
 		}, true);
-		
-		$scope.$watch('filter_index', (filter_index, old_index) =>
-		{
-			if (filter_index == 0)
-			{
-				$scope.filter_idol = false;
-				$scope.filter_settings.filter = -1;
-				
-				LocationKeys.reset('filter');
-			}
-			else
-			{
-				$scope.filter_idol            = Member.members_ordered[filter_index - 1];
-				$scope.filter_settings.filter = $scope.filter_idol.id;
-				
-				let first_name = $scope.filter_idol.first_name.toLowerCase();
-				LocationKeys.set('filter', first_name);
-			}
-			$scope.$broadcast('refresh-deferred-loads');
-		});
 		
 		$scope.$watch('filter_settings.banner', function(a, b)
 		{
@@ -257,24 +165,6 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 		{
 			if (e.repeat || e.ctrlKey || e.altKey || e.metaKey) return;
 			
-			// document.querySelector('#filter-event-cards').blur();
-			
-			if (e.keyCode == 69) // E-key
-			{
-				e.preventDefault();
-				
-				$scope.filter_index += (e.shiftKey ? -1 : 1);
-				if ($scope.filter_index < 0)
-				{
-					$scope.filter_index = $scope.filter_index_max;
-				}
-				else if ($scope.filter_index > $scope.filter_index_max)
-				{
-					$scope.filter_index = 0;
-				}
-				return;
-			}
-			
 			if (e.keyCode == 66) // B-key
 			{
 				e.preventDefault();
@@ -304,7 +194,9 @@ app.controller('BannersController', function($rootScope, $scope, $route, $routeP
 				
 				if (e.keyCode == 82) // R-key
 				{
+					$scope.filter_member = false;
 					$scope.filter_index = 0;
+					
 					$scope.filter_settings.banner     = -1;
 					$scope.filter_settings.highlight  = false;
 					return;

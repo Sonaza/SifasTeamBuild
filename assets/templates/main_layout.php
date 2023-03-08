@@ -132,7 +132,7 @@
 					</div>
 				</div>
 				<div id="card-tooltip" ng-click="dismissMobileTooltip($event)"
-					tooltip="tooltip_data" tooltip-template="tooltips/card_tooltip.html"></div>
+					tooltip="tooltip_data" tooltip-template="card_tooltip.html"></div>
 			</div>
 		</div>
 	</div>

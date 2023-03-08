@@ -115,6 +115,11 @@ select
 			border: 1px solid #9562FF;
 			box-shadow: 0 0 0 3px #fff6;
 		}
+		
+		.idol-details span.default-option span.blinking-cursor
+		{
+			background: #fff;
+		}
 	}
 	
 	.select-box-options
@@ -170,6 +175,26 @@ select
 					color: #fff;
 					background: #594780;
 					border: 1px solid #7E67B3;
+				}
+			}
+		}
+		
+		ul
+		{
+			@each $member-id in $member-ids
+			{
+				&.match-#{$member-id} .select-box-option.idol-#{$member-id}
+				{
+					color: #FFF0D5;
+					background: #C4A81066;
+					border: 1px solid #C4A810;
+					
+					&:hover
+					{
+						color: #FFFBF4;
+						background: #C4A81099;
+						border: 1px solid #E9CD36;
+					}
 				}
 			}
 		}

@@ -20,16 +20,6 @@ app.run(($rootScope, $window, $templateCache, $http, RouteEvent, SiteSettings) =
 	$rootScope.mobile_mode = Utility.mobile_mode;
 	$rootScope.prefers_reduced_motion = Utility.prefers_reduced_motion;
 	
-	$rootScope.disable_scrolling = false;
-	$rootScope.scrollDisabler = () =>
-	{
-		if ($rootScope.disable_scrolling)
-		{
-			return 'scrolling-disabled';
-		}
-		return '';
-	}
-	
 	$rootScope.openMobileTooltip = ($event) =>
 	{
 		if (!Utility.mobile_mode() || !$rootScope.settings.show_tooltips)

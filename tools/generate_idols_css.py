@@ -228,4 +228,4 @@ def generate_idols_css(output_file):
 # -------------------------------------------------
 
 if __name__ == "__main__":
-	generate_idols_css("../assets/css/idols.css")
+	generate_idols_css("../build/stage/idols.css")

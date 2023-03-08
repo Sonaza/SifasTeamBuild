@@ -27,7 +27,17 @@ class CardThumbnails():
 		
 	def metadata_loaded_successfully(self):
 		return self.metadata_load_success
+	
+	def reprocessing_required(self):
+		if not os.path.exists(Config.ATLAS_CSS_FILE):
+			print("Atlas CSS does not exist and must be regenerated!")
+			return True
 		
+		if not self.metadata_load_success:
+			print("Atlas metadata does not exist or is corrupted and must be regenerated!")
+			return True
+		
+		return False
 	
 	def load_atlas_metadata(self):
 		self.atlas_metadata = {}
@@ -228,7 +238,7 @@ class CardThumbnails():
 		error_lines[-1] = error_lines[-1][:-1] + f"  {{ background: url('/img/missing_icon.png') no-repeat 0px 0px !important; }}"
 		atlas_css.extend(error_lines)
 		
-		with open("assets/css/atlas.css", "w", encoding="utf8") as output_file:
+		with open(Config.ATLAS_CSS_FILE, "w", encoding="utf8") as output_file:
 			for line in atlas_css:
 				output_file.write(line + "\n")
 			

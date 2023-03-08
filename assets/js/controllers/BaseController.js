@@ -1,5 +1,6 @@
 
-app.controller('BaseController', function($rootScope, $scope, $location, $timeout, $parse, $window, $cookies, SiteSettings, LocationKeys, SiteRoutes, SiteGlobals)
+app.controller('BaseController', function($rootScope, $scope, $location, $timeout, $parse, $window, $cookies,
+		SiteSettings, LocationKeys, SiteRoutes, SiteGlobals)
 	{
 		angular.element(document.querySelector("body")).removeClass('no-js');
 		
@@ -410,6 +411,9 @@ app.controller('BaseController', function($rootScope, $scope, $location, $timeou
 		
 		$scope.keydown = ($event) =>
 		{
+			if (SiteSettings.session_settings.disable_keydown_event)
+				return;
+			
 			if ($event.repeat) return;
 			
 			if (!($event.repeat || $event.ctrlKey || $event.altKey || $event.metaKey))

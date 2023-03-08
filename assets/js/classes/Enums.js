@@ -155,6 +155,38 @@ Member.members_by_id   = Member.get_members();
 Member.members_ordered = Member.get_member_order();
 Member.members_by_name = Object.fromEntries(Member.members_ordered.map((e, i) => [e.first_name.toLowerCase(), e]));
 
+Member.member_aliases = {
+	[Member.Hanayo.id]   : ["pana", "ricegoddess"],
+	[Member.Rin.id]      : ["cat", "nyaa"],
+	[Member.Maki.id]     : ["tsundere", "tomato"],
+	[Member.Honoka.id]   : ["honks", "homks", "honker", "bread"],
+	[Member.Kotori.id]   : ["birb", "bird"],
+	[Member.Umi.id]      : ["oomi", "lovearrowshoot"],
+	[Member.Nozomi.id]   : ["nontan", "washiwashi"],
+	[Member.Eli.id]      : ["ballet", "harasho"],
+	[Member.Nico.id]     : ["niconii", "niconiconii"],
+	[Member.Hanamaru.id] : ["zuramaru"],
+	[Member.Yoshiko.id]  : ["yohane", "yahane"],
+	[Member.Ruby.id]     : ["scaredycat"],
+	[Member.Chika.id]    : ["mikan"],
+	[Member.Riko.id]     : ["yurifan", "pianist"],
+	[Member.You.id]      : ["yosoro", "yousoro", "watashi"],
+	[Member.Kanan.id]    : ["hagu", "dolphin"],
+	[Member.Dia.id]      : ["desuwa", "buubuu"],
+	[Member.Mari.id]     : ["shiny"],
+	[Member.Rina.id]     : ["smol", "nerd", "board"],
+	[Member.Kasumi.id]   : ["cute", "koppepan", "kasukasu", "ksks"],
+	[Member.Shizuku.id]  : ["theater", "theatre"],
+	[Member.Shioriko.id] : ["fang"],
+	[Member.Ayumu.id]    : ["yandere", "gremlin", "sasuke"],
+	[Member.Setsuna.id]  : ["hashiridashita"],
+	[Member.Ai.id]       : ["genki"],
+	[Member.Lanzhu.id]   : ["queen"],
+	[Member.Emma.id]     : ["switzerland"],
+	[Member.Kanata.id]   : ["zzz", "sleepyhead"],
+	[Member.Karin.id]    : ["oneesan"],
+	[Member.Mia.id]      : ["newyorker"],
+};
 
 class Source
 {

@@ -21,6 +21,8 @@ app.provider('SiteSettings', function SiteSettingsProvider()
 		
 		session_settings : {
 			force_hide_header         : false, 
+			disable_scrolling         : false,
+			disable_keydown_event     : false,
 		},
 		
 		route_settings : {

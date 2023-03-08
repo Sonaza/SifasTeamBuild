@@ -306,7 +306,10 @@ class PageRenderer():
 		
 		output_space = 145
 		
-		print(f"{f'{Fore.YELLOW}Rendering  {Fore.WHITE}{Style.BRIGHT}{template_filename:<30}{Style.RESET_ALL}  ->  {Fore.CYAN}{Style.BRIGHT}{output_filename}':<{output_space}}{Style.RESET_ALL} ...  ", end='')
+		output_filename_full = output_filename
+		if output_basepath != None:
+			output_filename_full = Utility.join_path(output_basepath, output_filename)
+		print(f"{f'{Fore.YELLOW}Rendering  {Fore.WHITE}{Style.BRIGHT}{template_filename:<30}{Style.RESET_ALL}  ->  {Fore.CYAN}{Style.BRIGHT}{output_filename_full}':<{output_space}}{Style.RESET_ALL} ...  ", end='')
 		
 		self.reset_included_pages()
 		rendered_output = template.render(data)

@@ -14,59 +14,9 @@
 	<label>
 		Filter Events <span class="hide-mobile">(E)</span>
 	</label>
-	<select ng-model="filter_settings.filter" class="select-box-hidden">
-		<option ng-value="-1">&mdash; Show All &mdash;</option>
-		{% for group in Group %}
-			<optgroup label="{{ group.display_name }}">
-				{% for idol in Idols.by_group[group] %}
-					<option ng-value="{{ idol.member_id.value }}">{{ idol.member_id.full_name }}</option>
-				{% endfor %}
-			</optgroup>
-		{% endfor %}
-	</select>
-	<div class="settings-select-box select-box-desktop-only">
-		<div class="select-box-backdrop" ng-click="toggleSelectBox($event)" ng-if="select_box_options_opened"></div>
-		<div class="select-box-current" ng-click="toggleSelectBox($event)">
-			<div class="idol-details" ng-if="filter_idol === false">
-				<span class="default-option">
-					&mdash; Show All &mdash;
-				</span>
-			</div>
-			<div class="idol-details idol-[[ filter_idol.id ]]" ng-if="filter_idol !== false">
-				<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-				<span class="idol-name">
-					[[ filter_idol.full_name ]]
-				</span>
-			</div>
-		</div>
-		<div class="select-box-options" ng-class="selectBoxOptionsClass()">
-			<div class="select-box-option default-option"
-				ng-class="optionSelectedClass(-1)" ng-click="chooseSelectOption($event, -1)">
-				&mdash; Show All &mdash;
-			</div>
-			<ul>
-				{% for group in Group %}
-					<li class="select-box-group">
-						<span class="group-title">
-							{{ group.display_name }}
-						</span>
-						<ol>
-							{% for idol in Idols.by_group[group] %}
-								<li class="select-box-option idol-{{ idol.member_id.value }}"
-								    ng-class="optionSelectedClass({{ idol.member_id.value }})"
-								    ng-click="chooseSelectOption($event, {{ idol.member_id.value }})">
-									<span class="idol-icon idol-icon-32-border idol-bg-color-dim"></span>
-									<span class="idol-name">
-										{{ idol.member_id.full_name }}
-									</span>
-								</li>
-							{% endfor %}
-						</ol>
-					</li>
-				{% endfor %}
-			</ul>
-		</div>
-	</div>
+	<member-select-box
+		filter-index="filter_index"
+		filter-member="filter_member"></member-select-box>
 	<div pill-button model="filter_settings.featured_only" keybind="F">
 		Apply filter to featured member
 	</div>
