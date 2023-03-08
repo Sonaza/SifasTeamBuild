@@ -163,9 +163,9 @@ class RotationsGenerator:
 					"assets/css/*.scss",
 				],
 				input_files      = [
-					"public/css/fonts.css",
 					"assets/css/atlas.css",
 					"assets/css/idols.css",
+					"assets/css/fonts.css",
 					"assets/css/style.scss",
 					"assets/css/style-scrollbar.scss",
 					"assets/css/style-timeline.scss",
