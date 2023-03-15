@@ -181,6 +181,15 @@ app.directive('memberSelectBox', function($parse, $templateCache, $compile, $tim
 				}
 			}
 			
+			$scope.$on('$locationChangeStart', function(event, next, current)
+			{
+				if ($scope.select_box_options_opened)
+				{
+					$scope.toggleSelectBox();
+			    	event.preventDefault();
+				}
+			});
+			
 			RouteEvent.element(window).on('keydown', (e) =>
 			{
 				if (e.altKey || e.metaKey) return;
