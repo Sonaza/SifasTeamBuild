@@ -359,14 +359,22 @@ class IdolTeam():
 
 		for strategy, units in self.units_per_strategy.items():
 			for unit in units:
+				if not unit:
+					continue
 				unit.set_accessories(self.accessories[strategy])
 		
 		passive_multipliers = {}
 		passive_multiplier = [0, 0, 0]
 		
 		for unit_a_index, unit_a in self.units.items():
+			if not unit_a:
+				continue
+				
 			passive_target, passive_effects = unit_a.data.get_passive_skill_effect(unit_a.max_passive_skill_level) 
 			for unit_b_index, unit_b in self.units.items():
+				if not unit_b:
+					continue
+				
 				if unit_b_index not in passive_multipliers:
 					passive_multipliers[unit_b_index] = [0, 0, 0]
 				
@@ -527,7 +535,7 @@ bond_boards = {
 	Member.Honoka   : { 'bond_level': 104, 'board_level': 40,  'unlocked_tiles' : [ BP.Appeal, BP.CritRate] },
 	Member.Kotori   : { 'bond_level': 91,  'board_level': 70,  'unlocked_tiles' : [ ] },
 	Member.Rin      : { 'bond_level': 83,  'board_level': 40,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.Stamina, BP.CritRate, ] },
-	Member.Nozomi   : { 'bond_level': 276, 'board_level': 260, 'unlocked_tiles' : True },
+	Member.Nozomi   : { 'bond_level': 278, 'board_level': 260, 'unlocked_tiles' : True },
 	Member.Nico     : { 'bond_level': 93,  'board_level': 50,  'unlocked_tiles' : [ ] },
 
 	Member.Mari     : { 'bond_level': 84,  'board_level': 60,  'unlocked_tiles' : [ BP.MatchBonus, ] },
@@ -554,6 +562,20 @@ bond_boards = {
 	Member.Ai       : { 'bond_level': 85,  'board_level': 50,  'unlocked_tiles' : [ ] },
 	Member.Lanzhu   : { 'bond_level': 54,  'board_level': 30,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.CritRate, ] },
 }
+
+rina = IdolUnit(611, "Party", limit_break = 5) \
+	.set_bond_board(**{ 'bond_level': 300, 'board_level': 300,  'unlocked_tiles' : True }) \
+    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4)
+
+rina = IdolUnit(728, "Fes3", limit_break = 5) \
+	.set_bond_board(**bond_boards[Member.Nozomi]) \
+    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4)
+
+print(rina)
+
+the_best_team.set_unit(0, rina)
+the_best_team.calculate_stats(None)
+exit()
 
 """
 
