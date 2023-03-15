@@ -1192,14 +1192,14 @@ class KiraraClient():
 		
 		current_banner_type, banners_by_type = self.get_recent_banner_stats(banner_type=banner_types, rarity=Rarity.UR, limit=2)
 		next_banner_type = AuxiliaryData.NextBannerOrder[current_banner_type]
-		
+
 		current_banner = banners_by_type[current_banner_type][0]
 		preview_date = current_banner['end'] - timedelta(hours=23, minutes=59)
-		
 		next_time[next_banner_type]    = (preview_date, False)
 		
-		previous_banner = banners_by_type[next_banner_type][0]
-		next_year, next_month = Utility.wrap_year_and_month(previous_banner['start'].year, previous_banner['start'].month + 1)
+		# previous_banner = banners_by_type[next_banner_type][0]
+		# print("previous_banner", previous_banner)
+		next_year, next_month = Utility.wrap_year_and_month(current_banner['start'].year, current_banner['start'].month + 1)
 
 		start_date = AuxiliaryData.StartDateOverride[current_banner_type].get(f'{next_year}-{next_month}',
 			AuxiliaryData.ApproximateStartDate[current_banner_type][next_month])
@@ -1225,7 +1225,9 @@ class KiraraClient():
 			next_time[event_type] = (preview_date, True)
 		
 		next_time = {k: v for k, v in sorted(next_time.items(), key=lambda x: x[1])}
-			
+		
+		dbgprint(kw=next_time)
+		
 		return next_time
 	
 	
