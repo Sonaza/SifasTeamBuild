@@ -1226,8 +1226,6 @@ class KiraraClient():
 		
 		next_time = {k: v for k, v in sorted(next_time.items(), key=lambda x: x[1])}
 		
-		dbgprint(kw=next_time)
-		
 		return next_time
 	
 	
