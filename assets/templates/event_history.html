@@ -35,7 +35,7 @@
 		</div>
 		
 		<div class="st-tbody reversable" ng-class="filterEventsClass()">
-			{% for event_id, event_data in events_with_cards.items() %}
+			{% for event_id, event_data in events_with_cards %}
 				<div class="st-tr event-row {{ event_data['idols'] }}" deferred-load="event_history_{{ event_id }}"></div>
 			{% endfor %}
 			{% for member in zero_feature_members %}			

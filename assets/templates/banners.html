@@ -40,7 +40,7 @@
 		</div>
 		
 		<div class="st-tbody reversable" ng-class="filterBannersClass()">
-			{% for banner_id, banner_data in banners_with_cards.items() %}
+			{% for banner_id, banner_data in banners_with_cards %}
 				{% set banner = banner_data['banner'] %}
 				<div class="st-tr event-row {{ banner_data['idols'] }} gacha-banner banner-type-{{ banner['type'].value }}" deferred-load="banner_{{ banner_id }}">
 				</div>

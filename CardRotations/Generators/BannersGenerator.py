@@ -23,7 +23,7 @@ class BannersGenerator(GeneratorBase):
 			}, minify_html=not self.args.dev)
 			
 		self.render_and_save("banners.html", "pages/banners.html", {
-			'banners_with_cards' : banners_with_cards,
+			'banners_with_cards' : reversed(list(banners_with_cards.items())),
 		}, minify_html=not self.args.dev)
 		
 		return True

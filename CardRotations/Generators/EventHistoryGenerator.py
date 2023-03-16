@@ -23,7 +23,7 @@ class EventHistoryGenerator(GeneratorBase):
 			}, minify_html=not self.args.dev)
 		
 		self.render_and_save("event_history.html", "pages/event_history.html", {
-			'events_with_cards'    : events_with_cards,
+			'events_with_cards'    : reversed(list(events_with_cards.items())),
 			'zero_feature_members' : zero_feature_members,
 		}, minify_html=not self.args.dev)
 		
