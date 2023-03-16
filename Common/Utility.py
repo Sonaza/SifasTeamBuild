@@ -76,22 +76,24 @@ class Utility:
 
 
 	@staticmethod
-	def format_datestring(date, long_month = False, ordinalize = True, with_year = True, with_utc_time = False):
+	def format_datestring(date, with_day = True, ordinalize = True, long_month = False, with_year = True, with_utc_time = False):
 		day_format      = '%#d' if Utility.is_windows() else '%-d'
 		month_format    = '%B' if long_month else '%b'
 		year_format     = '%Y'
 		utc_time_format = '%H:%M %Z'
 		
-		date_format_segments = [
-			day_format,
-			month_format,
-		]
+		date_format_segments = []
+		
+		if with_day:
+			date_format_segments.append(day_format)
+		
+		date_format_segments.append(month_format)
 		
 		if with_year:     date_format_segments.append(year_format)
 		if with_utc_time: date_format_segments.append(utc_time_format)
 		
 		date_formatted = [date.strftime(format_string) for format_string in date_format_segments]
-		if ordinalize:
+		if with_day and ordinalize:
 			date_formatted[0] = Utility.ordinalize(date_formatted[0])
 		
 		return Utility.concat(date_formatted, separator=' ')
@@ -169,6 +171,16 @@ class Utility:
 		return False
 	
 	# ----------------------------------------------------------
+	
+	@staticmethod
+	def list_range(start, number_of_entries_inclusive):
+		return list(range(start, start + number_of_entries_inclusive))
+	
+	@staticmethod
+	def tuple_range(start, number_of_entries_inclusive):
+		return tuple(range(start, start + number_of_entries_inclusive))
+	
+	# ---------------------------------------------------------
 	
 	@staticmethod
 	def glob(globs_list : Union[str, List], recursive=False):
