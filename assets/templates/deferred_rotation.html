@@ -6,9 +6,8 @@
 {% if previews is defined and next_preview is defined %}
 	<div class="card-preview-countdown">
 		<h4>Next Card Preview</h4>
-		{% for preview_item_type in previews: %}
+		{% for preview_item_type, (preview_date, approximate) in next_preview.items() if preview_item_type in previews: %}
 			<div class="countdown-item">
-				{% set preview_date, approximate = next_preview[preview_item_type] %}
 				{% set timestamp = int(preview_date.timestamp()) %}
 				<div class="label-countdown">
 					<div class="label" id="countdown-label-{{ timestamp }}">
