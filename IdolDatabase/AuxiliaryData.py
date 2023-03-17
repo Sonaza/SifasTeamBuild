@@ -87,6 +87,6 @@ StartDateOverride = {
 	},
 	
 	EventType.Story : {
-		
+		"2023-3" : 18,
 	},
 }
