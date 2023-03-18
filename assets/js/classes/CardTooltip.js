@@ -133,28 +133,18 @@ class CardTooltip
 				const now = Math.floor(Date.now() / 1000);
 				for (let i = 0; i < previous_card_data['r'].length; ++i)
 				{
-					$scope.tooltip_data.previous_card.push(
-						now - previous_card_data['r'][i],
-					);
+					$scope.tooltip_data.previous_card.push(now - previous_card_data['r'][i]);
 				}
 			}
-			else if (card_data['r'].length == previous_card_data['r'].length)
+			else
 			{
-				for (let i = 0; i < card_data['r'].length; ++i)
+				// Loop through JP and WW release dates
+				// If current card only has 1 release date, use it as basis for multiple deltas if required
+				for (let i = 0; i < previous_card_data['r'].length; ++i)
 				{
-					$scope.tooltip_data.previous_card.push(
-						card_data['r'][i] - previous_card_data['r'][i],
-					);
+					const c = Math.max(i, card_data['r'].length - 1);
+					$scope.tooltip_data.previous_card.push(card_data['r'][c] - previous_card_data['r'][i]);
 				}
-			}
-			else if (card_data['r'].length < previous_card_data['r'].length)
-			{
-				$scope.tooltip_data.previous_card.push(
-					card_data['r'][0] - previous_card_data['r'][0],
-				);
-				$scope.tooltip_data.previous_card.push(
-					card_data['r'][0] - previous_card_data['r'][1],
-				);
 			}
 			
 			$scope.tooltip_data.previous_card = $scope.tooltip_data.previous_card.map((value) =>
