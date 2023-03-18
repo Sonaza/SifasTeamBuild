@@ -22,8 +22,8 @@ if ($dark_mode_enabled === true)
 # ---------------------------------------------------------------
 
 $subpage_titles = [
-	'ur'            => 'UR Rotations',
-	'sr'            => 'SR Sets',
+	'ur-rotations'  => 'UR Rotations',
+	'sr-sets'       => 'SR Sets',
 	'festival'      => 'Festival Rotations',
 	'party'         => 'Party Rotations',
 	'events'        => 'Event Rotations',
