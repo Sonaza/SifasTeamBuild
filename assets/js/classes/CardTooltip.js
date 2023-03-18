@@ -149,7 +149,7 @@ class CardTooltip
 			
 			$scope.tooltip_data.previous_card = $scope.tooltip_data.previous_card.map((value) =>
 			{
-				return Math.ceil(value / 86400);
+				return Math.floor(value / 86400);
 			});
 		}
 		
