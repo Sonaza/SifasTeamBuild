@@ -307,10 +307,10 @@ class RotationsGenerator:
 	def is_doing_full_render(self):
 		return self.args.force or self.args.force_render or self.client.database_updated()
 	
-	def due_for_rendering(self, template_filename):
+	def due_for_rendering(self, template_filename, print_log=True):
 		if self.is_doing_full_render():
 			return True
-		return self.renderer.due_for_rendering(template_filename)
+		return self.renderer.due_for_rendering(template_filename, print_log=print_log)
 		
 	def run_generators(self):
 		for generator_name, generator in self.generators.items():
@@ -366,7 +366,7 @@ class RotationsGenerator:
 		# Save tooltip data cache
 		# Must be after all card pages have been rendered but before preloads!
 		
-		if self.is_doing_full_render() or self.due_for_rendering("tooltip_data_attributes.html"):
+		if self.is_doing_full_render() or self.due_for_rendering("tooltip_data_attributes.html", print_log=False):
 			self.renderer.save_tooltip_data("js/tooltip_data.js")
 			
 		# -------------------------------------------------------

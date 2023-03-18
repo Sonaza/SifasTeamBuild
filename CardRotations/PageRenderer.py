@@ -203,7 +203,7 @@ class PageRenderer():
 		
 		return True
 	
-	def due_for_rendering(self, template_filename):
+	def due_for_rendering(self, template_filename, print_log=True):
 		template_filename_path = Utility.join_path(Config.TEMPLATES_DIRECTORY, template_filename)
 		
 		if self.has_template_changed(template_filename_path) or self.is_any_output_missing(template_filename_path):
@@ -211,7 +211,8 @@ class PageRenderer():
 			return True
 			
 		self.preserve_output(template_filename_path)
-		print(f"{Fore.BLACK}{Style.BRIGHT}Unchanged  {Fore.WHITE}{os.path.basename(template_filename):<30}{Style.RESET_ALL} ...  {Fore.GREEN}{Style.BRIGHT}OK{Style.RESET_ALL}")
+		if print_log:
+			print(f"{Fore.BLACK}{Style.BRIGHT}Unchanged  {Fore.WHITE}{os.path.basename(template_filename):<30}{Style.RESET_ALL} ...  {Fore.GREEN}{Style.BRIGHT}OK{Style.RESET_ALL}")
 		
 		return False
 	
@@ -238,8 +239,8 @@ class PageRenderer():
 			return True
 		if 'output' not in self.render_history_previous[template_filename]:
 			return True
-		if len(self.render_history_previous[template_filename]['output']) == 0:
-			return True
+		# if len(self.render_history_previous[template_filename]['output']) == 0:
+		# 	return True
 			
 		for output_filename in self.render_history_previous[template_filename]['output']:
 			if not os.path.exists(output_filename):
