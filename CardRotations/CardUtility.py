@@ -17,11 +17,11 @@ class CardUtility:
 			'd' : [ card.ordinal, card.rarity.value, card.attribute.value, card.type.value ],
 			't' : [ card.get_card_name(False), card.get_card_name(True) ],
 			's' : CardUtility.get_card_source_label(card),
-			'r' : [ Utility.format_datestring(card.release_date[Locale.JP], long_month=True) ],
+			'r' : [ int(card.release_date[Locale.JP].timestamp()) ],
 		}
 		
 		if card.release_date[Locale.JP] != card.release_date[Locale.WW]:
-			data['r'].append(Utility.format_datestring(card.release_date[Locale.WW], long_month=True))
+			data['r'].append( int(card.release_date[Locale.WW].timestamp()) )
 		
 		if card.event.title:
 			data['e'] = card.event.title

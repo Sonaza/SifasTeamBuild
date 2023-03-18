@@ -15,22 +15,25 @@ class BasicRotationsGenerator(GeneratorBase):
 	
 	used_templates = ["deferred_rotation.html", "deferred_card_grid.html"]
 	
-	def render_deferred_card_grids(self, rotation_set_label, grouped_rotations):
+	def render_deferred_card_grids(self, rotation_category, grouped_rotations, previous_ordinals):
 		for group, group_data in grouped_rotations:
 			for rotation_index, card_rotation, rotation_title in group_data:
-				self.render_and_save("deferred_card_grid.html", f"pages/deferred/{rotation_set_label}_{group.tag}_{rotation_index}.html", {
+				self.render_and_save("deferred_card_grid.html", f"pages/deferred/{rotation_category}_{group.tag}_{rotation_index}.html", {
 					'rotation_index'     : rotation_index,
 					'card_rotation'      : card_rotation,
+					'previous_ordinals'  : previous_ordinals[rotation_category],
 				}, minify_html=not self.args.dev)
-		
+	
 	def generate_and_render(self):
 		preview_times = self.client.get_next_preview_time()
+		
+		previous_ordinals = self.get_previous_ordinals()
 		
 		# General UR rotations
 		ur_rotations = [(group, self.get_general_rotation(group, Rarity.UR)) for group in Group]
 		self.render_and_save("deferred_rotation.html", "pages/ur_rotations.html", {
 			'grouped_rotations'  : ur_rotations,
-			'rotation_set_label' : 'ur',
+			'rotation_category'  : 'ur',
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
 			'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
@@ -38,61 +41,84 @@ class BasicRotationsGenerator(GeneratorBase):
 			'previews'           : preview_times.keys(),
 			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
-		self.render_deferred_card_grids('ur', ur_rotations)
+		self.render_deferred_card_grids('ur', ur_rotations, previous_ordinals)
 	
 		# Festival UR rotations
 		festival_rotations = [(group, self.get_source_rotation(group, Source.Festival)) for group in Group]
 		self.render_and_save("deferred_rotation.html", "pages/festival_rotations.html", {
 			'grouped_rotations'  : festival_rotations,
-			'rotation_set_label' : 'festival',
+			'rotation_category'  : 'festival',
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Festival UR Rotations',
 			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
 			'previews'           : [ BannerType.Festival ],
 			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
-		self.render_deferred_card_grids('festival', festival_rotations)
+		self.render_deferred_card_grids('festival', festival_rotations, previous_ordinals)
 		
 		
 		# Party UR rotations
 		party_rotations = [(group, self.get_source_rotation(group, Source.Party)) for group in Group]
 		self.render_and_save("deferred_rotation.html", "pages/party_rotations.html", {
 			'grouped_rotations'  : party_rotations,
-			'rotation_set_label' : 'party',
+			'rotation_category'  : 'party',
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Party UR Rotations',
 			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
 			'previews'           : [ BannerType.Party ],
 			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
-		self.render_deferred_card_grids('party', party_rotations)
+		self.render_deferred_card_grids('party', party_rotations, previous_ordinals)
 	
 		# Event UR rotations
 		event_rotations = [(group, self.get_source_rotation(group, Source.Event)) for group in Group]
 		self.render_and_save("deferred_rotation.html", "pages/event_rotations.html", {
 			'grouped_rotations'  : event_rotations,
-			'rotation_set_label' : 'event',
+			'rotation_category'  : 'event',
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Event UR Rotations',
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
 			'previews'           : [ EventType.Exchange, EventType.Story, ],
 			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
-		self.render_deferred_card_grids('event', event_rotations)
+		self.render_deferred_card_grids('event', event_rotations, previous_ordinals)
 	
 		# SR Sets
 		sr_sets = [(group, self.get_sr_sets(group)) for group in Group]
 		self.render_and_save("deferred_rotation.html", "pages/sr_sets.html", {
 			'grouped_rotations'  : sr_sets,
-			'rotation_set_label' : 'sr',
+			'rotation_category'  : 'sr',
 			'set_label'          : 'Set',
 			'page_title'         : 'SR Sets',
 			'page_description'   : '''SR cards organised into sets by costume or other common theme.''',
 		}, minify_html=not self.args.dev)
-		self.render_deferred_card_grids('sr', sr_sets)
+		self.render_deferred_card_grids('sr', sr_sets, previous_ordinals)
 		
 		return True
-
+	
+	# -------------------------------------------------------------------------------------------
+	
+	def get_previous_ordinals(self):
+		categories = [
+			'festival',
+			'party',
+			'event',
+			'ur',
+			'sr',
+		]
+		previous_ordinals = {category: {member: [] for member in Member} for category in categories}
+		
+		card_history, category_info, category_flags = self.history_generator.get_card_history_per_member()
+		for member, history in card_history.items():
+			for category in categories:
+				for card, _, _ in history[category]:
+					previous_ordinals[category][member].append(card.ordinal)
+				
+				previous_ordinals[category][member].append('newest')
+				previous_ordinals[category][member] = dict(zip(previous_ordinals[category][member], [None] + previous_ordinals[category][member][:-1]))
+		
+		return previous_ordinals
+		
 	# -------------------------------------------------------------------------------------------
 	
 	def get_general_rotation(self, group : Group, rarity : Rarity):
@@ -154,10 +180,11 @@ class BasicRotationsGenerator(GeneratorBase):
 					set_title = titles[0][0]
 				else:
 					print("WARNING! No set name could be determined for", rarity, group, "index", rotation_index)
-		
+			
 			rotations.append(( rotation_index, Utility.sort_by_key_order(current_rotation, Idols.member_order_by_group[group]), set_title ))
 		
-		return list(reversed(rotations))
+		rotations = list(reversed(rotations))
+		return rotations
 	
 	# -------------------------------------------------------------------------------------------
 	
@@ -199,7 +226,8 @@ class BasicRotationsGenerator(GeneratorBase):
 			
 			rotations.append(( rotation_index, Utility.sort_by_key_order(current_rotation, Idols.member_order_by_group[group]), set_title ))
 		
-		return list(reversed(rotations))
+		rotations = list(reversed(rotations))
+		return rotations
 	
 	# -------------------------------------------------------------------------------------------
 	

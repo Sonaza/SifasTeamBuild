@@ -25,9 +25,6 @@ class HistoryGenerator(GeneratorBase):
 		Source.Party       : 'party',
 	}
 	
-	# def due_for_rendering(self):
-	# 	return any([self.due_for_rendering(), self.due_for_rendering()])
-
 	def generate_and_render(self):
 		self.render_and_save("history_frontpage.html", "pages/history.html", {}, minify_html=not self.args.dev)
 		
@@ -43,8 +40,12 @@ class HistoryGenerator(GeneratorBase):
 					'member_added'   : member_addition_dates,
 				}, minify_html=not self.args.dev)
 		return True
-
+	
+	cached_result = None
 	def get_card_history_per_member(self):
+		if self.cached_result != None:
+			return self.cached_result
+		
 		history_categories = {
 			'all'        : ([Rarity.UR, Rarity.SR], None, ),
 			'event'      : (Rarity.UR, [Source.Event]),
@@ -75,12 +76,12 @@ class HistoryGenerator(GeneratorBase):
 				'show_rarity'     : (isinstance(rarity, list) and len(rarity) > 1),
 			}
 		
-		history_by_member = {}
-		
 		now = datetime.now(timezone.utc)
 		
+		history_by_member = {}
 		for member in Idols.all_idols:
 			history_by_member[member.member_id] = self.client.get_idol_history(member.member_id, history_categories, now)
 		
-		return (history_by_member, category_info, category_flags)
+		self.cached_result = (history_by_member, category_info, category_flags)
+		return self.cached_result
 		

@@ -19,6 +19,7 @@ class ProcessorTask:
 	output_file: Optional[str] = field(default_factory=lambda: None)
 	
 	depends_on: List[str] = field(default_factory=list)
+	on_complete_run: List[str] = field(default_factory=list)
 	
 	def __post_init__(self):
 		if self.file_processor != None:

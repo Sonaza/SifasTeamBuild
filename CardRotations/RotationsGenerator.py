@@ -142,6 +142,7 @@ class RotationsGenerator:
 					"assets/js/AppModule.js",
 					"assets/js/Constants.js",
 					"assets/js/classes/*.js",
+					"assets/js/filters/*.js",
 					"assets/js/providers/*.js",
 					"assets/js/factories/*.js",
 					"assets/js/directives/*.js",
@@ -189,6 +190,7 @@ class RotationsGenerator:
 					"assets/templatecache/*.html",
 				],
 				output_file      = os.path.join(Config.RENDER_STAGE_DIRECTORY, "TemplateCache.js"),
+				on_complete_run  = ['JavaScript'],
 			),
 		]
 	
@@ -364,7 +366,7 @@ class RotationsGenerator:
 		# Save tooltip data cache
 		# Must be after all card pages have been rendered but before preloads!
 		
-		if self.is_doing_full_render():
+		if self.is_doing_full_render() or self.due_for_rendering("tooltip_data_attributes.html"):
 			self.renderer.save_tooltip_data("js/tooltip_data.js")
 			
 		# -------------------------------------------------------

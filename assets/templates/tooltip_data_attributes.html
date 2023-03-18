@@ -4,9 +4,18 @@ data-card-status="{{ card_status }}"
 
 	data-card-data="{{ embed_card_tooltip(card) }}"
 	
+	{% if previous_ordinals is defined and previous_ordinals[card.ordinal] != None: %}
+		data-previous-card="{{ previous_ordinals[card.ordinal] }}"
+	{% endif %}
+	
 {% elif card_status == 2 or card_status == 3: %}
 
 	data-card-data="{{ member.value }}"
+	
+	{% if previous_ordinals is defined and card_status == 2 %}
+		data-previous-card="{{ previous_ordinals['newest'] }}"
+	{% endif %}
+	
 	ng-click="openMobileTooltip($event)"
 	
 {% endif %}

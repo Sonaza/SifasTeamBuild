@@ -804,7 +804,7 @@ select
 	.rotation-column-wrapper
 	{
 		width: max-content;
-		overflow: auto;
+		// overflow: auto;
 		// flex-shrink: 0;
 		flex-grow: 1;
 		// grid-row: 1;
@@ -939,37 +939,44 @@ select
 	}
 }
 
+@media (max-width: 980px)
+{
+	.content-columns .rotation-column-wrapper
+	{
+		overflow: auto;
+	}
+}
+
 @media (max-width: 900px)
 {
 	
-.content-columns
-{
-	display: block;
-	max-width: 100vh;
-	
-	.rotation-column-wrapper
+	.content-columns
 	{
-		width: auto;
-	}
-}
-	
-.card-preview-countdown
-{
-	.countdown-item
-	{
-		max-width: 100%;
+		display: block;
+		max-width: 100vh;
 		
-		grid-template-columns: 1fr max-content;
-		
-		> .label-countdown
+		.rotation-column-wrapper
 		{
-			display: flex;
-			flex-flow: column nowrap;
-			min-width: 0;
+			width: auto;
 		}
 	}
-}
-	
+		
+	.card-preview-countdown
+	{
+		.countdown-item
+		{
+			max-width: 100%;
+			
+			grid-template-columns: 1fr max-content;
+			
+			> .label-countdown
+			{
+				display: flex;
+				flex-flow: column nowrap;
+				min-width: 0;
+			}
+		}
+	}
 	
 }
 
@@ -1334,6 +1341,7 @@ select
 			th
 			{
 				text-align: left;
+				vertical-align: top;
 				font-weight: 700;
 			}
 			
@@ -1382,9 +1390,26 @@ select
 				}
 			}
 			
+			.release-date td,
+			.previous-card td
+			{
+				display: flex;
+				flex-flow: column nowrap;
+				gap: 0.2rem;
+			}
+			
 			tr.spacer-top > *
 			{
 				padding: 6px 0 0 0;
+			}
+			
+			&.card-missing
+			{
+				display: flex;
+				flex-flow: column nowrap;
+				gap: 0.5rem;
+				justify-content: center;
+				padding: 0 0 0.2rem 0;
 			}
 		}
 	}

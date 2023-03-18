@@ -71,12 +71,14 @@ class CardTooltip
 		let tooltipDataElement = $event.target.closest('.tooltip-data');
 		
 		const keys = [
-			'card-data', 'card-status', 'anchoring', 
+			'card-data', 'previous-card', 'card-status', 'anchoring', 
 		];
 		
 		$scope.tooltip_data = Object.assign(...keys.flatMap((key) => {
+			const key_name = key.replace(/-/g, '_');
+			const key_value = tooltipDataElement.getAttribute('data-' + key);
 			return {
-				[key.replace(/-/g, '_')] : tooltipDataElement.getAttribute('data-' + key)
+				[key_name] : key_value,
 			}
 		}));
 		
@@ -110,6 +112,8 @@ class CardTooltip
 			$scope.tooltip_data.member = Member.members_by_id[member_id];
 		}
 		
+		$scope.format_date = Utility.format_datestring;
+		
 		if ($scope.tooltip_data.card_status == 1)
 		{
 			append(card_data['d'], ['card_ordinal', 'card_rarity', 'card_attribute', 'card_type']);
@@ -117,6 +121,46 @@ class CardTooltip
 			append(card_data['s'], ['card_source']);
 			append(card_data['r'], ['card_release']);
 			if ("e" in card_data) append(card_data['e'], ['card_event']);
+		}
+		
+		if ($scope.tooltip_data.previous_card)
+		{
+			const previous_card_data = GLOBAL_TOOLTIP_DATA[$scope.tooltip_data.previous_card];
+			$scope.tooltip_data.previous_card = [];
+			
+			if (!card_data)
+			{
+				const now = Math.floor(Date.now() / 1000);
+				for (let i = 0; i < previous_card_data['r'].length; ++i)
+				{
+					$scope.tooltip_data.previous_card.push(
+						now - previous_card_data['r'][i],
+					);
+				}
+			}
+			else if (card_data['r'].length == previous_card_data['r'].length)
+			{
+				for (let i = 0; i < card_data['r'].length; ++i)
+				{
+					$scope.tooltip_data.previous_card.push(
+						card_data['r'][i] - previous_card_data['r'][i],
+					);
+				}
+			}
+			else if (card_data['r'].length < previous_card_data['r'].length)
+			{
+				$scope.tooltip_data.previous_card.push(
+					card_data['r'][0] - previous_card_data['r'][0],
+				);
+				$scope.tooltip_data.previous_card.push(
+					card_data['r'][0] - previous_card_data['r'][1],
+				);
+			}
+			
+			$scope.tooltip_data.previous_card = $scope.tooltip_data.previous_card.map((value) =>
+			{
+				return Math.ceil(value / 86400);
+			});
 		}
 		
 		if (Utility.mobile_mode())

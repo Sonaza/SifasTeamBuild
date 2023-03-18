@@ -157,9 +157,22 @@ class ResourceProcessor():
 				
 			else:
 				final_result = ProcessorResult.Success
-				
-				
+		
 		print(f"    {Fore.GREEN}{Style.BRIGHT}Processing complete!{Style.RESET_ALL}")
+		
+		if final_result == ProcessorResult.Success:
+			print()
+			for post_task_name in task_config.on_complete_run:
+				if post_task_name not in self.tasks:
+					raise ResourceProcessorException(f"Task '{task_name}' has a post run task '{post_task_name}' but no such task is defined.")
+				
+				if force or self.should_run_task(post_task_name):
+					print(f"{Fore.YELLOW}{Style.BRIGHT}Task '{task_name}' has a post run task '{post_task_name}'  ...  {Style.RESET_ALL}", end='')
+					
+					result = self.run_processor(post_task_name, minify=minify)
+					if result == ProcessorResult.Failure:
+						return ProcessorResult.Failure
+				
 		return final_result
 		
 	

@@ -28,17 +28,38 @@
 			<th>Related Event</th>
 			<td>[[ data.card_event ]]</td>
 		</tr>
-		<tr ng-if="data.card_release.length == 1">
-			<th>Release Date <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP"><img src="/img/emoji_globe.png" class="locale-emoji" alt="WW"></th>
-			<td>[[ data.card_release[0] ]]</td>
+		<tr class="release-date">
+			<th>Release Date</th>
+			<td ng-if="data.card_release.length == 1">
+				<div>
+					[[ data.card_release[0] | format_datestring ]] <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP"><img src="/img/emoji_globe.png" class="locale-emoji" alt="WW">
+				</div>
+			</td>
+			<td ng-if="data.card_release.length == 2">
+				<div>
+					[[ data.card_release[0] | format_datestring ]] <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP">
+				</div>
+				<div>
+					[[ data.card_release[1] | format_datestring ]] <img src="/img/emoji_globe.png" class="locale-emoji" alt="WW">
+				</div>
+			</td>
 		</tr>
-		<tr ng-if="data.card_release.length == 2">
-			<th>Release Date <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP"></th>
-			<td>[[ data.card_release[0] ]]</td>
-		</tr>
-		<tr ng-if="data.card_release.length == 2">
-			<th>Release Date <img src="/img/emoji_globe.png" class="locale-emoji" alt="WW"></th>
-			<td>[[ data.card_release[1] ]]</td>
+		
+		<tr class="previous-card" ng-if="data.previous_card">
+			<th>Previous Card</th>
+			<td ng-if="data.previous_card.length == 1">
+				<div>
+					[[ data.previous_card[0] ]] days ago <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP"><img src="/img/emoji_globe.png" class="locale-emoji" alt="WW">
+				</div>
+			</td>
+			<td ng-if="data.previous_card.length == 2" class="vertical-list">
+				<div>
+					[[ data.previous_card[0] ]] days ago <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP">
+				</div>
+				<div>
+					[[ data.previous_card[1] ]] days ago <img src="/img/emoji_globe.png" class="locale-emoji" alt="WW">
+				</div>
+			</td>
 		</tr>
 		<tr class="card-kirara-link" ng-if="data.mobile_mode() && data.card_ordinal != undefined">
 			<td colspan="2">
@@ -49,9 +70,22 @@
 		</tr>
 	</table>
 	<div class="card-details card-missing" ng-if="data.card_status == 2">
-		<b>[[ data.member.first_name ]]</b> has yet to receive a card in this cycle.
+		<div>
+			<b>[[ data.member.first_name ]]</b> has yet to receive a card in this cycle.
+		</div>
+		<div ng-if="data.previous_card && data.previous_card.length == 1">
+			It has been <b>[[ data.previous_card[0] ]] days</b> since her previous one.
+		</div>
+		<div ng-if="data.previous_card && data.previous_card.length == 2" style="white-space: normal;">
+			It has been&nbsp;
+			<b>[[ data.previous_card[0] ]] days</b> <img src="/img/emoji_flag_jp.png" class="locale-emoji" alt="JP">&nbsp;/&nbsp;
+			<b>[[ data.previous_card[1] ]] days</b> <img src="/img/emoji_globe.png" class="locale-emoji" alt="WW">&nbsp;
+			since her previous one.
+		</div>
 	</div>
 	<div class="card-details card-missing" ng-if="data.card_status == 3">
-		<b>[[ data.member.first_name ]]</b> did not receive a card in this cycle.
+		<div>
+			<b>[[ data.member.first_name ]]</b> did not receive a card in this cycle.
+		</div>
 	</div>
 </div>

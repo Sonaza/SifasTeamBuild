@@ -116,6 +116,27 @@ class Utility
 	 * String formatting
 	 */
 	
+	static format_datestring = function(date_or_timestamp)
+	{
+		let date;
+		if (date_or_timestamp instanceof Date)
+		{
+			date = date_or_timestamp;
+		}
+		else
+		{
+			date = new Date(date_or_timestamp * 1000);
+		}
+		
+		let output = date.toLocaleDateString('en-GB', {
+			dateStyle: "long",
+		}).split(' ');
+		
+		output[0] = Utility.ordinalize(output[0]);
+		
+		return output.join(' ');
+	}
+	
 	static ordinalize = function(number)
 	{
 		number = Number(number)

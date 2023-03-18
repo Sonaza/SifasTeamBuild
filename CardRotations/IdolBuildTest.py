@@ -535,7 +535,7 @@ bond_boards = {
 	Member.Honoka   : { 'bond_level': 104, 'board_level': 40,  'unlocked_tiles' : [ BP.Appeal, BP.CritRate] },
 	Member.Kotori   : { 'bond_level': 91,  'board_level': 70,  'unlocked_tiles' : [ ] },
 	Member.Rin      : { 'bond_level': 83,  'board_level': 40,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.Stamina, BP.CritRate, ] },
-	Member.Nozomi   : { 'bond_level': 278, 'board_level': 260, 'unlocked_tiles' : True },
+	Member.Nozomi   : { 'bond_level': 280, 'board_level': 280, 'unlocked_tiles' : True },
 	Member.Nico     : { 'bond_level': 93,  'board_level': 50,  'unlocked_tiles' : [ ] },
 
 	Member.Mari     : { 'bond_level': 84,  'board_level': 60,  'unlocked_tiles' : [ BP.MatchBonus, ] },
@@ -545,7 +545,7 @@ bond_boards = {
 	Member.Riko     : { 'bond_level': 87,  'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.CritPower, ] },
 	Member.Chika    : { 'bond_level': 105, 'board_level': 40,  'unlocked_tiles' : [ ] },
 	Member.Kanan    : { 'bond_level': 111, 'board_level': 60,  'unlocked_tiles' : [ BP.MatchBonus, ] },
-	Member.You      : { 'bond_level': 103, 'board_level': 80,  'unlocked_tiles' : [ BP.CritPower, ] },
+	Member.You      : { 'bond_level': 103, 'board_level': 100, 'unlocked_tiles' : True },
 	Member.Hanamaru : { 'bond_level': 125, 'board_level': 120, 'unlocked_tiles' : True },
 	Member.Ruby     : { 'bond_level': 112, 'board_level': 50,  'unlocked_tiles' : [ BP.Appeal, BP.Technique, BP.Stamina, BP.CritPower, ] },
 
@@ -569,6 +569,14 @@ rina = IdolUnit(611, "Party", limit_break = 5) \
 
 rina = IdolUnit(728, "Fes3", limit_break = 5) \
 	.set_bond_board(**bond_boards[Member.Nozomi]) \
+    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4)
+
+rina = IdolUnit(478, "Party", limit_break = 5) \
+	.set_bond_board(**bond_boards[Member.You]) \
+    .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4)
+
+rina = IdolUnit(655, "Fes3", limit_break = 5) \
+	.set_bond_board(**bond_boards[Member.You]) \
     .set_insight_skills([InsightSkills.Appeal_M_Strategy] * 4)
 
 print(rina)
