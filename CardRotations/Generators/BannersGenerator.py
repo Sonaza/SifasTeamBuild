@@ -51,14 +51,19 @@ class BannersGenerator(GeneratorBase):
 			
 			featured_str = Utility.concat(featured_members, separator=', ', last_separator=' and ')
 			
+			data['banner']['ordinal'] = ""
+			
 			if banner_id in banner_title_overrides:
 				data['banner']['title'] = banner_title_overrides[banner_id]
 			
 			else:
-				if data['banner']['type'] == BannerType.Spotlight:
-					data['banner']['title'] = f"{data['banner']['type'].name} {featured_str}"
-				else:
-					data['banner']['title'] = f"{Utility.ordinalize(data['index'] + 1)} {data['banner']['type'].name} {featured_str}"
+				data['banner']['title'] = f"{data['banner']['type'].name} {featured_str}"
+				
+				if data['banner']['type'] != BannerType.Spotlight:
+					data['banner']['ordinal'] = Utility.ordinalize(data['index'] + 1)
+				
+			data['banner']['title_with_ordinal'] = f"{data['banner']['ordinal']} {data['banner']['title']}".strip()
+					
 		
 		return banners
 	

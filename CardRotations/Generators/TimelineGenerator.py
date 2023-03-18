@@ -263,7 +263,7 @@ class TimelineGenerator(GeneratorBase):
 			banners = self.banners_generator.get_banners_with_cards()
 			for banner_id, banner_data in timeline['banners'].items():
 				metadata_json['banners'][banner_id] = {
-					'title'        : banners[banner_id]['banner']['title'],
+					'title'        : banners[banner_id]['banner']['title_with_ordinal'],
 					'type'         : banner_data['info'].type,
 					'start_offset' : banner_data['days_from_start'],
 					'duration'     : banner_data['duration'],

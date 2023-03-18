@@ -2675,10 +2675,14 @@ img.locale-emoji-20
 				span
 				{
 					display: inline-block;
-					width: 19px;
-					color: #444;
 					font-weight: 400;
 					font-size: 10pt;
+				}
+				
+				span.index
+				{
+					width: 19px;
+					color: #444;
 					text-shadow: none !important;
 				}
 			}
@@ -2691,6 +2695,31 @@ img.locale-emoji-20
 				transition: all ease-out 100ms;
 			}
 		}
+	}
+	
+	.gacha-banner span.banner-title-label span.rotation-ordinal
+	{
+		font-family: 'Montserrat', sans-serif;
+		font-weight: 700;
+		padding: 2px 6px;
+		border-radius: 4px;
+		font-size: 9pt;
+		text-shadow: 0 1px 1px #000a, 0 0px 1px #000a;
+		width: 88px;
+		text-align: center;
+		margin: 0 0.4rem 0 0.2rem;
+	}
+	
+	.gacha-banner.banner-type-2 span.banner-title-label span.rotation-ordinal
+	{
+		background: #F64D91;
+		color: #fff;
+	}
+	
+	.gacha-banner.banner-type-3 span.banner-title-label span.rotation-ordinal
+	{
+		background: #E5A201;
+		color: #fff;
 	}
 
 	.event-runtime

@@ -3,7 +3,7 @@
 <div class="st-td st-cell-event-title event-details">
 	<div class="event-title">
 		<span class="event-title-label" ellipsis=".event-title" title="{{ event['title'] | e }}">
-			<span>{{ event_row_index }}.</span> {{ event['title'] | e }}
+			<span class="index">{{ event_row_index }}.</span> {{ event['title'] | e }}
 		</span>
 		<span class="event-title-type">
 			({{ event['type'].name }})

@@ -1,8 +1,11 @@
 {% set banner = banner_data['banner'] %}
 <div class="st-td st-cell-banner-title event-details">
 	<div class="event-title">
-		<span class="banner-title-label" title="{{ banner['title'] }}">
-			<span>{{ banner_row_index }}.</span>
+		<span class="banner-title-label" title="{{ banner['title_with_ordinal'] }}">
+			<span class="index">{{ banner_row_index }}.</span>
+			{% if banner['ordinal'] %}
+				<span class="rotation-ordinal">{{ banner['ordinal'] }} rotation</span>
+			{% endif %}
 			{{ banner['title'] }}
 		</span>
 	</div>
