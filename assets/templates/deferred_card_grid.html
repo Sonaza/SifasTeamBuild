@@ -14,8 +14,7 @@
 			{% else %}
 				{% if is_missing_card(card) %}
 					<div class="grid-icon idol-icon-32 idol-bg-color-dark idol-bg-glow-border missing tooltip-data"
-						{{ include("tooltip_data_attributes.html", member=member, card_status=2, previous_ordinals=previous_ordinals[member]) }}
-						data-previous-card="{{ previous_ordinals[member]['newest'] }}">
+						{{ include("tooltip_data_attributes.html", member=member, card_status=2, previous_ordinals=previous_ordinals[member]) }}>
 						<span class="source-indicator"></span>
 					</div>
 				{% elif is_nonextant_card(card) %}

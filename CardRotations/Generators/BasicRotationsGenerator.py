@@ -116,7 +116,7 @@ class BasicRotationsGenerator(GeneratorBase):
 				
 				previous_ordinals[category][member].append('newest')
 				previous_ordinals[category][member] = dict(zip(previous_ordinals[category][member], [None] + previous_ordinals[category][member][:-1]))
-		
+			
 		return previous_ordinals
 		
 	# -------------------------------------------------------------------------------------------
