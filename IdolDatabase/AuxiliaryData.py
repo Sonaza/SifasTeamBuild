@@ -60,7 +60,7 @@ ApproximateStartDate = {
 	EventType.Story : {
 		1  : 22,
 		2  : 20,
-		3  : 23,
+		3  : 22,
 		4  : 22,
 		5  : 22,
 		6  : 22,
@@ -87,6 +87,6 @@ StartDateOverride = {
 	},
 	
 	EventType.Story : {
-		"2023-3" : 22,
+		# "2023-3" : 22,
 	},
 }
