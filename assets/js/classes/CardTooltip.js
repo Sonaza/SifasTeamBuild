@@ -136,13 +136,13 @@ class CardTooltip
 					$scope.tooltip_data.previous_card.push(now - previous_card_data['r'][i]);
 				}
 			}
-			else
+			else if (card_data['r'].length > 0 && previous_card_data['r'].length <= 2)
 			{
 				// Loop through JP and WW release dates
 				// If current card only has 1 release date, use it as basis for multiple deltas if required
 				for (let i = 0; i < previous_card_data['r'].length; ++i)
 				{
-					const c = Math.max(i, card_data['r'].length - 1);
+					const c = Math.min(i, card_data['r'].length - 1);
 					$scope.tooltip_data.previous_card.push(card_data['r'][c] - previous_card_data['r'][i]);
 				}
 			}
