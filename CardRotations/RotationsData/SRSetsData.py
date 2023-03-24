@@ -73,31 +73,6 @@ idolized_same_set = {
 			'Tanoshii no Tensai',
 			'Fire Bird',
 			'LIKE IT! LOVE IT!',
-			'Concentrate!',
-		],
-		
-		'4th Nijigasaki Solo': [
-			'Break The System',
-			'TO BE YOURSELF',
-			'Eieisa',
-			'Turn it Up!',
-			'Diabolic mulier',
-			'Silent Blaze',
-			'Yada!',
-			'Itsu datte for you!',
-			'First Love Again',
-		],
-		
-		'4th Nijigasaki Solo': [
-			'Break The System',
-			'TO BE YOURSELF',
-			'Eieisa',
-			'Turn it Up!',
-			'Diabolic mulier',
-			'Silent Blaze',
-			'Yada!',
-			'Itsu datte for you!',
-			'First Love Again',
 		],
 		
 		'Eien no Isshun': [
