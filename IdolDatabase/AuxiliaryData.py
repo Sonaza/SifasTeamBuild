@@ -15,7 +15,7 @@ ApproximateStartDate = {
 	BannerType.Festival : {
 		1  : 30,
 		2  : 27,
-		3  : 25,
+		3  : 26,
 		4  : 29,
 		5  : 30,
 		6  : 28,
@@ -75,7 +75,7 @@ ApproximateStartDate = {
 
 StartDateOverride = {
 	BannerType.Festival : {
-		# "2023-3" : 2,
+		"2023-3" : 26,
 	},
 	
 	BannerType.Party : {

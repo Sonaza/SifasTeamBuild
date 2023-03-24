@@ -1194,11 +1194,20 @@ class KiraraClient():
 		next_banner_type = AuxiliaryData.NextBannerOrder[current_banner_type]
 
 		current_banner = banners_by_type[current_banner_type][0]
-		preview_date = current_banner['end'] - timedelta(hours=23, minutes=59)
-		next_time[next_banner_type]    = (preview_date, False)
+		next_year = current_banner['end'].year
+		next_month = current_banner['end'].month
+		next_banner_string = f'{next_year}-{next_month}'
+		if next_banner_string in AuxiliaryData.StartDateOverride[next_banner_type]:
+			start_date = AuxiliaryData.StartDateOverride[next_banner_type][next_banner_string]
+			preview_date = datetime(next_year, next_month, start_date - 1, 6, 0, tzinfo=timezone.utc)
+			next_time[next_banner_type]    = (preview_date, True)
 		
-		# previous_banner = banners_by_type[next_banner_type][0]
-		# print("previous_banner", previous_banner)
+		else:
+			preview_date = start_date - timedelta(hours=23, minutes=59)
+			# preview_date = preview_date.replace(hour=6, minute=0)
+			next_time[next_banner_type]    = (preview_date, False)
+		
+		
 		next_year, next_month = Utility.wrap_year_and_month(current_banner['start'].year, current_banner['start'].month + 1)
 
 		start_date = AuxiliaryData.StartDateOverride[current_banner_type].get(f'{next_year}-{next_month}',
