@@ -66,6 +66,11 @@ app.run(($rootScope, $window, $templateCache, $http, RouteEvent, SiteSettings) =
 				console.error('Error copying text: ', error);
 			});
 	}
+		
+	$rootScope.$on("$routeChangeStart", function(event, next, current)
+	{ 
+		$rootScope.toggleTooltip(undefined, false);
+	});
 	
 	$rootScope.toggleTooltip = ($event, visible) => { CardTooltip.toggleTooltip($rootScope, $event, visible); }
 	angular.element($window).on('resize', () => { $rootScope.toggleTooltip(undefined, false); });
