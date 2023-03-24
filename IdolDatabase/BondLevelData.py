@@ -75,7 +75,7 @@ class IdolBondBonuses():
 	BOND_BOARD_TILES = cyclelist([
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritRate  : 0.5,  BondParameter.SpGain         : 0.5, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.RLevel         : 6,   },
-		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.MatchBonus : 2.5, },
+		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SpVoltage : 0.2,  BondParameter.MatchBonus     : 2.5, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.GdPenalty : 0.5,  BondParameter.SRLevel        : 4  , },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.CritPower : 5.0,  BondParameter.SpVoltage      : 0.2, },
 		{  BondParameter.Appeal : 0.1,  BondParameter.Stamina : 0.1,  BondParameter.Technique : 0.1,  BondParameter.SkPenalty : 0.5,  BondParameter.SpGain         : 0.5, },
