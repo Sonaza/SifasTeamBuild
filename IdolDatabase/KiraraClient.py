@@ -1203,7 +1203,7 @@ class KiraraClient():
 			next_time[next_banner_type]    = (preview_date, True)
 		
 		else:
-			preview_date = start_date - timedelta(hours=23, minutes=59)
+			preview_date = current_banner['end'] - timedelta(hours=23, minutes=59)
 			# preview_date = preview_date.replace(hour=6, minute=0)
 			next_time[next_banner_type]    = (preview_date, False)
 		
@@ -1461,7 +1461,8 @@ class KiraraClient():
 		for source in overdue_sources:
 			if len(overdue_members[source]) == 0:
 				overdue_members[source] = set([member for member in Member])
-					
+				all_overdue_members = overdue_members[source]
+							
 		max_UR_offsets = {
 			Member.Rina     : -2,
 			Member.Kasumi   : -2,
@@ -1495,7 +1496,7 @@ class KiraraClient():
 			longest_overdue = max(delta.days, longest_overdue)
 			if idol.member_id in all_overdue_members:
 				elapsed_per_member[idol.member_id] = delta
-		
+				
 		banner_types = [x.banner_type for x in overdue_sources]
 		most_recent_banner_type, banners_by_type = self.get_recent_banner_stats(banner_type=banner_types, rarity=Rarity.UR)
 		most_recent_groups = banners_by_type[most_recent_banner_type][0]['groups']
