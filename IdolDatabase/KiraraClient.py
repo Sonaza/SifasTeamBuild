@@ -1473,7 +1473,7 @@ class KiraraClient():
 			Member.Emma     : -2,
 			Member.Kanata   : -2,
 			Member.Karin    : -2,
-			Member.Shioriko : -3,
+			Member.Shioriko : -4,
 			Member.Lanzhu   : -7,
 			Member.Mia      : -7,
 		}
@@ -1566,26 +1566,42 @@ class KiraraClient():
 				member = idol.member_id
 				found_members.add(member)
 				
+				# Coefficient based on the oldest UR release
 				ur_coefficient = elapsed_per_member[member].days / longest_overdue
+				
+				# Time since last limited card
 				limited_delta = now - idol.release_date[Locale.JP]
 				
+				# In how many banners has the school appeared recently
 				banner_share = banner_shares[current_banner_type][member.group]
 				banner_share = (1 / banner_share) if banner_share > 0 else 10
 				
+				# Coefficient based on sigmoid curve on how long it's been since a school got a banner
 				sigmoid_steepness = 8
 				banner_elapsed_coefficient = elapsed_coefficients[current_banner_type][member.group]
 				banner_elapsed_coefficient = sigmoid(sigmoid_steepness, banner_elapsed_coefficient)
 				
+				# Calculate comparative value based on
+				# 1) How long it's been since limited card relative to all URs
 				weighted_value = ur_coefficient * limited_delta.days
+				# 2) How many banners has the school appeared in recently
 				weighted_value *= banner_share
+				# 3) How long it's been since the school got a banner
 				weighted_value *= banner_elapsed_coefficient
 				
+				# Adjust weighs based on if the school appeared in previous banner
 				if next_banner_type == current_banner_type:
 					if member.group in most_recent_groups:
-						weighted_value *= 0.85
+						weighted_value *= 0.9
 					else:
-						weighted_value *= 1.15
-						
+						weighted_value *= 1.1
+				else:
+					if member.group in most_recent_groups:
+						weighted_value *= 1.1
+					else:
+						weighted_value *= 0.9
+				
+				# Exponentially adjust value if the member has already appeared in current rotation
 				if weighted_value > 0:	
 					weighted_value **= current_rotation_coefficient.get(member, 1)
 				
