@@ -1204,7 +1204,7 @@ class KiraraClient():
 		
 		else:
 			preview_date = current_banner['end'] - timedelta(hours=23, minutes=59)
-			# preview_date = preview_date.replace(hour=6, minute=0)
+			preview_date = preview_date.replace(hour=6, minute=0)
 			next_time[next_banner_type]    = (preview_date, False)
 		
 		
