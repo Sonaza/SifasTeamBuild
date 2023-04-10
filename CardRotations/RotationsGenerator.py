@@ -494,8 +494,8 @@ class RotationsGenerator:
 			if os.path.exists(Config.OUTPUT_LIVE_SYMLINK):
 				os.remove(Config.OUTPUT_LIVE_SYMLINK)
 			os.symlink(os.path.basename(Config.OUTPUT_STAGE_DIRECTORY), Config.OUTPUT_LIVE_SYMLINK)
-		except:
-			print("Failed to create symlink!")
+		except Exception as e:
+			print(f"Failed to create symlink! {type(e).__name__} : ", str(e))
 			return False
 			
 		return True
