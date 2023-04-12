@@ -1567,7 +1567,7 @@ class KiraraClient():
 				found_members.add(member)
 				
 				# Coefficient based on the oldest UR release
-				ur_coefficient = elapsed_per_member[member].days / longest_overdue
+				ur_coefficient = sigmoid(10, elapsed_per_member[member].days / longest_overdue)
 				
 				# Time since last limited card
 				limited_delta = now - idol.release_date[Locale.JP]

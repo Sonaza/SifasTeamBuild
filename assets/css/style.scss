@@ -2286,6 +2286,29 @@ body.dark-mode
 				padding: 0 0.5rem;
 			}
 			
+			.idol-group
+			{
+				width: 8px;
+				height: calc(100% - 8px);
+				margin: 0 4px 4px auto;
+				border-radius: 10px;
+				
+				&.group-muse
+				{
+					background: #ff6d9f;
+				}
+
+				&.group-aqours
+				{
+					background: #58bff0;
+				}
+
+				&.group-nijigasaki
+				{
+					background: #f1c232;
+				}
+			}
+			
 			&.honk-wasted
 			{
 				background: url('/img/honkwasted-40.gif') no-repeat center right 6px;
