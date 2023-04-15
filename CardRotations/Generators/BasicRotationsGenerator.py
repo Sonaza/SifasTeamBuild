@@ -37,7 +37,7 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
 			'page_description'   : '''Rotations for all UR cards. <b>Please note:</b> these rotations are automatically laid in the original release
-			                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.<br><br>Yes, Shioriko is apparently behind. That's not this site's fault. Please stop complaining.''',
+			                          order and manual per-rotation exceptions are not planned for this page beyond adjusting the initial URs.<br>Yes, Shioriko is apparently behind. That's not this site's fault. Please stop complaining.''',
 			'previews'           : preview_times.keys(),
 			'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
