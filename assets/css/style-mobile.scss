@@ -217,7 +217,7 @@
 	{
 		a
 		{
-			background: #fff;
+			background-color: #fff;
 			border: 1px solid #AD8EED;
 			border-right: 4px solid #481E9F;
 			padding: 0.55rem 1rem 0.55rem 1.5rem;
@@ -226,7 +226,7 @@
 			&.active
 			{
 				color: #fff;
-				background: #481E9F !important;
+				background-color: #481E9F !important;
 				border-right: none;
 				border-left: 4px solid #6A3EC4;
 			}
@@ -707,7 +707,7 @@ body.sidebar-open
 	{
 		a
 		{
-			// background: #EFE6FF;
+			// background-color: #EFE6FF;
 			border: 1px solid #AD8EED;
 			border-right: 4px solid #481E9F;
 			padding: 0.55rem 1rem 0.55rem 1.5rem;
@@ -716,7 +716,7 @@ body.sidebar-open
 			&.active
 			{
 				color: #fff;
-				background: #481E9F;
+				background-color: #481E9F;
 				border-right: none;
 				border-left: 4px solid #6A3EC4;
 			}

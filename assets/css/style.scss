@@ -441,6 +441,138 @@ a
 			{
 				padding: 2px 0 0 0.75rem;
 			}
+			
+			a
+			{
+				display: block;
+				padding: 0.55rem 1rem;
+				font-family: 'Montserrat', sans-serif;
+				font-size: 12pt;
+				font-weight: 700;
+				text-decoration: none;
+				text-shadow: none;
+				color: #4214A1;
+				background-color: #fff8;
+				border-left: none;
+				border-right: 2px solid #481E9F;
+				transition: all linear 70ms;
+				box-shadow: 0 1px 3px #481E9Faa;
+
+				&:hover
+				{
+					cursor: pointer;
+					color: #fff;
+					background-color: #481E9F;
+					border-right: none;
+					border-left: 4px solid #6A3EC4;
+					padding-left: 1.3rem;
+				}
+
+				&.active
+				{
+					color: #fff;
+					background-color: #8C65DB;
+					border-right: none;
+					border-left: 4px solid #B292F4;
+					padding-left: 1.1rem;
+					text-shadow: 1px  1px #000a,
+								-1px -1px #000a,
+								 1px -1px #000a,
+								-1px  1px #000a;
+
+					&:hover
+					{
+						color: #fff;
+						background-color: #BA98FF;
+					}
+				}
+			}
+			
+			&.icon-nav
+			{
+				display: grid;
+				background: transparent;
+				border: 0;
+				
+				grid-template-rows: 1fr;
+				
+				&.nav-2-icons
+				{
+					grid-template-columns: repeat(2, 1fr);
+				}
+				
+				&.nav-3-icons
+				{
+					grid-template-columns: repeat(3, 1fr);
+				}
+				
+				a
+				{
+					display: grid;
+					grid-template-columns: 1fr;
+					grid-template-rows: 1fr;
+					
+					align-content: center;
+					justify-content: center;
+					
+					&:not(:last-child)
+					{
+						border: none !important;
+					}
+					border-left: none !important;
+					padding-left: 1rem !important;
+					
+					span
+					{
+						width: 32px;
+						height: 32px;
+						margin: 0 auto;
+						background-position: center top;
+						background-repeat: no-repeat !important;
+						filter: drop-shadow(1px 0 2px #2A0656);
+						
+						&.icon-school
+						{
+							width: 60px;
+							height: 40px;
+							margin-top: 4px;
+							margin-bottom: 4px;
+							background-size: contain;
+							background-position: center center;
+						
+							&.logo-muse
+							{
+								background-image: url('/img/icons/64/logo-muse-border.png');
+							}
+							
+							&.logo-aqours
+							{
+								background-image: url('/img/icons/64/logo-aqours-border.png');
+							}
+							
+							&.logo-nijigasaki
+							{
+								background-image: url('/img/icons/64/logo-nijigasaki-border.png');
+							}
+						}
+					}
+					
+					&:hover
+					{
+						&:not(:last-child)
+						{
+							border: none !important;
+						}
+						border-left: none !important;
+						padding-left: 1rem !important;
+					}
+				}
+				
+				&.no-padding a
+				{
+					padding: 0 !important;
+				}
+			}
 		}
 	}
 
@@ -452,52 +584,6 @@ a
 		background-size: 100%;
 		background-repeat: no-repeat;
 		background-position: center center;
-	}
-
-	li a
-	{
-		display: block;
-		padding: 0.55rem 1rem;
-		font-family: 'Montserrat', sans-serif;
-		font-size: 12pt;
-		font-weight: 700;
-		text-decoration: none;
-		text-shadow: none;
-		color: #4214A1;
-		background: #fff8;
-		border-left: none;
-		border-right: 2px solid #481E9F;
-		transition: all linear 70ms;
-		box-shadow: 0 1px 3px #481E9Faa;
-
-		&:hover
-		{
-			cursor: pointer;
-			color: #fff;
-			background: #481E9F;
-			border-right: none;
-			border-left: 4px solid #6A3EC4;
-			padding-left: 1.3rem;
-		}
-
-		&.active
-		{
-			color: #fff;
-			background: #8C65DB;
-			border-right: none;
-			border-left: 4px solid #B292F4;
-			padding-left: 1.1rem;
-			text-shadow: 1px  1px #000a,
-						-1px -1px #000a,
-						 1px -1px #000a,
-						-1px  1px #000a;
-
-			&:hover
-			{
-				color: #fff;
-				background: #BA98FF;
-			}
-		}
 	}
 
 	.settings

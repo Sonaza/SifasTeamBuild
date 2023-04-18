@@ -1,16 +1,30 @@
 <ul class="side-nav-ul" ng-controller="NavController">
 	<li><a href="/"              ng-class="classActive('/')">Home</a></li>
 	<li class="spacer"></li>
-	<li><a href="/ur-rotations"  ng-class="classActive('/ur-rotations')">UR Rotations</a></li>
-	<li><a href="/sr-sets"       ng-class="classActive('/sr-sets')">SR Sets</a></li>
+	<li class="icon-nav nav-2-icons">
+		<a href="/ur-rotations"  ng-class="classActive('/ur-rotations')">
+			<span class="icon-32 rarity-30"></span>
+		</a>
+		<a href="/sr-sets"      ng-class="classActive('/sr-sets')">
+			<span class="icon-32 rarity-20"></span>
+		</a>
+	</li>
 	<li class="spacer"></li>
 	<li><a href="/festival"      ng-class="classActive('/festival')">Festival Rotations</a></li>
 	<li><a href="/party"         ng-class="classActive('/party')">Party Rotations</a></li>
 	<li><a href="/events"        ng-class="classActive('/events')">Event Rotations</a></li>
 	<li class="spacer"></li>
-	<li><a href="/muse"          ng-class="classActive('/muse')">µ's Cards</a></li>
-	<li><a href="/aqours"        ng-class="classActive('/aqours')">Aqours Cards</a></li>
-	<li><a href="/nijigasaki"    ng-class="classActive('/nijigasaki')">Nijigasaki Cards</a></li>
+	<li class="icon-nav nav-3-icons no-padding">
+		<a href="/muse"          ng-class="classActive('/muse')">
+			<span class="icon-school logo-muse"></span>
+		</a>
+		<a href="/aqours"        ng-class="classActive('/aqours')">
+			<span class="icon-school logo-aqours"></span>
+		</a>
+		<a href="/nijigasaki"    ng-class="classActive('/nijigasaki')">
+			<span class="icon-school logo-nijigasaki"></span>
+		</a>
+	</li>
 	<li class="spacer"></li>
 	<li><a href="/event_history" ng-class="classActive('/event_history')">Event History</a></li>
 	<li><a href="/banners"       ng-class="classActive('/banners')">Gacha Banners</a></li>

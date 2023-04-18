@@ -12,8 +12,8 @@ border = ""
 # border = "-border"
 
 categories = {
-	# 'general' : [16, 32, 48, 64, 128],
-	'yay'     : [64],
+	'general' : [16, 32, 48, 64, 128],
+	# 'yay'     : [64],
 }
 
 for directory, category_sizes in categories.items():

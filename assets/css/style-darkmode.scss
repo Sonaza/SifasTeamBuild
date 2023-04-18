@@ -110,7 +110,7 @@ select
 		a
 		{
 			color: #DDCDFE;
-			background: #60447E99;
+			background-color: #60447E99;
 			border-left: none;
 			border-right: 2px solid #AA96D3;
 			box-shadow: none;
@@ -118,7 +118,7 @@ select
 			&:hover
 			{
 				color: #fff;
-				background: #6E48BD;
+				background-color: #6E48BD;
 				border-right: none;
 				border-left: 4px solid #B597F3;
 				text-shadow: 1px  1px #000a,
@@ -130,14 +130,14 @@ select
 			&.active
 			{
 				color: #fff;
-				background: #8C65DB;
+				background-color: #8C65DB;
 				border-right: none;
 				border-left: 4px solid #B292F4;
 
 				&:hover
 				{
 					color: #fff;
-					background: #BA98FF;
+					background-color: #BA98FF;
 				}
 			}
 		}
