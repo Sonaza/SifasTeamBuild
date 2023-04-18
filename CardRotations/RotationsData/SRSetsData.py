@@ -27,6 +27,10 @@ idolized_same_set = {
 		'Mermaid Festa Vol.1' : [
 			'Mermaid festa vol.1',
 		],
+		
+		'HEART to HEART!' : [
+			'Heart to Heart!',
+		],
 	},
 	
 	Group.Aqours : {
