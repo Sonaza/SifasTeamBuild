@@ -29,6 +29,12 @@ idolized_same_set = {
 		],
 	},
 	
+	Group.Aqours : {
+		'Step! ZERO to ONE' : [
+			'Taking Step One',
+		],
+	},
+	
 	Group.Nijigasaki : {
 		'1st Nijigasaki Solo' : [
 			'Yume e no Ippo',

@@ -7,7 +7,8 @@ member_delays_by_rarity = {
 		Member.Mia      : [0, 8, ],
 	},
 	Rarity.UR : {
-		Member.Shioriko : 3,
+		# Member.Shioriko : [3, 0, 0, 1],
+		Member.Shioriko : [3],
 		Member.Lanzhu   : 7,
 		Member.Mia      : 7,
 	},
