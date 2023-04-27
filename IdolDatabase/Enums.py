@@ -87,7 +87,9 @@ class Subunit(Enum):
 	Azuna        = 9,  "AZUNA"
 	Rebirth      = 10, "R3BIRTH"
 	
-#	Liella       = 11, "Liella"
+	# LiellaUnitA  = 11, "Liella"
+	# LiellaUnitB  = 12, "Liella"
+	# LiellaUnitC  = 13, "Liella"
 
 Birthday = namedtuple('Birthday', 'month day')
 
@@ -137,16 +139,19 @@ class Member(Enum):
 	Mia      = 211, "Mia Taylor",         Birthday(12,  6),  Group.Nijigasaki, Year.Third, Subunit.Rebirth
 
 	# ------------ Liella ------------
-#	Kanon    = 301, "Kanon Shibuya",      Birthday( 5,  1),  Group.Liella, Year.Second, Subunit.Liella
-#	Keke     = 302, "Keke Tang",          Birthday( 7, 17),  Group.Liella, Year.Second, Subunit.Liella
-#	Chisato  = 303, "Chisato Arashi",     Birthday( 2, 25),  Group.Liella, Year.Second, Subunit.Liella
-#	Sumire   = 304, "Sumire Heanna",      Birthday( 9, 28),  Group.Liella, Year.Second, Subunit.Liella
-#	Ren      = 305, "Ren Hazuki",         Birthday(11, 24),  Group.Liella, Year.Second, Subunit.Liella
+	# Kanon    = 301, "Kanon Shibuya",      Birthday( 5,  1),  Group.Liella, Year.Third, Subunit.UnitA
+	# Keke     = 302, "Keke Tang",          Birthday( 7, 17),  Group.Liella, Year.Third, Subunit.UnitB
+	# Chisato  = 303, "Chisato Arashi",     Birthday( 2, 25),  Group.Liella, Year.Third, Subunit.UnitC
+	# Sumire   = 304, "Sumire Heanna",      Birthday( 9, 28),  Group.Liella, Year.Third, Subunit.UnitA
+	# Ren      = 305, "Ren Hazuki",         Birthday(11, 24),  Group.Liella, Year.Third, Subunit.UnitB
 
-#	Kinako   = 306, "Kinako Sakurakoji",  Birthday( 4, 10),  Group.Liella, Year.First, Subunit.Liella
-#	Mei      = 307, "Mei Yoneme",         Birthday(10, 29),  Group.Liella, Year.First, Subunit.Liella
-#	Shiki    = 308, "Shiki Wakana",       Birthday( 6, 17),  Group.Liella, Year.First, Subunit.Liella
-#	Natsumi  = 309, "Natsumi Onitsuka",   Birthday( 8, 13),  Group.Liella, Year.First, Subunit.Liella
+	# Kinako   = 306, "Kinako Sakurakoji",  Birthday( 4, 10),  Group.Liella, Year.Second, Subunit.UnitC
+	# Mei      = 307, "Mei Yoneme",         Birthday(10, 29),  Group.Liella, Year.Second, Subunit.UnitA
+	# Shiki    = 308, "Shiki Wakana",       Birthday( 6, 17),  Group.Liella, Year.Second, Subunit.UnitC
+	# Natsumi  = 309, "Natsumi Onitsuka",   Birthday( 8, 13),  Group.Liella, Year.Second, Subunit.UnitC
+
+	# Wien     = 310, "Wien Margarete",     Birthday( 1, 20),  Group.Liella, Year.First, Subunit.UnitB
+	# Tomari   = 311, "Tomari Onitsuka",    Birthday(12, 28),  Group.Liella, Year.First, Subunit.UnitC
 			
 	def __getattr__(self, attr):
 		if attr == "first_name":
