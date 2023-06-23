@@ -25,7 +25,7 @@ class BasicRotationsGenerator(GeneratorBase):
 				}, minify_html=not self.args.dev)
 	
 	def generate_and_render(self):
-		preview_times = self.client.get_next_preview_time()
+		# preview_times = self.client.get_next_preview_time()
 		
 		previous_ordinals = self.get_previous_ordinals()
 		
@@ -37,8 +37,8 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'UR Rotations',
 			'page_description'   : '''Rotations for all UR cards in their release order, except Shioriko. <!-- I\'m not doing this for you complainers. -->''',
-			'previews'           : preview_times.keys(),
-			'next_preview'       : preview_times,
+			# 'previews'           : preview_times.keys(),
+			# 'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('ur', ur_rotations, previous_ordinals)
 	
@@ -50,8 +50,8 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Festival UR Rotations',
 			'page_description'   : 'Rotations for Festival limited URs scouted exclusively from All Stars Festival banners.',
-			'previews'           : [ BannerType.Festival ],
-			'next_preview'       : preview_times,
+			# 'previews'           : [ BannerType.Festival ],
+			# 'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('festival', festival_rotations, previous_ordinals)
 		
@@ -64,8 +64,8 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Party UR Rotations',
 			'page_description'   : 'Rotations for Party limited URs scouted exclusively from Party Scouting banners.',
-			'previews'           : [ BannerType.Party ],
-			'next_preview'       : preview_times,
+			# 'previews'           : [ BannerType.Party ],
+			# 'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('party', party_rotations, previous_ordinals)
 	
@@ -77,8 +77,8 @@ class BasicRotationsGenerator(GeneratorBase):
 			'set_label'          : 'Rotation',
 			'page_title'         : 'Event UR Rotations',
 			'page_description'   : 'Rotations for Event URs awarded in item exchange and story events.',
-			'previews'           : [ EventType.Exchange, EventType.Story, ],
-			'next_preview'       : preview_times,
+			# 'previews'           : [ EventType.Exchange, EventType.Story, ],
+			# 'next_preview'       : preview_times,
 		}, minify_html=not self.args.dev)
 		self.render_deferred_card_grids('event', event_rotations, previous_ordinals)
 	
