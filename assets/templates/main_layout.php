@@ -146,7 +146,7 @@
 					For use with <a href="https://lovelive-as-global.com/" target="_blank" rel="noreferrer noopener">Love Live School Idol Festival All Stars</a>
 				</div>
 				<div style="width:25%">
-					<a href="https://forms.gle/sMK7KSmXDsgmHrvH9" target="_blank" rel="noreferrer noopener">Send Feedback</a>
+					
 				</div>
 			</div>
 		</div>
