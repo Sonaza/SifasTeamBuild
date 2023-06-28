@@ -139,14 +139,11 @@
 	<footer id="footer" ng-controller="FooterController">
 		<div id="footer-top">
 			<div class="footer-top-inner">
-				<div style="width:25%">
+				<div style="width:50%">
 					Website created by Sonaza
 				</div>
 				<div style="width:50%">
 					For use with <a href="https://lovelive-as-global.com/" target="_blank" rel="noreferrer noopener">Love Live School Idol Festival All Stars</a>
-				</div>
-				<div style="width:25%">
-					
 				</div>
 			</div>
 		</div>
