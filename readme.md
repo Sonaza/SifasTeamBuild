@@ -1,3 +1,7 @@
+# SIFAS has reached End of Service
+
+This repository will not be updated any longer.
+
 # :sparkles: SIFAS Team Build :sparkles:
 
 Thingy doodad that can calculate card stats or something in SIFAS.
